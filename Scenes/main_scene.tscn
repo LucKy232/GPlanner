@@ -1,0 +1,93 @@
+[gd_scene load_steps=9 format=3 uid="uid://bfydfy3iq0rjx"]
+
+[ext_resource type="Texture2D" uid="uid://v481h4vkkmsb" path="res://Backgrounds/grid_pattern_dark.png" id="1_6l7je"]
+[ext_resource type="Script" uid="uid://dj8gdy8d87lam" path="res://Scripts/main.gd" id="1_52fb6"]
+[ext_resource type="PackedScene" uid="uid://csgrqqjqi1d4t" path="res://Scenes/zoom_indicator.tscn" id="3_jv6wh"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6l7je"]
+texture = ExtResource("1_6l7je")
+axis_stretch_horizontal = 1
+axis_stretch_vertical = 1
+
+[sub_resource type="Theme" id="Theme_52fb6"]
+Panel/styles/panel = SubResource("StyleBoxTexture_6l7je")
+
+[sub_resource type="Theme" id="Theme_6l7je"]
+MarginContainer/constants/margin_bottom = 20
+MarginContainer/constants/margin_left = 20
+MarginContainer/constants/margin_right = 20
+MarginContainer/constants/margin_top = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jv6wh"]
+bg_color = Color(0.82, 0.928, 1, 1)
+border_width_right = 2
+border_width_bottom = 3
+border_color = Color(0.19, 0.703, 1, 1)
+border_blend = true
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="Theme" id="Theme_x6ack"]
+ItemList/styles/focus = null
+ItemList/styles/panel = SubResource("StyleBoxFlat_jv6wh")
+
+[node name="MainScene" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_52fb6")
+element_scene = "uid://lufadl7u0ek3"
+zoom_limits = Vector2(0.1, 4)
+
+[node name="ElementContainer" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 20000.0
+offset_bottom = 10000.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 1
+
+[node name="Background" type="Panel" parent="ElementContainer"]
+texture_filter = 1
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = SubResource("Theme_52fb6")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = SubResource("Theme_6l7je")
+
+[node name="ToolBox" type="ItemList" parent="MarginContainer"]
+custom_minimum_size = Vector2(400, 60)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+theme = SubResource("Theme_x6ack")
+item_count = 4
+max_columns = 2
+item_0/text = "Select"
+item_1/text = "Add"
+item_2/text = "Remove"
+item_3/text = "Pan"
+
+[node name="ZoomIndicator" parent="MarginContainer" instance=ExtResource("3_jv6wh")]
+layout_mode = 2
+
+[connection signal="gui_input" from="ElementContainer" to="." method="_on_element_container_gui_input"]

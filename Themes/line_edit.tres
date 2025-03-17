@@ -1,0 +1,24 @@
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://dao6v8vx8h5ip"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ielnv"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_color = Color(0.8, 0.8, 0.8, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0qxw5"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[resource]
+LineEdit/colors/caret_color = Color(0.95, 0.95, 0.95, 1)
+LineEdit/colors/font_color = Color(0.875, 0.875, 0.875, 1)
+LineEdit/colors/font_outline_color = Color(0, 0, 0, 1)
+LineEdit/colors/font_placeholder_color = Color(0.875, 0.875, 0.875, 0.6)
+LineEdit/colors/font_selected_color = Color(1, 1, 1, 1)
+LineEdit/colors/selection_color = Color(0.5, 0.5, 0.5, 1)
+LineEdit/constants/caret_width = 1
+LineEdit/constants/minimum_character_width = 4
+LineEdit/constants/outline_size = 2
+LineEdit/font_sizes/font_size = 20
+LineEdit/fonts/font = null
+LineEdit/styles/focus = SubResource("StyleBoxFlat_ielnv")
+LineEdit/styles/normal = SubResource("StyleBoxFlat_0qxw5")
+LineEdit/styles/read_only = null
