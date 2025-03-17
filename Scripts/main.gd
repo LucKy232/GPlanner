@@ -3,6 +3,8 @@ extends Control
 @onready var tool_box: ItemList = $MarginContainer/ToolBox
 @onready var element_container: Control = $ElementContainer
 @onready var zoom_indicator: VBoxContainer = $MarginContainer/ZoomIndicator
+@onready var color_picker: ColorPicker = $MarginContainer/ColorPicker
+@onready var selection_viewer: Panel = $ElementContainer/SelectionViewer
 
 @export_file("*.tscn") var element_scene
 @export var zoom_limits: Vector2 = Vector2(0.25, 4.0)
@@ -22,6 +24,7 @@ enum Tool {
 	ADD,
 	REMOVE,
 	PAN,
+	BG_COLOR,
 }
 
 
@@ -62,6 +65,9 @@ func _on_element_label_gui_input(event: InputEvent, id: int) -> void:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
 			if tool_box.is_selected(Tool.SELECT):
 				selected_element = id
+				selection_viewer.visible = true
+				selection_viewer.size = elements[id].size
+				selection_viewer.position = elements[id].position
 				if event.position.distance_to(elements[id].size) < 12.0:
 					is_resizing = true
 					original_size = elements[id].size
@@ -72,6 +78,8 @@ func _on_element_label_gui_input(event: InputEvent, id: int) -> void:
 		elif event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
 			if tool_box.is_selected(Tool.REMOVE):
 				elements[id].queue_free()
+				selected_element = -1
+				selection_viewer.visible = false
 			if is_dragging:
 				is_dragging = false
 			if is_resizing:
@@ -80,8 +88,19 @@ func _on_element_label_gui_input(event: InputEvent, id: int) -> void:
 		var move = event.position - drag_start_mouse_pos
 		if is_dragging:
 			elements[id].position += move
+			selection_viewer.position = elements[id].position
 		if is_resizing:
 			elements[id].size = original_size + move
+			selection_viewer.size = elements[id].size
+
+
+func _on_element_text_box_active(id: int) -> void:
+	if elements.has(id):
+		selected_element = id
+		selection_viewer.visible = true
+		selection_viewer.position = elements[id].position
+		selection_viewer.size = elements[id].size
+		selection_viewer.scale = elements[id].scale
 
 
 func add_element_label(at_position: Vector2) -> void:
@@ -89,6 +108,7 @@ func add_element_label(at_position: Vector2) -> void:
 	new_element.id = element_id_counter
 	elements[element_id_counter] = new_element
 	new_element.gui_input.connect(_on_element_label_gui_input.bind(element_id_counter))
+	new_element.become_active.connect(_on_element_text_box_active.bind(element_id_counter))
 	element_container.add_child(new_element)
 	new_element.position = at_position
 	tool_box.select(Tool.SELECT)
@@ -106,3 +126,15 @@ func pan_limits(pos: Vector2) -> Vector2:
 	if pos.y < -element_container.size.y * element_container.scale.y + screen_size.y:
 		pos.y = -element_container.size.y * element_container.scale.y + screen_size.y
 	return pos
+
+
+func _on_tool_box_item_selected(index: int) -> void:
+	if index == Tool.BG_COLOR:
+		color_picker.visible = true
+	elif index != Tool.BG_COLOR and color_picker.visible == true:
+		color_picker.visible = false
+
+
+func _on_color_picker_color_changed(color: Color) -> void:
+	if tool_box.is_selected(Tool.BG_COLOR) and selected_element >= 0 and elements.has(selected_element):
+		elements[selected_element].set_bg_color(color)

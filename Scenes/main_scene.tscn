@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bfydfy3iq0rjx"]
+[gd_scene load_steps=11 format=3 uid="uid://bfydfy3iq0rjx"]
 
 [ext_resource type="Texture2D" uid="uid://v481h4vkkmsb" path="res://Backgrounds/grid_pattern_dark.png" id="1_6l7je"]
 [ext_resource type="Script" uid="uid://dj8gdy8d87lam" path="res://Scripts/main.gd" id="1_52fb6"]
@@ -11,6 +11,29 @@ axis_stretch_vertical = 1
 
 [sub_resource type="Theme" id="Theme_52fb6"]
 Panel/styles/panel = SubResource("StyleBoxTexture_6l7je")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x6ack"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.695502, 0.695504, 0.695503, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+corner_detail = 1
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+anti_aliasing = false
+anti_aliasing_size = 0.01
+
+[sub_resource type="Theme" id="Theme_iacmt"]
+Panel/styles/panel = SubResource("StyleBoxFlat_x6ack")
 
 [sub_resource type="Theme" id="Theme_6l7je"]
 MarginContainer/constants/margin_bottom = 20
@@ -54,7 +77,7 @@ size_flags_vertical = 4
 mouse_filter = 1
 
 [node name="Background" type="Panel" parent="ElementContainer"]
-texture_filter = 1
+texture_filter = 5
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -63,6 +86,13 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme = SubResource("Theme_52fb6")
+
+[node name="SelectionViewer" type="Panel" parent="ElementContainer"]
+visible = false
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme = SubResource("Theme_iacmt")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -80,14 +110,26 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
 theme = SubResource("Theme_x6ack")
-item_count = 4
-max_columns = 2
+item_count = 5
+max_columns = 3
 item_0/text = "Select"
 item_1/text = "Add"
 item_2/text = "Remove"
-item_3/text = "Pan"
+item_3/text = "Pan&Zoom"
+item_4/text = "BG Color"
 
 [node name="ZoomIndicator" parent="MarginContainer" instance=ExtResource("3_jv6wh")]
 layout_mode = 2
 
+[node name="ColorPicker" type="ColorPicker" parent="MarginContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+alignment = 1
+color_mode = 3
+picker_shape = 3
+
 [connection signal="gui_input" from="ElementContainer" to="." method="_on_element_container_gui_input"]
+[connection signal="item_selected" from="MarginContainer/ToolBox" to="." method="_on_tool_box_item_selected"]
+[connection signal="color_changed" from="MarginContainer/ColorPicker" to="." method="_on_color_picker_color_changed"]

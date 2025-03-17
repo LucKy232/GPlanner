@@ -1,7 +1,0 @@
-[gd_resource type="Theme" load_steps=2 format=3 uid="uid://buc3taqbnj515"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_abnng"]
-draw_center = false
-
-[resource]
-TextEdit/styles/normal = SubResource("StyleBoxFlat_abnng")

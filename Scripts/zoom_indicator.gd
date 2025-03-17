@@ -22,7 +22,7 @@ func _on_hide_timer_timeout() -> void:
 
 
 func show_zoom() -> void:
-	if !animation_player.is_playing():
+	if !animation_player.is_playing() and hide_timer.is_stopped():
 		animation_player.play("fade_in_zoom_indicator")
 		hide_timer.start()
 
