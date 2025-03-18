@@ -66,6 +66,7 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_52fb6")
 element_scene = "uid://lufadl7u0ek3"
+connection_scene = "uid://clweynhbi8rai"
 zoom_limits = Vector2(0.1, 4)
 
 [node name="ElementContainer" type="Control" parent="."]
@@ -94,6 +95,15 @@ offset_right = 40.0
 offset_bottom = 40.0
 theme = SubResource("Theme_iacmt")
 
+[node name="ConnectionContainer" type="Control" parent="ElementContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -110,13 +120,15 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
 theme = SubResource("Theme_x6ack")
-item_count = 5
-max_columns = 3
+item_count = 7
+max_columns = 4
 item_0/text = "Select"
-item_1/text = "Add"
+item_1/text = "Add Element"
 item_2/text = "Remove"
 item_3/text = "Pan&Zoom"
 item_4/text = "BG Color"
+item_5/text = "Add Connection"
+item_6/text = "Remove Connections"
 
 [node name="ZoomIndicator" parent="MarginContainer" instance=ExtResource("3_jv6wh")]
 layout_mode = 2

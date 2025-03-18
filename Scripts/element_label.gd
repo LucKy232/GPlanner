@@ -5,7 +5,7 @@ class_name ElementLabel
 var panel_stylebox
 var id: int
 
-signal become_active
+signal became_active
 
 
 func _ready() -> void:
@@ -15,7 +15,7 @@ func _ready() -> void:
 
 func _on_line_edit_editing_toggled(toggled_on: bool) -> void:
 	if toggled_on:
-		become_active.emit()
+		became_active.emit()
 
 
 func set_bg_color(color: Color) -> void:
