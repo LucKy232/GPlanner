@@ -20,3 +20,7 @@ func _on_line_edit_editing_toggled(toggled_on: bool) -> void:
 
 func set_bg_color(color: Color) -> void:
 	panel_stylebox.bg_color = color
+
+
+func get_bg_color() -> Color:
+	return panel_stylebox.bg_color

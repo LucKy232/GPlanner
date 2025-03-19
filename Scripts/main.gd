@@ -6,6 +6,8 @@ extends Control
 @onready var zoom_indicator: VBoxContainer = $MarginContainer/ZoomIndicator
 @onready var color_picker: ColorPicker = $MarginContainer/ColorPicker
 @onready var selection_viewer: Panel = $ElementContainer/SelectionViewer
+@onready var file_dialog_save: FileDialog = $FileDialogSave
+@onready var file_dialog_load: FileDialog = $FileDialogLoad
 
 @export_file("*.tscn") var element_scene
 @export_file("*.tscn") var connection_scene
@@ -125,35 +127,45 @@ func _on_element_text_box_active(id: int) -> void:
 		selection_viewer.size = elements[id].size
 
 
-func add_element_label(at_position: Vector2) -> void:
+func add_element_label(at_position: Vector2, id_specified: int = -1) -> void:
 	var new_element = load(element_scene).instantiate()
-	new_element.id = element_id_counter
-	elements[element_id_counter] = new_element
-	new_element.gui_input.connect(_on_element_label_gui_input.bind(element_id_counter))
-	new_element.became_active.connect(_on_element_text_box_active.bind(element_id_counter))
+	var id: int
+	if id_specified < 0:
+		id = element_id_counter
+		element_id_counter += 1
+	else:
+		id = id_specified
+	new_element.id = id
+	elements[id] = new_element
+	new_element.gui_input.connect(_on_element_label_gui_input.bind(id))
+	new_element.became_active.connect(_on_element_text_box_active.bind(id))
 	element_container.add_child(new_element)
 	new_element.position = at_position
 	tool_box.select(Tool.SELECT)
-	element_id_counter += 1
 
 
-func add_connection() -> void:
+func add_connection(id_specified: int = -1) -> void:
 	if !elements_to_connection.has(Vector2i(connection_candidate_1, connection_candidate_2)) and !elements_to_connection.has(Vector2i(connection_candidate_2, connection_candidate_1)):
 		#print("ADDING CONNECTION")
-		var new_connection = load(connection_scene).instantiate()
-		connections[connection_id_counter] = new_connection
+		var new_connection = load(connection_scene).instantiate()	
+		var id: int
+		if id_specified < 0:
+			id = connection_id_counter
+			connection_id_counter += 1
+		else:
+			id = id_specified
+		connections[id] = new_connection
 		if !connections_p1.has(connection_candidate_1):
 			connections_p1[connection_candidate_1] = PackedInt32Array()
 		if !connections_p2.has(connection_candidate_2):
 			connections_p2[connection_candidate_2] = PackedInt32Array()
-		connections_p1[connection_candidate_1].append(connection_id_counter)
-		connections_p2[connection_candidate_2].append(connection_id_counter)
-		elements_to_connection[Vector2i(connection_candidate_1, connection_candidate_2)] = connection_id_counter
+		connections_p1[connection_candidate_1].append(id)
+		connections_p2[connection_candidate_2].append(id)
+		elements_to_connection[Vector2i(connection_candidate_1, connection_candidate_2)] = id
 		connection_container.add_child(new_connection)
 		new_connection.update_p1(elements[connection_candidate_1].position, elements[connection_candidate_1].size)
 		new_connection.update_p2(elements[connection_candidate_2].position, elements[connection_candidate_2].size)
 		new_connection.update_positions()
-		connection_id_counter += 1
 	#else:
 		#print("ALREDY EXISTS")
 	connection_candidate_1 = -1
@@ -234,3 +246,146 @@ func _on_tool_box_item_selected(index: int) -> void:
 func _on_color_picker_color_changed(color: Color) -> void:
 	if tool_box.is_selected(Tool.BG_COLOR) and selected_element >= 0 and elements.has(selected_element):
 		elements[selected_element].set_bg_color(color)
+
+
+func _on_file_dialog_save_file_selected(path: String) -> void:
+	save_file(path)
+
+
+func _on_file_dialog_load_file_selected(path: String) -> void:
+	erase_everything()
+	load_file(path)
+
+
+func _on_new_button_pressed() -> void:
+	erase_everything()
+
+
+func _on_save_button_pressed() -> void:
+	file_dialog_save.visible = true
+
+
+func _on_load_button_pressed() -> void:
+	file_dialog_load.visible = true
+
+
+func save_file(path: String) -> void:
+	var file = FileAccess.open(path, FileAccess.WRITE)
+	var save_data: Dictionary
+	if file == null:
+		print(FileAccess.get_open_error())
+		return
+	
+	save_data = {
+		"Elements": all_elements_to_Json(),
+		"Connections": all_connection_pairs_to_json()
+	}
+	
+	file.store_string(JSON.stringify(save_data, "\t"))
+	file.close()
+
+
+func load_file(path: String) -> void:
+	if FileAccess.file_exists(path):
+		var file = FileAccess.open(path, FileAccess.READ)
+		if file == null:
+			print(FileAccess.get_open_error())
+			return
+		
+		var content = file.get_as_text()
+		file.close()
+		
+		var data = JSON.parse_string(content)
+		
+		if data == null:
+			printerr("Can't parse JSON string @ main.gd:load_file()")
+			return
+		else:
+			var elems = data["Elements"]
+			var conns = data["Connections"]
+			rebuild_elements(elems)
+			rebuild_connections(conns)
+	else:
+		printerr("File doesn't exist @ RoadSegmentDataManager:load_all_data()")	
+
+
+func single_element_to_json(id: int) -> Dictionary:
+	var e = elements[id]
+	var bgc = elements[id].get_bg_color()
+	return {
+		"id": e.id,
+		"pos.x": e.position.x,
+		"pos.y": e.position.y,
+		"size.x": e.size.x,
+		"size.y": e.size.y,
+		"text": e.line_edit.text,
+		"bgcolor.r": bgc.r,
+		"bgcolor.g": bgc.g,
+		"bgcolor.b": bgc.b,
+		"bgcolor.a": bgc.a,
+	}
+
+
+func all_elements_to_Json() -> Dictionary:
+	var dict: Dictionary = {}
+	for id in elements:
+		dict[id] = single_element_to_json(id)
+	return dict
+
+
+func all_connection_pairs_to_json() -> Dictionary:
+	var dict: Dictionary = {}
+	for pair in elements_to_connection:
+		var entry: Dictionary = {}
+		var connid = elements_to_connection[pair]
+		entry["id1"] = pair.x
+		entry["id2"] = pair.y
+		dict[connid] = entry
+	return dict
+
+
+func rebuild_elements(json_elems: Dictionary) -> void:
+	var max_id: int = -1
+	for i in json_elems:
+		var id: int = int(json_elems[i]["id"])
+		var pos: Vector2 = Vector2(json_elems[i]["pos.x"], json_elems[i]["pos.y"])
+		add_element_label(pos, id)
+		elements[id].size = Vector2(json_elems[i]["size.x"], json_elems[i]["size.y"])
+		var c: Color = Color(json_elems[i]["bgcolor.r"], json_elems[i]["bgcolor.g"], json_elems[i]["bgcolor.b"], json_elems[i]["bgcolor.a"])
+		elements[id].set_bg_color(c)
+		elements[id].line_edit.text = json_elems[i]["text"]
+		if id > max_id:
+			max_id = id
+	element_id_counter = max_id + 1
+
+
+func rebuild_connections(json_conns: Dictionary) -> void:
+	var max_id: int = -1
+	for i in json_conns:
+		var id = int(i)
+		connection_candidate_1 = int(json_conns[i]["id1"])
+		connection_candidate_2 = int(json_conns[i]["id2"])
+		add_connection(id)
+		if id > max_id:
+			max_id = id
+	connection_id_counter = max_id + 1
+
+
+func erase_everything() -> void:
+	selection_viewer.visible = false
+	selected_element = -1
+	connections_p1 = {}
+	connections_p2 = {}
+	elements_to_connection = {}
+	for i in elements:
+		elements[i].queue_free()
+	elements = {}
+	for i in connections:
+		connections[i].queue_free()
+	connections = {}
+	element_id_counter = 0
+	connection_id_counter = 0
+	connection_candidate_1 = -1
+	connection_candidate_2 = -1
+	is_dragging = false
+	is_resizing = false

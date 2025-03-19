@@ -142,6 +142,45 @@ alignment = 1
 color_mode = 3
 picker_shape = 3
 
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+
+[node name="NewButton" type="Button" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "New"
+
+[node name="SaveButton" type="Button" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+text = "Save"
+
+[node name="LoadButton" type="Button" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+text = "Load"
+
+[node name="FileDialogSave" type="FileDialog" parent="."]
+title = "Save canvas"
+initial_position = 2
+access = 2
+filters = PackedStringArray("*.json")
+
+[node name="FileDialogLoad" type="FileDialog" parent="."]
+auto_translate_mode = 1
+title = "Open a File"
+initial_position = 2
+ok_button_text = "Open"
+file_mode = 0
+access = 2
+filters = PackedStringArray("*.json")
+
 [connection signal="gui_input" from="ElementContainer" to="." method="_on_element_container_gui_input"]
 [connection signal="item_selected" from="MarginContainer/ToolBox" to="." method="_on_tool_box_item_selected"]
 [connection signal="color_changed" from="MarginContainer/ColorPicker" to="." method="_on_color_picker_color_changed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/NewButton" to="." method="_on_new_button_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/LoadButton" to="." method="_on_load_button_pressed"]
+[connection signal="file_selected" from="FileDialogSave" to="." method="_on_file_dialog_save_file_selected"]
+[connection signal="file_selected" from="FileDialogLoad" to="." method="_on_file_dialog_load_file_selected"]
