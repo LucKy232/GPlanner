@@ -30,7 +30,6 @@ expand_margin_top = 2.0
 expand_margin_right = 2.0
 expand_margin_bottom = 2.0
 anti_aliasing = false
-anti_aliasing_size = 0.01
 
 [sub_resource type="Theme" id="Theme_iacmt"]
 Panel/styles/panel = SubResource("StyleBoxFlat_x6ack")

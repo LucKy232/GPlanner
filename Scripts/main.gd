@@ -97,11 +97,18 @@ func _on_element_label_gui_input(event: InputEvent, id: int) -> void:
 				if !is_dragging and !is_resizing:
 					is_dragging = true
 					drag_start_mouse_pos = event.position
+			if tool_box.is_selected(Tool.BG_COLOR):
+				selected_element = id
+				selection_viewer.visible = true
+				selection_viewer.size = elements[id].size
+				selection_viewer.position = elements[id].position
+				elements[id].set_bg_color(color_picker.color)
 		elif event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
 			if tool_box.is_selected(Tool.REMOVE):
 				remove_connections(id)
 				elements[id].queue_free()
 				selected_element = -1
+				elements.erase(id)
 				selection_viewer.visible = false
 			if is_dragging:
 				is_dragging = false
@@ -125,6 +132,8 @@ func _on_element_text_box_active(id: int) -> void:
 		selection_viewer.visible = true
 		selection_viewer.position = elements[id].position
 		selection_viewer.size = elements[id].size
+		if tool_box.is_selected(Tool.BG_COLOR):
+			elements[id].set_bg_color(color_picker.color)
 
 
 func add_element_label(at_position: Vector2, id_specified: int = -1) -> void:
@@ -311,7 +320,7 @@ func load_file(path: String) -> void:
 
 func single_element_to_json(id: int) -> Dictionary:
 	var e = elements[id]
-	var bgc = elements[id].get_bg_color()
+	var bgc: Color = elements[id].get_bg_color()
 	return {
 		"id": e.id,
 		"pos.x": e.position.x,
@@ -329,7 +338,8 @@ func single_element_to_json(id: int) -> Dictionary:
 func all_elements_to_Json() -> Dictionary:
 	var dict: Dictionary = {}
 	for id in elements:
-		dict[id] = single_element_to_json(id)
+		if elements[id] != null:
+			dict[id] = single_element_to_json(id)
 	return dict
 
 
@@ -347,15 +357,16 @@ func all_connection_pairs_to_json() -> Dictionary:
 func rebuild_elements(json_elems: Dictionary) -> void:
 	var max_id: int = -1
 	for i in json_elems:
-		var id: int = int(json_elems[i]["id"])
-		var pos: Vector2 = Vector2(json_elems[i]["pos.x"], json_elems[i]["pos.y"])
-		add_element_label(pos, id)
-		elements[id].size = Vector2(json_elems[i]["size.x"], json_elems[i]["size.y"])
-		var c: Color = Color(json_elems[i]["bgcolor.r"], json_elems[i]["bgcolor.g"], json_elems[i]["bgcolor.b"], json_elems[i]["bgcolor.a"])
-		elements[id].set_bg_color(c)
-		elements[id].line_edit.text = json_elems[i]["text"]
-		if id > max_id:
-			max_id = id
+		if !json_elems[i].is_empty():
+			var id: int = int(json_elems[i]["id"])
+			var pos: Vector2 = Vector2(json_elems[i]["pos.x"], json_elems[i]["pos.y"])
+			add_element_label(pos, id)
+			elements[id].size = Vector2(json_elems[i]["size.x"], json_elems[i]["size.y"])
+			var c: Color = Color(json_elems[i]["bgcolor.r"], json_elems[i]["bgcolor.g"], json_elems[i]["bgcolor.b"], json_elems[i]["bgcolor.a"])
+			elements[id].set_bg_color(c)
+			elements[id].line_edit.text = json_elems[i]["text"]
+			if id > max_id:
+				max_id = id
 	element_id_counter = max_id + 1
 
 
@@ -378,10 +389,12 @@ func erase_everything() -> void:
 	connections_p2 = {}
 	elements_to_connection = {}
 	for i in elements:
-		elements[i].queue_free()
+		if elements[i] != null:
+			elements[i].queue_free()
 	elements = {}
 	for i in connections:
-		connections[i].queue_free()
+		if connections[i] != null:
+			connections[i].queue_free()
 	connections = {}
 	element_id_counter = 0
 	connection_id_counter = 0

@@ -35,7 +35,7 @@ layout_mode = 2
 size_flags_vertical = 4
 mouse_filter = 1
 theme = ExtResource("4_id6lq")
-placeholder_text = "Text here"
+placeholder_text = "Title..."
 alignment = 1
 
 [connection signal="editing_toggled" from="MarginContainer/LineEdit" to="." method="_on_line_edit_editing_toggled"]
