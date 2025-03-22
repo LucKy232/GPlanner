@@ -1,8 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://bfydfy3iq0rjx"]
+[gd_scene load_steps=16 format=3 uid="uid://bfydfy3iq0rjx"]
 
 [ext_resource type="Texture2D" uid="uid://v481h4vkkmsb" path="res://Backgrounds/grid_pattern_dark.png" id="1_6l7je"]
 [ext_resource type="Script" uid="uid://dj8gdy8d87lam" path="res://Scripts/main.gd" id="1_52fb6"]
 [ext_resource type="PackedScene" uid="uid://csgrqqjqi1d4t" path="res://Scenes/zoom_indicator.tscn" id="3_jv6wh"]
+[ext_resource type="Theme" uid="uid://y7w4cfil7ay0" path="res://Themes/button_theme.tres" id="4_x6ack"]
+[ext_resource type="PackedScene" uid="uid://c2apku3xuhhyp" path="res://Scenes/status_bar.tscn" id="5_iacmt"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6l7je"]
 texture = ExtResource("1_6l7je")
@@ -41,9 +43,11 @@ MarginContainer/constants/margin_right = 20
 MarginContainer/constants/margin_top = 20
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jv6wh"]
-bg_color = Color(0.82, 0.928, 1, 1)
+bg_color = Color(0, 0, 0, 0.705882)
+border_width_left = 2
+border_width_top = 2
 border_width_right = 2
-border_width_bottom = 3
+border_width_bottom = 2
 border_color = Color(0.19, 0.703, 1, 1)
 border_blend = true
 corner_radius_top_left = 8
@@ -55,6 +59,24 @@ corner_radius_bottom_left = 8
 ItemList/styles/focus = null
 ItemList/styles/panel = SubResource("StyleBoxFlat_jv6wh")
 
+[sub_resource type="ImageTexture" id="ImageTexture_jv6wh"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iacmt"]
+bg_color = Color(0.43, 0.43, 0.43, 0.470588)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.188235, 0.701961, 1, 1)
+border_blend = true
+expand_margin_left = 8.0
+expand_margin_top = 8.0
+expand_margin_right = 8.0
+expand_margin_bottom = 8.0
+
+[sub_resource type="Theme" id="Theme_6ev3c"]
+Panel/styles/panel = SubResource("StyleBoxFlat_iacmt")
+
 [node name="MainScene" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -62,6 +84,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
 mouse_filter = 2
 script = ExtResource("1_52fb6")
 element_scene = "uid://lufadl7u0ek3"
@@ -114,51 +138,75 @@ mouse_filter = 2
 theme = SubResource("Theme_6l7je")
 
 [node name="ToolBox" type="ItemList" parent="MarginContainer"]
-custom_minimum_size = Vector2(400, 60)
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 8
+size_flags_horizontal = 0
+size_flags_vertical = 4
 theme = SubResource("Theme_x6ack")
-item_count = 7
-max_columns = 4
+auto_width = true
+auto_height = true
+item_count = 8
 item_0/text = "Select"
+item_0/icon = SubResource("ImageTexture_jv6wh")
 item_1/text = "Add Element"
 item_2/text = "Remove"
 item_3/text = "Pan&Zoom"
 item_4/text = "BG Color"
 item_5/text = "Add Connection"
-item_6/text = "Remove Connections"
+item_6/text = "Rmv Connections"
+item_7/text = "Mark Complete"
 
 [node name="ZoomIndicator" parent="MarginContainer" instance=ExtResource("3_jv6wh")]
 layout_mode = 2
 
+[node name="ColorPickerBG" type="Panel" parent="MarginContainer"]
+visible = false
+custom_minimum_size = Vector2(298, 572)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+theme = SubResource("Theme_6ev3c")
+
 [node name="ColorPicker" type="ColorPicker" parent="MarginContainer"]
 visible = false
 layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
+size_flags_horizontal = 8
+size_flags_vertical = 8
 alignment = 1
 color_mode = 3
 picker_shape = 3
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+[node name="FileButtons" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-size_flags_horizontal = 8
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="NewButton" type="Button" parent="MarginContainer/FileButtons"]
+layout_mode = 2
+theme = ExtResource("4_x6ack")
+text = " New "
+
+[node name="SaveButton" type="Button" parent="MarginContainer/FileButtons"]
+layout_mode = 2
+size_flags_vertical = 8
+theme = ExtResource("4_x6ack")
+text = " Save "
+
+[node name="LoadButton" type="Button" parent="MarginContainer/FileButtons"]
+layout_mode = 2
+theme = ExtResource("4_x6ack")
+text = " Load "
+
+[node name="Settings" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
 size_flags_vertical = 8
 
-[node name="NewButton" type="Button" parent="MarginContainer/HBoxContainer"]
+[node name="ToggleCompleted" type="CheckBox" parent="MarginContainer/Settings"]
 layout_mode = 2
-text = "New"
+text = "Hide all completed"
 
-[node name="SaveButton" type="Button" parent="MarginContainer/HBoxContainer"]
+[node name="StatusBar" parent="MarginContainer" instance=ExtResource("5_iacmt")]
 layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-text = "Save"
-
-[node name="LoadButton" type="Button" parent="MarginContainer/HBoxContainer"]
-layout_mode = 2
-text = "Load"
 
 [node name="FileDialogSave" type="FileDialog" parent="."]
 title = "Save canvas"
@@ -178,8 +226,9 @@ filters = PackedStringArray("*.json")
 [connection signal="gui_input" from="ElementContainer" to="." method="_on_element_container_gui_input"]
 [connection signal="item_selected" from="MarginContainer/ToolBox" to="." method="_on_tool_box_item_selected"]
 [connection signal="color_changed" from="MarginContainer/ColorPicker" to="." method="_on_color_picker_color_changed"]
-[connection signal="pressed" from="MarginContainer/HBoxContainer/NewButton" to="." method="_on_new_button_pressed"]
-[connection signal="pressed" from="MarginContainer/HBoxContainer/SaveButton" to="." method="_on_save_button_pressed"]
-[connection signal="pressed" from="MarginContainer/HBoxContainer/LoadButton" to="." method="_on_load_button_pressed"]
+[connection signal="pressed" from="MarginContainer/FileButtons/NewButton" to="." method="_on_new_button_pressed"]
+[connection signal="pressed" from="MarginContainer/FileButtons/SaveButton" to="." method="_on_save_button_pressed"]
+[connection signal="pressed" from="MarginContainer/FileButtons/LoadButton" to="." method="_on_load_button_pressed"]
+[connection signal="toggled" from="MarginContainer/Settings/ToggleCompleted" to="." method="_on_toggle_completed_toggled"]
 [connection signal="file_selected" from="FileDialogSave" to="." method="_on_file_dialog_save_file_selected"]
 [connection signal="file_selected" from="FileDialogLoad" to="." method="_on_file_dialog_load_file_selected"]

@@ -5,9 +5,12 @@ extends Control
 @onready var connection_container: Control = $ElementContainer/ConnectionContainer
 @onready var zoom_indicator: VBoxContainer = $MarginContainer/ZoomIndicator
 @onready var color_picker: ColorPicker = $MarginContainer/ColorPicker
+@onready var color_picker_bg: Panel = $MarginContainer/ColorPickerBG
 @onready var selection_viewer: Panel = $ElementContainer/SelectionViewer
 @onready var file_dialog_save: FileDialog = $FileDialogSave
 @onready var file_dialog_load: FileDialog = $FileDialogLoad
+@onready var status_bar: Label = $MarginContainer/StatusBar
+@onready var toggle_completed: CheckBox = $MarginContainer/Settings/ToggleCompleted
 
 @export_file("*.tscn") var element_scene
 @export_file("*.tscn") var connection_scene
@@ -29,6 +32,8 @@ var is_resizing: bool = false
 var drag_start_mouse_pos: Vector2
 var original_size: Vector2
 var zoom_level: float = 1.0
+var opened_file_path: String = ""
+var app_version: String = ""
 
 enum Tool {
 	SELECT,
@@ -38,7 +43,15 @@ enum Tool {
 	BG_COLOR,
 	ADD_CONNECTION,
 	REMOVE_CONNECTIONS,
+	MARK_COMPLETED,
 }
+
+
+func _ready() -> void:
+	app_version = ProjectSettings.get_setting("application/config/version")
+	#DisplayServer.window_set_title("GPlanner %s: New File" % [app_version])
+	get_tree().root.title = ("GPlanner %s: New File" % [app_version])
+	status_bar.update_status("New File")
 
 
 func _on_element_container_gui_input(event: InputEvent) -> void:
@@ -79,6 +92,7 @@ func _on_element_label_gui_input(event: InputEvent, id: int) -> void:
 			if tool_box.is_selected(Tool.ADD_CONNECTION):
 				if connection_candidate_1 == -1:
 					connection_candidate_1 = id
+					select_element(id)
 					#print("FIRST ID CONFIRMED")
 				else:
 					connection_candidate_2 = id
@@ -86,10 +100,7 @@ func _on_element_label_gui_input(event: InputEvent, id: int) -> void:
 			if tool_box.is_selected(Tool.REMOVE_CONNECTIONS):
 				remove_connections(id)
 			if tool_box.is_selected(Tool.SELECT):
-				selected_element = id
-				selection_viewer.visible = true
-				selection_viewer.size = elements[id].size
-				selection_viewer.position = elements[id].position
+				select_element(id)
 				if event.position.distance_to(elements[id].size) < 12.0:
 					is_resizing = true
 					original_size = elements[id].size
@@ -98,11 +109,10 @@ func _on_element_label_gui_input(event: InputEvent, id: int) -> void:
 					is_dragging = true
 					drag_start_mouse_pos = event.position
 			if tool_box.is_selected(Tool.BG_COLOR):
-				selected_element = id
-				selection_viewer.visible = true
-				selection_viewer.size = elements[id].size
-				selection_viewer.position = elements[id].position
+				select_element(id)
 				elements[id].set_bg_color(color_picker.color)
+			if tool_box.is_selected(Tool.MARK_COMPLETED):
+				elements[id].toggle_completed()
 		elif event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
 			if tool_box.is_selected(Tool.REMOVE):
 				remove_connections(id)
@@ -128,12 +138,11 @@ func _on_element_label_gui_input(event: InputEvent, id: int) -> void:
 
 func _on_element_text_box_active(id: int) -> void:
 	if elements.has(id):
-		selected_element = id
-		selection_viewer.visible = true
-		selection_viewer.position = elements[id].position
-		selection_viewer.size = elements[id].size
+		select_element(id)
 		if tool_box.is_selected(Tool.BG_COLOR):
 			elements[id].set_bg_color(color_picker.color)
+		if tool_box.is_selected(Tool.MARK_COMPLETED):
+			elements[id].toggle_completed()
 
 
 func add_element_label(at_position: Vector2, id_specified: int = -1) -> void:
@@ -218,6 +227,13 @@ func remove_connections(elem_id: int) -> void:
 		connections.erase(connid)
 
 
+func select_element(id: int) -> void:
+	selected_element = id
+	selection_viewer.visible = true
+	selection_viewer.size = elements[id].size
+	selection_viewer.position = elements[id].position
+
+
 func update_connections(elem_id: int) -> void:
 	if connections_p1.has(elem_id):
 		for conn_id in connections_p1[elem_id]:
@@ -245,8 +261,10 @@ func pan_limits(pos: Vector2) -> Vector2:
 func _on_tool_box_item_selected(index: int) -> void:
 	if index == Tool.BG_COLOR:
 		color_picker.visible = true
+		color_picker_bg.visible = true
 	elif index != Tool.BG_COLOR and color_picker.visible == true:
 		color_picker.visible = false
+		color_picker_bg.visible = false
 	if index != Tool.ADD_ELEMENT:
 		connection_candidate_1 = -1
 		connection_candidate_2 = -1
@@ -268,6 +286,9 @@ func _on_file_dialog_load_file_selected(path: String) -> void:
 
 func _on_new_button_pressed() -> void:
 	erase_everything()
+	#DisplayServer.window_set_title("GPlanner %s: New File" % [app_version])
+	get_tree().root.title = ("GPlanner %s: New File" % [app_version])
+	status_bar.update_status("New File")
 
 
 func _on_save_button_pressed() -> void:
@@ -290,7 +311,13 @@ func save_file(path: String) -> void:
 		"Connections": all_connection_pairs_to_json()
 	}
 	
-	file.store_string(JSON.stringify(save_data, "\t"))
+	var success: bool = file.store_string(JSON.stringify(save_data, "\t"))
+	if success:
+		status_bar.update_status("File saved to path: %s" % path)
+		#DisplayServer.window_set_title("GPlanner %s: %s" % [app_version, path])
+		get_tree().root.title = ("GPlanner %s: %s" % [app_version, path])
+	else:
+		status_bar.update_status("Error when saving file to path: %s" % path)
 	file.close()
 
 
@@ -303,7 +330,6 @@ func load_file(path: String) -> void:
 		
 		var content = file.get_as_text()
 		file.close()
-		
 		var data = JSON.parse_string(content)
 		
 		if data == null:
@@ -314,6 +340,11 @@ func load_file(path: String) -> void:
 			var conns = data["Connections"]
 			rebuild_elements(elems)
 			rebuild_connections(conns)
+		
+		status_bar.update_status("File loaded: %s" % path)
+		#DisplayServer.window_set_title("GPlanner %s: %s" % [app_version, path])
+		get_tree().root.title = ("GPlanner %s: %s" % [app_version, path])
+		toggle_completed.button_pressed = false
 	else:
 		printerr("File doesn't exist @ RoadSegmentDataManager:load_all_data()")	
 
@@ -323,6 +354,7 @@ func single_element_to_json(id: int) -> Dictionary:
 	var bgc: Color = elements[id].get_bg_color()
 	return {
 		"id": e.id,
+		"completed": e.completed,
 		"pos.x": e.position.x,
 		"pos.y": e.position.y,
 		"size.x": e.size.x,
@@ -359,12 +391,17 @@ func rebuild_elements(json_elems: Dictionary) -> void:
 	for i in json_elems:
 		if !json_elems[i].is_empty():
 			var id: int = int(json_elems[i]["id"])
+			var completed: bool = false
+			if json_elems[i].has("completed"):
+				completed = bool(json_elems[i]["completed"])
 			var pos: Vector2 = Vector2(json_elems[i]["pos.x"], json_elems[i]["pos.y"])
 			add_element_label(pos, id)
 			elements[id].size = Vector2(json_elems[i]["size.x"], json_elems[i]["size.y"])
 			var c: Color = Color(json_elems[i]["bgcolor.r"], json_elems[i]["bgcolor.g"], json_elems[i]["bgcolor.b"], json_elems[i]["bgcolor.a"])
 			elements[id].set_bg_color(c)
 			elements[id].line_edit.text = json_elems[i]["text"]
+			if completed:
+				elements[id].toggle_completed()
 			if id > max_id:
 				max_id = id
 	element_id_counter = max_id + 1
@@ -402,3 +439,21 @@ func erase_everything() -> void:
 	connection_candidate_2 = -1
 	is_dragging = false
 	is_resizing = false
+
+
+func _on_toggle_completed_toggled(toggled_on: bool) -> void:
+	for i in elements:
+		if elements[i].completed:
+			if selected_element == i:
+				selected_element = -1
+				selection_viewer.visible = false
+				
+			elements[i].visible = !toggled_on
+			for elem_id in connections_p1:	# Hide / Show connections
+				if elem_id == i:
+					for conn_id in connections_p1[elem_id]:
+						connections[conn_id].visible = !toggled_on
+			for elem_id in connections_p2:
+				if elem_id == i:
+					for conn_id in connections_p2[elem_id]:
+						connections[conn_id].visible = !toggled_on

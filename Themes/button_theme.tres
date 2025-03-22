@@ -1,0 +1,77 @@
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://y7w4cfil7ay0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oxmtg"]
+bg_color = Color(0, 0, 0, 0.705882)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.188235, 0.701961, 1, 1)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+corner_detail = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ewvkp"]
+bg_color = Color(0.2, 0.2, 0.2, 0.705882)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.188235, 0.701961, 1, 1)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+corner_detail = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p5kd2"]
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.188235, 0.701961, 1, 1)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+corner_detail = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_14kg4"]
+bg_color = Color(0, 0, 0, 0.705882)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.188235, 0.701961, 1, 1)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+corner_detail = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sphjs"]
+bg_color = Color(0.2, 0.2, 0.2, 0.705882)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.188235, 0.701961, 1, 1)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+corner_detail = 2
+
+[resource]
+Button/styles/focus = SubResource("StyleBoxFlat_oxmtg")
+Button/styles/hover = SubResource("StyleBoxFlat_ewvkp")
+Button/styles/hover_pressed = SubResource("StyleBoxFlat_p5kd2")
+Button/styles/normal = SubResource("StyleBoxFlat_14kg4")
+Button/styles/pressed = SubResource("StyleBoxFlat_sphjs")

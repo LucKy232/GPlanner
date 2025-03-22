@@ -1,8 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://lufadl7u0ek3"]
+[gd_scene load_steps=7 format=3 uid="uid://lufadl7u0ek3"]
 
 [ext_resource type="StyleBox" uid="uid://cdui0dgu3vdrr" path="res://Themes/element_style_box.tres" id="1_1b4pp"]
+[ext_resource type="StyleBox" uid="uid://8g7b3501cxjx" path="res://Themes/element_completed_style_box.tres" id="1_htelr"]
 [ext_resource type="Script" uid="uid://bdpfuamwhbk56" path="res://Scripts/element_label.gd" id="1_m3njf"]
 [ext_resource type="Theme" uid="uid://dao6v8vx8h5ip" path="res://Themes/line_edit.tres" id="4_id6lq"]
+[ext_resource type="Theme" uid="uid://dfkiu7dg1cfmm" path="res://Themes/line_edit_completed.tres" id="5_562gy"]
 
 [sub_resource type="Theme" id="Theme_id6lq"]
 MarginContainer/constants/margin_bottom = 8
@@ -20,6 +22,9 @@ mouse_filter = 1
 mouse_default_cursor_shape = 2
 theme_override_styles/panel = ExtResource("1_1b4pp")
 script = ExtResource("1_m3njf")
+completed_stylebox = ExtResource("1_htelr")
+line_edit_theme = ExtResource("4_id6lq")
+line_edit_completed_theme = ExtResource("5_562gy")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -34,7 +39,7 @@ theme = SubResource("Theme_id6lq")
 layout_mode = 2
 size_flags_vertical = 4
 mouse_filter = 1
-theme = ExtResource("4_id6lq")
+theme = ExtResource("5_562gy")
 placeholder_text = "Title..."
 alignment = 1
 
