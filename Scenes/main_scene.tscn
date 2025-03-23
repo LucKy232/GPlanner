@@ -90,7 +90,7 @@ mouse_filter = 2
 script = ExtResource("1_52fb6")
 element_scene = "uid://lufadl7u0ek3"
 connection_scene = "uid://clweynhbi8rai"
-zoom_limits = Vector2(0.1, 4)
+zoom_limits = Vector2(0.125, 2)
 
 [node name="ElementContainer" type="Control" parent="."]
 anchors_preset = 0
@@ -191,6 +191,12 @@ size_flags_vertical = 8
 theme = ExtResource("4_x6ack")
 text = " Save "
 
+[node name="SaveAsButton" type="Button" parent="MarginContainer/FileButtons"]
+layout_mode = 2
+size_flags_vertical = 8
+theme = ExtResource("4_x6ack")
+text = " Save As "
+
 [node name="LoadButton" type="Button" parent="MarginContainer/FileButtons"]
 layout_mode = 2
 theme = ExtResource("4_x6ack")
@@ -228,6 +234,7 @@ filters = PackedStringArray("*.json")
 [connection signal="color_changed" from="MarginContainer/ColorPicker" to="." method="_on_color_picker_color_changed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/NewButton" to="." method="_on_new_button_pressed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/SaveButton" to="." method="_on_save_button_pressed"]
+[connection signal="pressed" from="MarginContainer/FileButtons/SaveAsButton" to="." method="_on_save_as_button_pressed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/LoadButton" to="." method="_on_load_button_pressed"]
 [connection signal="toggled" from="MarginContainer/Settings/ToggleCompleted" to="." method="_on_toggle_completed_toggled"]
 [connection signal="file_selected" from="FileDialogSave" to="." method="_on_file_dialog_save_file_selected"]

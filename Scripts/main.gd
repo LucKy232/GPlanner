@@ -34,6 +34,9 @@ var original_size: Vector2
 var zoom_level: float = 1.0
 var opened_file_path: String = ""
 var app_version: String = ""
+var update_checkboxes: bool = false
+var checkbox_data: Array[bool] = [false]
+
 
 enum Tool {
 	SELECT,
@@ -52,6 +55,21 @@ func _ready() -> void:
 	#DisplayServer.window_set_title("GPlanner %s: New File" % [app_version])
 	get_tree().root.title = ("GPlanner %s: New File" % [app_version])
 	status_bar.update_status("New File")
+
+
+func _process(_delta):
+	if Input.is_action_just_pressed("save_file"):
+		if opened_file_path == "":
+			file_dialog_save.visible = true
+		else:
+			save_file(opened_file_path)
+	if Input.is_action_just_pressed("-"):
+		toggle_completed.set_pressed(true)
+	if Input.is_action_just_pressed("+"):
+		toggle_completed.set_pressed(false)
+	if update_checkboxes:
+		toggle_completed.set_pressed(checkbox_data[0])
+		update_checkboxes = false
 
 
 func _on_element_container_gui_input(event: InputEvent) -> void:
@@ -113,6 +131,7 @@ func _on_element_label_gui_input(event: InputEvent, id: int) -> void:
 				elements[id].set_bg_color(color_picker.color)
 			if tool_box.is_selected(Tool.MARK_COMPLETED):
 				elements[id].toggle_completed()
+				toggle_element_and_connections(id, toggle_completed.button_pressed)
 		elif event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
 			if tool_box.is_selected(Tool.REMOVE):
 				remove_connections(id)
@@ -143,6 +162,7 @@ func _on_element_text_box_active(id: int) -> void:
 			elements[id].set_bg_color(color_picker.color)
 		if tool_box.is_selected(Tool.MARK_COMPLETED):
 			elements[id].toggle_completed()
+			toggle_element_and_connections(id, toggle_completed.button_pressed)
 
 
 func add_element_label(at_position: Vector2, id_specified: int = -1) -> void:
@@ -289,9 +309,17 @@ func _on_new_button_pressed() -> void:
 	#DisplayServer.window_set_title("GPlanner %s: New File" % [app_version])
 	get_tree().root.title = ("GPlanner %s: New File" % [app_version])
 	status_bar.update_status("New File")
+	opened_file_path = ""
 
 
 func _on_save_button_pressed() -> void:
+	if opened_file_path == "":
+		file_dialog_save.visible = true
+	else:
+		save_file(opened_file_path)
+
+
+func _on_save_as_button_pressed() -> void:
 	file_dialog_save.visible = true
 
 
@@ -307,6 +335,7 @@ func save_file(path: String) -> void:
 		return
 	
 	save_data = {
+		"State": canvas_state_to_json(),
 		"Elements": all_elements_to_Json(),
 		"Connections": all_connection_pairs_to_json()
 	}
@@ -316,6 +345,7 @@ func save_file(path: String) -> void:
 		status_bar.update_status("File saved to path: %s" % path)
 		#DisplayServer.window_set_title("GPlanner %s: %s" % [app_version, path])
 		get_tree().root.title = ("GPlanner %s: %s" % [app_version, path])
+		opened_file_path = path
 	else:
 		status_bar.update_status("Error when saving file to path: %s" % path)
 	file.close()
@@ -333,20 +363,36 @@ func load_file(path: String) -> void:
 		var data = JSON.parse_string(content)
 		
 		if data == null:
+			status_bar.update_status("Can't load file / Can't parse JSON string: %s" % path)
 			printerr("Can't parse JSON string @ main.gd:load_file()")
 			return
 		else:
 			var elems = data["Elements"]
 			var conns = data["Connections"]
+			if data.has("State"):
+				var state = data["State"]
+				rebuild_canvas_state(state)
 			rebuild_elements(elems)
 			rebuild_connections(conns)
 		
 		status_bar.update_status("File loaded: %s" % path)
 		#DisplayServer.window_set_title("GPlanner %s: %s" % [app_version, path])
 		get_tree().root.title = ("GPlanner %s: %s" % [app_version, path])
+		opened_file_path = path
 		toggle_completed.button_pressed = false
 	else:
 		printerr("File doesn't exist @ RoadSegmentDataManager:load_all_data()")	
+
+
+func canvas_state_to_json() -> Dictionary:
+	return {
+		"position.x": element_container.position.x,
+		"position.y": element_container.position.y,
+		"scale.x": element_container.scale.x,
+		"scale.y": element_container.scale.y,
+		"zoom_level": zoom_level,
+		"toggle_completed": toggle_completed.is_pressed(),
+	}
 
 
 func single_element_to_json(id: int) -> Dictionary:
@@ -386,13 +432,24 @@ func all_connection_pairs_to_json() -> Dictionary:
 	return dict
 
 
+func rebuild_canvas_state(state: Dictionary) -> void:
+	element_container.position = pan_limits(Vector2(state["position.x"], state["position.y"]))
+	element_container.scale.x = state["scale.x"]
+	element_container.scale.y = state["scale.y"]
+	zoom_indicator.update_zoom(element_container.scale.x)
+	if state.has("zoom_level"):
+		zoom_level = state["zoom_level"]
+	update_checkboxes = true
+	checkbox_data[0] = bool(state["toggle_completed"])
+
+
 func rebuild_elements(json_elems: Dictionary) -> void:
 	var max_id: int = -1
 	for i in json_elems:
 		if !json_elems[i].is_empty():
 			var id: int = int(json_elems[i]["id"])
 			var completed: bool = false
-			if json_elems[i].has("completed"):
+			if json_elems[i].has("completed"):		# Field only exists at version 0.1.3 or above
 				completed = bool(json_elems[i]["completed"])
 			var pos: Vector2 = Vector2(json_elems[i]["pos.x"], json_elems[i]["pos.y"])
 			add_element_label(pos, id)
@@ -444,16 +501,20 @@ func erase_everything() -> void:
 func _on_toggle_completed_toggled(toggled_on: bool) -> void:
 	for i in elements:
 		if elements[i].completed:
-			if selected_element == i:
-				selected_element = -1
-				selection_viewer.visible = false
-				
-			elements[i].visible = !toggled_on
-			for elem_id in connections_p1:	# Hide / Show connections
-				if elem_id == i:
-					for conn_id in connections_p1[elem_id]:
-						connections[conn_id].visible = !toggled_on
-			for elem_id in connections_p2:
-				if elem_id == i:
-					for conn_id in connections_p2[elem_id]:
-						connections[conn_id].visible = !toggled_on
+			toggle_element_and_connections(i, toggled_on)
+
+
+func toggle_element_and_connections(id: int, off: bool) -> void:
+	if selected_element == id:
+		selected_element = -1
+		selection_viewer.visible = false
+		
+	elements[id].visible = !off
+	for elem_id in connections_p1:	# Hide / Show connections
+		if elem_id == id:
+			for conn_id in connections_p1[elem_id]:
+				connections[conn_id].visible = !off
+	for elem_id in connections_p2:
+		if elem_id == id:
+			for conn_id in connections_p2[elem_id]:
+				connections[conn_id].visible = !off

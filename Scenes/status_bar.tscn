@@ -105,7 +105,7 @@ label_settings = SubResource("LabelSettings_mux0b")
 script = ExtResource("1_mux0b")
 
 [node name="HideTimer" type="Timer" parent="."]
-wait_time = 3.0
+wait_time = 7.0
 one_shot = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]

@@ -436,10 +436,6 @@
 			"id1": 3,
 			"id2": 69
 		},
-		"127": {
-			"id1": 12,
-			"id2": 113
-		},
 		"128": {
 			"id1": 12,
 			"id2": 114
@@ -455,6 +451,18 @@
 		"131": {
 			"id1": 3,
 			"id2": 117
+		},
+		"132": {
+			"id1": 62,
+			"id2": 118
+		},
+		"133": {
+			"id1": 0,
+			"id2": 119
+		},
+		"134": {
+			"id1": 41,
+			"id2": 120
 		}
 	},
 	"Elements": {
@@ -928,10 +936,10 @@
 		},
 		"36": {
 			"bgcolor.a": 1.0,
-			"bgcolor.b": 1.0,
-			"bgcolor.g": 1.0,
-			"bgcolor.r": 1.0,
-			"completed": false,
+			"bgcolor.b": 0.721568644046783,
+			"bgcolor.g": 0.462745100259781,
+			"bgcolor.r": 0.580392181873322,
+			"completed": true,
 			"id": 36,
 			"pos.x": 3153.57983398438,
 			"pos.y": 1422.09680175781,
@@ -941,9 +949,9 @@
 		},
 		"37": {
 			"bgcolor.a": 1.0,
-			"bgcolor.b": 0.588235318660736,
-			"bgcolor.g": 0.572549045085907,
-			"bgcolor.r": 0.329411774873734,
+			"bgcolor.b": 0.721568644046783,
+			"bgcolor.g": 0.462745100259781,
+			"bgcolor.r": 0.580392181873322,
 			"completed": true,
 			"id": 37,
 			"pos.x": 3430.05981445313,
@@ -954,9 +962,9 @@
 		},
 		"38": {
 			"bgcolor.a": 1.0,
-			"bgcolor.b": 0.588235318660736,
-			"bgcolor.g": 0.572549045085907,
-			"bgcolor.r": 0.329411774873734,
+			"bgcolor.b": 0.721568644046783,
+			"bgcolor.g": 0.462745100259781,
+			"bgcolor.r": 0.580392181873322,
 			"completed": true,
 			"id": 38,
 			"pos.x": 3155.52465820313,
@@ -1331,9 +1339,9 @@
 		},
 		"69": {
 			"bgcolor.a": 1.0,
-			"bgcolor.b": 0.588235318660736,
-			"bgcolor.g": 0.572549045085907,
-			"bgcolor.r": 0.329411774873734,
+			"bgcolor.b": 0.721568644046783,
+			"bgcolor.g": 0.462745100259781,
+			"bgcolor.r": 0.580392181873322,
 			"completed": true,
 			"id": 69,
 			"pos.x": 3158.47119140625,
@@ -1357,16 +1365,16 @@
 		},
 		"71": {
 			"bgcolor.a": 1.0,
-			"bgcolor.b": 1.0,
-			"bgcolor.g": 1.0,
-			"bgcolor.r": 1.0,
-			"completed": false,
+			"bgcolor.b": 0.721568644046783,
+			"bgcolor.g": 0.462745100259781,
+			"bgcolor.r": 0.580392181873322,
+			"completed": true,
 			"id": 71,
 			"pos.x": 3159.0390625,
 			"pos.y": 1184.86950683594,
-			"size.x": 462.28515625,
+			"size.x": 394.51904296875,
 			"size.y": 50.0,
-			"text": "Save canvas data in file: Size, Location, Zoom"
+			"text": "Save canvas data in file: Location, Scale"
 		},
 		"72": {
 			"bgcolor.a": 1.0,
@@ -1804,8 +1812,8 @@
 			"bgcolor.r": 0.658823549747467,
 			"completed": true,
 			"id": 106,
-			"pos.x": 1805.20825195313,
-			"pos.y": 573.312438964844,
+			"pos.x": 1808.490234375,
+			"pos.y": 583.158081054688,
 			"size.x": 191.548461914063,
 			"size.y": 66.3748779296875,
 			"text": "Save / Load data"
@@ -1875,28 +1883,15 @@
 			"size.y": 65.6142883300781,
 			"text": "Save / Load in different script"
 		},
-		"113": {
-			"bgcolor.a": 1.0,
-			"bgcolor.b": 1.0,
-			"bgcolor.g": 1.0,
-			"bgcolor.r": 1.0,
-			"completed": false,
-			"id": 113,
-			"pos.x": 1625.33056640625,
-			"pos.y": 570.696716308594,
-			"size.x": 165.56298828125,
-			"size.y": 63.47412109375,
-			"text": "Save / LoadColor"
-		},
 		"114": {
 			"bgcolor.a": 1.0,
-			"bgcolor.b": 1.0,
-			"bgcolor.g": 1.0,
-			"bgcolor.r": 1.0,
-			"completed": false,
+			"bgcolor.b": 0.329411774873734,
+			"bgcolor.g": 0.486274510622025,
+			"bgcolor.r": 0.658823549747467,
+			"completed": true,
 			"id": 114,
-			"pos.x": 1286.44604492188,
-			"pos.y": 575.017639160156,
+			"pos.x": 1469.49743652344,
+			"pos.y": 584.86328125,
 			"size.x": 312.01611328125,
 			"size.y": 63.8796997070313,
 			"text": "Hide when marked if checkbox"
@@ -1916,15 +1911,15 @@
 		},
 		"116": {
 			"bgcolor.a": 1.0,
-			"bgcolor.b": 1.0,
-			"bgcolor.g": 1.0,
-			"bgcolor.r": 1.0,
-			"completed": false,
+			"bgcolor.b": 0.329411774873734,
+			"bgcolor.g": 0.486274510622025,
+			"bgcolor.r": 0.658823549747467,
+			"completed": true,
 			"id": 116,
-			"pos.x": 1310.62890625,
-			"pos.y": 675.087585449219,
+			"pos.x": 1691.32629394531,
+			"pos.y": 504.430145263672,
 			"size.x": 301.438232421875,
-			"size.y": 58.4962158203125,
+			"size.y": 58.4962463378906,
 			"text": "Save / Load checkbox state"
 		},
 		"117": {
@@ -1939,6 +1934,53 @@
 			"size.x": 275.510498046875,
 			"size.y": 50.0,
 			"text": "Confirm dialogue on load"
+		},
+		"118": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.388235300779343,
+			"bgcolor.g": 0.576470613479614,
+			"bgcolor.r": 0.423529416322708,
+			"completed": false,
+			"id": 118,
+			"pos.x": 4337.0,
+			"pos.y": 1162.0,
+			"size.x": 264.0,
+			"size.y": 50.0,
+			"text": "Undefined order button"
+		},
+		"119": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.329411774873734,
+			"bgcolor.g": 0.486274510622025,
+			"bgcolor.r": 0.658823549747467,
+			"completed": true,
+			"id": 119,
+			"pos.x": 2547.3818359375,
+			"pos.y": 884.925903320313,
+			"size.x": 179.3818359375,
+			"size.y": 52.559326171875,
+			"text": "Save + Save As"
+		},
+		"120": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.521568655967712,
+			"bgcolor.g": 0.419607847929001,
+			"bgcolor.r": 0.717647075653076,
+			"completed": true,
+			"id": 120,
+			"pos.x": 2697.31787109375,
+			"pos.y": 99.5380401611328,
+			"size.x": 170.584716796875,
+			"size.y": 50.0,
+			"text": "Ctrl + S save"
 		}
+	},
+	"State": {
+		"position.x": -837.999694824219,
+		"position.y": 0.0,
+		"scale.x": 0.545047998428345,
+		"scale.y": 0.545047998428345,
+		"toggle_completed": true,
+		"zoom_level": 0.545048019204422
 	}
 }
