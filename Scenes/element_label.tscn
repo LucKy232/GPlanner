@@ -1,16 +1,142 @@
-[gd_scene load_steps=7 format=3 uid="uid://lufadl7u0ek3"]
+[gd_scene load_steps=22 format=3 uid="uid://lufadl7u0ek3"]
 
 [ext_resource type="StyleBox" uid="uid://cdui0dgu3vdrr" path="res://Themes/element_style_box.tres" id="1_1b4pp"]
 [ext_resource type="StyleBox" uid="uid://8g7b3501cxjx" path="res://Themes/element_completed_style_box.tres" id="1_htelr"]
 [ext_resource type="Script" uid="uid://bdpfuamwhbk56" path="res://Scripts/element_label.gd" id="1_m3njf"]
 [ext_resource type="Theme" uid="uid://dao6v8vx8h5ip" path="res://Themes/line_edit.tres" id="4_id6lq"]
+[ext_resource type="StyleBox" uid="uid://b0l55wn2xggiw" path="res://Themes/none_priority_button_stylebox.tres" id="5_01as5"]
 [ext_resource type="Theme" uid="uid://dfkiu7dg1cfmm" path="res://Themes/line_edit_completed.tres" id="5_562gy"]
+[ext_resource type="StyleBox" uid="uid://wrrl0mk4mdli" path="res://Themes/active_priority_button_stylebox.tres" id="5_y2cp5"]
+[ext_resource type="StyleBox" uid="uid://0m1wm66xknlk" path="res://Themes/high_priority_button_stylebox.tres" id="6_bfvbn"]
+[ext_resource type="StyleBox" uid="uid://dgq7v0gkqrpgf" path="res://Themes/medium_priority_button_stylebox.tres" id="7_y2cp5"]
+[ext_resource type="StyleBox" uid="uid://dga3kal7lipkl" path="res://Themes/low_priority_button_stylebox.tres" id="8_847go"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_562gy"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y2cp5"]
+
+[sub_resource type="Theme" id="Theme_y2cp5"]
+MarginContainer/constants/margin_bottom = 0
+MarginContainer/constants/margin_left = 0
+MarginContainer/constants/margin_right = 0
+MarginContainer/constants/margin_top = 0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_847go"]
+expand_margin_left = 20.0
+expand_margin_top = 20.0
+expand_margin_right = 20.0
+expand_margin_bottom = 20.0
+
+[sub_resource type="Theme" id="Theme_a3jml"]
+Panel/styles/panel = SubResource("StyleBoxFlat_847go")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_01as5"]
+content_margin_left = 1.0
+bg_color = Color(1, 1, 1, 1)
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 0)
+border_blend = true
+corner_radius_top_right = 2
+corner_radius_bottom_right = 7
+corner_detail = 1
 
 [sub_resource type="Theme" id="Theme_id6lq"]
 MarginContainer/constants/margin_bottom = 8
 MarginContainer/constants/margin_left = 12
 MarginContainer/constants/margin_right = 8
 MarginContainer/constants/margin_top = 8
+
+[sub_resource type="Animation" id="Animation_01as5"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PanelContainer/ToolMarginContainer:theme_override_constants/margin_right")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PanelContainer/ToolMarginContainer:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_5deko"]
+resource_name = "hide_priority_buttons"
+length = 0.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PanelContainer/ToolMarginContainer:theme_override_constants/margin_right")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(-2, -2),
+"update": 0,
+"values": [-11, 1]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PanelContainer/ToolMarginContainer:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.4, 0.6),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_562gy"]
+resource_name = "show_priority_buttons"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PanelContainer/ToolMarginContainer:theme_override_constants/margin_right")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(-2, -2),
+"update": 0,
+"values": [1, -11]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PanelContainer/ToolMarginContainer:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5deko"]
+_data = {
+&"RESET": SubResource("Animation_01as5"),
+&"hide_priority_buttons": SubResource("Animation_5deko"),
+&"show_priority_buttons": SubResource("Animation_562gy")
+}
 
 [node name="Element" type="Panel"]
 custom_minimum_size = Vector2(50, 50)
@@ -20,13 +146,88 @@ pivot_offset = Vector2(0.5, 0.5)
 size_flags_horizontal = 4
 mouse_filter = 1
 mouse_default_cursor_shape = 2
-theme_override_styles/panel = ExtResource("1_1b4pp")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_562gy")
 script = ExtResource("1_m3njf")
 completed_stylebox = ExtResource("1_htelr")
 line_edit_theme = ExtResource("4_id6lq")
 line_edit_completed_theme = ExtResource("5_562gy")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxEmpty_y2cp5")
+
+[node name="ToolMarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+theme = SubResource("Theme_y2cp5")
+theme_override_constants/margin_right = 0
+
+[node name="PriorityButtons" type="VBoxContainer" parent="PanelContainer/ToolMarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme = SubResource("Theme_a3jml")
+alignment = 1
+
+[node name="PriorityActive" type="Button" parent="PanelContainer/ToolMarginContainer/PriorityButtons"]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme_override_styles/normal = ExtResource("5_y2cp5")
+
+[node name="PriorityHigh" type="Button" parent="PanelContainer/ToolMarginContainer/PriorityButtons"]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme_override_styles/normal = ExtResource("6_bfvbn")
+
+[node name="PriorityMedium" type="Button" parent="PanelContainer/ToolMarginContainer/PriorityButtons"]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme_override_styles/normal = ExtResource("7_y2cp5")
+
+[node name="PriorityLow" type="Button" parent="PanelContainer/ToolMarginContainer/PriorityButtons"]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme_override_styles/normal = ExtResource("8_847go")
+
+[node name="PriorityNone" type="Button" parent="PanelContainer/ToolMarginContainer/PriorityButtons"]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme_override_styles/normal = ExtResource("5_01as5")
+
+[node name="Background" type="Panel" parent="PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+theme_override_styles/panel = ExtResource("1_1b4pp")
+
+[node name="Priority" type="Panel" parent="PanelContainer/Background"]
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_01as5")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/Background"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -35,7 +236,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_id6lq")
 
-[node name="LineEdit" type="LineEdit" parent="MarginContainer"]
+[node name="LineEdit" type="LineEdit" parent="PanelContainer/Background/MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 4
 mouse_filter = 1
@@ -43,4 +244,20 @@ theme = ExtResource("5_562gy")
 placeholder_text = "Title..."
 alignment = 1
 
-[connection signal="editing_toggled" from="MarginContainer/LineEdit" to="." method="_on_line_edit_editing_toggled"]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_5deko")
+}
+
+[node name="HideOptionsTimer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="pressed" from="PanelContainer/ToolMarginContainer/PriorityButtons/PriorityActive" to="." method="_on_priority_active_pressed"]
+[connection signal="pressed" from="PanelContainer/ToolMarginContainer/PriorityButtons/PriorityHigh" to="." method="_on_priority_high_pressed"]
+[connection signal="pressed" from="PanelContainer/ToolMarginContainer/PriorityButtons/PriorityMedium" to="." method="_on_priority_medium_pressed"]
+[connection signal="pressed" from="PanelContainer/ToolMarginContainer/PriorityButtons/PriorityLow" to="." method="_on_priority_low_pressed"]
+[connection signal="pressed" from="PanelContainer/ToolMarginContainer/PriorityButtons/PriorityNone" to="." method="_on_priority_none_pressed"]
+[connection signal="editing_toggled" from="PanelContainer/Background/MarginContainer/LineEdit" to="." method="_on_line_edit_editing_toggled"]
+[connection signal="timeout" from="HideOptionsTimer" to="." method="_on_hide_options_timer_timeout"]

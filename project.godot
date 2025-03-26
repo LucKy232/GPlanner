@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="GPlanner"
-config/version="v0.1.4"
+config/version="v0.2.0"
 run/main_scene="uid://bfydfy3iq0rjx"
 config/features=PackedStringArray("4.4", "GL Compatibility")
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/script-ide/plugin.cfg")
 
 [input]
 

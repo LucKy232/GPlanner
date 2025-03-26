@@ -10,11 +10,18 @@ extends Control
 @onready var file_dialog_save: FileDialog = $FileDialogSave
 @onready var file_dialog_load: FileDialog = $FileDialogLoad
 @onready var status_bar: Label = $MarginContainer/StatusBar
-@onready var toggle_completed: CheckBox = $MarginContainer/Settings/ToggleCompleted
+@onready var show_completed: CheckBox = $MarginContainer/Settings/Checkboxes/ShowCompleted
+@onready var show_priorities: CheckBox = $MarginContainer/Settings/Checkboxes/ShowPriorities
+@onready var priority_filter: HScrollBar = $MarginContainer/Settings/Filter/VBoxContainer/PriorityFilter
+@onready var priority_filter_label: Label = $MarginContainer/Settings/Filter/VBoxContainer/PriorityFilterLabel
+
 
 @export_file("*.tscn") var element_scene
 @export_file("*.tscn") var connection_scene
 @export var zoom_limits: Vector2 = Vector2(0.25, 4.0)
+@export var priority_colors: Array[Color]
+@export var priority_styleboxes: Array[StyleBoxFlat]
+@export var priority_filter_text: Array[String]
 
 var elements: Dictionary[int, ElementLabel]
 var connections: Dictionary[int, Connection]
@@ -35,9 +42,13 @@ var zoom_level: float = 1.0
 var opened_file_path: String = ""
 var app_version: String = ""
 var update_checkboxes: bool = false
-var checkbox_data: Array[bool] = [false]
+var checkbox_data: Array[bool] = [false, false]
 
 
+enum Checkbox {
+	SHOW_PRIORITIES,
+	SHOW_COMPLETED,
+}
 enum Tool {
 	SELECT,
 	ADD_ELEMENT,
@@ -48,13 +59,18 @@ enum Tool {
 	REMOVE_CONNECTIONS,
 	MARK_COMPLETED,
 }
+enum Priority {
+	ACTIVE,
+	HIGH,
+	MEDIUM,
+	LOW,
+	NONE,
+}
 
 
 func _ready() -> void:
 	app_version = ProjectSettings.get_setting("application/config/version")
-	#DisplayServer.window_set_title("GPlanner %s: New File" % [app_version])
-	get_tree().root.title = ("GPlanner %s: New File" % [app_version])
-	status_bar.update_status("New File")
+	new_file()
 
 
 func _process(_delta):
@@ -64,11 +80,16 @@ func _process(_delta):
 		else:
 			save_file(opened_file_path)
 	if Input.is_action_just_pressed("-"):
-		toggle_completed.set_pressed(true)
+		show_completed.set_pressed(true)
 	if Input.is_action_just_pressed("+"):
-		toggle_completed.set_pressed(false)
+		show_completed.set_pressed(false)
 	if update_checkboxes:
-		toggle_completed.set_pressed(checkbox_data[0])
+		if !show_completed.is_pressed() and !checkbox_data[Checkbox.SHOW_COMPLETED]:
+			_on_show_completed_toggled(false)
+		if !show_priorities.is_pressed() and !checkbox_data[Checkbox.SHOW_PRIORITIES]:
+			_on_show_priorities_toggled(false)
+		show_completed.set_pressed(checkbox_data[Checkbox.SHOW_COMPLETED])
+		show_priorities.set_pressed(checkbox_data[Checkbox.SHOW_PRIORITIES])
 		update_checkboxes = false
 
 
@@ -131,7 +152,7 @@ func _on_element_label_gui_input(event: InputEvent, id: int) -> void:
 				elements[id].set_bg_color(color_picker.color)
 			if tool_box.is_selected(Tool.MARK_COMPLETED):
 				elements[id].toggle_completed()
-				toggle_element_and_connections(id, toggle_completed.button_pressed)
+				toggle_element_and_connections(id, !show_completed.button_pressed)
 		elif event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
 			if tool_box.is_selected(Tool.REMOVE):
 				remove_connections(id)
@@ -162,7 +183,13 @@ func _on_element_text_box_active(id: int) -> void:
 			elements[id].set_bg_color(color_picker.color)
 		if tool_box.is_selected(Tool.MARK_COMPLETED):
 			elements[id].toggle_completed()
-			toggle_element_and_connections(id, toggle_completed.button_pressed)
+			toggle_element_and_connections(id, !show_completed.button_pressed)
+
+
+func _on_element_changed_priority(id: int) -> void:
+	if elements.has(id):
+		var pr_id = elements[id].priority_id
+		elements[id].set_priority_color(priority_colors[pr_id])
 
 
 func add_element_label(at_position: Vector2, id_specified: int = -1) -> void:
@@ -177,8 +204,12 @@ func add_element_label(at_position: Vector2, id_specified: int = -1) -> void:
 	elements[id] = new_element
 	new_element.gui_input.connect(_on_element_label_gui_input.bind(id))
 	new_element.became_active.connect(_on_element_text_box_active.bind(id))
+	new_element.changed_priority.connect(_on_element_changed_priority.bind(id))
 	element_container.add_child(new_element)
 	new_element.position = at_position
+	new_element.priority_id = Priority.NONE
+	new_element.set_priority_color(priority_colors[Priority.NONE])
+	new_element.set_priority_visible(show_priorities.is_pressed())
 	tool_box.select(Tool.SELECT)
 
 
@@ -305,11 +336,8 @@ func _on_file_dialog_load_file_selected(path: String) -> void:
 
 
 func _on_new_button_pressed() -> void:
-	erase_everything()
-	#DisplayServer.window_set_title("GPlanner %s: New File" % [app_version])
-	get_tree().root.title = ("GPlanner %s: New File" % [app_version])
-	status_bar.update_status("New File")
-	opened_file_path = ""
+	new_file()
+	# TODO dialogue box before
 
 
 func _on_save_button_pressed() -> void:
@@ -325,6 +353,19 @@ func _on_save_as_button_pressed() -> void:
 
 func _on_load_button_pressed() -> void:
 	file_dialog_load.visible = true
+
+
+func new_file() -> void:
+	erase_everything()
+	#DisplayServer.window_set_title("GPlanner %s: New File" % [app_version])
+	get_tree().root.title = ("GPlanner %s: New File" % [app_version])
+	status_bar.update_status("New File")
+	opened_file_path = ""
+	checkbox_data = [false, false]
+	update_checkboxes = true
+	
+	for i in priority_styleboxes.size():
+		priority_styleboxes[i].bg_color = priority_colors[i]
 
 
 func save_file(path: String) -> void:
@@ -379,7 +420,7 @@ func load_file(path: String) -> void:
 		#DisplayServer.window_set_title("GPlanner %s: %s" % [app_version, path])
 		get_tree().root.title = ("GPlanner %s: %s" % [app_version, path])
 		opened_file_path = path
-		toggle_completed.button_pressed = false
+		show_completed.button_pressed = false
 	else:
 		printerr("File doesn't exist @ RoadSegmentDataManager:load_all_data()")	
 
@@ -391,7 +432,8 @@ func canvas_state_to_json() -> Dictionary:
 		"scale.x": element_container.scale.x,
 		"scale.y": element_container.scale.y,
 		"zoom_level": zoom_level,
-		"toggle_completed": toggle_completed.is_pressed(),
+		"show_completed": show_completed.is_pressed(),
+		"show_priorities": show_priorities.is_pressed(),
 	}
 
 
@@ -400,6 +442,7 @@ func single_element_to_json(id: int) -> Dictionary:
 	var bgc: Color = elements[id].get_bg_color()
 	return {
 		"id": e.id,
+		"priority_id": e.priority_id,
 		"completed": e.completed,
 		"pos.x": e.position.x,
 		"pos.y": e.position.y,
@@ -440,7 +483,10 @@ func rebuild_canvas_state(state: Dictionary) -> void:
 	if state.has("zoom_level"):
 		zoom_level = state["zoom_level"]
 	update_checkboxes = true
-	checkbox_data[0] = bool(state["toggle_completed"])
+	if state.has("show_completed"):
+		checkbox_data[Checkbox.SHOW_COMPLETED] = bool(state["show_completed"])
+	if state.has("show_priorities"):
+		checkbox_data[Checkbox.SHOW_PRIORITIES] = bool(state["show_priorities"])
 
 
 func rebuild_elements(json_elems: Dictionary) -> void:
@@ -451,9 +497,14 @@ func rebuild_elements(json_elems: Dictionary) -> void:
 			var completed: bool = false
 			if json_elems[i].has("completed"):		# Field only exists at version 0.1.3 or above
 				completed = bool(json_elems[i]["completed"])
+			var priority_id: int = Priority.NONE
+			if json_elems[i].has("priority_id"):
+				priority_id = int(json_elems[i]["priority_id"])
 			var pos: Vector2 = Vector2(json_elems[i]["pos.x"], json_elems[i]["pos.y"])
 			add_element_label(pos, id)
 			elements[id].size = Vector2(json_elems[i]["size.x"], json_elems[i]["size.y"])
+			elements[id].priority_id = priority_id
+			elements[id].set_priority_color(priority_colors[priority_id])
 			var c: Color = Color(json_elems[i]["bgcolor.r"], json_elems[i]["bgcolor.g"], json_elems[i]["bgcolor.b"], json_elems[i]["bgcolor.a"])
 			elements[id].set_bg_color(c)
 			elements[id].line_edit.text = json_elems[i]["text"]
@@ -498,23 +549,38 @@ func erase_everything() -> void:
 	is_resizing = false
 
 
-func _on_toggle_completed_toggled(toggled_on: bool) -> void:
-	for i in elements:
-		if elements[i].completed:
-			toggle_element_and_connections(i, toggled_on)
-
-
-func toggle_element_and_connections(id: int, off: bool) -> void:
+func toggle_element_and_connections(id: int, on: bool) -> void:
 	if selected_element == id:
 		selected_element = -1
 		selection_viewer.visible = false
-		
-	elements[id].visible = !off
+	
+	elements[id].visible = !on
 	for elem_id in connections_p1:	# Hide / Show connections
 		if elem_id == id:
 			for conn_id in connections_p1[elem_id]:
-				connections[conn_id].visible = !off
+				connections[conn_id].visible = !on
 	for elem_id in connections_p2:
 		if elem_id == id:
 			for conn_id in connections_p2[elem_id]:
-				connections[conn_id].visible = !off
+				connections[conn_id].visible = !on
+
+
+func _on_show_completed_toggled(toggled_on: bool) -> void:
+	for i in elements:
+		if elements[i].completed:
+			toggle_element_and_connections(i, !toggled_on)
+
+
+func _on_show_priorities_toggled(toggled_on: bool) -> void:
+	for i in elements:
+		elements[i].set_priority_visible(toggled_on)
+
+
+func _on_priority_filter_value_changed(value: float) -> void:
+	var filter = int(value)
+	for i in elements:
+		if elements[i].priority_id <= filter and !elements[i].completed:
+			toggle_element_and_connections(i, false)
+		else:
+			toggle_element_and_connections(i, true)
+	priority_filter_label.text = ("Filter: %s" % priority_filter_text[filter])

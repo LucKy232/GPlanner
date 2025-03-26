@@ -1,10 +1,15 @@
-[gd_scene load_steps=16 format=3 uid="uid://bfydfy3iq0rjx"]
+[gd_scene load_steps=21 format=3 uid="uid://bfydfy3iq0rjx"]
 
 [ext_resource type="Texture2D" uid="uid://v481h4vkkmsb" path="res://Backgrounds/grid_pattern_dark.png" id="1_6l7je"]
 [ext_resource type="Script" uid="uid://dj8gdy8d87lam" path="res://Scripts/main.gd" id="1_52fb6"]
+[ext_resource type="StyleBox" uid="uid://wrrl0mk4mdli" path="res://Themes/active_priority_button_stylebox.tres" id="2_mai8y"]
+[ext_resource type="StyleBox" uid="uid://0m1wm66xknlk" path="res://Themes/high_priority_button_stylebox.tres" id="3_76v2p"]
 [ext_resource type="PackedScene" uid="uid://csgrqqjqi1d4t" path="res://Scenes/zoom_indicator.tscn" id="3_jv6wh"]
+[ext_resource type="StyleBox" uid="uid://dgq7v0gkqrpgf" path="res://Themes/medium_priority_button_stylebox.tres" id="4_drdnd"]
 [ext_resource type="Theme" uid="uid://y7w4cfil7ay0" path="res://Themes/button_theme.tres" id="4_x6ack"]
 [ext_resource type="PackedScene" uid="uid://c2apku3xuhhyp" path="res://Scenes/status_bar.tscn" id="5_iacmt"]
+[ext_resource type="StyleBox" uid="uid://dga3kal7lipkl" path="res://Themes/low_priority_button_stylebox.tres" id="5_ioaeq"]
+[ext_resource type="StyleBox" uid="uid://b0l55wn2xggiw" path="res://Themes/none_priority_button_stylebox.tres" id="6_7ewk0"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6l7je"]
 texture = ExtResource("1_6l7je")
@@ -91,6 +96,9 @@ script = ExtResource("1_52fb6")
 element_scene = "uid://lufadl7u0ek3"
 connection_scene = "uid://clweynhbi8rai"
 zoom_limits = Vector2(0.125, 2)
+priority_colors = Array[Color]([Color(1, 1, 1, 1), Color(1, 0, 0, 1), Color(1, 1, 0, 1), Color(0, 1, 0, 1), Color(0, 0, 0, 0)])
+priority_styleboxes = Array[StyleBoxFlat]([ExtResource("2_mai8y"), ExtResource("3_76v2p"), ExtResource("4_drdnd"), ExtResource("5_ioaeq"), ExtResource("6_7ewk0")])
+priority_filter_text = Array[String](["Only Active", "Active & High", "Medium and higher", "Low and higher", "All"])
 
 [node name="ElementContainer" type="Control" parent="."]
 anchors_preset = 0
@@ -202,14 +210,50 @@ layout_mode = 2
 theme = ExtResource("4_x6ack")
 text = " Load "
 
-[node name="Settings" type="VBoxContainer" parent="MarginContainer"]
+[node name="Settings" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
 
-[node name="ToggleCompleted" type="CheckBox" parent="MarginContainer/Settings"]
+[node name="Checkboxes" type="VBoxContainer" parent="MarginContainer/Settings"]
 layout_mode = 2
-text = "Hide all completed"
+size_flags_horizontal = 0
+size_flags_vertical = 8
+
+[node name="ShowPriorities" type="CheckBox" parent="MarginContainer/Settings/Checkboxes"]
+layout_mode = 2
+text = "Enable priorities
+"
+
+[node name="ShowCompleted" type="CheckBox" parent="MarginContainer/Settings/Checkboxes"]
+layout_mode = 2
+text = "Show all completed"
+
+[node name="Filter" type="MarginContainer" parent="MarginContainer/Settings"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/Settings/Filter"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="PriorityFilterLabel" type="Label" parent="MarginContainer/Settings/Filter/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+mouse_filter = 1
+text = "Filter: ALL"
+horizontal_alignment = 1
+
+[node name="PriorityFilter" type="HScrollBar" parent="MarginContainer/Settings/Filter/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 8
+max_value = 4.0
+step = 1.0
+value = 4.0
+rounded = true
 
 [node name="StatusBar" parent="MarginContainer" instance=ExtResource("5_iacmt")]
 layout_mode = 2
@@ -236,6 +280,8 @@ filters = PackedStringArray("*.json")
 [connection signal="pressed" from="MarginContainer/FileButtons/SaveButton" to="." method="_on_save_button_pressed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/SaveAsButton" to="." method="_on_save_as_button_pressed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/LoadButton" to="." method="_on_load_button_pressed"]
-[connection signal="toggled" from="MarginContainer/Settings/ToggleCompleted" to="." method="_on_toggle_completed_toggled"]
+[connection signal="toggled" from="MarginContainer/Settings/Checkboxes/ShowPriorities" to="." method="_on_show_priorities_toggled"]
+[connection signal="toggled" from="MarginContainer/Settings/Checkboxes/ShowCompleted" to="." method="_on_show_completed_toggled"]
+[connection signal="value_changed" from="MarginContainer/Settings/Filter/VBoxContainer/PriorityFilter" to="." method="_on_priority_filter_value_changed"]
 [connection signal="file_selected" from="FileDialogSave" to="." method="_on_file_dialog_save_file_selected"]
 [connection signal="file_selected" from="FileDialogLoad" to="." method="_on_file_dialog_load_file_selected"]
