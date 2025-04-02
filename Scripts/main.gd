@@ -12,8 +12,10 @@ extends Control
 @onready var status_bar: Label = $MarginContainer/StatusBar
 @onready var show_completed: CheckBox = $MarginContainer/Settings/Checkboxes/ShowCompleted
 @onready var show_priorities: CheckBox = $MarginContainer/Settings/Checkboxes/ShowPriorities
-@onready var priority_filter: HScrollBar = $MarginContainer/Settings/Filter/VBoxContainer/PriorityFilter
-@onready var priority_filter_label: Label = $MarginContainer/Settings/Filter/VBoxContainer/PriorityFilterLabel
+@onready var show_priority_tool: CheckBox = $MarginContainer/Settings/FilterSettings/ShowPriorityTool
+@onready var priority_filter: HScrollBar = $MarginContainer/Settings/FilterSettings/PriorityFilter
+@onready var priority_filter_label: Label = $MarginContainer/Settings/FilterSettings/PriorityFilterLabel
+@onready var filter_settings: VBoxContainer = $MarginContainer/Settings/FilterSettings
 
 
 @export_file("*.tscn") var element_scene
@@ -23,10 +25,11 @@ extends Control
 @export var priority_styleboxes: Array[StyleBoxFlat]
 @export var priority_filter_text: Array[String]
 
+var CHECKBOX_NUMBER: int = 3
 var elements: Dictionary[int, ElementLabel]
 var connections: Dictionary[int, Connection]
-var connections_p1: Dictionary[int, PackedInt32Array]	## ELEMENT ID key, CONNECTION ID value
-var connections_p2: Dictionary[int, PackedInt32Array]	## ELEMENT ID key, CONNECTION ID value
+var connections_p1: Dictionary[int, PackedInt32Array]	## ELEMENT ID key, Array of CONNECTION ID value
+var connections_p2: Dictionary[int, PackedInt32Array]	## ELEMENT ID key, Array of CONNECTION ID value
 var elements_to_connection: Dictionary[Vector2i, int]	## ELEMENT ID Vector2i(ID1, ID2) key, CONNECTION ID value
 var element_id_counter: int = 0
 var connection_id_counter: int = 0
@@ -42,17 +45,18 @@ var zoom_level: float = 1.0
 var opened_file_path: String = ""
 var app_version: String = ""
 var update_checkboxes: bool = false
-var checkbox_data: Array[bool] = [false, false]
+var checkbox_data: Array[bool]
 
 
 enum Checkbox {
 	SHOW_PRIORITIES,
+	SHOW_PRIORITY_TOOL,
 	SHOW_COMPLETED,
 }
 enum Tool {
 	SELECT,
 	ADD_ELEMENT,
-	REMOVE,
+	REMOVE_ELEMENT,
 	PAN,
 	BG_COLOR,
 	ADD_CONNECTION,
@@ -69,6 +73,10 @@ enum Priority {
 
 
 func _ready() -> void:
+	checkbox_data.resize(CHECKBOX_NUMBER)
+	for i in CHECKBOX_NUMBER:
+		checkbox_data[i] = false
+		
 	app_version = ProjectSettings.get_setting("application/config/version")
 	new_file()
 
@@ -80,16 +88,21 @@ func _process(_delta):
 		else:
 			save_file(opened_file_path)
 	if Input.is_action_just_pressed("-"):
-		show_completed.set_pressed(true)
+		for i in elements:
+			toggle_element_and_connections(i, false)
 	if Input.is_action_just_pressed("+"):
-		show_completed.set_pressed(false)
+		for i in elements:
+			toggle_element_and_connections(i, true)
 	if update_checkboxes:
 		if !show_completed.is_pressed() and !checkbox_data[Checkbox.SHOW_COMPLETED]:
 			_on_show_completed_toggled(false)
 		if !show_priorities.is_pressed() and !checkbox_data[Checkbox.SHOW_PRIORITIES]:
 			_on_show_priorities_toggled(false)
+		if !show_priority_tool.is_pressed() and !checkbox_data[Checkbox.SHOW_PRIORITY_TOOL]:
+			_on_show_priority_tool_toggled(false)
 		show_completed.set_pressed(checkbox_data[Checkbox.SHOW_COMPLETED])
 		show_priorities.set_pressed(checkbox_data[Checkbox.SHOW_PRIORITIES])
+		show_priority_tool.set_pressed(checkbox_data[Checkbox.SHOW_PRIORITY_TOOL])
 		update_checkboxes = false
 
 
@@ -152,9 +165,9 @@ func _on_element_label_gui_input(event: InputEvent, id: int) -> void:
 				elements[id].set_bg_color(color_picker.color)
 			if tool_box.is_selected(Tool.MARK_COMPLETED):
 				elements[id].toggle_completed()
-				toggle_element_and_connections(id, !show_completed.button_pressed)
+				toggle_element_and_connections(id, show_completed.button_pressed)
 		elif event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
-			if tool_box.is_selected(Tool.REMOVE):
+			if tool_box.is_selected(Tool.REMOVE_ELEMENT):
 				remove_connections(id)
 				elements[id].queue_free()
 				selected_element = -1
@@ -183,7 +196,7 @@ func _on_element_text_box_active(id: int) -> void:
 			elements[id].set_bg_color(color_picker.color)
 		if tool_box.is_selected(Tool.MARK_COMPLETED):
 			elements[id].toggle_completed()
-			toggle_element_and_connections(id, !show_completed.button_pressed)
+			toggle_element_and_connections(id, show_completed.button_pressed)
 
 
 func _on_element_changed_priority(id: int) -> void:
@@ -361,7 +374,8 @@ func new_file() -> void:
 	get_tree().root.title = ("GPlanner %s: New File" % [app_version])
 	status_bar.update_status("New File")
 	opened_file_path = ""
-	checkbox_data = [false, false]
+	for i in CHECKBOX_NUMBER:
+		checkbox_data[i] = false
 	update_checkboxes = true
 	
 	for i in priority_styleboxes.size():
@@ -434,6 +448,8 @@ func canvas_state_to_json() -> Dictionary:
 		"zoom_level": zoom_level,
 		"show_completed": show_completed.is_pressed(),
 		"show_priorities": show_priorities.is_pressed(),
+		"show_priority_tool": show_priority_tool.is_pressed(),
+		"priority_filter_value": priority_filter.value,
 	}
 
 
@@ -487,6 +503,10 @@ func rebuild_canvas_state(state: Dictionary) -> void:
 		checkbox_data[Checkbox.SHOW_COMPLETED] = bool(state["show_completed"])
 	if state.has("show_priorities"):
 		checkbox_data[Checkbox.SHOW_PRIORITIES] = bool(state["show_priorities"])
+	if state.has("show_priority_tool"):
+		checkbox_data[Checkbox.SHOW_PRIORITY_TOOL] = bool(state["show_priority_tool"])
+	if state.has("priority_filter_value"):
+		priority_filter.value = int(state["priority_filter_value"])
 
 
 func rebuild_elements(json_elems: Dictionary) -> void:
@@ -549,38 +569,64 @@ func erase_everything() -> void:
 	is_resizing = false
 
 
-func toggle_element_and_connections(id: int, on: bool) -> void:
+func toggle_element_and_connections(id: int, state: bool) -> void:
 	if selected_element == id:
 		selected_element = -1
 		selection_viewer.visible = false
+	elements[id].visible = state
 	
-	elements[id].visible = !on
-	for elem_id in connections_p1:	# Hide / Show connections
-		if elem_id == id:
-			for conn_id in connections_p1[elem_id]:
-				connections[conn_id].visible = !on
-	for elem_id in connections_p2:
-		if elem_id == id:
-			for conn_id in connections_p2[elem_id]:
-				connections[conn_id].visible = !on
+	if id in connections_p1:
+		for conn_id in connections_p1[id]:
+			connections[conn_id].visible = state
+	if id in connections_p2:
+		for conn_id in connections_p2[id]:
+			connections[conn_id].visible = state
+
+
+func toggle_element(id: int, state: bool) -> void:
+	if selected_element == id:
+		selected_element = -1
+		selection_viewer.visible = false
+	elements[id].visible = state
+
+
+func toggle_connections(elem_id: int) -> void:
+	var toggles: Dictionary[int, bool] = {}
+	for pair in elements_to_connection:
+		if pair.x == elem_id or pair.y == elem_id:
+			if !elements[pair.x].visible or !elements[pair.y].visible:
+				toggles[elements_to_connection[pair]] = false
+			else:
+				toggles[elements_to_connection[pair]] = true
+	for conn_id in toggles:
+		connections[conn_id].visible = toggles[conn_id]
 
 
 func _on_show_completed_toggled(toggled_on: bool) -> void:
 	for i in elements:
 		if elements[i].completed:
-			toggle_element_and_connections(i, !toggled_on)
+			toggle_element_and_connections(i, toggled_on)
 
 
 func _on_show_priorities_toggled(toggled_on: bool) -> void:
 	for i in elements:
 		elements[i].set_priority_visible(toggled_on)
+	filter_settings.visible = toggled_on
 
 
 func _on_priority_filter_value_changed(value: float) -> void:
 	var filter = int(value)
 	for i in elements:
-		if elements[i].priority_id <= filter and !elements[i].completed:
-			toggle_element_and_connections(i, false)
+		if elements[i].priority_id > value or (elements[i].completed and !show_completed.is_pressed()):
+			toggle_element(i, false)
 		else:
-			toggle_element_and_connections(i, true)
-	priority_filter_label.text = ("Filter: %s" % priority_filter_text[filter])
+			toggle_element(i, true)
+	for i in elements:
+		toggle_connections(i)
+	
+	priority_filter_label.text = ("Priority: %s" % priority_filter_text[filter])
+
+
+func _on_show_priority_tool_toggled(toggled_on: bool) -> void:
+	for i in elements:
+		elements[i].priority_tool_enabled = toggled_on

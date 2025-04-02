@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://bfydfy3iq0rjx"]
+[gd_scene load_steps=32 format=3 uid="uid://bfydfy3iq0rjx"]
 
 [ext_resource type="Texture2D" uid="uid://v481h4vkkmsb" path="res://Backgrounds/grid_pattern_dark.png" id="1_6l7je"]
 [ext_resource type="Script" uid="uid://dj8gdy8d87lam" path="res://Scripts/main.gd" id="1_52fb6"]
@@ -10,6 +10,14 @@
 [ext_resource type="PackedScene" uid="uid://c2apku3xuhhyp" path="res://Scenes/status_bar.tscn" id="5_iacmt"]
 [ext_resource type="StyleBox" uid="uid://dga3kal7lipkl" path="res://Themes/low_priority_button_stylebox.tres" id="5_ioaeq"]
 [ext_resource type="StyleBox" uid="uid://b0l55wn2xggiw" path="res://Themes/none_priority_button_stylebox.tres" id="6_7ewk0"]
+[ext_resource type="Texture2D" uid="uid://dh8rwukkdehkk" path="res://Icons/hand_cursor.svg" id="8_76v2p"]
+[ext_resource type="Texture2D" uid="uid://djq4xvrjpvfp5" path="res://Icons/plus.svg" id="9_7ewk0"]
+[ext_resource type="Texture2D" uid="uid://bq8p1ptkssix3" path="res://Icons/move_arrows.svg" id="9_drdnd"]
+[ext_resource type="Texture2D" uid="uid://cjmn8wx7kwelm" path="res://Icons/minus.svg" id="10_lhp3t"]
+[ext_resource type="Texture2D" uid="uid://dlooftfvpp7o8" path="res://Icons/canvas.svg" id="12_lhp3t"]
+[ext_resource type="Texture2D" uid="uid://l7psu5evarxp" path="res://Icons/add_line.svg" id="13_psl12"]
+[ext_resource type="Texture2D" uid="uid://1jids2awyagv" path="res://Icons/remove_line.svg" id="14_2ebs2"]
+[ext_resource type="Texture2D" uid="uid://dfq5wqtp3gjfd" path="res://Icons/checkbox.svg" id="15_2ebs2"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6l7je"]
 texture = ExtResource("1_6l7je")
@@ -48,23 +56,35 @@ MarginContainer/constants/margin_right = 20
 MarginContainer/constants/margin_top = 20
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jv6wh"]
+content_margin_bottom = 2.0
 bg_color = Color(0, 0, 0, 0.705882)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
 border_color = Color(0.19, 0.703, 1, 1)
 border_blend = true
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
+corner_detail = 1
 
 [sub_resource type="Theme" id="Theme_x6ack"]
+ItemList/colors/font_color = Color(0.65098, 0.65098, 0.65098, 0)
+ItemList/colors/font_hovered_color = Color(0.94902, 0.94902, 0.94902, 0)
+ItemList/colors/font_hovered_selected_color = Color(1, 1, 1, 0)
+ItemList/colors/font_outline_color = Color(0, 0, 0, 0)
+ItemList/colors/font_selected_color = Color(1, 1, 1, 0)
+ItemList/constants/h_separation = 4
+ItemList/constants/icon_margin = 1
+ItemList/constants/line_separation = -4
+ItemList/constants/outline_size = 0
+ItemList/constants/v_separation = 3
+ItemList/font_sizes/font_size = 1
+ItemList/fonts/font = null
 ItemList/styles/focus = null
 ItemList/styles/panel = SubResource("StyleBoxFlat_jv6wh")
-
-[sub_resource type="ImageTexture" id="ImageTexture_jv6wh"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iacmt"]
 bg_color = Color(0.43, 0.43, 0.43, 0.470588)
@@ -81,6 +101,56 @@ expand_margin_bottom = 8.0
 
 [sub_resource type="Theme" id="Theme_6ev3c"]
 Panel/styles/panel = SubResource("StyleBoxFlat_iacmt")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_76v2p"]
+content_margin_left = 10.0
+content_margin_right = 0.0
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_blend = true
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+corner_detail = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mai8y"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 10.0
+bg_color = Color(0.498039, 0.498039, 0.498039, 0.498039)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.188235, 0.701961, 1, 1)
+border_blend = true
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+expand_margin_left = 1.0
+expand_margin_top = 1.0
+expand_margin_right = 1.0
+expand_margin_bottom = 1.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_drdnd"]
+
+[sub_resource type="Theme" id="Theme_76v2p"]
+HScrollBar/icons/decrement = null
+HScrollBar/icons/decrement_highlight = null
+HScrollBar/icons/decrement_pressed = null
+HScrollBar/icons/increment = null
+HScrollBar/icons/increment_highlight = null
+HScrollBar/icons/increment_pressed = null
+HScrollBar/styles/grabber = SubResource("StyleBoxFlat_76v2p")
+HScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_76v2p")
+HScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_76v2p")
+HScrollBar/styles/scroll = SubResource("StyleBoxFlat_mai8y")
+HScrollBar/styles/scroll_focus = SubResource("StyleBoxEmpty_drdnd")
 
 [node name="MainScene" type="Control"]
 layout_mode = 3
@@ -147,21 +217,30 @@ theme = SubResource("Theme_6l7je")
 
 [node name="ToolBox" type="ItemList" parent="MarginContainer"]
 layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
+size_flags_horizontal = 4
+size_flags_vertical = 0
 theme = SubResource("Theme_x6ack")
 auto_width = true
 auto_height = true
 item_count = 8
-item_0/text = "Select"
-item_0/icon = SubResource("ImageTexture_jv6wh")
+max_columns = 8
+icon_mode = 0
+item_0/text = "Select & Move Elements"
+item_0/icon = ExtResource("8_76v2p")
 item_1/text = "Add Element"
-item_2/text = "Remove"
-item_3/text = "Pan&Zoom"
-item_4/text = "BG Color"
+item_1/icon = ExtResource("9_7ewk0")
+item_2/text = "Remove Element"
+item_2/icon = ExtResource("10_lhp3t")
+item_3/text = "Pan & Zoom"
+item_3/icon = ExtResource("9_drdnd")
+item_4/text = "Element Background Color"
+item_4/icon = ExtResource("12_lhp3t")
 item_5/text = "Add Connection"
-item_6/text = "Rmv Connections"
-item_7/text = "Mark Complete"
+item_5/icon = ExtResource("13_psl12")
+item_6/text = "Remove All Connections to Element"
+item_6/icon = ExtResource("14_2ebs2")
+item_7/text = "Mark Element As Complete"
+item_7/icon = ExtResource("15_2ebs2")
 
 [node name="ZoomIndicator" parent="MarginContainer" instance=ExtResource("3_jv6wh")]
 layout_mode = 2
@@ -229,31 +308,33 @@ text = "Enable priorities
 layout_mode = 2
 text = "Show all completed"
 
-[node name="Filter" type="MarginContainer" parent="MarginContainer/Settings"]
+[node name="FilterSettings" type="VBoxContainer" parent="MarginContainer/Settings"]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/Settings/Filter"]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-size_flags_vertical = 8
-
-[node name="PriorityFilterLabel" type="Label" parent="MarginContainer/Settings/Filter/VBoxContainer"]
+[node name="PriorityFilterLabel" type="Label" parent="MarginContainer/Settings/FilterSettings"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
 mouse_filter = 1
-text = "Filter: ALL"
+text = "Priority: ALL"
 horizontal_alignment = 1
 
-[node name="PriorityFilter" type="HScrollBar" parent="MarginContainer/Settings/Filter/VBoxContainer"]
+[node name="PriorityFilter" type="HScrollBar" parent="MarginContainer/Settings/FilterSettings"]
 layout_mode = 2
-size_flags_vertical = 8
+size_flags_vertical = 1
+theme = SubResource("Theme_76v2p")
 max_value = 4.0
 step = 1.0
 value = 4.0
 rounded = true
+
+[node name="ShowPriorityTool" type="CheckBox" parent="MarginContainer/Settings/FilterSettings"]
+layout_mode = 2
+button_pressed = true
+text = "Show priority tool popup"
 
 [node name="StatusBar" parent="MarginContainer" instance=ExtResource("5_iacmt")]
 layout_mode = 2
@@ -282,6 +363,7 @@ filters = PackedStringArray("*.json")
 [connection signal="pressed" from="MarginContainer/FileButtons/LoadButton" to="." method="_on_load_button_pressed"]
 [connection signal="toggled" from="MarginContainer/Settings/Checkboxes/ShowPriorities" to="." method="_on_show_priorities_toggled"]
 [connection signal="toggled" from="MarginContainer/Settings/Checkboxes/ShowCompleted" to="." method="_on_show_completed_toggled"]
-[connection signal="value_changed" from="MarginContainer/Settings/Filter/VBoxContainer/PriorityFilter" to="." method="_on_priority_filter_value_changed"]
+[connection signal="value_changed" from="MarginContainer/Settings/FilterSettings/PriorityFilter" to="." method="_on_priority_filter_value_changed"]
+[connection signal="toggled" from="MarginContainer/Settings/FilterSettings/ShowPriorityTool" to="." method="_on_show_priority_tool_toggled"]
 [connection signal="file_selected" from="FileDialogSave" to="." method="_on_file_dialog_save_file_selected"]
 [connection signal="file_selected" from="FileDialogLoad" to="." method="_on_file_dialog_load_file_selected"]
