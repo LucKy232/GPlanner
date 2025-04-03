@@ -8,3 +8,4 @@ Current features:
 - Mark elements as complete and hide them
 - Give element a priority that shows as a color band
 - Pan & Zoom the canvas
+- Save / Load file as .json
