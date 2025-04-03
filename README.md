@@ -1,5 +1,6 @@
 # GPlanner
 A simple idea planner made in Godot.
+
 Current features:
 - Add elements similar to sticky notes that contain a single line of text
 - Change element color
