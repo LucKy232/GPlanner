@@ -1,6 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://csgrqqjqi1d4t"]
+[gd_scene load_steps=13 format=3 uid="uid://csgrqqjqi1d4t"]
 
 [ext_resource type="Script" uid="uid://dvj6pcwq77lqk" path="res://Scripts/zoom_indicator.gd" id="1_4qtpc"]
+[ext_resource type="Texture2D" uid="uid://demenk3lgkymx" path="res://Icons/magnifying_glass.svg" id="2_atq65"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_4qtpc"]
 
@@ -36,12 +37,19 @@ corner_detail = 1
 ProgressBar/styles/background = SubResource("StyleBoxFlat_6l7je")
 ProgressBar/styles/fill = SubResource("StyleBoxFlat_x6ack")
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cnilx"]
+texture = ExtResource("2_atq65")
+modulate_color = Color(0.753986, 0.753983, 0.753984, 1)
+
+[sub_resource type="Theme" id="Theme_kgcqr"]
+Panel/styles/panel = SubResource("StyleBoxTexture_cnilx")
+
 [sub_resource type="Animation" id="Animation_atq65"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("NameLabel:modulate")
+tracks/0/path = NodePath("ZoomProgressBar:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -53,7 +61,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("ZoomProgressBar:modulate")
+tracks/1/path = NodePath("ZoomLabel:modulate")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -65,31 +73,31 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("ZoomLabel:modulate")
+tracks/2/path = NodePath("ZoomProgressBar:visible")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
+"update": 1,
+"values": [true]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("ZoomProgressBar:visible")
+tracks/3/path = NodePath("ZoomIcon:modulate")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
 }
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("NameLabel:visible")
+tracks/4/path = NodePath("ZoomIcon:visible")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
@@ -105,55 +113,55 @@ length = 0.2
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("NameLabel:modulate")
+tracks/0/path = NodePath("ZoomProgressBar:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(-2, 1),
+"transitions": PackedFloat32Array(-2, -2),
 "update": 0,
 "values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("ZoomProgressBar:modulate")
+tracks/1/path = NodePath("ZoomLabel:modulate")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(-2, 1),
+"transitions": PackedFloat32Array(-2, -2),
 "update": 0,
-"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+"values": [Color(1, 1, 1, 0.5), Color(1, 1, 1, 1)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("ZoomLabel:modulate")
+tracks/2/path = NodePath("ZoomProgressBar:visible")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(-2, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 0.5), Color(1, 1, 1, 1)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("ZoomProgressBar:visible")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [true]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("ZoomIcon:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(-2, -2),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("NameLabel:visible")
+tracks/4/path = NodePath("ZoomIcon:visible")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
@@ -169,7 +177,7 @@ length = 0.7
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("NameLabel:modulate")
+tracks/0/path = NodePath("ZoomProgressBar:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -181,43 +189,43 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("ZoomProgressBar:modulate")
+tracks/1/path = NodePath("ZoomLabel:modulate")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.7),
 "transitions": PackedFloat32Array(1, -2),
 "update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0.5)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("ZoomLabel:modulate")
+tracks/2/path = NodePath("ZoomProgressBar:visible")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.7),
-"transitions": PackedFloat32Array(1, -2),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0.5)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("ZoomProgressBar:visible")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
 "times": PackedFloat32Array(0.7),
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": [false]
 }
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("ZoomIcon:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.7),
+"transitions": PackedFloat32Array(-2, -2),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
 tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("NameLabel:visible")
+tracks/4/path = NodePath("ZoomIcon:visible")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
@@ -254,13 +262,16 @@ theme = SubResource("Theme_jv6wh")
 min_value = 0.25
 max_value = 4.0
 value = 1.0
-exp_edit = true
 fill_mode = 3
 show_percentage = false
 
-[node name="NameLabel" type="Label" parent="."]
+[node name="ZoomIcon" type="Panel" parent="."]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
-text = "Zoom"
+size_flags_horizontal = 4
+mouse_filter = 1
+theme = SubResource("Theme_kgcqr")
 
 [node name="HideTimer" type="Timer" parent="."]
 wait_time = 2.5

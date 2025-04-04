@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://bfydfy3iq0rjx"]
+[gd_scene load_steps=35 format=3 uid="uid://bfydfy3iq0rjx"]
 
 [ext_resource type="Texture2D" uid="uid://v481h4vkkmsb" path="res://Backgrounds/grid_pattern_dark.png" id="1_6l7je"]
 [ext_resource type="Script" uid="uid://dj8gdy8d87lam" path="res://Scripts/main.gd" id="1_52fb6"]
@@ -11,13 +11,14 @@
 [ext_resource type="StyleBox" uid="uid://dga3kal7lipkl" path="res://Themes/low_priority_button_stylebox.tres" id="5_ioaeq"]
 [ext_resource type="StyleBox" uid="uid://b0l55wn2xggiw" path="res://Themes/none_priority_button_stylebox.tres" id="6_7ewk0"]
 [ext_resource type="Texture2D" uid="uid://dh8rwukkdehkk" path="res://Icons/hand_cursor.svg" id="8_76v2p"]
+[ext_resource type="Texture2D" uid="uid://cjir350kly5j8" path="res://Icons/connection_indicator.svg" id="8_oyb3p"]
 [ext_resource type="Texture2D" uid="uid://djq4xvrjpvfp5" path="res://Icons/plus.svg" id="9_7ewk0"]
-[ext_resource type="Texture2D" uid="uid://bq8p1ptkssix3" path="res://Icons/move_arrows.svg" id="9_drdnd"]
 [ext_resource type="Texture2D" uid="uid://cjmn8wx7kwelm" path="res://Icons/minus.svg" id="10_lhp3t"]
 [ext_resource type="Texture2D" uid="uid://dlooftfvpp7o8" path="res://Icons/canvas.svg" id="12_lhp3t"]
 [ext_resource type="Texture2D" uid="uid://l7psu5evarxp" path="res://Icons/add_line.svg" id="13_psl12"]
 [ext_resource type="Texture2D" uid="uid://1jids2awyagv" path="res://Icons/remove_line.svg" id="14_2ebs2"]
 [ext_resource type="Texture2D" uid="uid://dfq5wqtp3gjfd" path="res://Icons/checkbox.svg" id="15_2ebs2"]
+[ext_resource type="Theme" uid="uid://dwboubtw2bfss" path="res://Themes/checkbox_theme.tres" id="17_2ebs2"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6l7je"]
 texture = ExtResource("1_6l7je")
@@ -48,6 +49,12 @@ anti_aliasing = false
 
 [sub_resource type="Theme" id="Theme_iacmt"]
 Panel/styles/panel = SubResource("StyleBoxFlat_x6ack")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2ebs2"]
+texture = ExtResource("8_oyb3p")
+
+[sub_resource type="Theme" id="Theme_oyb3p"]
+Panel/styles/panel = SubResource("StyleBoxTexture_2ebs2")
 
 [sub_resource type="Theme" id="Theme_6l7je"]
 MarginContainer/constants/margin_bottom = 20
@@ -166,11 +173,13 @@ script = ExtResource("1_52fb6")
 element_scene = "uid://lufadl7u0ek3"
 connection_scene = "uid://clweynhbi8rai"
 zoom_limits = Vector2(0.125, 2)
+zoom_speed = 1.05
 priority_colors = Array[Color]([Color(1, 1, 1, 1), Color(1, 0, 0, 1), Color(1, 1, 0, 1), Color(0, 1, 0, 1), Color(0, 0, 0, 0)])
 priority_styleboxes = Array[StyleBoxFlat]([ExtResource("2_mai8y"), ExtResource("3_76v2p"), ExtResource("4_drdnd"), ExtResource("5_ioaeq"), ExtResource("6_7ewk0")])
 priority_filter_text = Array[String](["Only Active", "Active & High", "Medium and higher", "Low and higher", "All"])
 
 [node name="ElementContainer" type="Control" parent="."]
+layout_mode = 1
 anchors_preset = 0
 offset_right = 20000.0
 offset_bottom = 10000.0
@@ -205,6 +214,14 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 
+[node name="ConnectionIndicator" type="Panel" parent="ElementContainer"]
+visible = false
+z_index = 1
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme = SubResource("Theme_oyb3p")
+
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -220,27 +237,26 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
 theme = SubResource("Theme_x6ack")
+allow_search = false
 auto_width = true
 auto_height = true
-item_count = 8
+item_count = 7
 max_columns = 8
 icon_mode = 0
-item_0/text = "Select & Move Elements"
+item_0/text = "Select & Move Elements, Pan & Zoom"
 item_0/icon = ExtResource("8_76v2p")
 item_1/text = "Add Element"
 item_1/icon = ExtResource("9_7ewk0")
 item_2/text = "Remove Element"
 item_2/icon = ExtResource("10_lhp3t")
-item_3/text = "Pan & Zoom"
-item_3/icon = ExtResource("9_drdnd")
-item_4/text = "Element Background Color"
-item_4/icon = ExtResource("12_lhp3t")
-item_5/text = "Add Connection"
-item_5/icon = ExtResource("13_psl12")
-item_6/text = "Remove All Connections to Element"
-item_6/icon = ExtResource("14_2ebs2")
-item_7/text = "Mark Element As Complete"
-item_7/icon = ExtResource("15_2ebs2")
+item_3/text = "Element Background Color"
+item_3/icon = ExtResource("12_lhp3t")
+item_4/text = "Add Connection"
+item_4/icon = ExtResource("13_psl12")
+item_5/text = "Remove All Connections to Element"
+item_5/icon = ExtResource("14_2ebs2")
+item_6/text = "Mark Element As Complete"
+item_6/icon = ExtResource("15_2ebs2")
 
 [node name="ZoomIndicator" parent="MarginContainer" instance=ExtResource("3_jv6wh")]
 layout_mode = 2
@@ -301,11 +317,13 @@ size_flags_vertical = 8
 
 [node name="ShowPriorities" type="CheckBox" parent="MarginContainer/Settings/Checkboxes"]
 layout_mode = 2
+theme = ExtResource("17_2ebs2")
 text = "Enable priorities
 "
 
 [node name="ShowCompleted" type="CheckBox" parent="MarginContainer/Settings/Checkboxes"]
 layout_mode = 2
+theme = ExtResource("17_2ebs2")
 text = "Show all completed"
 
 [node name="FilterSettings" type="VBoxContainer" parent="MarginContainer/Settings"]
@@ -333,6 +351,7 @@ rounded = true
 
 [node name="ShowPriorityTool" type="CheckBox" parent="MarginContainer/Settings/FilterSettings"]
 layout_mode = 2
+theme = ExtResource("17_2ebs2")
 button_pressed = true
 text = "Show priority tool popup"
 

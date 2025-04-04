@@ -1,9 +1,5 @@
 {
 	"Connections": {
-		"0": {
-			"id1": 0,
-			"id2": 0
-		},
 		"1": {
 			"id1": 1,
 			"id2": 0
@@ -28,10 +24,6 @@
 			"id1": 12,
 			"id2": 14
 		},
-		"15": {
-			"id1": 15,
-			"id2": 15
-		},
 		"16": {
 			"id1": 0,
 			"id2": 17
@@ -43,10 +35,6 @@
 		"18": {
 			"id1": 0,
 			"id2": 20
-		},
-		"19": {
-			"id1": 17,
-			"id2": 17
 		},
 		"20": {
 			"id1": 18,
@@ -215,10 +203,6 @@
 		"75": {
 			"id1": 72,
 			"id2": 74
-		},
-		"77": {
-			"id1": 76,
-			"id2": 76
 		},
 		"78": {
 			"id1": 4,
@@ -427,6 +411,70 @@
 		"148": {
 			"id1": 34,
 			"id2": 134
+		},
+		"150": {
+			"id1": 4,
+			"id2": 137
+		},
+		"151": {
+			"id1": 41,
+			"id2": 138
+		},
+		"152": {
+			"id1": 48,
+			"id2": 140
+		},
+		"153": {
+			"id1": 48,
+			"id2": 141
+		},
+		"154": {
+			"id1": 110,
+			"id2": 143
+		},
+		"157": {
+			"id1": 145,
+			"id2": 47
+		},
+		"158": {
+			"id1": 86,
+			"id2": 146
+		},
+		"159": {
+			"id1": 142,
+			"id2": 86
+		},
+		"160": {
+			"id1": 147,
+			"id2": 148
+		},
+		"161": {
+			"id1": 147,
+			"id2": 48
+		},
+		"162": {
+			"id1": 138,
+			"id2": 150
+		},
+		"163": {
+			"id1": 151,
+			"id2": 86
+		},
+		"165": {
+			"id1": 98,
+			"id2": 10
+		},
+		"166": {
+			"id1": 10,
+			"id2": 47
+		},
+		"167": {
+			"id1": 86,
+			"id2": 152
+		},
+		"168": {
+			"id1": 153,
+			"id2": 86
 		}
 	},
 	"Elements": {
@@ -455,7 +503,7 @@
 			"pos.y": 691.793212890625,
 			"priority_id": 1,
 			"size.x": 133.0,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Font Size"
 		},
 		"2": {
@@ -469,7 +517,7 @@
 			"pos.y": 626.292602539063,
 			"priority_id": 1,
 			"size.x": 137.0,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Font Color"
 		},
 		"3": {
@@ -507,11 +555,11 @@
 			"bgcolor.r": 0.580392181873322,
 			"completed": false,
 			"id": 5,
-			"pos.x": 3139.27661132813,
-			"pos.y": 717.939270019531,
+			"pos.x": 3144.9619140625,
+			"pos.y": 619.391784667969,
 			"priority_id": 1,
 			"size.x": 394.901123046875,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Confirm dialogue on New / Load / Exit"
 		},
 		"6": {
@@ -519,13 +567,13 @@
 			"bgcolor.b": 0.588235318660736,
 			"bgcolor.g": 0.572549045085907,
 			"bgcolor.r": 0.329411774873734,
-			"completed": false,
+			"completed": true,
 			"id": 6,
 			"pos.x": 2147.47631835938,
 			"pos.y": 1164.8759765625,
 			"priority_id": 0,
 			"size.x": 143.250244140625,
-			"size.y": 56.83349609375,
+			"size.y": 64.0,
 			"text": "Tool Icons"
 		},
 		"7": {
@@ -547,13 +595,13 @@
 			"bgcolor.b": 0.721568644046783,
 			"bgcolor.g": 0.462745100259781,
 			"bgcolor.r": 0.580392181873322,
-			"completed": false,
+			"completed": true,
 			"id": 8,
-			"pos.x": 3140.36889648438,
-			"pos.y": 778.616455078125,
-			"priority_id": 1,
+			"pos.x": 3365.47705078125,
+			"pos.y": 1352.4501953125,
+			"priority_id": 0,
 			"size.x": 278.0,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Start from center on New"
 		},
 		"9": {
@@ -563,25 +611,25 @@
 			"bgcolor.r": 0.579489350318909,
 			"completed": false,
 			"id": 9,
-			"pos.x": 3139.0458984375,
-			"pos.y": 660.492797851563,
+			"pos.x": 3142.8359375,
+			"pos.y": 554.364562988281,
 			"priority_id": 3,
 			"size.x": 267.0,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Cancel delete on R.click"
 		},
 		"10": {
 			"bgcolor.a": 1.0,
-			"bgcolor.b": 0.723033785820007,
-			"bgcolor.g": 0.464728474617004,
-			"bgcolor.r": 0.579489350318909,
-			"completed": false,
+			"bgcolor.b": 0.721568644046783,
+			"bgcolor.g": 0.462745100259781,
+			"bgcolor.r": 0.580392181873322,
+			"completed": true,
 			"id": 10,
-			"pos.x": 3141.4150390625,
-			"pos.y": 836.293518066406,
-			"priority_id": 2,
+			"pos.x": 3420.5615234375,
+			"pos.y": 1017.41009521484,
+			"priority_id": 0,
 			"size.x": 290.648193359375,
-			"size.y": 50.0,
+			"size.y": 64.0000610351563,
 			"text": "Select none on canvas click"
 		},
 		"11": {
@@ -589,13 +637,13 @@
 			"bgcolor.b": 0.721568644046783,
 			"bgcolor.g": 0.462745100259781,
 			"bgcolor.r": 0.580392181873322,
-			"completed": false,
+			"completed": true,
 			"id": 11,
-			"pos.x": 3140.0,
-			"pos.y": 602.999938964844,
-			"priority_id": 1,
+			"pos.x": 3264.63745117188,
+			"pos.y": 1549.09045410156,
+			"priority_id": 0,
 			"size.x": 347.0,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Resize element if text overflow"
 		},
 		"12": {
@@ -636,7 +684,7 @@
 			"pos.x": 1707.0,
 			"pos.y": 758.999938964844,
 			"priority_id": 4,
-			"size.x": 286.169921875,
+			"size.x": 288.0,
 			"size.y": 73.5609741210938,
 			"text": "Hide all complete checkbox"
 		},
@@ -665,7 +713,7 @@
 			"pos.y": 496.103698730469,
 			"priority_id": 2,
 			"size.x": 207.0,
-			"size.y": 59.0,
+			"size.y": 64.0,
 			"text": "Show time taken"
 		},
 		"17": {
@@ -678,7 +726,7 @@
 			"pos.x": 2058.99975585938,
 			"pos.y": 796.0,
 			"priority_id": 2,
-			"size.x": 149.0,
+			"size.x": 152.0,
 			"size.y": 75.0,
 			"text": "Mark Started"
 		},
@@ -706,8 +754,8 @@
 			"pos.x": 2049.99975585938,
 			"pos.y": 596.0,
 			"priority_id": 2,
-			"size.x": 140.0,
-			"size.y": 59.0,
+			"size.x": 141.0,
+			"size.y": 64.0,
 			"text": "Assign Date"
 		},
 		"20": {
@@ -738,32 +786,18 @@
 			"size.y": 75.0,
 			"text": "Connection positions fix"
 		},
-		"22": {
-			"bgcolor.a": 1.0,
-			"bgcolor.b": 0.723033785820007,
-			"bgcolor.g": 0.464728474617004,
-			"bgcolor.r": 0.579489350318909,
-			"completed": false,
-			"id": 22,
-			"pos.x": 3142.36865234375,
-			"pos.y": 889.924743652344,
-			"priority_id": 1,
-			"size.x": 218.0,
-			"size.y": 50.0,
-			"text": "Tool shortcut keys"
-		},
 		"23": {
 			"bgcolor.a": 1.0,
 			"bgcolor.b": 0.588235318660736,
 			"bgcolor.g": 0.572549045085907,
 			"bgcolor.r": 0.329411774873734,
-			"completed": false,
+			"completed": true,
 			"id": 23,
 			"pos.x": 2317.2109375,
 			"pos.y": 1166.29272460938,
 			"priority_id": 0,
 			"size.x": 122.0,
-			"size.y": 57.0,
+			"size.y": 64.0,
 			"text": "Toolbar"
 		},
 		"24": {
@@ -791,7 +825,7 @@
 			"pos.y": 547.799926757813,
 			"priority_id": 3,
 			"size.x": 242.0,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Shortcut select group"
 		},
 		"26": {
@@ -805,7 +839,7 @@
 			"pos.y": 608.051940917969,
 			"priority_id": 3,
 			"size.x": 384.52490234375,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Set group from parent element group"
 		},
 		"27": {
@@ -833,7 +867,7 @@
 			"pos.y": 851.010131835938,
 			"priority_id": 2,
 			"size.x": 124.55126953125,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Color"
 		},
 		"29": {
@@ -847,7 +881,7 @@
 			"pos.y": 793.734436035156,
 			"priority_id": 3,
 			"size.x": 118.8623046875,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Size"
 		},
 		"30": {
@@ -861,7 +895,7 @@
 			"pos.y": 734.770751953125,
 			"priority_id": 2,
 			"size.x": 116.58642578125,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Erase"
 		},
 		"31": {
@@ -875,7 +909,7 @@
 			"pos.y": 679.367736816406,
 			"priority_id": 2,
 			"size.x": 125.68896484375,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Draw"
 		},
 		"32": {
@@ -889,7 +923,7 @@
 			"pos.y": 814.775024414063,
 			"priority_id": 3,
 			"size.x": 135.0,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Select Font"
 		},
 		"33": {
@@ -902,8 +936,8 @@
 			"pos.x": 2544.44970703125,
 			"pos.y": 755.405090332031,
 			"priority_id": 1,
-			"size.x": 144.4091796875,
-			"size.y": 50.0,
+			"size.x": 147.0,
+			"size.y": 64.0,
 			"text": "Font Outline"
 		},
 		"34": {
@@ -916,7 +950,7 @@
 			"pos.x": 2268.68115234375,
 			"pos.y": 940.47021484375,
 			"priority_id": 0,
-			"size.x": 153.0,
+			"size.x": 161.0,
 			"size.y": 95.0,
 			"text": "Priority Select"
 		},
@@ -931,7 +965,7 @@
 			"pos.y": 1039.32666015625,
 			"priority_id": 0,
 			"size.x": 210.0,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Toolbox w/ circles"
 		},
 		"36": {
@@ -941,11 +975,11 @@
 			"bgcolor.r": 0.580392181873322,
 			"completed": true,
 			"id": 36,
-			"pos.x": 3161.40966796875,
-			"pos.y": 1605.30712890625,
+			"pos.x": 2621.7470703125,
+			"pos.y": 1730.07592773438,
 			"priority_id": 4,
 			"size.x": 416.88671875,
-			"size.y": 51.747314453125,
+			"size.y": 64.0,
 			"text": "Save current file path on load or save"
 		},
 		"37": {
@@ -955,11 +989,11 @@
 			"bgcolor.r": 0.580392181873322,
 			"completed": true,
 			"id": 37,
-			"pos.x": 3593.19067382813,
-			"pos.y": 1604.57043457031,
+			"pos.x": 2894.1845703125,
+			"pos.y": 1798.48815917969,
 			"priority_id": 4,
 			"size.x": 221.8154296875,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Swap window title"
 		},
 		"38": {
@@ -969,11 +1003,11 @@
 			"bgcolor.r": 0.580392181873322,
 			"completed": true,
 			"id": 38,
-			"pos.x": 3155.52465820313,
-			"pos.y": 1483.33911132813,
+			"pos.x": 2592.19360351563,
+			"pos.y": 1798.74572753906,
 			"priority_id": 4,
-			"size.x": 264.97412109375,
-			"size.y": 50.0,
+			"size.x": 265.0,
+			"size.y": 64.0,
 			"text": "Set a label with file name"
 		},
 		"39": {
@@ -984,10 +1018,10 @@
 			"completed": false,
 			"id": 39,
 			"pos.x": 3140.0,
-			"pos.y": 540.0,
+			"pos.y": 488.831085205078,
 			"priority_id": 3,
 			"size.x": 267.0,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Zoom & Pan reset"
 		},
 		"40": {
@@ -1001,7 +1035,7 @@
 			"pos.y": 921.907836914063,
 			"priority_id": 3,
 			"size.x": 432.999877929688,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Most used swatches without color picker"
 		},
 		"41": {
@@ -1011,8 +1045,8 @@
 			"bgcolor.r": 0.720085799694061,
 			"completed": false,
 			"id": 41,
-			"pos.x": 2365.3623046875,
-			"pos.y": 147.62922668457,
+			"pos.x": 2451.30615234375,
+			"pos.y": 139.175720214844,
 			"priority_id": 0,
 			"size.x": 187.16552734375,
 			"size.y": 89.04150390625,
@@ -1029,7 +1063,7 @@
 			"pos.y": 1230.34130859375,
 			"priority_id": 2,
 			"size.x": 296.664306640625,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Panning indicator window"
 		},
 		"43": {
@@ -1039,11 +1073,11 @@
 			"bgcolor.r": 0.579489350318909,
 			"completed": false,
 			"id": 43,
-			"pos.x": 3140.75512695313,
-			"pos.y": 479.322662353516,
+			"pos.x": 3140.7548828125,
+			"pos.y": 420.573150634766,
 			"priority_id": 3,
 			"size.x": 570.193115234375,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "When panning, move mouse to opposite side of window"
 		},
 		"44": {
@@ -1051,13 +1085,13 @@
 			"bgcolor.b": 0.721568644046783,
 			"bgcolor.g": 0.462745100259781,
 			"bgcolor.r": 0.580392181873322,
-			"completed": false,
+			"completed": true,
 			"id": 44,
-			"pos.x": 3141.49072265625,
-			"pos.y": 419.493041992188,
-			"priority_id": 1,
+			"pos.x": 3069.07006835938,
+			"pos.y": 1091.63745117188,
+			"priority_id": 0,
 			"size.x": 313.531982421875,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Zoom at mouse position"
 		},
 		"45": {
@@ -1071,7 +1105,7 @@
 			"pos.y": 985.44287109375,
 			"priority_id": 3,
 			"size.x": 195.320556640625,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Select BG image"
 		},
 		"46": {
@@ -1085,7 +1119,7 @@
 			"pos.y": 985.442932128906,
 			"priority_id": 4,
 			"size.x": 272.733154296875,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "List of predefined images"
 		},
 		"47": {
@@ -1093,13 +1127,13 @@
 			"bgcolor.b": 0.723033785820007,
 			"bgcolor.g": 0.464728474617004,
 			"bgcolor.r": 0.579489350318909,
-			"completed": false,
+			"completed": true,
 			"id": 47,
-			"pos.x": 3146.8505859375,
-			"pos.y": 948.24072265625,
-			"priority_id": 2,
-			"size.x": 427.80419921875,
-			"size.y": 50.0,
+			"pos.x": 3530.392578125,
+			"pos.y": 1149.74267578125,
+			"priority_id": 0,
+			"size.x": 428.0,
+			"size.y": 64.0,
 			"text": "Deselect LineEdit if element is not selected"
 		},
 		"48": {
@@ -1197,7 +1231,7 @@
 			"pos.y": 910.122009277344,
 			"priority_id": 2,
 			"size.x": 295.966796875,
-			"size.y": 63.302490234375,
+			"size.y": 64.0,
 			"text": "Classify all possible actions"
 		},
 		"56": {
@@ -1211,7 +1245,7 @@
 			"pos.y": 1049.771484375,
 			"priority_id": 3,
 			"size.x": 177.891723632813,
-			"size.y": 63.275634765625,
+			"size.y": 64.0,
 			"text": "Canvas Size"
 		},
 		"57": {
@@ -1225,7 +1259,7 @@
 			"pos.y": 1058.77685546875,
 			"priority_id": 4,
 			"size.x": 207.48095703125,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "If smaller"
 		},
 		"58": {
@@ -1235,11 +1269,11 @@
 			"bgcolor.r": 0.579489350318909,
 			"completed": false,
 			"id": 58,
-			"pos.x": 3023.71166992188,
-			"pos.y": 1006.35705566406,
+			"pos.x": 3081.63671875,
+			"pos.y": 886.478454589844,
 			"priority_id": 2,
-			"size.x": 254.8232421875,
-			"size.y": 50.0,
+			"size.x": 249.075439453125,
+			"size.y": 64.0,
 			"text": "Save swatches used"
 		},
 		"59": {
@@ -1249,11 +1283,11 @@
 			"bgcolor.r": 0.579489350318909,
 			"completed": false,
 			"id": 59,
-			"pos.x": 3309.1806640625,
-			"pos.y": 1008.70776367188,
+			"pos.x": 3354.73779296875,
+			"pos.y": 886.01171875,
 			"priority_id": 2,
-			"size.x": 225.44189453125,
-			"size.y": 50.0,
+			"size.x": 213.9462890625,
+			"size.y": 64.0,
 			"text": "Delete on New"
 		},
 		"61": {
@@ -1295,7 +1329,7 @@
 			"pos.y": 1220.64538574219,
 			"priority_id": 3,
 			"size.x": 448.73095703125,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "More numbers get added if used + scrollbar"
 		},
 		"64": {
@@ -1308,8 +1342,8 @@
 			"pos.x": 4335.5224609375,
 			"pos.y": 1282.66979980469,
 			"priority_id": 3,
-			"size.x": 378.02197265625,
-			"size.y": 50.0,
+			"size.x": 381.0,
+			"size.y": 64.0,
 			"text": "1 - 9 have keyboard shortcuts = go to"
 		},
 		"65": {
@@ -1323,7 +1357,7 @@
 			"pos.y": 1345.93505859375,
 			"priority_id": 3,
 			"size.x": 348.2509765625,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Increment / Decrement all"
 		},
 		"66": {
@@ -1337,7 +1371,7 @@
 			"pos.y": 1406.71911621094,
 			"priority_id": 3,
 			"size.x": 427.64208984375,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Remove / Replace element from number"
 		},
 		"67": {
@@ -1351,7 +1385,7 @@
 			"pos.y": 911.762390136719,
 			"priority_id": 2,
 			"size.x": 252.73291015625,
-			"size.y": 60.1520385742188,
+			"size.y": 64.0,
 			"text": "Keep an ordered list"
 		},
 		"68": {
@@ -1359,13 +1393,13 @@
 			"bgcolor.b": 0.723033785820007,
 			"bgcolor.g": 0.464728474617004,
 			"bgcolor.r": 0.579489350318909,
-			"completed": false,
+			"completed": true,
 			"id": 68,
-			"pos.x": 3155.83715820313,
-			"pos.y": 1125.3671875,
-			"priority_id": 1,
+			"pos.x": 3276.33276367188,
+			"pos.y": 1481.390625,
+			"priority_id": 0,
 			"size.x": 438.806884765625,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Visual confirmation for first connection"
 		},
 		"69": {
@@ -1375,11 +1409,11 @@
 			"bgcolor.r": 0.580392181873322,
 			"completed": true,
 			"id": 69,
-			"pos.x": 3158.47119140625,
-			"pos.y": 1543.822265625,
+			"pos.x": 3052.94287109375,
+			"pos.y": 1152.52990722656,
 			"priority_id": 4,
 			"size.x": 459.701904296875,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Can select element when picking BG color"
 		},
 		"70": {
@@ -1389,11 +1423,11 @@
 			"bgcolor.r": 0.579489350318909,
 			"completed": false,
 			"id": 70,
-			"pos.x": 3164.35302734375,
-			"pos.y": 1068.9619140625,
+			"pos.x": 3209.91015625,
+			"pos.y": 952.9990234375,
 			"priority_id": 2,
-			"size.x": 513.951171875,
-			"size.y": 50.0,
+			"size.x": 499.581298828125,
+			"size.y": 64.0,
 			"text": "Checkbox delete swatches confirmation on New"
 		},
 		"71": {
@@ -1403,11 +1437,11 @@
 			"bgcolor.r": 0.580392181873322,
 			"completed": true,
 			"id": 71,
-			"pos.x": 3159.0390625,
-			"pos.y": 1667.16625976563,
+			"pos.x": 3239.72485351563,
+			"pos.y": 1285.744140625,
 			"priority_id": 4,
-			"size.x": 394.51904296875,
-			"size.y": 50.0,
+			"size.x": 396.0,
+			"size.y": 64.0,
 			"text": "Save canvas data in file: Location, Scale"
 		},
 		"72": {
@@ -1421,7 +1455,7 @@
 			"pos.y": 1292.93347167969,
 			"priority_id": 3,
 			"size.x": 445.494262695313,
-			"size.y": 56.75048828125,
+			"size.y": 64.0,
 			"text": "Modify line connections on tool selected"
 		},
 		"73": {
@@ -1435,7 +1469,7 @@
 			"pos.y": 1380.76513671875,
 			"priority_id": 3,
 			"size.x": 371.8701171875,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Click middle to add single new point"
 		},
 		"74": {
@@ -1448,8 +1482,8 @@
 			"pos.x": 2277.16357421875,
 			"pos.y": 1376.89038085938,
 			"priority_id": 3,
-			"size.x": 236.248046875,
-			"size.y": 50.0001220703125,
+			"size.x": 237.0,
+			"size.y": 64.0,
 			"text": "R.Click to delete point"
 		},
 		"75": {
@@ -1463,7 +1497,7 @@
 			"pos.y": 357.784881591797,
 			"priority_id": 2,
 			"size.x": 355.078857421875,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Easier move element when small"
 		},
 		"76": {
@@ -1477,7 +1511,7 @@
 			"pos.y": 1301.97546386719,
 			"priority_id": 4,
 			"size.x": 400.55029296875,
-			"size.y": 59.7828369140625,
+			"size.y": 64.0,
 			"text": "Color picker Background Color"
 		},
 		"77": {
@@ -1561,7 +1595,7 @@
 			"pos.y": 374.576232910156,
 			"priority_id": 1,
 			"size.x": 210.4150390625,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Show total"
 		},
 		"83": {
@@ -1575,7 +1609,7 @@
 			"pos.y": 432.700225830078,
 			"priority_id": 1,
 			"size.x": 361.537109375,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Show total with priority threshold"
 		},
 		"84": {
@@ -1602,8 +1636,8 @@
 			"pos.x": 3872.21557617188,
 			"pos.y": 480.535797119141,
 			"priority_id": 1,
-			"size.x": 111.244384765625,
-			"size.y": 50.0,
+			"size.x": 119.0,
+			"size.y": 64.0,
 			"text": "Set Timer"
 		},
 		"86": {
@@ -1613,8 +1647,8 @@
 			"bgcolor.r": 0.355451703071594,
 			"completed": false,
 			"id": 86,
-			"pos.x": 1708.53369140625,
-			"pos.y": 370.0205078125,
+			"pos.x": 1709.80444335938,
+			"pos.y": 362.396087646484,
 			"priority_id": 0,
 			"size.x": 165.374877929688,
 			"size.y": 116.299865722656,
@@ -1645,7 +1679,7 @@
 			"pos.y": 1397.33337402344,
 			"priority_id": 4,
 			"size.x": 248.916015625,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "File Name / \"New File\""
 		},
 		"89": {
@@ -1659,7 +1693,7 @@
 			"pos.y": 1567.73974609375,
 			"priority_id": 2,
 			"size.x": 214.8349609375,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Autosave succesful"
 		},
 		"90": {
@@ -1673,7 +1707,7 @@
 			"pos.y": 1453.64172363281,
 			"priority_id": 4,
 			"size.x": 170.38134765625,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Save succesful"
 		},
 		"91": {
@@ -1687,7 +1721,7 @@
 			"pos.y": 1511.43176269531,
 			"priority_id": 4,
 			"size.x": 165.935791015625,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Load succesful"
 		},
 		"92": {
@@ -1697,11 +1731,11 @@
 			"bgcolor.r": 0.355451703071594,
 			"completed": false,
 			"id": 92,
-			"pos.x": 2071.17260742188,
-			"pos.y": 403.54345703125,
+			"pos.x": 1109.09729003906,
+			"pos.y": 335.706024169922,
 			"priority_id": 3,
-			"size.x": 487.243408203125,
-			"size.y": 50.0,
+			"size.x": 391.785888671875,
+			"size.y": 64.0,
 			"text": "BG / text outline aliasing at low zoom"
 		},
 		"93": {
@@ -1711,11 +1745,11 @@
 			"bgcolor.r": 0.329411774873734,
 			"completed": false,
 			"id": 93,
-			"pos.x": 2808.8154296875,
-			"pos.y": 1627.29846191406,
+			"pos.x": 2804.83984375,
+			"pos.y": 1633.92492675781,
 			"priority_id": 3,
 			"size.x": 289.63330078125,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Last saved x minutes ago"
 		},
 		"95": {
@@ -1729,7 +1763,7 @@
 			"pos.y": 167.937789916992,
 			"priority_id": 3,
 			"size.x": 299.35107421875,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "ESC to Close BG color picker"
 		},
 		"96": {
@@ -1765,13 +1799,13 @@
 			"bgcolor.b": 0.721568644046783,
 			"bgcolor.g": 0.462745100259781,
 			"bgcolor.r": 0.580392181873322,
-			"completed": false,
+			"completed": true,
 			"id": 98,
-			"pos.x": 3160.91943359375,
-			"pos.y": 1244.2021484375,
-			"priority_id": 2,
-			"size.x": 318.95068359375,
-			"size.y": 50.0,
+			"pos.x": 3071.03393554688,
+			"pos.y": 1027.62292480469,
+			"priority_id": 0,
+			"size.x": 324.0,
+			"size.y": 64.0,
 			"text": "Unite Select + Pan&Zoom tools"
 		},
 		"99": {
@@ -1781,11 +1815,11 @@
 			"bgcolor.r": 0.580392181873322,
 			"completed": false,
 			"id": 99,
-			"pos.x": 3154.34033203125,
-			"pos.y": 1304.39575195313,
+			"pos.x": 3110.166015625,
+			"pos.y": 753.4296875,
 			"priority_id": 3,
 			"size.x": 627.047607421875,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Pointing finger mouse cursor only when able to select or move"
 		},
 		"100": {
@@ -1813,7 +1847,7 @@
 			"pos.y": 1084.82641601563,
 			"priority_id": 1,
 			"size.x": 274.490234375,
-			"size.y": 63.023193359375,
+			"size.y": 64.0,
 			"text": "Find bounding rectangle"
 		},
 		"102": {
@@ -1841,7 +1875,7 @@
 			"pos.y": 544.025085449219,
 			"priority_id": 1,
 			"size.x": 519.342529296875,
-			"size.y": 60.72119140625,
+			"size.y": 64.0,
 			"text": "Save opened file paths on exit & reopen on launch"
 		},
 		"104": {
@@ -1896,8 +1930,8 @@
 			"pos.x": 2356.318359375,
 			"pos.y": 1038.39038085938,
 			"priority_id": 0,
-			"size.x": 176.731689453125,
-			"size.y": 51.4454345703125,
+			"size.x": 185.0,
+			"size.y": 64.0,
 			"text": "Save / Load data"
 		},
 		"109": {
@@ -1910,7 +1944,7 @@
 			"pos.x": 1374.43017578125,
 			"pos.y": 756.932861328125,
 			"priority_id": 4,
-			"size.x": 240.84375,
+			"size.x": 241.0,
 			"size.y": 73.3602294921875,
 			"text": "Hide their connections"
 		},
@@ -1933,13 +1967,13 @@
 			"bgcolor.b": 0.721568644046783,
 			"bgcolor.g": 0.462745100259781,
 			"bgcolor.r": 0.580392181873322,
-			"completed": false,
+			"completed": true,
 			"id": 111,
-			"pos.x": 3156.2197265625,
-			"pos.y": 1362.32470703125,
-			"priority_id": 1,
+			"pos.x": 3302.34838867188,
+			"pos.y": 1414.84130859375,
+			"priority_id": 0,
 			"size.x": 485.396484375,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Make / Remove connection by selecting LineEdit"
 		},
 		"112": {
@@ -1966,8 +2000,8 @@
 			"pos.x": 1469.49743652344,
 			"pos.y": 584.86328125,
 			"priority_id": 4,
-			"size.x": 312.01611328125,
-			"size.y": 63.8796997070313,
+			"size.x": 318.0,
+			"size.y": 64.0,
 			"text": "Hide when marked if checkbox"
 		},
 		"115": {
@@ -1981,7 +2015,7 @@
 			"pos.y": 334.385223388672,
 			"priority_id": 2,
 			"size.x": 141.486572265625,
-			"size.y": 54.4847106933594,
+			"size.y": 64.0,
 			"text": "Comments"
 		},
 		"116": {
@@ -1995,7 +2029,7 @@
 			"pos.y": 504.430145263672,
 			"priority_id": 4,
 			"size.x": 301.438232421875,
-			"size.y": 58.4962463378906,
+			"size.y": 64.0000305175781,
 			"text": "Save / Load checkbox state"
 		},
 		"118": {
@@ -2009,7 +2043,7 @@
 			"pos.y": 1162.0,
 			"priority_id": 3,
 			"size.x": 264.0,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Undefined order button"
 		},
 		"119": {
@@ -2023,7 +2057,7 @@
 			"pos.y": 809.320739746094,
 			"priority_id": 4,
 			"size.x": 179.3818359375,
-			"size.y": 52.559326171875,
+			"size.y": 64.0,
 			"text": "Save + Save As"
 		},
 		"120": {
@@ -2037,7 +2071,7 @@
 			"pos.y": 99.5380401611328,
 			"priority_id": 4,
 			"size.x": 170.584716796875,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Ctrl + S save"
 		},
 		"121": {
@@ -2047,11 +2081,11 @@
 			"bgcolor.r": 0.580392181873322,
 			"completed": false,
 			"id": 121,
-			"pos.x": 3159.984375,
-			"pos.y": 1183.81982421875,
+			"pos.x": 3146.1796875,
+			"pos.y": 687.90478515625,
 			"priority_id": 2,
 			"size.x": 458.234130859375,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Custom file extension -> Open with..."
 		},
 		"122": {
@@ -2121,7 +2155,7 @@
 			"pos.y": 930.461547851563,
 			"priority_id": 0,
 			"size.x": 169.32421875,
-			"size.y": 55.2979736328125,
+			"size.y": 64.0,
 			"text": "Filter elements"
 		},
 		"129": {
@@ -2135,7 +2169,7 @@
 			"pos.y": 1086.76513671875,
 			"priority_id": 0,
 			"size.x": 275.44873046875,
-			"size.y": 62.5338134765625,
+			"size.y": 64.0,
 			"text": "Play anim. on mouse exit"
 		},
 		"130": {
@@ -2148,8 +2182,8 @@
 			"pos.x": 1737.86059570313,
 			"pos.y": 1122.32836914063,
 			"priority_id": 0,
-			"size.x": 406.44482421875,
-			"size.y": 53.80078125,
+			"size.x": 411.0,
+			"size.y": 64.0,
 			"text": "Disable tool when checkbox / completed"
 		},
 		"131": {
@@ -2163,21 +2197,21 @@
 			"pos.y": 873.728210449219,
 			"priority_id": 0,
 			"size.x": 318.779541015625,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Style - Thicker & +/- Buttons"
 		},
 		"132": {
 			"bgcolor.a": 1.0,
-			"bgcolor.b": 0.329411774873734,
-			"bgcolor.g": 0.486274510622025,
-			"bgcolor.r": 0.658823549747467,
+			"bgcolor.b": 0.721568644046783,
+			"bgcolor.g": 0.462745100259781,
+			"bgcolor.r": 0.580392181873322,
 			"completed": true,
 			"id": 132,
 			"pos.x": 2631.1181640625,
 			"pos.y": 933.189880371094,
 			"priority_id": 0,
 			"size.x": 218.387451171875,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Hide with checkbox"
 		},
 		"133": {
@@ -2191,7 +2225,7 @@
 			"pos.y": 989.503173828125,
 			"priority_id": 0,
 			"size.x": 272.05322265625,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Hide extra connections"
 		},
 		"134": {
@@ -2205,7 +2239,7 @@
 			"pos.y": 992.859924316406,
 			"priority_id": 0,
 			"size.x": 144.020751953125,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Toggle Tool"
 		},
 		"135": {
@@ -2213,13 +2247,13 @@
 			"bgcolor.b": 0.721568644046783,
 			"bgcolor.g": 0.462745100259781,
 			"bgcolor.r": 0.580392181873322,
-			"completed": false,
+			"completed": true,
 			"id": 135,
-			"pos.x": 3158.69311523438,
-			"pos.y": 1421.12731933594,
+			"pos.x": 3182.79931640625,
+			"pos.y": 1220.00573730469,
 			"priority_id": 0,
-			"size.x": 386.55029296875,
-			"size.y": 50.0,
+			"size.x": 388.0,
+			"size.y": 64.0,
 			"text": "Select newly created element text-box"
 		},
 		"136": {
@@ -2229,23 +2263,233 @@
 			"bgcolor.r": 0.580392181873322,
 			"completed": false,
 			"id": 136,
-			"pos.x": 3157.0400390625,
-			"pos.y": 1483.58435058594,
+			"pos.x": 3165.17333984375,
+			"pos.y": 817.047546386719,
 			"priority_id": 3,
 			"size.x": 396.76416015625,
-			"size.y": 50.0,
+			"size.y": 64.0,
 			"text": "Input current file path on Load / Save"
+		},
+		"137": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.588235318660736,
+			"bgcolor.g": 0.572549045085907,
+			"bgcolor.r": 0.329411774873734,
+			"completed": true,
+			"id": 137,
+			"pos.x": 2069.990234375,
+			"pos.y": 1159.607421875,
+			"priority_id": 0,
+			"size.x": 341.4345703125,
+			"size.y": 64.0,
+			"text": "Checkbox style against black BG"
+		},
+		"138": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.521568655967712,
+			"bgcolor.g": 0.419607847929001,
+			"bgcolor.r": 0.717647075653076,
+			"completed": true,
+			"id": 138,
+			"pos.x": 2662.37255859375,
+			"pos.y": 231.84326171875,
+			"priority_id": 0,
+			"size.x": 143.93701171875,
+			"size.y": 76.7257080078125,
+			"text": "All Tools"
+		},
+		"140": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.388235300779343,
+			"bgcolor.g": 0.576470613479614,
+			"bgcolor.r": 0.423529416322708,
+			"completed": false,
+			"id": 140,
+			"pos.x": 4087.82690429688,
+			"pos.y": 655.720458984375,
+			"priority_id": 2,
+			"size.x": 169.273681640625,
+			"size.y": 64.0,
+			"text": "Mark Issue"
+		},
+		"141": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.388235300779343,
+			"bgcolor.g": 0.576470613479614,
+			"bgcolor.r": 0.423529416322708,
+			"completed": false,
+			"id": 141,
+			"pos.x": 4186.375,
+			"pos.y": 794.066162109375,
+			"priority_id": 3,
+			"size.x": 178.7490234375,
+			"size.y": 64.0,
+			"text": "Pin Element"
+		},
+		"142": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.701960802078247,
+			"bgcolor.g": 0.549019634723663,
+			"bgcolor.r": 0.352941185235977,
+			"completed": true,
+			"id": 142,
+			"pos.x": 592.462341308594,
+			"pos.y": 543.266296386719,
+			"priority_id": 0,
+			"size.x": 887.868713378906,
+			"size.y": 64.0,
+			"text": "Selection Viewer / Element bad size when element is small because of priority tool size"
+		},
+		"143": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.329411774873734,
+			"bgcolor.g": 0.549019634723663,
+			"bgcolor.r": 0.521568655967712,
+			"completed": false,
+			"id": 143,
+			"pos.x": 2045.46630859375,
+			"pos.y": 186.86637878418,
+			"priority_id": 3,
+			"size.x": 305.428955078125,
+			"size.y": 64.0,
+			"text": "Color picker background size"
+		},
+		"145": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.721568644046783,
+			"bgcolor.g": 0.462745100259781,
+			"bgcolor.r": 0.580392181873322,
+			"completed": true,
+			"id": 145,
+			"pos.x": 3574.66796875,
+			"pos.y": 1217.81372070313,
+			"priority_id": 0,
+			"size.x": 318.42724609375,
+			"size.y": 64.0,
+			"text": "On different element selected"
+		},
+		"146": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.701960802078247,
+			"bgcolor.g": 0.549019634723663,
+			"bgcolor.r": 0.352941185235977,
+			"completed": false,
+			"id": 146,
+			"pos.x": 816.81201171875,
+			"pos.y": 405.356719970703,
+			"priority_id": 2,
+			"size.x": 779.142333984375,
+			"size.y": 64.0,
+			"text": "Show completed + priority filtered items - hide connections to hidden elements"
+		},
+		"147": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.388235300779343,
+			"bgcolor.g": 0.576470613479614,
+			"bgcolor.r": 0.423529416322708,
+			"completed": false,
+			"id": 147,
+			"pos.x": 4533.9462890625,
+			"pos.y": 505.703308105469,
+			"priority_id": 2,
+			"size.x": 248.005859375,
+			"size.y": 78.419677734375,
+			"text": "Create List Element"
+		},
+		"148": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.388235300779343,
+			"bgcolor.g": 0.576470613479614,
+			"bgcolor.r": 0.423529416322708,
+			"completed": false,
+			"id": 148,
+			"pos.x": 4862.6533203125,
+			"pos.y": 518.345947265625,
+			"priority_id": 2,
+			"size.x": 315.9599609375,
+			"size.y": 64.0,
+			"text": "Connections for every line"
+		},
+		"150": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.521568655967712,
+			"bgcolor.g": 0.419607847929001,
+			"bgcolor.r": 0.717647075653076,
+			"completed": true,
+			"id": 150,
+			"pos.x": 2857.50048828125,
+			"pos.y": 232.682189941406,
+			"priority_id": 0,
+			"size.x": 249.26806640625,
+			"size.y": 74.5571594238281,
+			"text": "Tooltip shows keybind"
+		},
+		"151": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.701960802078247,
+			"bgcolor.g": 0.549019634723663,
+			"bgcolor.r": 0.352941185235977,
+			"completed": true,
+			"id": 151,
+			"pos.x": 1044.1826171875,
+			"pos.y": 183.138122558594,
+			"priority_id": 0,
+			"size.x": 515.65966796875,
+			"size.y": 64.0,
+			"text": "Grey text / White text style on toggle completed"
+		},
+		"152": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.701960802078247,
+			"bgcolor.g": 0.549019634723663,
+			"bgcolor.r": 0.352941185235977,
+			"completed": true,
+			"id": 152,
+			"pos.x": 1003.33422851563,
+			"pos.y": 250.434204101563,
+			"priority_id": 0,
+			"size.x": 572.0244140625,
+			"size.y": 64.0,
+			"text": "Change zoom progress bar according to zoom limits set"
+		},
+		"153": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.701960802078247,
+			"bgcolor.g": 0.549019634723663,
+			"bgcolor.r": 0.352941185235977,
+			"completed": false,
+			"id": 153,
+			"pos.x": 899.226013183594,
+			"pos.y": 475.788391113281,
+			"priority_id": 2,
+			"size.x": 669.697082519531,
+			"size.y": 64.0,
+			"text": "Clicking Line Edit while it is already active doesn't trigger signal"
+		},
+		"154": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.721568644046783,
+			"bgcolor.g": 0.462745100259781,
+			"bgcolor.r": 0.580392181873322,
+			"completed": false,
+			"id": 154,
+			"pos.x": 3214.841796875,
+			"pos.y": 1018.07373046875,
+			"priority_id": 3,
+			"size.x": 281.33642578125,
+			"size.y": 64.0,
+			"text": "Smaller elements possible"
 		}
 	},
 	"State": {
-		"position.x": -949.999084472656,
-		"position.y": -89.9999542236328,
+		"position.x": -710.240295410156,
+		"position.y": 0.0,
 		"priority_filter_value": 4.0,
-		"scale.x": 0.62146782875061,
-		"scale.y": 0.62146782875061,
+		"scale.x": 0.511557281017303,
+		"scale.y": 0.511557281017303,
 		"show_completed": false,
 		"show_priorities": true,
 		"show_priority_tool": true,
-		"zoom_level": 0.621467825989691
+		"zoom_level": 0.511557286702147
 	}
 }

@@ -6,10 +6,12 @@ class_name ElementLabel
 @export var line_edit_completed_theme: Theme
 @onready var background: Panel = $PanelContainer/Background
 @onready var priority: Panel = $PanelContainer/Background/Priority
-@onready var line_edit: LineEdit = $PanelContainer/Background/MarginContainer/LineEdit
+@onready var line_edit: LineEdit = $PanelContainer/Background/TextMarginContainer/LineEdit
+@onready var text_margin_container: MarginContainer = $PanelContainer/Background/TextMarginContainer
 @onready var tool_margin_container: MarginContainer = $PanelContainer/ToolMarginContainer
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var hide_options_timer: Timer = $HideOptionsTimer
+@onready var resize_timer: Timer = $ResizeTimer
 
 var background_stylebox: StyleBoxFlat
 var priority_stylebox: StyleBoxFlat
@@ -19,6 +21,7 @@ var completed: bool = false
 var priority_enabled: bool = false
 var priority_tool_shown: bool = false
 var priority_tool_enabled: bool = true
+var manual_resize: bool = false
 
 signal became_active
 signal changed_priority
@@ -30,6 +33,7 @@ func _ready() -> void:
 	background.add_theme_stylebox_override("panel", background_stylebox)
 	priority.add_theme_stylebox_override("panel", priority_stylebox)
 	tool_margin_container.modulate.a = 0.0
+	line_edit.theme = line_edit_theme
 
 
 func toggle_completed() -> void:
@@ -62,6 +66,21 @@ func set_priority_color(color: Color) -> void:
 func set_priority_visible(toggled_on: bool) -> void:
 	priority_enabled = toggled_on
 	priority.visible = toggled_on
+
+
+func toggle_priority_tool(toggle_on: bool) -> void:
+	if toggle_on and !priority_tool_shown and priority_tool_enabled:
+		animation_player.play("show_priority_buttons")
+		priority_tool_shown = true
+	elif !toggle_on and priority_tool_shown:
+		animation_player.play("hide_priority_buttons")
+		priority_tool_shown = false
+
+
+func change_size(new_size: Vector2) -> void:
+	manual_resize = true
+	size = new_size
+	resize_timer.start()
 
 
 func _on_line_edit_editing_toggled(toggled_on: bool) -> void:
@@ -99,15 +118,6 @@ func _on_hide_options_timer_timeout() -> void:
 		toggle_priority_tool(false)
 
 
-func toggle_priority_tool(toggle_on: bool) -> void:
-	if toggle_on and !priority_tool_shown and priority_tool_enabled:
-		animation_player.play("show_priority_buttons")
-		priority_tool_shown = true
-	elif !toggle_on and priority_tool_shown:
-		animation_player.play("hide_priority_buttons")
-		priority_tool_shown = false
-
-
 func _on_priority_buttons_mouse_entered() -> void:
 	if !animation_player.is_playing() and !completed and priority_enabled:
 		toggle_priority_tool(true)
@@ -125,4 +135,14 @@ func _on_priority_tool_area_mouse_entered() -> void:
 
 
 func _on_priority_tool_area_mouse_exited() -> void:
-	hide_options_timer.start()
+	if hide_options_timer.is_node_ready():
+		hide_options_timer.start()
+
+
+func _on_text_margin_container_resized() -> void:
+	if is_node_ready() and !manual_resize:
+		size.x = text_margin_container.size.x
+
+
+func _on_resize_timer_timeout() -> void:
+	manual_resize = false

@@ -1,6 +1,7 @@
 extends VBoxContainer
 
-@onready var name_label: Label = $NameLabel
+#@onready var name_label: Label = $NameLabel
+@onready var zoom_icon: Panel = $ZoomIcon
 @onready var zoom_progress_bar: ProgressBar = $ZoomProgressBar
 @onready var zoom_label: Label = $ZoomLabel
 @onready var hide_timer: Timer = $HideTimer
