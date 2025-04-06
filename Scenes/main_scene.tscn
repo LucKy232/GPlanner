@@ -31,20 +31,20 @@ Panel/styles/panel = SubResource("StyleBoxTexture_6l7je")
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x6ack"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 draw_center = false
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.695502, 0.695504, 0.695503, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 1, 1, 1)
 corner_radius_top_left = 2
 corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 corner_detail = 1
-expand_margin_left = 2.0
-expand_margin_top = 2.0
-expand_margin_right = 2.0
-expand_margin_bottom = 2.0
+expand_margin_left = 4.0
+expand_margin_top = 4.0
+expand_margin_right = 4.0
+expand_margin_bottom = 4.0
 anti_aliasing = false
 
 [sub_resource type="Theme" id="Theme_iacmt"]
@@ -200,6 +200,7 @@ theme = SubResource("Theme_52fb6")
 
 [node name="SelectionViewer" type="Panel" parent="ElementContainer"]
 visible = false
+z_index = 1
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -216,7 +217,7 @@ mouse_filter = 1
 
 [node name="ConnectionIndicator" type="Panel" parent="ElementContainer"]
 visible = false
-z_index = 1
+z_index = 2
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0

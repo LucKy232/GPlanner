@@ -173,9 +173,9 @@ func add_element_label(at_position: Vector2, id_specified: int = -1) -> void:
 	new_element.set_priority_color(priority_colors[Priority.NONE])
 	new_element.set_priority_visible(show_priorities.is_pressed())
 	new_element.z_index = element_container.z_index
-	tool_box.select(Tool.SELECT)
-	elements[id].line_edit.edit()	# NOTE Also signals select_element(id)
-	is_element_just_created = true
+	if id_specified < 0:	# Don't select elements when creating them in bulk by specifying their ids
+		elements[id].line_edit.edit()	# NOTE Also signals select_element(id)
+		is_element_just_created = true
 
 
 func add_connection(id_specified: int = -1) -> void:
@@ -259,17 +259,18 @@ func select_element(id: int) -> void:
 		elements[selected_element].line_edit.apply_ime()
 		elements[selected_element].line_edit.deselect()
 		elements[selected_element].line_edit.unedit()
+		elements[selected_element].z_index = 0
 	if elements.has(id):
 		#print("Select id")
 		selected_element = id
 		selection_viewer.visible = true
 		selection_viewer.size = elements[id].size
 		selection_viewer.position = elements[id].position
+		elements[selected_element].z_index = 1
 	else:	# Deselect element if id invalid
 		#print("ID invalid")
 		selection_viewer.visible = false
 		selected_element = -1
-
 
 
 func update_connections(elem_id: int) -> void:
@@ -576,6 +577,8 @@ func _on_element_container_gui_input(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
 			if tool_box.is_selected(Tool.ADD_ELEMENT):
 				add_element_label(event.position)
+				if !Input.is_key_pressed(KEY_CTRL):
+					tool_box.select(Tool.SELECT)
 			if tool_box.is_selected(Tool.SELECT):
 				if !is_element_just_created:
 					select_element(-1)	# Deselect any
@@ -673,6 +676,8 @@ func _on_element_text_box_active(id: int) -> void:
 			else:
 				connection_candidate_2 = id
 				add_connection()
+		if tool_box.is_selected(Tool.REMOVE_CONNECTIONS):
+			remove_connections(id)
 
 
 func _on_element_label_resized(id: int) -> void:

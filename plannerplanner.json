@@ -32,10 +32,6 @@
 			"id1": 12,
 			"id2": 19
 		},
-		"18": {
-			"id1": 0,
-			"id2": 20
-		},
 		"20": {
 			"id1": 18,
 			"id2": 17
@@ -475,6 +471,14 @@
 		"168": {
 			"id1": 153,
 			"id2": 86
+		},
+		"169": {
+			"id1": 155,
+			"id2": 4
+		},
+		"170": {
+			"id1": 20,
+			"id2": 19
 		}
 	},
 	"Elements": {
@@ -723,8 +727,8 @@
 			"bgcolor.r": 0.660016775131226,
 			"completed": false,
 			"id": 17,
-			"pos.x": 2058.99975585938,
-			"pos.y": 796.0,
+			"pos.x": 2053.02954101563,
+			"pos.y": 786.049682617188,
 			"priority_id": 2,
 			"size.x": 152.0,
 			"size.y": 75.0,
@@ -919,8 +923,8 @@
 			"bgcolor.r": 0.660016775131226,
 			"completed": false,
 			"id": 32,
-			"pos.x": 2549.2646484375,
-			"pos.y": 814.775024414063,
+			"pos.x": 2550.81005859375,
+			"pos.y": 825.593139648438,
 			"priority_id": 3,
 			"size.x": 135.0,
 			"size.y": 64.0,
@@ -933,10 +937,10 @@
 			"bgcolor.r": 0.658823549747467,
 			"completed": false,
 			"id": 33,
-			"pos.x": 2544.44970703125,
-			"pos.y": 755.405090332031,
+			"pos.x": 2545.9951171875,
+			"pos.y": 758.495971679688,
 			"priority_id": 1,
-			"size.x": 147.0,
+			"size.x": 147.7080078125,
 			"size.y": 64.0,
 			"text": "Font Outline"
 		},
@@ -1902,8 +1906,8 @@
 			"pos.x": 2737.99975585938,
 			"pos.y": 621.999938964844,
 			"priority_id": 1,
-			"size.x": 278.0,
-			"size.y": 65.0,
+			"size.x": 276.583984375,
+			"size.y": 64.0,
 			"text": "Update tool on select"
 		},
 		"106": {
@@ -1983,8 +1987,8 @@
 			"bgcolor.r": 0.52378523349762,
 			"completed": false,
 			"id": 112,
-			"pos.x": 2060.0302734375,
-			"pos.y": 248.872375488281,
+			"pos.x": 2058.0400390625,
+			"pos.y": 257.872436523438,
 			"priority_id": 3,
 			"size.x": 363.1181640625,
 			"size.y": 65.6142883300781,
@@ -2473,23 +2477,51 @@
 			"bgcolor.r": 0.580392181873322,
 			"completed": false,
 			"id": 154,
-			"pos.x": 3214.841796875,
-			"pos.y": 1018.07373046875,
+			"pos.x": 3212.841796875,
+			"pos.y": 1022.07373046875,
 			"priority_id": 3,
-			"size.x": 281.33642578125,
+			"size.x": 272.0,
 			"size.y": 64.0,
 			"text": "Smaller elements possible"
+		},
+		"155": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.588235318660736,
+			"bgcolor.g": 0.572549045085907,
+			"bgcolor.r": 0.329411774873734,
+			"completed": false,
+			"id": 155,
+			"pos.x": 2796.92333984375,
+			"pos.y": 1296.7578125,
+			"priority_id": 2,
+			"size.x": 243.0,
+			"size.y": 64.0,
+			"text": "Better selection viewer"
+		},
+		"156": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.721568644046783,
+			"bgcolor.g": 0.462745100259781,
+			"bgcolor.r": 0.580392181873322,
+			"completed": false,
+			"id": 156,
+			"pos.x": 3224.88623046875,
+			"pos.y": 1235.5048828125,
+			"priority_id": 0,
+			"size.x": 409.0,
+			"size.y": 64.0,
+			"text": "Remove connections by clicking LineEdit"
 		}
 	},
 	"State": {
-		"position.x": -710.240295410156,
+		"position.x": -560.897644042969,
 		"position.y": 0.0,
 		"priority_filter_value": 4.0,
-		"scale.x": 0.511557281017303,
-		"scale.y": 0.511557281017303,
+		"scale.x": 0.502498209476471,
+		"scale.y": 0.502498209476471,
 		"show_completed": false,
 		"show_priorities": true,
 		"show_priority_tool": true,
-		"zoom_level": 0.511557286702147
+		"zoom_level": 0.502498211547899
 	}
 }
