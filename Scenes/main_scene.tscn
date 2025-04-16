@@ -1,6 +1,5 @@
 [gd_scene load_steps=35 format=3 uid="uid://bfydfy3iq0rjx"]
 
-[ext_resource type="Texture2D" uid="uid://v481h4vkkmsb" path="res://Backgrounds/grid_pattern_dark.png" id="1_6l7je"]
 [ext_resource type="Script" uid="uid://dj8gdy8d87lam" path="res://Scripts/main.gd" id="1_52fb6"]
 [ext_resource type="StyleBox" uid="uid://wrrl0mk4mdli" path="res://Themes/active_priority_button_stylebox.tres" id="2_mai8y"]
 [ext_resource type="StyleBox" uid="uid://0m1wm66xknlk" path="res://Themes/high_priority_button_stylebox.tres" id="3_76v2p"]
@@ -11,53 +10,36 @@
 [ext_resource type="StyleBox" uid="uid://dga3kal7lipkl" path="res://Themes/low_priority_button_stylebox.tres" id="5_ioaeq"]
 [ext_resource type="StyleBox" uid="uid://b0l55wn2xggiw" path="res://Themes/none_priority_button_stylebox.tres" id="6_7ewk0"]
 [ext_resource type="Texture2D" uid="uid://dh8rwukkdehkk" path="res://Icons/hand_cursor.svg" id="8_76v2p"]
-[ext_resource type="Texture2D" uid="uid://cjir350kly5j8" path="res://Icons/connection_indicator.svg" id="8_oyb3p"]
 [ext_resource type="Texture2D" uid="uid://djq4xvrjpvfp5" path="res://Icons/plus.svg" id="9_7ewk0"]
 [ext_resource type="Texture2D" uid="uid://cjmn8wx7kwelm" path="res://Icons/minus.svg" id="10_lhp3t"]
-[ext_resource type="Texture2D" uid="uid://dlooftfvpp7o8" path="res://Icons/canvas.svg" id="12_lhp3t"]
+[ext_resource type="Texture2D" uid="uid://dlooftfvpp7o8" path="res://Icons/color_canvas.svg" id="12_lhp3t"]
 [ext_resource type="Texture2D" uid="uid://l7psu5evarxp" path="res://Icons/add_line.svg" id="13_psl12"]
 [ext_resource type="Texture2D" uid="uid://1jids2awyagv" path="res://Icons/remove_line.svg" id="14_2ebs2"]
 [ext_resource type="Texture2D" uid="uid://dfq5wqtp3gjfd" path="res://Icons/checkbox.svg" id="15_2ebs2"]
 [ext_resource type="Theme" uid="uid://dwboubtw2bfss" path="res://Themes/checkbox_theme.tres" id="17_2ebs2"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6l7je"]
-texture = ExtResource("1_6l7je")
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
+[sub_resource type="Theme" id="Theme_2ebs2"]
+HBoxContainer/constants/separation = 2
 
-[sub_resource type="Theme" id="Theme_52fb6"]
-Panel/styles/panel = SubResource("StyleBoxTexture_6l7je")
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jvnna"]
+border_width_top = 2
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x6ack"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
-draw_center = false
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
-border_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-corner_detail = 1
-expand_margin_left = 4.0
-expand_margin_top = 4.0
-expand_margin_right = 4.0
-expand_margin_bottom = 4.0
-anti_aliasing = false
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oyb3p"]
+bg_color = Color(0.42, 0.42, 0.42, 0.215686)
+border_width_top = 2
+border_color = Color(1, 1, 1, 0.784314)
 
-[sub_resource type="Theme" id="Theme_iacmt"]
-Panel/styles/panel = SubResource("StyleBoxFlat_x6ack")
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ebs2"]
+bg_color = Color(0.6, 0.6, 0.6, 0.490196)
+border_width_top = 2
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_2ebs2"]
-texture = ExtResource("8_oyb3p")
-
-[sub_resource type="Theme" id="Theme_oyb3p"]
-Panel/styles/panel = SubResource("StyleBoxTexture_2ebs2")
+[sub_resource type="Theme" id="Theme_jvnna"]
+Button/styles/hover = SubResource("StyleBoxFlat_jvnna")
+Button/styles/normal = SubResource("StyleBoxFlat_oyb3p")
+Button/styles/pressed = SubResource("StyleBoxFlat_2ebs2")
 
 [sub_resource type="Theme" id="Theme_6l7je"]
-MarginContainer/constants/margin_bottom = 20
+MarginContainer/constants/margin_bottom = 38
 MarginContainer/constants/margin_left = 20
 MarginContainer/constants/margin_right = 20
 MarginContainer/constants/margin_top = 20
@@ -109,6 +91,14 @@ expand_margin_bottom = 8.0
 [sub_resource type="Theme" id="Theme_6ev3c"]
 Panel/styles/panel = SubResource("StyleBoxFlat_iacmt")
 
+[sub_resource type="Theme" id="Theme_psl12"]
+CheckBox/colors/font_color = Color(0.875, 0.875, 0.875, 1)
+CheckBox/colors/font_outline_color = Color(0, 0, 0, 1)
+CheckBox/constants/outline_size = 3
+Label/colors/font_color = Color(1, 1, 1, 1)
+Label/colors/font_outline_color = Color(0, 0, 0, 1)
+Label/constants/outline_size = 3
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_76v2p"]
 content_margin_left = 10.0
 content_margin_right = 0.0
@@ -159,6 +149,14 @@ HScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_76v2p")
 HScrollBar/styles/scroll = SubResource("StyleBoxFlat_mai8y")
 HScrollBar/styles/scroll_focus = SubResource("StyleBoxEmpty_drdnd")
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_psl12"]
+bg_color = Color(0.6, 0.6, 0.6, 0.45098)
+expand_margin_left = 4.0
+expand_margin_right = 4.0
+
+[sub_resource type="Theme" id="Theme_oyb3p"]
+Label/styles/normal = SubResource("StyleBoxFlat_psl12")
+
 [node name="MainScene" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -166,64 +164,48 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 8
-size_flags_vertical = 4
+size_flags_horizontal = 3
+size_flags_vertical = 3
 mouse_filter = 2
 script = ExtResource("1_52fb6")
 element_scene = "uid://lufadl7u0ek3"
-connection_scene = "uid://clweynhbi8rai"
+connection_scene = "res://Scenes/connection.tscn"
+canvas_scene = "uid://b1do6gcy6peum"
 zoom_limits = Vector2(0.125, 2)
 zoom_speed = 1.05
 priority_colors = Array[Color]([Color(1, 1, 1, 1), Color(1, 0, 0, 1), Color(1, 1, 0, 1), Color(0, 1, 0, 1), Color(0, 0, 0, 0)])
 priority_styleboxes = Array[StyleBoxFlat]([ExtResource("2_mai8y"), ExtResource("3_76v2p"), ExtResource("4_drdnd"), ExtResource("5_ioaeq"), ExtResource("6_7ewk0")])
 priority_filter_text = Array[String](["Only Active", "Active & High", "Medium and higher", "Low and higher", "All"])
+opened_files_file_name = "opened_files.json"
 
-[node name="ElementContainer" type="Control" parent="."]
+[node name="BottomBar" type="HBoxContainer" parent="."]
+z_index = 5
 layout_mode = 1
-anchors_preset = 0
-offset_right = 20000.0
-offset_bottom = 10000.0
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -36.0
+offset_right = 40.0
+grow_vertical = 0
+theme = SubResource("Theme_2ebs2")
+
+[node name="FileTabBar" type="TabBar" parent="BottomBar"]
+layout_mode = 2
 size_flags_horizontal = 4
-size_flags_vertical = 4
-mouse_filter = 1
+size_flags_vertical = 8
+clip_tabs = false
+tab_close_display_policy = 1
 
-[node name="Background" type="Panel" parent="ElementContainer"]
-texture_filter = 5
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme = SubResource("Theme_52fb6")
-
-[node name="SelectionViewer" type="Panel" parent="ElementContainer"]
-visible = false
-z_index = 1
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-theme = SubResource("Theme_iacmt")
-
-[node name="ConnectionContainer" type="Control" parent="ElementContainer"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 1
-
-[node name="ConnectionIndicator" type="Panel" parent="ElementContainer"]
-visible = false
-z_index = 2
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
-theme = SubResource("Theme_oyb3p")
+[node name="AddFileButton" type="Button" parent="BottomBar"]
+custom_minimum_size = Vector2(0, 31)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+theme = SubResource("Theme_jvnna")
+icon = ExtResource("9_7ewk0")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
+z_index = 5
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -310,6 +292,7 @@ text = " Load "
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 8
+theme = SubResource("Theme_psl12")
 
 [node name="Checkboxes" type="VBoxContainer" parent="MarginContainer/Settings"]
 layout_mode = 2
@@ -358,6 +341,7 @@ text = "Show priority tool popup"
 
 [node name="StatusBar" parent="MarginContainer" instance=ExtResource("5_iacmt")]
 layout_mode = 2
+theme = SubResource("Theme_oyb3p")
 
 [node name="FileDialogSave" type="FileDialog" parent="."]
 title = "Save canvas"
@@ -374,7 +358,9 @@ file_mode = 0
 access = 2
 filters = PackedStringArray("*.json")
 
-[connection signal="gui_input" from="ElementContainer" to="." method="_on_element_container_gui_input"]
+[connection signal="tab_changed" from="BottomBar/FileTabBar" to="." method="_on_file_tab_bar_tab_changed"]
+[connection signal="tab_close_pressed" from="BottomBar/FileTabBar" to="." method="_on_file_tab_bar_tab_close_pressed"]
+[connection signal="pressed" from="BottomBar/AddFileButton" to="." method="_on_add_file_button_pressed"]
 [connection signal="item_selected" from="MarginContainer/ToolBox" to="." method="_on_tool_box_item_selected"]
 [connection signal="color_changed" from="MarginContainer/ColorPicker" to="." method="_on_color_picker_color_changed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/NewButton" to="." method="_on_new_button_pressed"]

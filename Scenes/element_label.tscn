@@ -147,7 +147,6 @@ custom_minimum_size = Vector2(64, 64)
 offset_right = 120.0
 offset_bottom = 80.0
 pivot_offset = Vector2(0.5, 0.5)
-size_flags_horizontal = 4
 mouse_default_cursor_shape = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_562gy")
 script = ExtResource("1_m3njf")
@@ -279,6 +278,7 @@ one_shot = true
 wait_time = 0.25
 one_shot = true
 
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
 [connection signal="mouse_entered" from="PanelContainer/ToolMarginContainer/PriorityButtons" to="." method="_on_priority_buttons_mouse_entered"]
 [connection signal="mouse_exited" from="PanelContainer/ToolMarginContainer/PriorityButtons" to="." method="_on_priority_buttons_mouse_exited"]
 [connection signal="pressed" from="PanelContainer/ToolMarginContainer/PriorityButtons/PriorityActive" to="." method="_on_priority_active_pressed"]

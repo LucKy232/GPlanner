@@ -4,6 +4,8 @@ class_name ElementLabel
 @export var completed_stylebox: StyleBoxFlat
 @export var line_edit_theme: Theme
 @export var line_edit_completed_theme: Theme
+@export var completed_z_index = 0
+@export var active_z_index = 1
 @onready var background: Panel = $PanelContainer/Background
 @onready var priority: Panel = $PanelContainer/Background/Priority
 @onready var line_edit: LineEdit = $PanelContainer/Background/TextMarginContainer/LineEdit
@@ -23,7 +25,7 @@ var priority_tool_shown: bool = false
 var priority_tool_enabled: bool = true
 var manual_resize: bool = false
 
-signal became_active
+signal became_selected
 signal changed_priority
 
 
@@ -42,11 +44,13 @@ func toggle_completed() -> void:
 		background.add_theme_stylebox_override("panel", completed_stylebox)
 		priority.visible = false
 		line_edit.theme = line_edit_completed_theme
+		z_index = completed_z_index
 		#TODO set priority completed color
 	else:
 		background.add_theme_stylebox_override("panel", background_stylebox)
 		priority.visible = true
 		line_edit.theme = line_edit_theme
+		z_index = active_z_index
 
 
 func set_bg_color(color: Color) -> void:
@@ -83,9 +87,14 @@ func change_size(new_size: Vector2) -> void:
 	resize_timer.start()
 
 
+func set_size_fixed() -> void:
+	manual_resize = true
+	resize_timer.start()
+
+
 func _on_line_edit_editing_toggled(toggled_on: bool) -> void:
 	if toggled_on:
-		became_active.emit()
+		became_selected.emit()
 
 
 func _on_priority_active_pressed() -> void:
@@ -126,7 +135,8 @@ func _on_priority_buttons_mouse_entered() -> void:
 
 
 func _on_priority_buttons_mouse_exited() -> void:
-	hide_options_timer.start()
+	if hide_options_timer.is_inside_tree():
+		hide_options_timer.start()
 
 
 func _on_priority_tool_area_mouse_entered() -> void:
@@ -135,14 +145,20 @@ func _on_priority_tool_area_mouse_entered() -> void:
 
 
 func _on_priority_tool_area_mouse_exited() -> void:
-	if hide_options_timer.is_node_ready():
+	if hide_options_timer.is_inside_tree():
 		hide_options_timer.start()
 
 
 func _on_text_margin_container_resized() -> void:
 	if is_node_ready() and !manual_resize:
 		size.x = text_margin_container.size.x
+		print("Resizing element %d to the text box" % [id])
 
 
 func _on_resize_timer_timeout() -> void:
 	manual_resize = false
+
+
+func _on_visibility_changed() -> void:
+	if is_node_ready():
+		set_size_fixed()

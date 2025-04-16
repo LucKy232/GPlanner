@@ -4,6 +4,8 @@
 [ext_resource type="Texture2D" uid="uid://demenk3lgkymx" path="res://Icons/magnifying_glass.svg" id="2_atq65"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_4qtpc"]
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6l7je"]
 bg_color = Color(0.2484, 0.2484, 0.2484, 1)
