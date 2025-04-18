@@ -4,8 +4,6 @@ extends Control
 @onready var zoom_indicator: VBoxContainer = $MarginContainer/ZoomIndicator
 @onready var color_picker: ColorPicker = $MarginContainer/ColorPicker
 @onready var color_picker_bg: Panel = $MarginContainer/ColorPickerBG
-@onready var file_dialog_save: FileDialog = $FileDialogSave
-@onready var file_dialog_load: FileDialog = $FileDialogLoad
 @onready var status_bar: Label = $MarginContainer/StatusBar
 @onready var show_completed: CheckBox = $MarginContainer/Settings/Checkboxes/ShowCompleted
 @onready var show_priorities: CheckBox = $MarginContainer/Settings/Checkboxes/ShowPriorities
@@ -16,8 +14,12 @@ extends Control
 @onready var bottom_bar: HBoxContainer = $BottomBar
 @onready var margin_container: MarginContainer = $MarginContainer
 @onready var file_tab_bar: TabBar = $BottomBar/FileTabBar
-
-#@onready var canvas: PlannerCanvas = $Canvas
+@onready var file_dialog_save: FileDialog = $FileDialogSave
+@onready var file_dialog_load: FileDialog = $FileDialogLoad
+@onready var new_file_confirmation: AcceptDialog = $NewFileConfirmation
+@onready var load_file_confirmation: AcceptDialog = $LoadFileConfirmation
+@onready var close_tab_confirmation: AcceptDialog = $CloseTabConfirmation
+@onready var exit_tab_confirmation: AcceptDialog = $ExitTabConfirmation
 
 @export_file("*.tscn") var element_scene
 @export_file("*.tscn") var connection_scene
@@ -36,6 +38,11 @@ var app_version: String = ""
 var canvases: Dictionary[int, PlannerCanvas]
 var tab_to_canvas: Dictionary[int, int]
 var cc: int = -1		## Current Canvas ID
+var show_load_dialog: bool = false
+var close_this_tab: bool = false
+var cancel_quit: bool = false
+var queue_quit: bool = false
+# TODO set bools to false when needed
 
 enum Checkbox {
 	SHOW_PRIORITIES,
@@ -63,6 +70,14 @@ func _ready() -> void:
 		_on_add_file_button_pressed()
 	update_zoom_limits(zoom_limits)
 	get_tree().set_auto_accept_quit(false)		# Don't automatically quit
+	new_file_confirmation.add_button("     No     ", true, "no_save")
+	new_file_confirmation.add_cancel_button(" Cancel ")
+	load_file_confirmation.add_button("     No     ", true, "no_save")
+	load_file_confirmation.add_cancel_button(" Cancel ")
+	close_tab_confirmation.add_button("     No     ", true, "no_save")
+	close_tab_confirmation.add_cancel_button(" Cancel ")
+	exit_tab_confirmation.add_button("     No     ", true, "no_save")
+	exit_tab_confirmation.add_cancel_button(" Cancel ")
 
 
 func _process(_delta):
@@ -110,7 +125,9 @@ func _process(_delta):
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		save_opened_file_paths(opened_files_file_name)
-		get_tree().quit() # Default behavior
+		cancel_quit = false
+		confirmation_tab_save(0)
+		#get_tree().quit() # Default behavior
 
 
 func get_selected_element() -> ElementLabel:
@@ -172,37 +189,55 @@ func switch_main_canvas(id: int) -> void:
 	update_checkboxes = true
 	if file_tab_bar.tab_count == 0:
 		file_tab_bar.add_tab("")
+	
 	if canvases[cc].opened_file_path != "":
-		set_current_tab_title(canvases[cc].opened_file_path.get_file().get_slice(".", 0), canvases[cc].opened_file_path)
+		set_current_tab_title(canvases[cc].file_name_short, canvases[cc].opened_file_path)
 	else:
 		set_current_tab_title("New File", "New File")
 
 
 func set_current_tab_title(title: String, tooltip: String) -> void:
-	file_tab_bar.set_tab_title(file_tab_bar.current_tab, title)
-	file_tab_bar.set_tab_tooltip(file_tab_bar.current_tab, tooltip)
+	file_tab_bar.set_tab_title(file_tab_bar.current_tab, "%s" % [title])
+	file_tab_bar.set_tab_tooltip(file_tab_bar.current_tab, "%s" % [tooltip])
 	#DisplayServer.window_set_title("GPlanner %s: %s" % [app_version, tooltip])
 	get_tree().root.title = ("GPlanner %s: %s" % [app_version, tooltip])
 
 
-func new_file() -> int:
-	var new_canvas = load(canvas_scene).instantiate()
-	add_child(new_canvas)
-	bottom_bar.move_to_front()
-	margin_container.move_to_front()
-	new_canvas.id = canvases.size()
-	canvases[new_canvas.id] = new_canvas
+func set_current_tab_title_unsaved(title: String, tooltip: String, token: String) -> void:
+	file_tab_bar.set_tab_title(file_tab_bar.current_tab, "%s%s" % [title, token])
+	file_tab_bar.set_tab_tooltip(file_tab_bar.current_tab, "%s%s" % [token, tooltip])
+	#DisplayServer.window_set_title("GPlanner %s: %s" % [app_version, tooltip])
+	get_tree().root.title = ("GPlanner %s %s: %s" % [token, app_version, tooltip])
+
+
+func new_file(add_canvas: bool) -> int:
+	var new_canvas
+	if add_canvas:
+		new_canvas = load(canvas_scene).instantiate()
+		add_child(new_canvas)
+		bottom_bar.move_to_front()
+		margin_container.move_to_front()
+		new_canvas.id = canvases.size()
+		canvases[new_canvas.id] = new_canvas
+		new_canvas.done_adding_elements.connect(_on_canvas_done_adding_elements)
+		new_canvas.changed_zoom.connect(_on_canvas_changed_zoom)
+		new_canvas.has_changed.connect(_on_canvas_has_changed.bind(new_canvas.id))
+		new_canvas.element_scene = element_scene
+		new_canvas.connection_scene = connection_scene
+		new_canvas.priority_colors = priority_colors
+		new_canvas.zoom_limits = zoom_limits
+		new_canvas.zoom_speed = zoom_speed
+	elif canvases.has(cc):
+		new_canvas = canvases[cc]
+		new_canvas.erase_everything()
+	else:
+		return -1
+	
 	new_canvas.new_canvas()
-	new_canvas.done_adding_elements.connect(_on_canvas_done_adding_elements)
-	new_canvas.changed_zoom.connect(_on_canvas_changed_zoom)
+	zoom_indicator.update_zoom(1.0)
 	#DisplayServer.window_set_title("GPlanner %s: New File" % [app_version])
 	get_tree().root.title = ("GPlanner %s: New File" % [app_version])
 	status_bar.update_status("New File")
-	new_canvas.element_scene = element_scene
-	new_canvas.connection_scene = connection_scene
-	new_canvas.priority_colors = priority_colors
-	new_canvas.zoom_limits = zoom_limits
-	new_canvas.zoom_speed = zoom_speed
 	tool_box.select(Tool.SELECT)
 	_on_tool_box_item_selected(Tool.SELECT)
 	update_checkboxes = true
@@ -229,12 +264,14 @@ func save_file(path: String) -> void:
 		#DisplayServer.window_set_title("GPlanner %s: %s" % [app_version, path])
 		get_tree().root.title = ("GPlanner %s: %s" % [app_version, path])
 		canvases[cc].opened_file_path = path
+		canvases[cc].file_name_short = path.get_file().get_slice(".", 0)
+		canvases[cc].canvas_changed(true)
+		set_current_tab_title(canvases[cc].file_name_short, canvases[cc].opened_file_path)
 	else:
 		status_bar.update_status("Error when saving file to path: %s" % path)
 	file.close()
 
 
-# NOTE load_file() overwrites currently selected canvas
 func load_file(path: String) -> void:
 	if FileAccess.file_exists(path):
 		var file = FileAccess.open(path, FileAccess.READ)
@@ -256,6 +293,7 @@ func load_file(path: String) -> void:
 			if data.has("State"):
 				var state = data["State"]
 				canvases[cc].opened_file_path = path
+				canvases[cc].file_name_short = path.get_file().get_slice(".", 0)
 				canvases[cc].rebuild_canvas_state(state)
 			canvases[cc].rebuild_elements(elems)
 			canvases[cc].rebuild_connections(conns)
@@ -264,9 +302,10 @@ func load_file(path: String) -> void:
 		status_bar.update_status("File loaded: %s" % path)
 		#DisplayServer.window_set_title("GPlanner %s: %s" % [app_version, path])
 		get_tree().root.title = ("GPlanner %s: %s" % [app_version, path])
-		set_current_tab_title(canvases[cc].opened_file_path.get_file().get_slice(".", 0), canvases[cc].opened_file_path)
+		set_current_tab_title(canvases[cc].file_name_short, canvases[cc].opened_file_path)
 		canvases[cc].visible = false
 		canvases[cc].visible = true
+		canvases[cc].canvas_changed(true)
 	else:
 		printerr("File doesn't exist @ main.gd:load_file()")
 
@@ -326,6 +365,36 @@ func load_opened_file_paths(path: String) -> void:
 		file.close()
 
 
+func close_tab(tab: int) -> void:
+	if file_tab_bar.tab_count >= 1:
+		canvases[tab_to_canvas[tab]].queue_free()
+		canvases.erase(tab_to_canvas[tab])
+		var tab_id = tab
+		while tab_id < file_tab_bar.tab_count - 1:
+			tab_to_canvas[tab_id] = tab_to_canvas[tab_id + 1]
+			tab_id += 1
+		tab_to_canvas.erase(file_tab_bar.tab_count - 1)
+		file_tab_bar.remove_tab(tab)
+	if file_tab_bar.tab_count <= 0:
+		_on_add_file_button_pressed()
+
+
+func confirmation_tab_save(tab: int) -> void:
+	if tab == file_tab_bar.tab_count:	# If past the last tab, finish cycling and quit app / return
+		if cancel_quit:
+			queue_quit = false
+			cancel_quit = false
+		else:
+			get_tree().quit()
+		return
+	if canvases[tab_to_canvas[tab]].has_changes:
+		file_tab_bar.current_tab = tab
+		exit_tab_confirmation.dialog_text = ("Save %s?" % [canvases[tab_to_canvas[tab]].file_name_short])
+		exit_tab_confirmation.visible = true
+	else:
+		confirmation_tab_save(tab + 1)	# exit_tab_confirmation dialog increments it if the canvas has changes
+
+
 func _on_tool_box_item_selected(index: int) -> void:
 	if canvases.has(cc):
 		canvases[cc].tool_id = index
@@ -346,8 +415,86 @@ func _on_color_picker_color_changed(color: Color) -> void:
 		canvases[cc].update_connection_color(get_selected_element().id, color)
 
 
+func _on_new_button_pressed() -> void:
+	if canvases.size() == 0:
+		new_file(true)
+		set_current_tab_title("New File", "New File")
+	if canvases.has(cc) and !canvases[cc].has_changes:
+		new_file(false)
+		set_current_tab_title("New File", "New File")
+	else:
+		new_file_confirmation.visible = true
+		new_file_confirmation.dialog_text = ("This will erase any unsaved changes.\nSave %s?" % [canvases[cc].file_name_short])
+
+
+func _on_new_file_confirmation_confirmed() -> void:
+	_on_save_button_pressed()
+	new_file(false)
+	set_current_tab_title("New File", "New File")
+
+
+func _on_new_file_confirmation_custom_action(action: StringName) -> void:
+	if action == "no_save":
+		new_file(false)
+		set_current_tab_title("New File", "New File")
+	new_file_confirmation.visible = false
+
+
+func _on_save_button_pressed() -> void:
+	if canvases[cc].opened_file_path == "":
+		file_dialog_save.visible = true
+	else:
+		save_file(canvases[cc].opened_file_path)
+		if close_this_tab:
+			close_this_tab = false
+			close_tab(file_tab_bar.current_tab)
+		if queue_quit and !cancel_quit:
+			get_tree().quit()
+
+
+func _on_save_as_button_pressed() -> void:
+	file_dialog_save.visible = true
+
+
 func _on_file_dialog_save_file_selected(path: String) -> void:
 	save_file(path)
+	if show_load_dialog:
+		file_dialog_save.visible = false
+		file_dialog_load.visible = true
+		show_load_dialog = false
+	if close_this_tab:
+		close_this_tab = false
+		close_tab(file_tab_bar.current_tab)
+	if queue_quit and !cancel_quit:
+		get_tree().quit()
+
+
+func _on_file_dialog_save_canceled() -> void:
+	show_load_dialog = false
+
+
+func _on_load_button_pressed() -> void:
+	if canvases.has(cc) and canvases[cc].elements.size() > 0 and !canvases[cc].has_changes:
+		load_file_confirmation.dialog_text = ("This will erase any unsaved changes.\nSave %s?" % [canvases[cc].file_name_short])
+		load_file_confirmation.visible = true
+	else:	# If empty file, load a new one without confirmation
+		file_dialog_load.visible = true
+
+
+func _on_load_file_confirmation_confirmed() -> void:
+	if canvases[cc].opened_file_path == "":
+		file_dialog_save.visible = true
+		# Delay showing load file dialog until after closing save file dialog: _on_file_dialog_save_file_selected()
+		show_load_dialog = true
+	else:
+		save_file(canvases[cc].opened_file_path)
+		file_dialog_load.visible = true
+
+
+func _on_load_file_confirmation_custom_action(action: StringName) -> void:
+	if action == "no_save":
+		load_file_confirmation.visible = false
+		file_dialog_load.visible = true
 
 
 func _on_file_dialog_load_file_selected(path: String) -> void:
@@ -356,26 +503,6 @@ func _on_file_dialog_load_file_selected(path: String) -> void:
 	else:
 		_on_add_file_button_pressed()
 	load_file(path)
-
-
-func _on_new_button_pressed() -> void:
-	new_file()
-	# TODO dialogue box before
-
-
-func _on_save_button_pressed() -> void:
-	if canvases[cc].opened_file_path == "":
-		file_dialog_save.visible = true
-	else:
-		save_file(canvases[cc].opened_file_path)
-
-
-func _on_save_as_button_pressed() -> void:
-	file_dialog_save.visible = true
-
-
-func _on_load_button_pressed() -> void:
-	file_dialog_load.visible = true
 
 
 func _on_show_completed_toggled(toggled_on: bool) -> void:
@@ -412,20 +539,51 @@ func _on_file_tab_bar_tab_changed(tab: int) -> void:
 
 
 func _on_add_file_button_pressed() -> void:
-	var canvas_id: int = new_file()
+	var canvas_id: int = new_file(true)
 	tab_to_canvas[file_tab_bar.tab_count] = canvas_id
 	file_tab_bar.add_tab("New File")
 	file_tab_bar.current_tab = file_tab_bar.tab_count - 1	# Also switches to the new tab & calls switch_main_canvas(tab)
 
 
 func _on_file_tab_bar_tab_close_pressed(tab: int) -> void:
-	if file_tab_bar.tab_count >= 1:
-		canvases[tab_to_canvas[tab]].queue_free()
-		canvases.erase(tab_to_canvas[tab])
-		var tab_id = tab
-		while tab_id < file_tab_bar.tab_count - 1:
-			tab_to_canvas[tab_id] = tab_to_canvas[tab_id + 1]
-			tab_id += 1
-		file_tab_bar.remove_tab(tab)
-	if file_tab_bar.tab_count <= 0:
-		_on_add_file_button_pressed()
+	if canvases[tab_to_canvas[tab]].has_changes:
+		close_tab_confirmation.dialog_text = ("This will erase any unsaved changes.\nSave %s?" % [canvases[cc].file_name_short])
+		close_tab_confirmation.visible = true
+	else:
+		close_tab(file_tab_bar.current_tab)
+
+
+func _on_close_tab_confirmation_confirmed() -> void:
+	# Delay after save dialog closed: _on_save_button_pressed() & _on_file_dialog_save_file_selected()
+	close_this_tab = true
+	_on_save_button_pressed()
+
+
+func _on_close_tab_confirmation_custom_action(action: StringName) -> void:
+	if action == "no_save":
+		close_tab(file_tab_bar.current_tab)
+		close_tab_confirmation.visible = false
+
+
+func _on_exit_tab_confirmation_confirmed() -> void:
+	if file_tab_bar.current_tab < file_tab_bar.tab_count - 1:
+		_on_save_button_pressed()
+		confirmation_tab_save(file_tab_bar.current_tab + 1)
+	elif file_tab_bar.current_tab == file_tab_bar.tab_count - 1 and !cancel_quit:
+		# Delay application quit until after save file operation finishes: _on_save_button_pressed(), _on_file_dialog_save_file_selected
+		print("current %d, size %d" % [file_tab_bar.current_tab, file_tab_bar.tab_count])
+		queue_quit = true
+		_on_save_button_pressed()
+
+
+func _on_exit_tab_confirmation_custom_action(action: StringName) -> void:
+	if action == "no_save":
+		exit_tab_confirmation.visible = false
+		if file_tab_bar.current_tab < file_tab_bar.tab_count:
+			# Quits when current tab + 1 == tab count if cancel_quit is false
+			confirmation_tab_save(file_tab_bar.current_tab + 1)
+
+
+func _on_canvas_has_changed(id: int) -> void:
+	if canvases.has(id):
+		set_current_tab_title_unsaved(canvases[id].file_name_short, canvases[id].opened_file_path, "(*)")

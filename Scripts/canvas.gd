@@ -24,6 +24,7 @@ var id: int
 var tool_id: int
 var color_picker_color: Color = Color.WHITE
 var opened_file_path: String = ""
+var file_name_short: String = ""
 var selected_element: int = -1
 
 var is_dragging: bool = false
@@ -32,6 +33,7 @@ var is_panning: bool = false
 var is_editing_text: bool = false
 var is_adding_elements: bool = false
 var is_element_just_created: bool = false
+var has_changes: bool = false
 var drag_start_mouse_pos: Vector2
 var original_size: Vector2
 var zoom_level: float = 1.0
@@ -40,6 +42,7 @@ var zoom_speed: float
 
 signal done_adding_elements
 signal changed_zoom
+signal has_changed
 
 enum Checkbox {
 	SHOW_PRIORITIES,
@@ -71,15 +74,27 @@ func _process(_delta: float) -> void:
 
 
 func new_canvas() -> void:
+	canvas_changed(true)
 	checkbox_data.resize(CHECKBOX_NUMBER)
 	for i in CHECKBOX_NUMBER:
 		checkbox_data[i] = false
 	selected_element = -1
 	opened_file_path = ""
+	file_name_short = "New File"
 	position = -size * 0.5 + get_viewport_rect().size * 0.5	# Start from the center on New File
 	scale = Vector2(1.0, 1.0)
 	priority_filter_value = Priority.NONE
 	#print("New canvas id %d" % [id])
+
+
+func canvas_changed(reset: bool = false) -> bool:
+	if reset:
+		has_changes = false
+	else:
+		if !has_changes:
+			has_changed.emit()
+		has_changes = true
+	return has_changes
 
 
 func pan_limits(pos: Vector2) -> Vector2:
@@ -96,6 +111,7 @@ func pan_limits(pos: Vector2) -> Vector2:
 
 
 func add_element_label(at_position: Vector2, id_specified: int = -1) -> void:
+	canvas_changed()
 	var new_element = load(element_scene).instantiate()
 	var elem_id: int
 	if id_specified < 0:
@@ -122,6 +138,7 @@ func add_element_label(at_position: Vector2, id_specified: int = -1) -> void:
 
 
 func add_connection(id_specified: int = -1) -> void:
+	canvas_changed()
 	if connection_candidate_1 == connection_candidate_2:
 		connection_candidate_1 = -1
 		connection_candidate_2 = -1
@@ -158,6 +175,7 @@ func add_connection(id_specified: int = -1) -> void:
 
 
 func remove_connections(elem_id: int) -> void:
+	canvas_changed()
 	var arr: Array[int] = []
 	if connections_p1.has(elem_id):
 		for connid in connections_p1[elem_id]:	# Remove reference if elem_id is point1
@@ -291,6 +309,7 @@ func canvas_state_to_json() -> Dictionary:
 
 
 func rebuild_canvas_state(state: Dictionary) -> void:
+	canvas_changed(true)
 	position = pan_limits(Vector2(state["position.x"], state["position.y"]))
 	scale.x = state["scale.x"]
 	scale.y = state["scale.y"]
@@ -346,7 +365,9 @@ func rebuild_connections(json_conns: Dictionary) -> void:
 
 
 func erase_everything() -> void:
+	canvas_changed(true)
 	opened_file_path = ""
+	file_name_short = "New File"
 	selection_viewer.visible = false
 	selected_element = -1
 	zoom_level = 1.0
@@ -514,14 +535,17 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 					is_panning = false
 					drag_start_mouse_pos = event.position
 			if tool_id == Tool.BG_COLOR:
+				canvas_changed()
 				select_element(elem_id)
 				elements[elem_id].set_bg_color(color_picker_color)
 				update_connection_color(elem_id, color_picker_color)
 			if tool_id == Tool.MARK_COMPLETED:
+				canvas_changed()
 				elements[elem_id].toggle_completed()
 				toggle_element_and_connections(elem_id, checkbox_data[Checkbox.SHOW_COMPLETED])
 		elif event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
 			if tool_id == Tool.REMOVE_ELEMENT:
+				canvas_changed()
 				remove_connections(elem_id)
 				elements[elem_id].queue_free()
 				selected_element = -1
@@ -547,9 +571,11 @@ func _on_element_text_box_active(elem_id: int) -> void:
 	if elements.has(elem_id):
 		select_element(elem_id)
 		if tool_id == Tool.BG_COLOR:
+			canvas_changed()
 			elements[elem_id].set_bg_color(color_picker_color)
 			update_connection_color(elem_id, color_picker_color)
 		if tool_id == Tool.MARK_COMPLETED:
+			canvas_changed()
 			elements[elem_id].toggle_completed()
 			toggle_element_and_connections(elem_id, checkbox_data[Checkbox.SHOW_COMPLETED])
 		if tool_id == Tool.ADD_CONNECTION:
@@ -567,11 +593,13 @@ func _on_element_text_box_active(elem_id: int) -> void:
 
 
 func _on_element_label_resized(elem_id: int) -> void:
+	canvas_changed()
 	if selected_element == elem_id:
 		selection_viewer.size = elements[elem_id].size
 
 
 func _on_element_changed_priority(elem_id: int) -> void:
+	canvas_changed()
 	if elements.has(elem_id):
 		var pr_id = elements[elem_id].priority_id
 		elements[elem_id].set_priority_color(priority_colors[pr_id])

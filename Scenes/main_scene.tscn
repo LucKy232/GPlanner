@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://bfydfy3iq0rjx"]
+[gd_scene load_steps=36 format=3 uid="uid://bfydfy3iq0rjx"]
 
 [ext_resource type="Script" uid="uid://dj8gdy8d87lam" path="res://Scripts/main.gd" id="1_52fb6"]
 [ext_resource type="StyleBox" uid="uid://wrrl0mk4mdli" path="res://Themes/active_priority_button_stylebox.tres" id="2_mai8y"]
@@ -17,6 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://1jids2awyagv" path="res://Icons/remove_line.svg" id="14_2ebs2"]
 [ext_resource type="Texture2D" uid="uid://dfq5wqtp3gjfd" path="res://Icons/checkbox.svg" id="15_2ebs2"]
 [ext_resource type="Theme" uid="uid://dwboubtw2bfss" path="res://Themes/checkbox_theme.tres" id="17_2ebs2"]
+[ext_resource type="Theme" uid="uid://nujp3orsr2ol" path="res://Themes/popup_dialogue_theme.tres" id="18_2ebs2"]
 
 [sub_resource type="Theme" id="Theme_2ebs2"]
 HBoxContainer/constants/separation = 2
@@ -346,6 +347,7 @@ theme = SubResource("Theme_oyb3p")
 [node name="FileDialogSave" type="FileDialog" parent="."]
 title = "Save canvas"
 initial_position = 2
+theme = ExtResource("18_2ebs2")
 access = 2
 filters = PackedStringArray("*.json")
 
@@ -353,10 +355,50 @@ filters = PackedStringArray("*.json")
 auto_translate_mode = 1
 title = "Open a File"
 initial_position = 2
+size = Vector2i(640, 400)
+theme = ExtResource("18_2ebs2")
 ok_button_text = "Open"
 file_mode = 0
 access = 2
 filters = PackedStringArray("*.json")
+
+[node name="NewFileConfirmation" type="AcceptDialog" parent="."]
+title = "Save current file?"
+initial_position = 2
+size = Vector2i(303, 100)
+unresizable = true
+popup_window = true
+theme = ExtResource("18_2ebs2")
+ok_button_text = "    Yes    "
+dialog_text = "This will erase any unsaved changes."
+
+[node name="LoadFileConfirmation" type="AcceptDialog" parent="."]
+title = "Save current file?"
+initial_position = 2
+size = Vector2i(303, 100)
+unresizable = true
+popup_window = true
+theme = ExtResource("18_2ebs2")
+ok_button_text = "    Yes    "
+
+[node name="CloseTabConfirmation" type="AcceptDialog" parent="."]
+title = "Save current file?"
+initial_position = 2
+size = Vector2i(303, 100)
+unresizable = true
+popup_window = true
+theme = ExtResource("18_2ebs2")
+ok_button_text = "    Yes    "
+
+[node name="ExitTabConfirmation" type="AcceptDialog" parent="."]
+auto_translate_mode = 1
+title = "Save file?"
+initial_position = 2
+size = Vector2i(303, 100)
+unresizable = true
+popup_window = true
+theme = ExtResource("18_2ebs2")
+ok_button_text = "    Yes    "
 
 [connection signal="tab_changed" from="BottomBar/FileTabBar" to="." method="_on_file_tab_bar_tab_changed"]
 [connection signal="tab_close_pressed" from="BottomBar/FileTabBar" to="." method="_on_file_tab_bar_tab_close_pressed"]
@@ -371,5 +413,15 @@ filters = PackedStringArray("*.json")
 [connection signal="toggled" from="MarginContainer/Settings/Checkboxes/ShowCompleted" to="." method="_on_show_completed_toggled"]
 [connection signal="value_changed" from="MarginContainer/Settings/FilterSettings/PriorityFilter" to="." method="_on_priority_filter_value_changed"]
 [connection signal="toggled" from="MarginContainer/Settings/FilterSettings/ShowPriorityTool" to="." method="_on_show_priority_tool_toggled"]
+[connection signal="canceled" from="FileDialogSave" to="." method="_on_file_dialog_save_canceled"]
 [connection signal="file_selected" from="FileDialogSave" to="." method="_on_file_dialog_save_file_selected"]
 [connection signal="file_selected" from="FileDialogLoad" to="." method="_on_file_dialog_load_file_selected"]
+[connection signal="confirmed" from="NewFileConfirmation" to="." method="_on_new_file_confirmation_confirmed"]
+[connection signal="custom_action" from="NewFileConfirmation" to="." method="_on_new_file_confirmation_custom_action"]
+[connection signal="confirmed" from="LoadFileConfirmation" to="." method="_on_load_file_confirmation_confirmed"]
+[connection signal="custom_action" from="LoadFileConfirmation" to="." method="_on_load_file_confirmation_custom_action"]
+[connection signal="confirmed" from="CloseTabConfirmation" to="." method="_on_close_tab_confirmation_confirmed"]
+[connection signal="custom_action" from="CloseTabConfirmation" to="." method="_on_close_tab_confirmation_custom_action"]
+[connection signal="canceled" from="ExitTabConfirmation" to="." method="_on_exit_tab_confirmation_canceled"]
+[connection signal="confirmed" from="ExitTabConfirmation" to="." method="_on_exit_tab_confirmation_confirmed"]
+[connection signal="custom_action" from="ExitTabConfirmation" to="." method="_on_exit_tab_confirmation_custom_action"]

@@ -152,7 +152,7 @@ func _on_priority_tool_area_mouse_exited() -> void:
 func _on_text_margin_container_resized() -> void:
 	if is_node_ready() and !manual_resize:
 		size.x = text_margin_container.size.x
-		print("Resizing element %d to the text box" % [id])
+		#print("Resizing element %d to the text box" % [id])
 
 
 func _on_resize_timer_timeout() -> void:
