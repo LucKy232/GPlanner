@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://bfydfy3iq0rjx"]
+[gd_scene load_steps=31 format=3 uid="uid://bfydfy3iq0rjx"]
 
 [ext_resource type="Script" uid="uid://dj8gdy8d87lam" path="res://Scripts/main.gd" id="1_52fb6"]
 [ext_resource type="StyleBox" uid="uid://wrrl0mk4mdli" path="res://Themes/active_priority_button_stylebox.tres" id="2_mai8y"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://c2apku3xuhhyp" path="res://Scenes/status_bar.tscn" id="5_iacmt"]
 [ext_resource type="StyleBox" uid="uid://dga3kal7lipkl" path="res://Themes/low_priority_button_stylebox.tres" id="5_ioaeq"]
 [ext_resource type="StyleBox" uid="uid://b0l55wn2xggiw" path="res://Themes/none_priority_button_stylebox.tres" id="6_7ewk0"]
+[ext_resource type="PackedScene" uid="uid://b1jg4g6wbv0qw" path="res://Scenes/settings_drawer.tscn" id="8_2ebs2"]
 [ext_resource type="Texture2D" uid="uid://dh8rwukkdehkk" path="res://Icons/hand_cursor.svg" id="8_76v2p"]
 [ext_resource type="Texture2D" uid="uid://djq4xvrjpvfp5" path="res://Icons/plus.svg" id="9_7ewk0"]
 [ext_resource type="Texture2D" uid="uid://cjmn8wx7kwelm" path="res://Icons/minus.svg" id="10_lhp3t"]
@@ -16,28 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://l7psu5evarxp" path="res://Icons/add_line.svg" id="13_psl12"]
 [ext_resource type="Texture2D" uid="uid://1jids2awyagv" path="res://Icons/remove_line.svg" id="14_2ebs2"]
 [ext_resource type="Texture2D" uid="uid://dfq5wqtp3gjfd" path="res://Icons/checkbox.svg" id="15_2ebs2"]
-[ext_resource type="Theme" uid="uid://dwboubtw2bfss" path="res://Themes/checkbox_theme.tres" id="17_2ebs2"]
 [ext_resource type="Theme" uid="uid://nujp3orsr2ol" path="res://Themes/popup_dialogue_theme.tres" id="18_2ebs2"]
-
-[sub_resource type="Theme" id="Theme_2ebs2"]
-HBoxContainer/constants/separation = 2
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jvnna"]
-border_width_top = 2
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oyb3p"]
-bg_color = Color(0.42, 0.42, 0.42, 0.215686)
-border_width_top = 2
-border_color = Color(1, 1, 1, 0.784314)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ebs2"]
-bg_color = Color(0.6, 0.6, 0.6, 0.490196)
-border_width_top = 2
-
-[sub_resource type="Theme" id="Theme_jvnna"]
-Button/styles/hover = SubResource("StyleBoxFlat_jvnna")
-Button/styles/normal = SubResource("StyleBoxFlat_oyb3p")
-Button/styles/pressed = SubResource("StyleBoxFlat_2ebs2")
 
 [sub_resource type="Theme" id="Theme_6l7je"]
 MarginContainer/constants/margin_bottom = 38
@@ -92,64 +72,6 @@ expand_margin_bottom = 8.0
 [sub_resource type="Theme" id="Theme_6ev3c"]
 Panel/styles/panel = SubResource("StyleBoxFlat_iacmt")
 
-[sub_resource type="Theme" id="Theme_psl12"]
-CheckBox/colors/font_color = Color(0.875, 0.875, 0.875, 1)
-CheckBox/colors/font_outline_color = Color(0, 0, 0, 1)
-CheckBox/constants/outline_size = 3
-Label/colors/font_color = Color(1, 1, 1, 1)
-Label/colors/font_outline_color = Color(0, 0, 0, 1)
-Label/constants/outline_size = 3
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_76v2p"]
-content_margin_left = 10.0
-content_margin_right = 0.0
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_blend = true
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-corner_detail = 3
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mai8y"]
-content_margin_left = 0.0
-content_margin_top = 0.0
-content_margin_right = 0.0
-content_margin_bottom = 10.0
-bg_color = Color(0.498039, 0.498039, 0.498039, 0.498039)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.188235, 0.701961, 1, 1)
-border_blend = true
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-expand_margin_left = 1.0
-expand_margin_top = 1.0
-expand_margin_right = 1.0
-expand_margin_bottom = 1.0
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_drdnd"]
-
-[sub_resource type="Theme" id="Theme_76v2p"]
-HScrollBar/icons/decrement = null
-HScrollBar/icons/decrement_highlight = null
-HScrollBar/icons/decrement_pressed = null
-HScrollBar/icons/increment = null
-HScrollBar/icons/increment_highlight = null
-HScrollBar/icons/increment_pressed = null
-HScrollBar/styles/grabber = SubResource("StyleBoxFlat_76v2p")
-HScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_76v2p")
-HScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_76v2p")
-HScrollBar/styles/scroll = SubResource("StyleBoxFlat_mai8y")
-HScrollBar/styles/scroll_focus = SubResource("StyleBoxEmpty_drdnd")
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_psl12"]
 bg_color = Color(0.6, 0.6, 0.6, 0.45098)
 expand_margin_left = 4.0
@@ -157,6 +79,26 @@ expand_margin_right = 4.0
 
 [sub_resource type="Theme" id="Theme_oyb3p"]
 Label/styles/normal = SubResource("StyleBoxFlat_psl12")
+
+[sub_resource type="Theme" id="Theme_2ebs2"]
+HBoxContainer/constants/separation = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jvnna"]
+border_width_top = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oyb3p"]
+bg_color = Color(0.42, 0.42, 0.42, 0.215686)
+border_width_top = 2
+border_color = Color(1, 1, 1, 0.784314)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ebs2"]
+bg_color = Color(0.6, 0.6, 0.6, 0.490196)
+border_width_top = 2
+
+[sub_resource type="Theme" id="Theme_jvnna"]
+Button/styles/hover = SubResource("StyleBoxFlat_jvnna")
+Button/styles/normal = SubResource("StyleBoxFlat_oyb3p")
+Button/styles/pressed = SubResource("StyleBoxFlat_2ebs2")
 
 [node name="MainScene" type="Control"]
 layout_mode = 3
@@ -178,32 +120,6 @@ priority_colors = Array[Color]([Color(1, 1, 1, 1), Color(1, 0, 0, 1), Color(1, 1
 priority_styleboxes = Array[StyleBoxFlat]([ExtResource("2_mai8y"), ExtResource("3_76v2p"), ExtResource("4_drdnd"), ExtResource("5_ioaeq"), ExtResource("6_7ewk0")])
 priority_filter_text = Array[String](["Only Active", "Active & High", "Medium and higher", "Low and higher", "All"])
 opened_files_file_name = "opened_files.json"
-
-[node name="BottomBar" type="HBoxContainer" parent="."]
-z_index = 5
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -36.0
-offset_right = 40.0
-grow_vertical = 0
-theme = SubResource("Theme_2ebs2")
-
-[node name="FileTabBar" type="TabBar" parent="BottomBar"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 8
-clip_tabs = false
-tab_close_display_policy = 1
-
-[node name="AddFileButton" type="Button" parent="BottomBar"]
-custom_minimum_size = Vector2(0, 31)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 8
-theme = SubResource("Theme_jvnna")
-icon = ExtResource("9_7ewk0")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 z_index = 5
@@ -289,60 +205,45 @@ layout_mode = 2
 theme = ExtResource("4_x6ack")
 text = " Load "
 
-[node name="Settings" type="HBoxContainer" parent="MarginContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 8
-theme = SubResource("Theme_psl12")
-
-[node name="Checkboxes" type="VBoxContainer" parent="MarginContainer/Settings"]
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 8
-
-[node name="ShowPriorities" type="CheckBox" parent="MarginContainer/Settings/Checkboxes"]
-layout_mode = 2
-theme = ExtResource("17_2ebs2")
-text = "Enable priorities
-"
-
-[node name="ShowCompleted" type="CheckBox" parent="MarginContainer/Settings/Checkboxes"]
-layout_mode = 2
-theme = ExtResource("17_2ebs2")
-text = "Show all completed"
-
-[node name="FilterSettings" type="VBoxContainer" parent="MarginContainer/Settings"]
-custom_minimum_size = Vector2(200, 0)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 8
-
-[node name="PriorityFilterLabel" type="Label" parent="MarginContainer/Settings/FilterSettings"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 8
-mouse_filter = 1
-text = "Priority: ALL"
-horizontal_alignment = 1
-
-[node name="PriorityFilter" type="HScrollBar" parent="MarginContainer/Settings/FilterSettings"]
-layout_mode = 2
-size_flags_vertical = 1
-theme = SubResource("Theme_76v2p")
-max_value = 4.0
-step = 1.0
-value = 4.0
-rounded = true
-
-[node name="ShowPriorityTool" type="CheckBox" parent="MarginContainer/Settings/FilterSettings"]
-layout_mode = 2
-theme = ExtResource("17_2ebs2")
-button_pressed = true
-text = "Show priority tool popup"
-
 [node name="StatusBar" parent="MarginContainer" instance=ExtResource("5_iacmt")]
 layout_mode = 2
 theme = SubResource("Theme_oyb3p")
+
+[node name="SettingsDrawer" parent="." instance=ExtResource("8_2ebs2")]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -210.0
+offset_bottom = 0.0
+grow_vertical = 0
+
+[node name="BottomBar" type="HBoxContainer" parent="."]
+z_index = 5
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -36.0
+offset_right = 40.0
+grow_vertical = 0
+mouse_filter = 0
+theme = SubResource("Theme_2ebs2")
+
+[node name="FileTabBar" type="TabBar" parent="BottomBar"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 8
+clip_tabs = false
+tab_close_display_policy = 1
+
+[node name="AddFileButton" type="Button" parent="BottomBar"]
+custom_minimum_size = Vector2(0, 31)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+theme = SubResource("Theme_jvnna")
+icon = ExtResource("9_7ewk0")
 
 [node name="FileDialogSave" type="FileDialog" parent="."]
 title = "Save canvas"
@@ -400,19 +301,15 @@ popup_window = true
 theme = ExtResource("18_2ebs2")
 ok_button_text = "    Yes    "
 
-[connection signal="tab_changed" from="BottomBar/FileTabBar" to="." method="_on_file_tab_bar_tab_changed"]
-[connection signal="tab_close_pressed" from="BottomBar/FileTabBar" to="." method="_on_file_tab_bar_tab_close_pressed"]
-[connection signal="pressed" from="BottomBar/AddFileButton" to="." method="_on_add_file_button_pressed"]
 [connection signal="item_selected" from="MarginContainer/ToolBox" to="." method="_on_tool_box_item_selected"]
 [connection signal="color_changed" from="MarginContainer/ColorPicker" to="." method="_on_color_picker_color_changed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/NewButton" to="." method="_on_new_button_pressed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/SaveButton" to="." method="_on_save_button_pressed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/SaveAsButton" to="." method="_on_save_as_button_pressed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/LoadButton" to="." method="_on_load_button_pressed"]
-[connection signal="toggled" from="MarginContainer/Settings/Checkboxes/ShowPriorities" to="." method="_on_show_priorities_toggled"]
-[connection signal="toggled" from="MarginContainer/Settings/Checkboxes/ShowCompleted" to="." method="_on_show_completed_toggled"]
-[connection signal="value_changed" from="MarginContainer/Settings/FilterSettings/PriorityFilter" to="." method="_on_priority_filter_value_changed"]
-[connection signal="toggled" from="MarginContainer/Settings/FilterSettings/ShowPriorityTool" to="." method="_on_show_priority_tool_toggled"]
+[connection signal="tab_changed" from="BottomBar/FileTabBar" to="." method="_on_file_tab_bar_tab_changed"]
+[connection signal="tab_close_pressed" from="BottomBar/FileTabBar" to="." method="_on_file_tab_bar_tab_close_pressed"]
+[connection signal="pressed" from="BottomBar/AddFileButton" to="." method="_on_add_file_button_pressed"]
 [connection signal="canceled" from="FileDialogSave" to="." method="_on_file_dialog_save_canceled"]
 [connection signal="file_selected" from="FileDialogSave" to="." method="_on_file_dialog_save_file_selected"]
 [connection signal="file_selected" from="FileDialogLoad" to="." method="_on_file_dialog_load_file_selected"]
@@ -422,6 +319,5 @@ ok_button_text = "    Yes    "
 [connection signal="custom_action" from="LoadFileConfirmation" to="." method="_on_load_file_confirmation_custom_action"]
 [connection signal="confirmed" from="CloseTabConfirmation" to="." method="_on_close_tab_confirmation_confirmed"]
 [connection signal="custom_action" from="CloseTabConfirmation" to="." method="_on_close_tab_confirmation_custom_action"]
-[connection signal="canceled" from="ExitTabConfirmation" to="." method="_on_exit_tab_confirmation_canceled"]
 [connection signal="confirmed" from="ExitTabConfirmation" to="." method="_on_exit_tab_confirmation_confirmed"]
 [connection signal="custom_action" from="ExitTabConfirmation" to="." method="_on_exit_tab_confirmation_custom_action"]

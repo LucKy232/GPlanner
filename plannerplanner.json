@@ -1,13 +1,5 @@
 {
 	"Connections": {
-		"1": {
-			"id1": 1,
-			"id2": 0
-		},
-		"2": {
-			"id1": 0,
-			"id2": 2
-		},
 		"12": {
 			"id1": 0,
 			"id2": 12
@@ -71,14 +63,6 @@
 		"31": {
 			"id1": 27,
 			"id2": 29
-		},
-		"32": {
-			"id1": 0,
-			"id2": 33
-		},
-		"33": {
-			"id1": 0,
-			"id2": 32
 		},
 		"34": {
 			"id1": 34,
@@ -284,22 +268,6 @@
 			"id1": 13,
 			"id2": 104
 		},
-		"114": {
-			"id1": 2,
-			"id2": 105
-		},
-		"115": {
-			"id1": 1,
-			"id2": 105
-		},
-		"116": {
-			"id1": 33,
-			"id2": 105
-		},
-		"117": {
-			"id1": 32,
-			"id2": 105
-		},
 		"118": {
 			"id1": 12,
 			"id2": 106
@@ -403,10 +371,6 @@
 		"157": {
 			"id1": 145,
 			"id2": 47
-		},
-		"158": {
-			"id1": 86,
-			"id2": 146
 		},
 		"159": {
 			"id1": 142,
@@ -708,10 +672,6 @@
 			"id1": 3,
 			"id2": 43
 		},
-		"249": {
-			"id1": 3,
-			"id2": 39
-		},
 		"250": {
 			"id1": 3,
 			"id2": 9
@@ -719,10 +679,6 @@
 		"251": {
 			"id1": 3,
 			"id2": 154
-		},
-		"252": {
-			"id1": 3,
-			"id2": 121
 		},
 		"253": {
 			"id1": 3,
@@ -755,6 +711,110 @@
 		"260": {
 			"id1": 58,
 			"id2": 48
+		},
+		"261": {
+			"id1": 41,
+			"id2": 246
+		},
+		"262": {
+			"id1": 231,
+			"id2": 247
+		},
+		"263": {
+			"id1": 41,
+			"id2": 248
+		},
+		"264": {
+			"id1": 248,
+			"id2": 249
+		},
+		"265": {
+			"id1": 80,
+			"id2": 250
+		},
+		"266": {
+			"id1": 41,
+			"id2": 39
+		},
+		"267": {
+			"id1": 3,
+			"id2": 251
+		},
+		"268": {
+			"id1": 252,
+			"id2": 48
+		},
+		"269": {
+			"id1": 0,
+			"id2": 253
+		},
+		"270": {
+			"id1": 255,
+			"id2": 253
+		},
+		"271": {
+			"id1": 254,
+			"id2": 253
+		},
+		"272": {
+			"id1": 256,
+			"id2": 257
+		},
+		"273": {
+			"id1": 256,
+			"id2": 48
+		},
+		"275": {
+			"id1": 146,
+			"id2": 86
+		},
+		"276": {
+			"id1": 251,
+			"id2": 258
+		},
+		"277": {
+			"id1": 259,
+			"id2": 86
+		},
+		"278": {
+			"id1": 261,
+			"id2": 4
+		},
+		"279": {
+			"id1": 261,
+			"id2": 253
+		},
+		"280": {
+			"id1": 262,
+			"id2": 261
+		},
+		"281": {
+			"id1": 262,
+			"id2": 2
+		},
+		"282": {
+			"id1": 262,
+			"id2": 1
+		},
+		"283": {
+			"id1": 262,
+			"id2": 33
+		},
+		"284": {
+			"id1": 262,
+			"id2": 32
+		},
+		"285": {
+			"id1": 262,
+			"id2": 0
+		},
+		"286": {
+			"id1": 263,
+			"id2": 264
+		},
+		"287": {
+			"id1": 110,
+			"id2": 265
 		}
 	},
 	"Elements": {
@@ -779,8 +839,8 @@
 			"bgcolor.r": 0.658823549747467,
 			"completed": false,
 			"id": 1,
-			"pos.x": 2551.37817382813,
-			"pos.y": 696.442077636719,
+			"pos.x": 2858.86889648438,
+			"pos.y": 1210.50280761719,
 			"priority_id": 0,
 			"size.x": 133.0,
 			"size.y": 64.0,
@@ -793,8 +853,8 @@
 			"bgcolor.r": 0.658823549747467,
 			"completed": false,
 			"id": 2,
-			"pos.x": 2551.13623046875,
-			"pos.y": 626.292602539063,
+			"pos.x": 2697.40942382813,
+			"pos.y": 1212.48706054688,
 			"priority_id": 0,
 			"size.x": 137.0,
 			"size.y": 64.0,
@@ -807,11 +867,11 @@
 			"bgcolor.r": 0.579489350318909,
 			"completed": false,
 			"id": 3,
-			"pos.x": 2863.36010742188,
-			"pos.y": 330.131744384766,
+			"pos.x": 2879.8583984375,
+			"pos.y": 618.098876953125,
 			"priority_id": 0,
 			"size.x": 173.75244140625,
-			"size.y": 111.741806030273,
+			"size.y": 111.741821289063,
 			"text": "QoL"
 		},
 		"4": {
@@ -821,11 +881,11 @@
 			"bgcolor.r": 0.329411774873734,
 			"completed": false,
 			"id": 4,
-			"pos.x": 2553.90991210938,
-			"pos.y": 1054.5546875,
+			"pos.x": 2547.31127929688,
+			"pos.y": 1079.85009765625,
 			"priority_id": 0,
-			"size.x": 157.0,
-			"size.y": 129.0,
+			"size.x": 151.501220703125,
+			"size.y": 91.606689453125,
 			"text": "UI"
 		},
 		"5": {
@@ -877,8 +937,8 @@
 			"bgcolor.r": 0.579489350318909,
 			"completed": false,
 			"id": 9,
-			"pos.x": 3159.8359375,
-			"pos.y": 554.364562988281,
+			"pos.x": 3158.44799804688,
+			"pos.y": 521.054809570313,
 			"priority_id": 3,
 			"size.x": 267.0,
 			"size.y": 64.0,
@@ -961,8 +1021,8 @@
 			"bgcolor.r": 0.328611195087433,
 			"completed": false,
 			"id": 15,
-			"pos.x": 2275.81298828125,
-			"pos.y": 1024.98022460938,
+			"pos.x": 2277.10693359375,
+			"pos.y": 1031.44995117188,
 			"priority_id": 3,
 			"size.x": 192.0,
 			"size.y": 72.0,
@@ -1031,8 +1091,8 @@
 			"bgcolor.r": 0.660016775131226,
 			"completed": false,
 			"id": 20,
-			"pos.x": 2240.40478515625,
-			"pos.y": 597.440124511719,
+			"pos.x": 1810.40478515625,
+			"pos.y": 589.440124511719,
 			"priority_id": 2,
 			"size.x": 162.0,
 			"size.y": 70.0,
@@ -1185,12 +1245,12 @@
 			"bgcolor.r": 0.660016775131226,
 			"completed": false,
 			"id": 32,
-			"pos.x": 2549.86767578125,
-			"pos.y": 828.618896484375,
+			"pos.x": 2841.31494140625,
+			"pos.y": 1285.03662109375,
 			"priority_id": 3,
-			"size.x": 135.0,
+			"size.x": 313.0,
 			"size.y": 64.0,
-			"text": "Select Font"
+			"text": "Select Font from System Fonts"
 		},
 		"33": {
 			"bgcolor.a": 1.0,
@@ -1199,12 +1259,12 @@
 			"bgcolor.r": 0.658823549747467,
 			"completed": false,
 			"id": 33,
-			"pos.x": 2550.64379882813,
-			"pos.y": 763.144775390625,
+			"pos.x": 3009.26123046875,
+			"pos.y": 1208.564453125,
 			"priority_id": 0,
-			"size.x": 147.7080078125,
+			"size.x": 279.097900390625,
 			"size.y": 64.0,
-			"text": "Font Outline"
+			"text": "Font Outline Color & Size"
 		},
 		"34": {
 			"bgcolor.a": 1.0,
@@ -1278,17 +1338,17 @@
 		},
 		"39": {
 			"bgcolor.a": 1.0,
-			"bgcolor.b": 0.723033785820007,
-			"bgcolor.g": 0.464728474617004,
-			"bgcolor.r": 0.579489350318909,
+			"bgcolor.b": 0.521568655967712,
+			"bgcolor.g": 0.419607847929001,
+			"bgcolor.r": 0.717647075653076,
 			"completed": false,
 			"id": 39,
-			"pos.x": 3164.0,
-			"pos.y": 487.831085205078,
+			"pos.x": 2415.9189453125,
+			"pos.y": 224.128952026367,
 			"priority_id": 3,
 			"size.x": 267.0,
-			"size.y": 64.0,
-			"text": "Zoom & Pan reset"
+			"size.y": 64.0000152587891,
+			"text": "Zoom & Pan reset MMB"
 		},
 		"41": {
 			"bgcolor.a": 1.0,
@@ -1325,8 +1385,8 @@
 			"bgcolor.r": 0.579489350318909,
 			"completed": false,
 			"id": 43,
-			"pos.x": 3159.4990234375,
-			"pos.y": 421.325134277344,
+			"pos.x": 3158.11108398438,
+			"pos.y": 451.859069824219,
 			"priority_id": 3,
 			"size.x": 570.193115234375,
 			"size.y": 64.0,
@@ -1398,7 +1458,7 @@
 			"pos.x": 4213.1181640625,
 			"pos.y": 238.148406982422,
 			"priority_id": 0,
-			"size.x": 197.063720703125,
+			"size.x": 197.0634765625,
 			"size.y": 178.182922363281,
 			"text": "Features"
 		},
@@ -1423,11 +1483,11 @@
 			"bgcolor.r": 0.422874629497528,
 			"completed": false,
 			"id": 50,
-			"pos.x": 3607.65576171875,
-			"pos.y": 47.3666610717773,
+			"pos.x": 3609.0615234375,
+			"pos.y": 55.8010673522949,
 			"priority_id": 2,
-			"size.x": 212.478759765625,
-			"size.y": 72.29345703125,
+			"size.x": 211.072998046875,
+			"size.y": 64.0,
 			"text": "Rectangle select"
 		},
 		"52": {
@@ -1521,11 +1581,11 @@
 			"bgcolor.r": 0.423529416322708,
 			"completed": false,
 			"id": 58,
-			"pos.x": 4628.4677734375,
-			"pos.y": 1086.18884277344,
-			"priority_id": 0,
-			"size.x": 228.213134765625,
-			"size.y": 64.0001220703125,
+			"pos.x": 4625.46875,
+			"pos.y": 985.700256347656,
+			"priority_id": 1,
+			"size.x": 228.212890625,
+			"size.y": 64.0001831054688,
 			"text": "Save swatches used"
 		},
 		"59": {
@@ -1535,10 +1595,10 @@
 			"bgcolor.r": 0.423529416322708,
 			"completed": false,
 			"id": 59,
-			"pos.x": 5088.45556640625,
-			"pos.y": 1086.16687011719,
-			"priority_id": 0,
-			"size.x": 180.334716796875,
+			"pos.x": 5062.95849609375,
+			"pos.y": 901.687805175781,
+			"priority_id": 1,
+			"size.x": 180.33447265625,
 			"size.y": 64.0,
 			"text": "Delete on New"
 		},
@@ -1609,7 +1669,7 @@
 			"pos.y": 1009.86322021484,
 			"priority_id": 3,
 			"size.x": 348.2509765625,
-			"size.y": 64.0,
+			"size.y": 64.0000610351563,
 			"text": "Increment / Decrement all"
 		},
 		"66": {
@@ -1675,9 +1735,9 @@
 			"bgcolor.r": 0.423529416322708,
 			"completed": false,
 			"id": 70,
-			"pos.x": 4947.63916015625,
-			"pos.y": 1213.45361328125,
-			"priority_id": 0,
+			"pos.x": 4914.642578125,
+			"pos.y": 1159.45959472656,
+			"priority_id": 1,
 			"size.x": 479.0,
 			"size.y": 64.0,
 			"text": "Checkbox delete swatches confirmation on New"
@@ -1703,8 +1763,8 @@
 			"bgcolor.r": 0.579489350318909,
 			"completed": false,
 			"id": 75,
-			"pos.x": 3158.27197265625,
-			"pos.y": 356.784881591797,
+			"pos.x": 3159.65991210938,
+			"pos.y": 383.155090332031,
 			"priority_id": 2,
 			"size.x": 355.078857421875,
 			"size.y": 64.0,
@@ -1735,7 +1795,7 @@
 			"pos.y": 459.170013427734,
 			"priority_id": 1,
 			"size.x": 203.956787109375,
-			"size.y": 74.83349609375,
+			"size.y": 74.8335266113281,
 			"text": "Time Estimate"
 		},
 		"78": {
@@ -1745,10 +1805,10 @@
 			"bgcolor.r": 0.422874629497528,
 			"completed": false,
 			"id": 78,
-			"pos.x": 3554.52734375,
-			"pos.y": 852.151550292969,
+			"pos.x": 3898.53247070313,
+			"pos.y": 872.093933105469,
 			"priority_id": 2,
-			"size.x": 287.91357421875,
+			"size.x": 287.913818359375,
 			"size.y": 67.0836181640625,
 			"text": "Array with possible times"
 		},
@@ -1759,8 +1819,8 @@
 			"bgcolor.r": 0.422874629497528,
 			"completed": false,
 			"id": 79,
-			"pos.x": 3566.4677734375,
-			"pos.y": 978.533386230469,
+			"pos.x": 3573.115234375,
+			"pos.y": 875.497985839844,
 			"priority_id": 2,
 			"size.x": 264.663818359375,
 			"size.y": 64.0000610351563,
@@ -1773,11 +1833,11 @@
 			"bgcolor.r": 0.422874629497528,
 			"completed": false,
 			"id": 80,
-			"pos.x": 4626.1044921875,
-			"pos.y": 977.103210449219,
-			"priority_id": 1,
-			"size.x": 209.122802734375,
-			"size.y": 76.1251220703125,
+			"pos.x": 4630.60400390625,
+			"pos.y": 1313.06494140625,
+			"priority_id": 0,
+			"size.x": 206.123046875,
+			"size.y": 68.6259765625,
 			"text": "Settings menu"
 		},
 		"81": {
@@ -1815,7 +1875,7 @@
 			"bgcolor.r": 0.422874629497528,
 			"completed": false,
 			"id": 83,
-			"pos.x": 3470.58227539063,
+			"pos.x": 3477.52197265625,
 			"pos.y": 610.5927734375,
 			"priority_id": 1,
 			"size.x": 361.537109375,
@@ -1970,7 +2030,7 @@
 			"completed": false,
 			"id": 95,
 			"pos.x": 2732.37939453125,
-			"pos.y": 177.837997436523,
+			"pos.y": 175.06217956543,
 			"priority_id": 2,
 			"size.x": 299.35107421875,
 			"size.y": 64.0,
@@ -2025,8 +2085,8 @@
 			"bgcolor.r": 0.580392181873322,
 			"completed": false,
 			"id": 99,
-			"pos.x": 3160.166015625,
-			"pos.y": 755.4296875,
+			"pos.x": 3163.38989257813,
+			"pos.y": 796.291015625,
 			"priority_id": 3,
 			"size.x": 603.047607421875,
 			"size.y": 64.0,
@@ -2068,10 +2128,10 @@
 			"completed": false,
 			"id": 102,
 			"pos.x": 4181.6669921875,
-			"pos.y": 68.628547668457,
+			"pos.y": 89.7145614624023,
 			"priority_id": 2,
 			"size.x": 276.5947265625,
-			"size.y": 64.0,
+			"size.y": 64.0000076293945,
 			"text": "Paste img from clipboard"
 		},
 		"103": {
@@ -2109,8 +2169,8 @@
 			"bgcolor.r": 0.658823549747467,
 			"completed": false,
 			"id": 105,
-			"pos.x": 2766.66772460938,
-			"pos.y": 728.92333984375,
+			"pos.x": 2771.65673828125,
+			"pos.y": 754.509033203125,
 			"priority_id": 0,
 			"size.x": 276.583984375,
 			"size.y": 64.0,
@@ -2223,7 +2283,7 @@
 			"id": 115,
 			"pos.x": 2056.04956054688,
 			"pos.y": 334.385223388672,
-			"priority_id": 2,
+			"priority_id": 0,
 			"size.x": 141.486572265625,
 			"size.y": 64.0,
 			"text": "Comments"
@@ -2283,20 +2343,6 @@
 			"size.x": 170.584716796875,
 			"size.y": 64.0,
 			"text": "Ctrl + S save"
-		},
-		"121": {
-			"bgcolor.a": 1.0,
-			"bgcolor.b": 0.721568644046783,
-			"bgcolor.g": 0.462745100259781,
-			"bgcolor.r": 0.580392181873322,
-			"completed": false,
-			"id": 121,
-			"pos.x": 3158.1796875,
-			"pos.y": 687.90478515625,
-			"priority_id": 2,
-			"size.x": 458.234130859375,
-			"size.y": 64.0,
-			"text": "Custom file extension -> Open with..."
 		},
 		"122": {
 			"bgcolor.a": 1.0,
@@ -2473,8 +2519,8 @@
 			"bgcolor.r": 0.580392181873322,
 			"completed": false,
 			"id": 136,
-			"pos.x": 3165.17333984375,
-			"pos.y": 817.047546386719,
+			"pos.x": 3158.23364257813,
+			"pos.y": 659.88671875,
 			"priority_id": 3,
 			"size.x": 396.76416015625,
 			"size.y": 64.0,
@@ -2588,7 +2634,7 @@
 			"pos.x": 808.929138183594,
 			"pos.y": 405.356719970703,
 			"priority_id": 2,
-			"size.x": 779.142333984375,
+			"size.x": 779.142395019531,
 			"size.y": 64.0,
 			"text": "Show completed + priority filtered items - hide connections to hidden elements"
 		},
@@ -2683,8 +2729,8 @@
 			"bgcolor.r": 0.580392181873322,
 			"completed": false,
 			"id": 154,
-			"pos.x": 3161.30859375,
-			"pos.y": 622.70263671875,
+			"pos.x": 3158.53271484375,
+			"pos.y": 590.78076171875,
 			"priority_id": 3,
 			"size.x": 272.0,
 			"size.y": 64.0,
@@ -2753,8 +2799,8 @@
 			"bgcolor.r": 0.423529416322708,
 			"completed": false,
 			"id": 159,
-			"pos.x": 4576.7109375,
-			"pos.y": 1327.44372558594,
+			"pos.x": 4578.2109375,
+			"pos.y": 1205.95739746094,
 			"priority_id": 1,
 			"size.x": 324.0,
 			"size.y": 64.0,
@@ -2767,8 +2813,8 @@
 			"bgcolor.r": 0.423529416322708,
 			"completed": false,
 			"id": 160,
-			"pos.x": 4586.8251953125,
-			"pos.y": 1210.28881835938,
+			"pos.x": 4585.32568359375,
+			"pos.y": 1088.80261230469,
 			"priority_id": 1,
 			"size.x": 319.0,
 			"size.y": 64.0,
@@ -2809,8 +2855,8 @@
 			"bgcolor.r": 0.717647075653076,
 			"completed": false,
 			"id": 163,
-			"pos.x": 2737.5947265625,
-			"pos.y": 31.4465179443359,
+			"pos.x": 2736.0947265625,
+			"pos.y": 35.9460105895996,
 			"priority_id": 2,
 			"size.x": 174.313232421875,
 			"size.y": 64.0,
@@ -2838,7 +2884,7 @@
 			"completed": false,
 			"id": 165,
 			"pos.x": 2057.59423828125,
-			"pos.y": 405.844085693359,
+			"pos.y": 121.323402404785,
 			"priority_id": 2,
 			"size.x": 390.0,
 			"size.y": 64.0,
@@ -2854,7 +2900,7 @@
 			"pos.x": 4156.51806640625,
 			"pos.y": 646.13818359375,
 			"priority_id": 1,
-			"size.x": 162.999755859375,
+			"size.x": 162.99951171875,
 			"size.y": 64.0,
 			"text": "Drawing areas"
 		},
@@ -2868,7 +2914,7 @@
 			"pos.x": 4081.19506835938,
 			"pos.y": 775.809875488281,
 			"priority_id": 1,
-			"size.x": 109.0,
+			"size.x": 109.000244140625,
 			"size.y": 64.0,
 			"text": "Create"
 		},
@@ -2991,11 +3037,11 @@
 			"bgcolor.r": 0.658823549747467,
 			"completed": false,
 			"id": 183,
-			"pos.x": 2549.77709960938,
-			"pos.y": 896.77880859375,
+			"pos.x": 2015.81030273438,
+			"pos.y": 1022.75347900391,
 			"priority_id": 2,
 			"size.x": 196.0,
-			"size.y": 65.2628173828125,
+			"size.y": 65.2628784179688,
 			"text": "Open file location"
 		},
 		"184": {
@@ -3033,8 +3079,8 @@
 			"bgcolor.r": 0.771478295326233,
 			"completed": false,
 			"id": 186,
-			"pos.x": 1293.20825195313,
-			"pos.y": 877.556213378906,
+			"pos.x": 1297.09130859375,
+			"pos.y": 881.439208984375,
 			"priority_id": 4,
 			"size.x": 245.824951171875,
 			"size.y": 64.0,
@@ -3397,8 +3443,8 @@
 			"bgcolor.r": 0.580392181873322,
 			"completed": false,
 			"id": 220,
-			"pos.x": 3170.26416015625,
-			"pos.y": 887.355041503906,
+			"pos.x": 3160.71240234375,
+			"pos.y": 728.357849121094,
 			"priority_id": 2,
 			"size.x": 365.246826171875,
 			"size.y": 64.0,
@@ -3411,9 +3457,9 @@
 			"bgcolor.r": 0.580392181873322,
 			"completed": false,
 			"id": 221,
-			"pos.x": 3169.82421875,
-			"pos.y": 960.096496582031,
-			"priority_id": 0,
+			"pos.x": 3164.04833984375,
+			"pos.y": 862.943115234375,
+			"priority_id": 2,
 			"size.x": 376.540283203125,
 			"size.y": 64.0,
 			"text": "Change tab color if unsaved changes"
@@ -3439,10 +3485,10 @@
 			"bgcolor.r": 0.0,
 			"completed": false,
 			"id": 223,
-			"pos.x": 403.625671386719,
-			"pos.y": 882.622009277344,
+			"pos.x": 407.476287841797,
+			"pos.y": 857.041076660156,
 			"priority_id": 4,
-			"size.x": 263.866760253906,
+			"size.x": 263.866729736328,
 			"size.y": 64.0,
 			"text": "Mark element completed"
 		},
@@ -3453,8 +3499,8 @@
 			"bgcolor.r": 0.0,
 			"completed": false,
 			"id": 224,
-			"pos.x": 397.596893310547,
-			"pos.y": 811.441284179688,
+			"pos.x": 405.0009765625,
+			"pos.y": 791.487060546875,
 			"priority_id": 4,
 			"size.x": 270.399658203125,
 			"size.y": 64.0,
@@ -3467,10 +3513,10 @@
 			"bgcolor.r": 0.0,
 			"completed": false,
 			"id": 225,
-			"pos.x": 409.864379882813,
-			"pos.y": 954.513916015625,
+			"pos.x": 407.237823486328,
+			"pos.y": 924.231811523438,
 			"priority_id": 4,
-			"size.x": 174.733459472656,
+			"size.x": 174.733489990234,
 			"size.y": 64.0,
 			"text": "Element resized"
 		},
@@ -3481,11 +3527,11 @@
 			"bgcolor.r": 0.0,
 			"completed": false,
 			"id": 226,
-			"pos.x": 411.184509277344,
-			"pos.y": 1025.72131347656,
+			"pos.x": 405.675537109375,
+			"pos.y": 989.927429199219,
 			"priority_id": 4,
 			"size.x": 276.0,
-			"size.y": 64.0,
+			"size.y": 64.0000610351563,
 			"text": "Element changed priority"
 		},
 		"227": {
@@ -3495,10 +3541,10 @@
 			"bgcolor.r": 0.0,
 			"completed": false,
 			"id": 227,
-			"pos.x": 400.188262939453,
-			"pos.y": 513.712829589844,
+			"pos.x": 405.079437255859,
+			"pos.y": 522.040588378906,
 			"priority_id": 4,
-			"size.x": 144.333862304688,
+			"size.x": 144.333770751953,
 			"size.y": 64.0,
 			"text": "Add element"
 		},
@@ -3509,8 +3555,8 @@
 			"bgcolor.r": 0.0,
 			"completed": false,
 			"id": 228,
-			"pos.x": 405.237243652344,
-			"pos.y": 669.041748046875,
+			"pos.x": 406.237243652344,
+			"pos.y": 656.788696289063,
 			"priority_id": 4,
 			"size.x": 176.866821289063,
 			"size.y": 64.0,
@@ -3523,8 +3569,8 @@
 			"bgcolor.r": 0.0,
 			"completed": false,
 			"id": 229,
-			"pos.x": 407.260589599609,
-			"pos.y": 738.1806640625,
+			"pos.x": 406.335296630859,
+			"pos.y": 723.852905273438,
 			"priority_id": 4,
 			"size.x": 218.467071533203,
 			"size.y": 64.0,
@@ -3540,7 +3586,7 @@
 			"pos.x": 405.237335205078,
 			"pos.y": 588.720458984375,
 			"priority_id": 4,
-			"size.x": 183.733520507813,
+			"size.x": 183.733489990234,
 			"size.y": 64.0,
 			"text": "Remove element"
 		},
@@ -3565,8 +3611,8 @@
 			"bgcolor.r": 0.0,
 			"completed": false,
 			"id": 232,
-			"pos.x": 560.013854980469,
-			"pos.y": 1134.44836425781,
+			"pos.x": 561.864379882813,
+			"pos.y": 1092.80944824219,
 			"priority_id": 4,
 			"size.x": 120.0,
 			"size.y": 64.0,
@@ -3579,8 +3625,8 @@
 			"bgcolor.r": 0.0,
 			"completed": false,
 			"id": 233,
-			"pos.x": 556.348388671875,
-			"pos.y": 1206.95739746094,
+			"pos.x": 560.049621582031,
+			"pos.y": 1160.69189453125,
 			"priority_id": 4,
 			"size.x": 130.199157714844,
 			"size.y": 64.0,
@@ -3593,8 +3639,8 @@
 			"bgcolor.r": 0.0,
 			"completed": false,
 			"id": 234,
-			"pos.x": 562.955261230469,
-			"pos.y": 1350.09301757813,
+			"pos.x": 560.179382324219,
+			"pos.y": 1295.49975585938,
 			"priority_id": 4,
 			"size.x": 171.532958984375,
 			"size.y": 64.0,
@@ -3607,8 +3653,8 @@
 			"bgcolor.r": 0.0,
 			"completed": false,
 			"id": 235,
-			"pos.x": 558.893310546875,
-			"pos.y": 1278.2431640625,
+			"pos.x": 560.743957519531,
+			"pos.y": 1229.20166015625,
 			"priority_id": 4,
 			"size.x": 229.533081054688,
 			"size.y": 64.0,
@@ -3691,8 +3737,8 @@
 			"bgcolor.r": 0.580392181873322,
 			"completed": false,
 			"id": 242,
-			"pos.x": 3170.03540039063,
-			"pos.y": 1030.24291992188,
+			"pos.x": 3163.25952148438,
+			"pos.y": 928.925964355469,
 			"priority_id": 2,
 			"size.x": 352.0,
 			"size.y": 64.0,
@@ -3725,17 +3771,297 @@
 			"size.x": 123.921875,
 			"size.y": 64.0,
 			"text": "Brush"
+		},
+		"246": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.521568655967712,
+			"bgcolor.g": 0.419607847929001,
+			"bgcolor.r": 0.717647075653076,
+			"completed": false,
+			"id": 246,
+			"pos.x": 2736.61572265625,
+			"pos.y": 246.434829711914,
+			"priority_id": 0,
+			"size.x": 301.0,
+			"size.y": 64.0000152587891,
+			"text": "Ctrl+D to duplicate element"
+		},
+		"247": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.600000023841858,
+			"bgcolor.g": 0.550000011920929,
+			"bgcolor.r": 0.0,
+			"completed": false,
+			"id": 247,
+			"pos.x": 559.932922363281,
+			"pos.y": 1361.87634277344,
+			"priority_id": 4,
+			"size.x": 162.021545410156,
+			"size.y": 64.0,
+			"text": "Move Element"
+		},
+		"248": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.521568655967712,
+			"bgcolor.g": 0.419607847929001,
+			"bgcolor.r": 0.717647075653076,
+			"completed": false,
+			"id": 248,
+			"pos.x": 2736.07275390625,
+			"pos.y": 316.464019775391,
+			"priority_id": 0,
+			"size.x": 237.005126953125,
+			"size.y": 64.0,
+			"text": "Del to delete selected"
+		},
+		"249": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.521568655967712,
+			"bgcolor.g": 0.419607847929001,
+			"bgcolor.r": 0.717647075653076,
+			"completed": false,
+			"id": 249,
+			"pos.x": 2654.9345703125,
+			"pos.y": 486.261932373047,
+			"priority_id": 0,
+			"size.x": 400.5,
+			"size.y": 64.0000305175781,
+			"text": "Stop editing, moving, resizing, select -1"
+		},
+		"250": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.388235300779343,
+			"bgcolor.g": 0.576470613479614,
+			"bgcolor.r": 0.423529416322708,
+			"completed": false,
+			"id": 250,
+			"pos.x": 4949.8203125,
+			"pos.y": 1315.35021972656,
+			"priority_id": 0,
+			"size.x": 242.0,
+			"size.y": 64.0,
+			"text": "Popup drawer left side"
+		},
+		"251": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.721568644046783,
+			"bgcolor.g": 0.462745100259781,
+			"bgcolor.r": 0.580392181873322,
+			"completed": false,
+			"id": 251,
+			"pos.x": 3162.55908203125,
+			"pos.y": 997.904418945313,
+			"priority_id": 0,
+			"size.x": 403.16357421875,
+			"size.y": 64.0,
+			"text": "Can only select LineEdit with select tool"
+		},
+		"252": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.388235300779343,
+			"bgcolor.g": 0.576470613479614,
+			"bgcolor.r": 0.423529416322708,
+			"completed": false,
+			"id": 252,
+			"pos.x": 4626.7998046875,
+			"pos.y": 1401.78491210938,
+			"priority_id": 1,
+			"size.x": 163.939453125,
+			"size.y": 74.4483642578125,
+			"text": "Export to .csv"
+		},
+		"253": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.329411774873734,
+			"bgcolor.g": 0.486274510622025,
+			"bgcolor.r": 0.658823549747467,
+			"completed": false,
+			"id": 253,
+			"pos.x": 2830.96875,
+			"pos.y": 969.732116699219,
+			"priority_id": 0,
+			"size.x": 183.0,
+			"size.y": 64.0000610351563,
+			"text": "Element Border"
+		},
+		"254": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.329411774873734,
+			"bgcolor.g": 0.486274510622025,
+			"bgcolor.r": 0.658823549747467,
+			"completed": false,
+			"id": 254,
+			"pos.x": 2752.19677734375,
+			"pos.y": 847.559814453125,
+			"priority_id": 0,
+			"size.x": 164.0,
+			"size.y": 64.0,
+			"text": "Toggle Button"
+		},
+		"255": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.329411774873734,
+			"bgcolor.g": 0.486274510622025,
+			"bgcolor.r": 0.658823549747467,
+			"completed": false,
+			"id": 255,
+			"pos.x": 2931.85009765625,
+			"pos.y": 848.33349609375,
+			"priority_id": 0,
+			"size.x": 147.0,
+			"size.y": 64.0,
+			"text": "Select Color"
+		},
+		"256": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.388235300779343,
+			"bgcolor.g": 0.576470613479614,
+			"bgcolor.r": 0.423529416322708,
+			"completed": false,
+			"id": 256,
+			"pos.x": 4628.1865234375,
+			"pos.y": 1495.53796386719,
+			"priority_id": 2,
+			"size.x": 303.04736328125,
+			"size.y": 64.0,
+			"text": "Create canvas from element"
+		},
+		"257": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.388235300779343,
+			"bgcolor.g": 0.576470613479614,
+			"bgcolor.r": 0.423529416322708,
+			"completed": false,
+			"id": 257,
+			"pos.x": 5009.5927734375,
+			"pos.y": 1497.08569335938,
+			"priority_id": 2,
+			"size.x": 631.73876953125,
+			"size.y": 64.0,
+			"text": "Create 1st element with big font size, alpha bg color, no border"
+		},
+		"258": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.721568644046783,
+			"bgcolor.g": 0.462745100259781,
+			"bgcolor.r": 0.580392181873322,
+			"completed": false,
+			"id": 258,
+			"pos.x": 3664.12353515625,
+			"pos.y": 998.875610351563,
+			"priority_id": 0,
+			"size.x": 224.0,
+			"size.y": 64.0,
+			"text": "Deselect if other tool"
+		},
+		"259": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.701960802078247,
+			"bgcolor.g": 0.549019634723663,
+			"bgcolor.r": 0.352941185235977,
+			"completed": false,
+			"id": 259,
+			"pos.x": 809.315856933594,
+			"pos.y": 547.328979492188,
+			"priority_id": 0,
+			"size.x": 776.228576660156,
+			"size.y": 64.0,
+			"text": "Switching tabs doesn't keep the (*) to indicate modified file (tab name or title)"
+		},
+		"260": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.607488214969635,
+			"bgcolor.g": 0.0000129953023133567,
+			"bgcolor.r": 0.923420548439026,
+			"completed": false,
+			"id": 260,
+			"pos.x": 862.809631347656,
+			"pos.y": 1092.21533203125,
+			"priority_id": 4,
+			"size.x": 316.331604003906,
+			"size.y": 80.0,
+			"text": "Move to Documentation file"
+		},
+		"261": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.588235318660736,
+			"bgcolor.g": 0.572549045085907,
+			"bgcolor.r": 0.329411774873734,
+			"completed": false,
+			"id": 261,
+			"pos.x": 3073.74096679688,
+			"pos.y": 1085.04357910156,
+			"priority_id": 0,
+			"size.x": 482.0,
+			"size.y": 64.0,
+			"text": "Per element settings popup when elem. selected"
+		},
+		"262": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.329411774873734,
+			"bgcolor.g": 0.486274510622025,
+			"bgcolor.r": 0.658823549747467,
+			"completed": false,
+			"id": 262,
+			"pos.x": 2835.64501953125,
+			"pos.y": 1039.39477539063,
+			"priority_id": 0,
+			"size.x": 163.898193359375,
+			"size.y": 64.0,
+			"text": "Font Settings"
+		},
+		"263": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.647231757640839,
+			"bgcolor.g": 0.790742516517639,
+			"bgcolor.r": 0.405461370944977,
+			"completed": false,
+			"id": 263,
+			"pos.x": 901.363342285156,
+			"pos.y": 1522.05419921875,
+			"priority_id": 4,
+			"size.x": 120.0,
+			"size.y": 80.0,
+			"text": "Style"
+		},
+		"264": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.647231757640839,
+			"bgcolor.g": 0.790742516517639,
+			"bgcolor.r": 0.405461370944977,
+			"completed": false,
+			"id": 264,
+			"pos.x": 1175.96313476563,
+			"pos.y": 1521.33178710938,
+			"priority_id": 4,
+			"size.x": 220.0,
+			"size.y": 80.0,
+			"text": "Border color: 30b3ff"
+		},
+		"265": {
+			"bgcolor.a": 1.0,
+			"bgcolor.b": 0.329411774873734,
+			"bgcolor.g": 0.549019634723663,
+			"bgcolor.r": 0.521568655967712,
+			"completed": false,
+			"id": 265,
+			"pos.x": 2057.92358398438,
+			"pos.y": 405.216247558594,
+			"priority_id": 2,
+			"size.x": 629.091552734375,
+			"size.y": 64.0,
+			"text": "Signal if LineEdit is selected/deselected to check if editing text"
 		}
 	},
 	"State": {
-		"position.x": -1030.13952636719,
+		"position.x": -1114.87841796875,
 		"position.y": 0.0,
-		"priority_filter_value": 4,
-		"scale.x": 0.634001910686493,
-		"scale.y": 0.634001910686493,
+		"priority_filter_value": 0,
+		"scale.x": 0.616935968399048,
+		"scale.y": 0.616935968399048,
 		"show_completed": false,
 		"show_priorities": true,
 		"show_priority_tool": true,
-		"zoom_level": 0.634001928146929
+		"zoom_level": 0.616935979985297
 	}
 }

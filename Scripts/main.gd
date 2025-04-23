@@ -1,16 +1,13 @@
 extends Control
 
 @onready var tool_box: ItemList = $MarginContainer/ToolBox
+@onready var settings_drawer: Control = $SettingsDrawer
+
 @onready var zoom_indicator: VBoxContainer = $MarginContainer/ZoomIndicator
 @onready var color_picker: ColorPicker = $MarginContainer/ColorPicker
 @onready var color_picker_bg: Panel = $MarginContainer/ColorPickerBG
 @onready var status_bar: Label = $MarginContainer/StatusBar
-@onready var show_completed: CheckBox = $MarginContainer/Settings/Checkboxes/ShowCompleted
-@onready var show_priorities: CheckBox = $MarginContainer/Settings/Checkboxes/ShowPriorities
-@onready var show_priority_tool: CheckBox = $MarginContainer/Settings/FilterSettings/ShowPriorityTool
-@onready var priority_filter: HScrollBar = $MarginContainer/Settings/FilterSettings/PriorityFilter
-@onready var priority_filter_label: Label = $MarginContainer/Settings/FilterSettings/PriorityFilterLabel
-@onready var filter_settings: VBoxContainer = $MarginContainer/Settings/FilterSettings
+#@onready var filter_settings: VBoxContainer = $MarginContainer/Settings/FilterSettings
 @onready var bottom_bar: HBoxContainer = $BottomBar
 @onready var margin_container: MarginContainer = $MarginContainer
 @onready var file_tab_bar: TabBar = $BottomBar/FileTabBar
@@ -30,6 +27,12 @@ extends Control
 @export var priority_styleboxes: Array[StyleBoxFlat]
 @export var priority_filter_text: Array[String]
 @export var opened_files_file_name: String
+## Settings drawer
+var show_completed: CheckBox
+var show_priorities: CheckBox
+var show_priority_tool: CheckBox
+var priority_filter: HScrollBar
+var priority_filter_label: Label
 
 var tool_keybinds: Dictionary[int, String] = {}
 var is_editing_text: bool = false
@@ -42,7 +45,6 @@ var show_load_dialog: bool = false
 var close_this_tab: bool = false
 var cancel_quit: bool = false
 var queue_quit: bool = false
-# TODO set bools to false when needed
 
 enum Checkbox {
 	SHOW_PRIORITIES,
@@ -62,6 +64,7 @@ enum Tool {
 
 func _ready() -> void:
 	app_version = ProjectSettings.get_setting("application/config/version")
+	get_settings_drawer_object_references()
 	for i in priority_styleboxes.size():
 		priority_styleboxes[i].bg_color = priority_colors[i]
 	create_tool_keybinds()
@@ -81,7 +84,6 @@ func _ready() -> void:
 
 
 func _process(_delta):
-	# TODO signal if line_edit is selected instead of every frame
 	if selected_element_exists():
 		if get_selected_element().line_edit.is_editing():
 			is_editing_text = true
@@ -124,10 +126,21 @@ func _process(_delta):
 
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
-		save_opened_file_paths(opened_files_file_name)
 		cancel_quit = false
 		confirmation_tab_save(0)
 		#get_tree().quit() # Default behavior
+
+
+func get_settings_drawer_object_references() -> void:
+	show_completed = settings_drawer.get_checkbox_object(Checkbox.SHOW_COMPLETED)
+	show_priorities = settings_drawer.get_checkbox_object(Checkbox.SHOW_PRIORITIES)
+	show_priority_tool = settings_drawer.get_checkbox_object(Checkbox.SHOW_PRIORITY_TOOL)
+	priority_filter = settings_drawer.get_priority_filter()
+	priority_filter_label = settings_drawer.get_priority_filter_label()
+	show_completed.toggled.connect(_on_show_completed_toggled)
+	show_priorities.toggled.connect(_on_show_priorities_toggled)
+	show_priority_tool.toggled.connect(_on_show_priority_tool_toggled)
+	priority_filter.value_changed.connect(_on_priority_filter_value_changed)
 
 
 func get_selected_element() -> ElementLabel:
@@ -189,25 +202,22 @@ func switch_main_canvas(id: int) -> void:
 	update_checkboxes = true
 	if file_tab_bar.tab_count == 0:
 		file_tab_bar.add_tab("")
-	
-	if canvases[cc].opened_file_path != "":
-		set_current_tab_title(canvases[cc].file_name_short, canvases[cc].opened_file_path)
-	else:
-		set_current_tab_title("New File", "New File")
+	set_tab_name_and_title_from_canvas(cc)
 
 
-func set_current_tab_title(title: String, tooltip: String) -> void:
-	file_tab_bar.set_tab_title(file_tab_bar.current_tab, "%s" % [title])
-	file_tab_bar.set_tab_tooltip(file_tab_bar.current_tab, "%s" % [tooltip])
-	#DisplayServer.window_set_title("GPlanner %s: %s" % [app_version, tooltip])
-	get_tree().root.title = ("GPlanner %s: %s" % [app_version, tooltip])
-
-
-func set_current_tab_title_unsaved(title: String, tooltip: String, token: String) -> void:
+func set_current_tab_title(title: String, tooltip: String, token: String) -> void:
 	file_tab_bar.set_tab_title(file_tab_bar.current_tab, "%s%s" % [title, token])
 	file_tab_bar.set_tab_tooltip(file_tab_bar.current_tab, "%s%s" % [token, tooltip])
 	#DisplayServer.window_set_title("GPlanner %s: %s" % [app_version, tooltip])
-	get_tree().root.title = ("GPlanner %s %s: %s" % [token, app_version, tooltip])
+	get_tree().root.title = ("GPlanner %s: %s%s" % [app_version, tooltip, token])
+
+
+func set_tab_name_and_title_from_canvas(c_id: int) -> void:
+	var token: String = "(*)" if canvases[c_id].has_changes else ""
+	if canvases[c_id].opened_file_path == "":
+		set_current_tab_title("New File", "New File", token)
+	else:
+		set_current_tab_title(canvases[c_id].file_name_short, canvases[c_id].opened_file_path, token)
 
 
 func new_file(add_canvas: bool) -> int:
@@ -215,8 +225,9 @@ func new_file(add_canvas: bool) -> int:
 	if add_canvas:
 		new_canvas = load(canvas_scene).instantiate()
 		add_child(new_canvas)
-		bottom_bar.move_to_front()
 		margin_container.move_to_front()
+		settings_drawer.move_to_front()
+		bottom_bar.move_to_front()
 		new_canvas.id = canvases.size()
 		canvases[new_canvas.id] = new_canvas
 		new_canvas.done_adding_elements.connect(_on_canvas_done_adding_elements)
@@ -266,48 +277,46 @@ func save_file(path: String) -> void:
 		canvases[cc].opened_file_path = path
 		canvases[cc].file_name_short = path.get_file().get_slice(".", 0)
 		canvases[cc].canvas_changed(true)
-		set_current_tab_title(canvases[cc].file_name_short, canvases[cc].opened_file_path)
+		set_tab_name_and_title_from_canvas(cc)
 	else:
 		status_bar.update_status("Error when saving file to path: %s" % path)
 	file.close()
 
 
 func load_file(path: String) -> void:
+	var file
 	if FileAccess.file_exists(path):
-		var file = FileAccess.open(path, FileAccess.READ)
+		file = FileAccess.open(path, FileAccess.READ)
 		if file == null:
 			printerr("FileAcces open error: ", FileAccess.get_open_error())
 			return
-		
-		var content = file.get_as_text()
-		file.close()
-		var data = JSON.parse_string(content)
-		
-		if data == null:
-			status_bar.update_status("Can't load file / Can't parse JSON string: %s" % path)
-			printerr("Can't parse JSON string @ main.gd:load_file()")
-			return
-		else:
-			var elems = data["Elements"]
-			var conns = data["Connections"]
-			if data.has("State"):
-				var state = data["State"]
-				canvases[cc].opened_file_path = path
-				canvases[cc].file_name_short = path.get_file().get_slice(".", 0)
-				canvases[cc].rebuild_canvas_state(state)
-			canvases[cc].rebuild_elements(elems)
-			canvases[cc].rebuild_connections(conns)
-			_on_priority_filter_value_changed(canvases[cc].priority_filter_value)
-		
-		status_bar.update_status("File loaded: %s" % path)
-		#DisplayServer.window_set_title("GPlanner %s: %s" % [app_version, path])
-		get_tree().root.title = ("GPlanner %s: %s" % [app_version, path])
-		set_current_tab_title(canvases[cc].file_name_short, canvases[cc].opened_file_path)
-		canvases[cc].visible = false
-		canvases[cc].visible = true
-		canvases[cc].canvas_changed(true)
 	else:
 		printerr("File doesn't exist @ main.gd:load_file()")
+		return
+	
+	var content = file.get_as_text()
+	file.close()
+	var data = JSON.parse_string(content)
+	
+	if data == null:
+		status_bar.update_status("Can't load file / Can't parse JSON string: %s" % path)
+		printerr("Can't parse JSON string @ main.gd:load_file()")
+		return
+	else:
+		var elems = data["Elements"]
+		var conns = data["Connections"]
+		if data.has("State"):
+			var state = data["State"]
+			canvases[cc].opened_file_path = path
+			canvases[cc].file_name_short = path.get_file().get_slice(".", 0)
+			canvases[cc].rebuild_canvas_state(state)
+		canvases[cc].rebuild_elements(elems)
+		canvases[cc].rebuild_connections(conns)
+		_on_priority_filter_value_changed(canvases[cc].priority_filter_value)
+	
+	status_bar.update_status("File loaded: %s" % path)
+	canvases[cc].canvas_changed(true)
+	set_tab_name_and_title_from_canvas(cc)
 
 
 func save_opened_file_paths(path: String) -> void:
@@ -319,12 +328,13 @@ func save_opened_file_paths(path: String) -> void:
 		return
 	for c_id in canvases:
 		if canvases[c_id].elements.size() > 0:
-			if canvases[c_id].opened_file_path == "":
-				switch_main_canvas(c_id)
-				canvases[c_id].opened_file_path = "user://unsaved" + Time.get_datetime_string_from_system().replace(":", "") + ".json"
-				save_file(canvases[c_id].opened_file_path)
-			opened_files[c_id] = canvases[c_id].opened_file_path
-			print("Saving canvas %d file location: %s" % [c_id, canvases[c_id].opened_file_path])
+			if canvases[c_id].opened_file_path != "":
+				opened_files[c_id] = canvases[c_id].opened_file_path
+				print("Saving canvas %d file location: %s" % [c_id, canvases[c_id].opened_file_path])
+			#else:
+				#switch_main_canvas(c_id)
+				#canvases[c_id].opened_file_path = "user://unsaved" + Time.get_datetime_string_from_system().replace(":", "") + ".json"
+				#save_file(canvases[c_id].opened_file_path)
 	save_data["OpenedFiles"] = opened_files
 	save_data["CurrentID"] = cc
 	
@@ -379,12 +389,14 @@ func close_tab(tab: int) -> void:
 		_on_add_file_button_pressed()
 
 
+# Increments the tab from 0 to tab_count
 func confirmation_tab_save(tab: int) -> void:
 	if tab == file_tab_bar.tab_count:	# If past the last tab, finish cycling and quit app / return
 		if cancel_quit:
 			queue_quit = false
 			cancel_quit = false
 		else:
+			save_opened_file_paths(opened_files_file_name)
 			get_tree().quit()
 		return
 	if canvases[tab_to_canvas[tab]].has_changes:
@@ -418,10 +430,10 @@ func _on_color_picker_color_changed(color: Color) -> void:
 func _on_new_button_pressed() -> void:
 	if canvases.size() == 0:
 		new_file(true)
-		set_current_tab_title("New File", "New File")
+		set_current_tab_title("New File", "New File", "")
 	if canvases.has(cc) and !canvases[cc].has_changes:
 		new_file(false)
-		set_current_tab_title("New File", "New File")
+		set_current_tab_title("New File", "New File", "")
 	else:
 		new_file_confirmation.visible = true
 		new_file_confirmation.dialog_text = ("This will erase any unsaved changes.\nSave %s?" % [canvases[cc].file_name_short])
@@ -430,13 +442,13 @@ func _on_new_button_pressed() -> void:
 func _on_new_file_confirmation_confirmed() -> void:
 	_on_save_button_pressed()
 	new_file(false)
-	set_current_tab_title("New File", "New File")
+	set_current_tab_title("New File", "New File", "")
 
 
 func _on_new_file_confirmation_custom_action(action: StringName) -> void:
 	if action == "no_save":
 		new_file(false)
-		set_current_tab_title("New File", "New File")
+		set_current_tab_title("New File", "New File", "")
 	new_file_confirmation.visible = false
 
 
@@ -449,7 +461,7 @@ func _on_save_button_pressed() -> void:
 			close_this_tab = false
 			close_tab(file_tab_bar.current_tab)
 		if queue_quit and !cancel_quit:
-			get_tree().quit()
+			confirmation_tab_save(file_tab_bar.current_tab + 1)
 
 
 func _on_save_as_button_pressed() -> void:
@@ -466,7 +478,7 @@ func _on_file_dialog_save_file_selected(path: String) -> void:
 		close_this_tab = false
 		close_tab(file_tab_bar.current_tab)
 	if queue_quit and !cancel_quit:
-		get_tree().quit()
+		confirmation_tab_save(file_tab_bar.current_tab + 1)
 
 
 func _on_file_dialog_save_canceled() -> void:
@@ -479,6 +491,7 @@ func _on_load_button_pressed() -> void:
 		load_file_confirmation.visible = true
 	else:	# If empty file, load a new one without confirmation
 		file_dialog_load.visible = true
+		show_load_dialog = false
 
 
 func _on_load_file_confirmation_confirmed() -> void:
@@ -489,12 +502,14 @@ func _on_load_file_confirmation_confirmed() -> void:
 	else:
 		save_file(canvases[cc].opened_file_path)
 		file_dialog_load.visible = true
+		show_load_dialog = false
 
 
 func _on_load_file_confirmation_custom_action(action: StringName) -> void:
 	if action == "no_save":
 		load_file_confirmation.visible = false
 		file_dialog_load.visible = true
+		show_load_dialog = false
 
 
 func _on_file_dialog_load_file_selected(path: String) -> void:
@@ -511,7 +526,7 @@ func _on_show_completed_toggled(toggled_on: bool) -> void:
 
 func _on_show_priorities_toggled(toggled_on: bool) -> void:
 	canvases[cc].toggle_show_priorities(toggled_on)
-	filter_settings.visible = toggled_on
+	#filter_settings.visible = toggled_on
 
 
 func _on_priority_filter_value_changed(value: float) -> void:
@@ -580,10 +595,10 @@ func _on_exit_tab_confirmation_custom_action(action: StringName) -> void:
 	if action == "no_save":
 		exit_tab_confirmation.visible = false
 		if file_tab_bar.current_tab < file_tab_bar.tab_count:
-			# Quits when current tab + 1 == tab count if cancel_quit is false
 			confirmation_tab_save(file_tab_bar.current_tab + 1)
 
 
 func _on_canvas_has_changed(id: int) -> void:
+	#print("Canvas %d changed to %s" % [id, canvases[id].has_changes])
 	if canvases.has(id):
-		set_current_tab_title_unsaved(canvases[id].file_name_short, canvases[id].opened_file_path, "(*)")
+		set_tab_name_and_title_from_canvas(id)

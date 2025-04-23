@@ -74,7 +74,6 @@ func _process(_delta: float) -> void:
 
 
 func new_canvas() -> void:
-	canvas_changed(true)
 	checkbox_data.resize(CHECKBOX_NUMBER)
 	for i in CHECKBOX_NUMBER:
 		checkbox_data[i] = false
@@ -84,16 +83,23 @@ func new_canvas() -> void:
 	position = -size * 0.5 + get_viewport_rect().size * 0.5	# Start from the center on New File
 	scale = Vector2(1.0, 1.0)
 	priority_filter_value = Priority.NONE
+	canvas_changed(true)
 	#print("New canvas id %d" % [id])
 
 
 func canvas_changed(reset: bool = false) -> bool:
 	if reset:
-		has_changes = false
+		if has_changes:
+			has_changes = false
+			has_changed.emit()
+		else:
+			has_changes = false
 	else:
 		if !has_changes:
+			has_changes = true
 			has_changed.emit()
-		has_changes = true
+		else:
+			has_changes = true
 	return has_changes
 
 
