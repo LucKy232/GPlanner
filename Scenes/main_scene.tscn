@@ -73,15 +73,19 @@ expand_margin_bottom = 8.0
 Panel/styles/panel = SubResource("StyleBoxFlat_iacmt")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_psl12"]
+content_margin_left = 10.0
+content_margin_top = 3.0
+content_margin_right = 10.0
+content_margin_bottom = 36.0
 bg_color = Color(0.6, 0.6, 0.6, 0.45098)
-expand_margin_left = 4.0
-expand_margin_right = 4.0
+border_width_bottom = 31
+border_color = Color(0.8, 0.8, 0.8, 0)
 
 [sub_resource type="Theme" id="Theme_oyb3p"]
 Label/styles/normal = SubResource("StyleBoxFlat_psl12")
 
 [sub_resource type="Theme" id="Theme_2ebs2"]
-HBoxContainer/constants/separation = 2
+HBoxContainer/constants/separation = 0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jvnna"]
 border_width_top = 2
@@ -205,39 +209,59 @@ layout_mode = 2
 theme = ExtResource("4_x6ack")
 text = " Load "
 
-[node name="StatusBar" parent="MarginContainer" instance=ExtResource("5_iacmt")]
-layout_mode = 2
-theme = SubResource("Theme_oyb3p")
-
 [node name="SettingsDrawer" parent="." instance=ExtResource("8_2ebs2")]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -210.0
+offset_top = -222.0
 offset_bottom = 0.0
 grow_vertical = 0
 
-[node name="BottomBar" type="HBoxContainer" parent="."]
+[node name="StatusBar" parent="." instance=ExtResource("5_iacmt")]
 z_index = 5
 layout_mode = 1
-anchors_preset = 2
+anchors_preset = 3
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -36.0
-offset_right = 40.0
+offset_left = -151.0
+offset_top = -62.0
+offset_bottom = 0.0
 grow_vertical = 0
+size_flags_horizontal = 10
+size_flags_vertical = 1
+theme = SubResource("Theme_oyb3p")
+horizontal_alignment = 1
+
+[node name="BottomBar" type="ScrollContainer" parent="."]
+custom_minimum_size = Vector2(0, 31)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -31.0
+grow_horizontal = 2
+grow_vertical = 0
+scroll_horizontal_custom_step = 300.0
+vertical_scroll_mode = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BottomBar"]
+z_index = 5
+layout_mode = 2
+size_flags_vertical = 8
 mouse_filter = 0
 theme = SubResource("Theme_2ebs2")
 
-[node name="FileTabBar" type="TabBar" parent="BottomBar"]
+[node name="FileTabBar" type="TabBar" parent="BottomBar/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 8
+size_flags_horizontal = 3
+mouse_force_pass_scroll_events = false
 clip_tabs = false
 tab_close_display_policy = 1
+max_tab_width = 300
 
-[node name="AddFileButton" type="Button" parent="BottomBar"]
+[node name="AddFileButton" type="Button" parent="BottomBar/HBoxContainer"]
 custom_minimum_size = Vector2(0, 31)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -307,9 +331,9 @@ ok_button_text = "    Yes    "
 [connection signal="pressed" from="MarginContainer/FileButtons/SaveButton" to="." method="_on_save_button_pressed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/SaveAsButton" to="." method="_on_save_as_button_pressed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/LoadButton" to="." method="_on_load_button_pressed"]
-[connection signal="tab_changed" from="BottomBar/FileTabBar" to="." method="_on_file_tab_bar_tab_changed"]
-[connection signal="tab_close_pressed" from="BottomBar/FileTabBar" to="." method="_on_file_tab_bar_tab_close_pressed"]
-[connection signal="pressed" from="BottomBar/AddFileButton" to="." method="_on_add_file_button_pressed"]
+[connection signal="tab_changed" from="BottomBar/HBoxContainer/FileTabBar" to="." method="_on_file_tab_bar_tab_changed"]
+[connection signal="tab_close_pressed" from="BottomBar/HBoxContainer/FileTabBar" to="." method="_on_file_tab_bar_tab_close_pressed"]
+[connection signal="pressed" from="BottomBar/HBoxContainer/AddFileButton" to="." method="_on_add_file_button_pressed"]
 [connection signal="canceled" from="FileDialogSave" to="." method="_on_file_dialog_save_canceled"]
 [connection signal="file_selected" from="FileDialogSave" to="." method="_on_file_dialog_save_file_selected"]
 [connection signal="file_selected" from="FileDialogLoad" to="." method="_on_file_dialog_load_file_selected"]

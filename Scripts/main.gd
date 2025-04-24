@@ -6,17 +6,16 @@ extends Control
 @onready var zoom_indicator: VBoxContainer = $MarginContainer/ZoomIndicator
 @onready var color_picker: ColorPicker = $MarginContainer/ColorPicker
 @onready var color_picker_bg: Panel = $MarginContainer/ColorPickerBG
-@onready var status_bar: Label = $MarginContainer/StatusBar
-#@onready var filter_settings: VBoxContainer = $MarginContainer/Settings/FilterSettings
-@onready var bottom_bar: HBoxContainer = $BottomBar
+@onready var status_bar: Label = $StatusBar
 @onready var margin_container: MarginContainer = $MarginContainer
-@onready var file_tab_bar: TabBar = $BottomBar/FileTabBar
 @onready var file_dialog_save: FileDialog = $FileDialogSave
 @onready var file_dialog_load: FileDialog = $FileDialogLoad
 @onready var new_file_confirmation: AcceptDialog = $NewFileConfirmation
 @onready var load_file_confirmation: AcceptDialog = $LoadFileConfirmation
 @onready var close_tab_confirmation: AcceptDialog = $CloseTabConfirmation
 @onready var exit_tab_confirmation: AcceptDialog = $ExitTabConfirmation
+@onready var bottom_bar: ScrollContainer = $BottomBar
+@onready var file_tab_bar: TabBar = $BottomBar/HBoxContainer/FileTabBar
 
 @export_file("*.tscn") var element_scene
 @export_file("*.tscn") var connection_scene

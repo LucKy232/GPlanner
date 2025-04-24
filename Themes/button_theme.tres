@@ -70,6 +70,7 @@ corner_radius_bottom_left = 2
 corner_detail = 2
 
 [resource]
+Button/colors/font_color = Color(1, 1, 1, 1)
 Button/styles/focus = SubResource("StyleBoxFlat_oxmtg")
 Button/styles/hover = SubResource("StyleBoxFlat_ewvkp")
 Button/styles/hover_pressed = SubResource("StyleBoxFlat_p5kd2")

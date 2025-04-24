@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://cuhago8f7mb4k" path="res://Icons/drawer_close.svg" id="5_fh5r5"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p7i72"]
-bg_color = Color(0, 0, 0, 0.156863)
+bg_color = Color(0, 0, 0, 0.313726)
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
@@ -217,8 +217,9 @@ z_index = 5
 layout_mode = 3
 anchors_preset = 0
 offset_right = 300.0
-offset_bottom = 210.0
-size_flags_vertical = 8
+offset_bottom = 222.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
 mouse_filter = 1
 script = ExtResource("1_8m3lo")
 
@@ -232,7 +233,7 @@ offset_right = -20.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 0
-theme_override_constants/margin_bottom = 50
+theme_override_constants/margin_bottom = 62
 
 [node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer"]
 layout_mode = 2
@@ -285,6 +286,8 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
 mouse_filter = 1
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 2
 text = "Priority: ALL"
 horizontal_alignment = 1
 
