@@ -92,6 +92,11 @@ func set_size_fixed() -> void:
 	resize_timer.start()
 
 
+func change_style_preset(preset: ElementPreset) -> void:
+	line_edit.theme = preset.line_edit_theme
+	background.add_theme_stylebox_override("panel", preset.background_panel_style_box)
+
+
 func _on_line_edit_editing_toggled(toggled_on: bool) -> void:
 	if toggled_on:
 		became_selected.emit()

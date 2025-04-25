@@ -1247,7 +1247,7 @@
 			"id": 32,
 			"pos.x": 2841.31494140625,
 			"pos.y": 1285.03662109375,
-			"priority_id": 3,
+			"priority_id": 4,
 			"size.x": 313.0,
 			"size.y": 64.0,
 			"text": "Select Font from System Fonts"
@@ -1259,8 +1259,8 @@
 			"bgcolor.r": 0.658823549747467,
 			"completed": false,
 			"id": 33,
-			"pos.x": 3009.26123046875,
-			"pos.y": 1208.564453125,
+			"pos.x": 3026.75708007813,
+			"pos.y": 1209.4853515625,
 			"priority_id": 0,
 			"size.x": 279.097900390625,
 			"size.y": 64.0,
@@ -2088,7 +2088,7 @@
 			"pos.x": 3163.38989257813,
 			"pos.y": 796.291015625,
 			"priority_id": 3,
-			"size.x": 603.047607421875,
+			"size.x": 616.0,
 			"size.y": 64.0,
 			"text": "Pointing finger mouse cursor only when able to select or move"
 		},
@@ -3362,7 +3362,7 @@
 			"pos.x": 4859.583984375,
 			"pos.y": 373.594085693359,
 			"priority_id": 1,
-			"size.x": 274.185546875,
+			"size.x": 275.0,
 			"size.y": 64.0,
 			"text": "Panning indicator window"
 		},
@@ -3376,7 +3376,7 @@
 			"pos.x": 3740.61279296875,
 			"pos.y": 293.069458007813,
 			"priority_id": 2,
-			"size.x": 270.55517578125,
+			"size.x": 278.0,
 			"size.y": 64.0,
 			"text": "Copy element to clipboard"
 		},
@@ -3474,7 +3474,7 @@
 			"pos.x": 79.0914077758789,
 			"pos.y": 573.957641601563,
 			"priority_id": 4,
-			"size.x": 237.600341796875,
+			"size.x": 241.0,
 			"size.y": 64.0,
 			"text": "Canvas has_changes if:"
 		},
@@ -3488,7 +3488,7 @@
 			"pos.x": 407.476287841797,
 			"pos.y": 857.041076660156,
 			"priority_id": 4,
-			"size.x": 263.866729736328,
+			"size.x": 265.000030517578,
 			"size.y": 64.0,
 			"text": "Mark element completed"
 		},
@@ -3516,7 +3516,7 @@
 			"pos.x": 407.237823486328,
 			"pos.y": 924.231811523438,
 			"priority_id": 4,
-			"size.x": 174.733489990234,
+			"size.x": 176.999969482422,
 			"size.y": 64.0,
 			"text": "Element resized"
 		},
@@ -3544,7 +3544,7 @@
 			"pos.x": 405.079437255859,
 			"pos.y": 522.040588378906,
 			"priority_id": 4,
-			"size.x": 144.333770751953,
+			"size.x": 150.000030517578,
 			"size.y": 64.0,
 			"text": "Add element"
 		},
@@ -3558,7 +3558,7 @@
 			"pos.x": 406.237243652344,
 			"pos.y": 656.788696289063,
 			"priority_id": 4,
-			"size.x": 176.866821289063,
+			"size.x": 178.0,
 			"size.y": 64.0,
 			"text": "Add connection"
 		},
@@ -3572,7 +3572,7 @@
 			"pos.x": 406.335296630859,
 			"pos.y": 723.852905273438,
 			"priority_id": 4,
-			"size.x": 218.467071533203,
+			"size.x": 223.000030517578,
 			"size.y": 64.0,
 			"text": "Remove connections"
 		},
@@ -3586,7 +3586,7 @@
 			"pos.x": 405.237335205078,
 			"pos.y": 588.720458984375,
 			"priority_id": 4,
-			"size.x": 183.733489990234,
+			"size.x": 185.999969482422,
 			"size.y": 64.0,
 			"text": "Remove element"
 		},
@@ -3796,7 +3796,7 @@
 			"pos.x": 559.932922363281,
 			"pos.y": 1361.87634277344,
 			"priority_id": 4,
-			"size.x": 162.021545410156,
+			"size.x": 164.0,
 			"size.y": 64.0,
 			"text": "Move Element"
 		},
@@ -3950,7 +3950,7 @@
 			"pos.x": 3664.12353515625,
 			"pos.y": 998.875610351563,
 			"priority_id": 0,
-			"size.x": 224.0,
+			"size.x": 226.0,
 			"size.y": 64.0,
 			"text": "Deselect if other tool"
 		},
@@ -4054,14 +4054,58 @@
 		}
 	},
 	"State": {
-		"position.x": -1114.87841796875,
-		"position.y": 0.0,
-		"priority_filter_value": 0,
-		"scale.x": 0.616935968399048,
-		"scale.y": 0.616935968399048,
+		"position.x": -2834.93896484375,
+		"position.y": -1055.73718261719,
+		"priority_filter_value": 4,
+		"scale.x": 1.08596277236938,
+		"scale.y": 1.08596277236938,
 		"show_completed": false,
 		"show_priorities": true,
 		"show_priority_tool": true,
-		"zoom_level": 0.616935979985297
+		"zoom_level": 1.08596273581214
+	},
+	"StylePresets": {
+		"1": {
+			"background_color.a": 0.0,
+			"background_color.b": 0.0,
+			"background_color.g": 0.0,
+			"background_color.r": 0.0,
+			"border_color.a": 1.0,
+			"border_color.b": 0.0,
+			"border_color.g": 0.0,
+			"border_color.r": 0.0,
+			"border_size": 0,
+			"font_color.a": 1.0,
+			"font_color.b": 1.0,
+			"font_color.g": 1.0,
+			"font_color.r": 1.0,
+			"font_size": 15,
+			"outline_color.a": 1.0,
+			"outline_color.b": 0.0,
+			"outline_color.g": 0.0,
+			"outline_color.r": 0.0,
+			"outline_size": 2
+		},
+		"2": {
+			"background_color.a": 1.0,
+			"background_color.b": 0.6953125,
+			"background_color.g": 0.552841603755951,
+			"background_color.r": 0.127655029296875,
+			"border_color.a": 1.0,
+			"border_color.b": 0.0,
+			"border_color.g": 0.0,
+			"border_color.r": 0.0,
+			"border_size": 2,
+			"font_color.a": 1.0,
+			"font_color.b": 1.0,
+			"font_color.g": 1.0,
+			"font_color.r": 1.0,
+			"font_size": 10,
+			"outline_color.a": 1.0,
+			"outline_color.b": 0.0,
+			"outline_color.g": 0.0,
+			"outline_color.r": 0.0,
+			"outline_size": 0
+		}
 	}
 }

@@ -2,6 +2,7 @@ extends Control
 
 @onready var tool_box: ItemList = $MarginContainer/ToolBox
 @onready var settings_drawer: Control = $SettingsDrawer
+@onready var element_settings: Control = $ElementSettings
 
 @onready var zoom_indicator: VBoxContainer = $MarginContainer/ZoomIndicator
 @onready var color_picker: ColorPicker = $MarginContainer/ColorPicker
@@ -225,6 +226,7 @@ func new_file(add_canvas: bool) -> int:
 		new_canvas = load(canvas_scene).instantiate()
 		add_child(new_canvas)
 		margin_container.move_to_front()
+		element_settings.move_to_front()
 		settings_drawer.move_to_front()
 		bottom_bar.move_to_front()
 		new_canvas.id = canvases.size()
@@ -264,6 +266,7 @@ func save_file(path: String) -> void:
 	print("SAVING %s" % [path])
 	save_data = {
 		"State": canvases[cc].canvas_state_to_json(),
+		"StylePresets": canvases[cc].all_presets_to_json(),
 		"Elements": canvases[cc].all_elements_to_Json(),
 		"Connections": canvases[cc].all_connection_pairs_to_json()
 	}
@@ -304,11 +307,16 @@ func load_file(path: String) -> void:
 	else:
 		var elems = data["Elements"]
 		var conns = data["Connections"]
+		var presets
+		if data.has("StylePresets"):
+			presets = data["StylePresets"]
 		if data.has("State"):
 			var state = data["State"]
 			canvases[cc].opened_file_path = path
 			canvases[cc].file_name_short = path.get_file().get_slice(".", 0)
 			canvases[cc].rebuild_canvas_state(state)
+			if data.has("StylePresets"):
+				canvases[cc].element_presets = element_settings.rebuild_options_and_dictionary(presets)
 		canvases[cc].rebuild_elements(elems)
 		canvases[cc].rebuild_connections(conns)
 		_on_priority_filter_value_changed(canvases[cc].priority_filter_value)
@@ -601,3 +609,14 @@ func _on_canvas_has_changed(id: int) -> void:
 	#print("Canvas %d changed to %s" % [id, canvases[id].has_changes])
 	if canvases.has(id):
 		set_tab_name_and_title_from_canvas(id)
+
+
+func _on_element_settings_preset_changed() -> void:
+	if canvases.has(cc):
+		canvases[cc].element_presets = element_settings.presets
+		var selected_element = get_selected_element()
+		if selected_element != null and element_settings.preset_options.selected > 0:
+			var selected_preset = element_settings.get_selected_preset()
+			# TODO set by ID to load at start & check if changed
+			# After the first time the unique resource changes at the same time for all assigned
+			selected_element.change_style_preset(selected_preset)

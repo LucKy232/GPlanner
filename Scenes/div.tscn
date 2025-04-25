@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://brbbmqwm6hpj4"]
+
+[ext_resource type="Theme" uid="uid://oh7uiqgv8si2" path="res://Themes/div_theme.tres" id="1_bg2d3"]
+
+[node name="div1" type="Panel"]
+custom_minimum_size = Vector2(0, 6)
+theme = ExtResource("1_bg2d3")

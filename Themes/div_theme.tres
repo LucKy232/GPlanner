@@ -1,0 +1,9 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://oh7uiqgv8si2"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_oe0qe"]
+color = Color(0.71, 0.71, 0.71, 0.717647)
+grow_begin = -25.0
+grow_end = -25.0
+
+[resource]
+Panel/styles/panel = SubResource("StyleBoxLine_oe0qe")

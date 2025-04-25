@@ -12,6 +12,8 @@ var connections: Dictionary[int, Connection]
 var connections_p1: Dictionary[int, PackedInt32Array]	## ELEMENT ID key, Array of CONNECTION ID value
 var connections_p2: Dictionary[int, PackedInt32Array]	## ELEMENT ID key, Array of CONNECTION ID value
 var elements_to_connection: Dictionary[Vector2i, int]	## ELEMENT ID Vector2i(ID1, ID2) key, CONNECTION ID value
+var element_presets: Dictionary[int, ElementPreset]
+
 var element_id_counter: int = 0
 var connection_id_counter: int = 0
 var connection_candidate_1: int = -1
@@ -286,6 +288,14 @@ func all_elements_to_Json() -> Dictionary:
 	for elem_id in elements:
 		if elements[elem_id] != null:
 			dict[elem_id] = single_element_to_json(elem_id)
+	return dict
+
+
+func all_presets_to_json() -> Dictionary:
+	var dict: Dictionary
+	for key in element_presets:
+		dict[key] = element_presets[key].to_json()
+	print(dict)
 	return dict
 
 

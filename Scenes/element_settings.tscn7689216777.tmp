@@ -1,0 +1,263 @@
+[gd_scene load_steps=18 format=3 uid="uid://cwbooma1lih12"]
+
+[ext_resource type="Theme" uid="uid://bbwxuag5f8w7g" path="res://Themes/settings_title_label.tres" id="1_3rqpg"]
+[ext_resource type="Script" uid="uid://jbprsvf8b31y" path="res://Scripts/element_settings.gd" id="1_5y8lb"]
+[ext_resource type="PackedScene" uid="uid://brbbmqwm6hpj4" path="res://Scenes/div.tscn" id="2_qtb5q"]
+[ext_resource type="LabelSettings" uid="uid://bdej1kps06ib8" path="res://Themes/element_settings_label_settings.tres" id="3_uc373"]
+[ext_resource type="Texture2D" uid="uid://bomg2pg3t5h4u" path="res://Icons/plus_small.svg" id="4_1og04"]
+[ext_resource type="Texture2D" uid="uid://dxu6xn75t1xmv" path="res://Icons/minus_small.svg" id="5_0h7gu"]
+[ext_resource type="Theme" uid="uid://d3ww4lksynj53" path="res://Themes/element_settings_spin_box_theme.tres" id="6_0h7gu"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ju8lp"]
+bg_color = Color(0.3, 0.3, 0.3, 0.862745)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.188235, 0.701961, 1, 1)
+border_blend = true
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_detail = 1
+
+[sub_resource type="Theme" id="Theme_3rqpg"]
+Panel/styles/panel = SubResource("StyleBoxFlat_ju8lp")
+
+[sub_resource type="Gradient" id="Gradient_1og04"]
+offsets = PackedFloat32Array(0, 0.301136)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_0h7gu"]
+gradient = SubResource("Gradient_1og04")
+width = 72
+
+[sub_resource type="Gradient" id="Gradient_0h7gu"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_5y8lb"]
+gradient = SubResource("Gradient_0h7gu")
+width = 72
+
+[sub_resource type="Gradient" id="Gradient_5ujdp"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_llryx"]
+gradient = SubResource("Gradient_5ujdp")
+width = 72
+
+[sub_resource type="Gradient" id="Gradient_5y8lb"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_5ujdp"]
+gradient = SubResource("Gradient_5y8lb")
+width = 72
+
+[node name="ElementSettings" type="Control"]
+z_index = 5
+layout_mode = 3
+anchors_preset = 0
+offset_right = 300.0
+offset_bottom = 385.0
+script = ExtResource("1_5y8lb")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_3rqpg")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 15
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 1
+
+[node name="ElementSettingsTitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_3rqpg")
+text = "Element Settings"
+horizontal_alignment = 1
+
+[node name="div1" parent="MarginContainer/VBoxContainer" instance=ExtResource("2_qtb5q")]
+layout_mode = 2
+
+[node name="PresetHBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 6
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/PresetHBox"]
+layout_mode = 2
+text = "Preset"
+label_settings = ExtResource("3_uc373")
+
+[node name="PresetOptions" type="OptionButton" parent="MarginContainer/VBoxContainer/PresetHBox"]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+size_flags_horizontal = 3
+selected = 0
+fit_to_longest_item = false
+item_count = 1
+popup/item_0/text = "None"
+popup/item_0/id = 0
+
+[node name="AddPreset" type="Button" parent="MarginContainer/VBoxContainer/PresetHBox"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+icon = ExtResource("4_1og04")
+icon_alignment = 1
+
+[node name="RemovePreset" type="Button" parent="MarginContainer/VBoxContainer/PresetHBox"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+icon = ExtResource("5_0h7gu")
+icon_alignment = 1
+
+[node name="BackgroundTitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_3rqpg")
+text = "Background"
+horizontal_alignment = 1
+
+[node name="div2" parent="MarginContainer/VBoxContainer" instance=ExtResource("2_qtb5q")]
+layout_mode = 2
+
+[node name="BackgroundColorHBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="BackgroundColorLabel" type="Label" parent="MarginContainer/VBoxContainer/BackgroundColorHBox"]
+layout_mode = 2
+text = "Background Color"
+label_settings = ExtResource("3_uc373")
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="MarginContainer/VBoxContainer/BackgroundColorHBox"]
+layout_mode = 2
+size_flags_horizontal = 10
+icon = SubResource("GradientTexture1D_0h7gu")
+
+[node name="FontTitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_3rqpg")
+text = "Font"
+horizontal_alignment = 1
+
+[node name="div3" parent="MarginContainer/VBoxContainer" instance=ExtResource("2_qtb5q")]
+layout_mode = 2
+
+[node name="FontSizeHBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="FontSizeLabel" type="Label" parent="MarginContainer/VBoxContainer/FontSizeHBox"]
+layout_mode = 2
+text = "Font Size"
+label_settings = ExtResource("3_uc373")
+
+[node name="FontSizeSpinBox" type="SpinBox" parent="MarginContainer/VBoxContainer/FontSizeHBox"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 4
+theme = ExtResource("6_0h7gu")
+min_value = 1.0
+max_value = 255.0
+value = 1.0
+rounded = true
+alignment = 2
+
+[node name="FontColorHBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="FontColorLabel" type="Label" parent="MarginContainer/VBoxContainer/FontColorHBox"]
+layout_mode = 2
+text = "Font Color"
+label_settings = ExtResource("3_uc373")
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="MarginContainer/VBoxContainer/FontColorHBox"]
+layout_mode = 2
+size_flags_horizontal = 10
+icon = SubResource("GradientTexture1D_5y8lb")
+
+[node name="FontOutlineHBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="FontOutlineSizeLabel" type="Label" parent="MarginContainer/VBoxContainer/FontOutlineHBox"]
+layout_mode = 2
+text = "Outline Size"
+label_settings = ExtResource("3_uc373")
+
+[node name="FontOutlineSpinBox" type="SpinBox" parent="MarginContainer/VBoxContainer/FontOutlineHBox"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 4
+theme = ExtResource("6_0h7gu")
+min_value = 1.0
+max_value = 255.0
+value = 1.0
+rounded = true
+alignment = 2
+
+[node name="OutlineColorHBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="FontOutlineColorLabel" type="Label" parent="MarginContainer/VBoxContainer/OutlineColorHBox"]
+layout_mode = 2
+text = "Outline Color"
+label_settings = ExtResource("3_uc373")
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="MarginContainer/VBoxContainer/OutlineColorHBox"]
+layout_mode = 2
+size_flags_horizontal = 10
+icon = SubResource("GradientTexture1D_llryx")
+
+[node name="BorderTitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_3rqpg")
+text = "Border"
+horizontal_alignment = 1
+
+[node name="div4" parent="MarginContainer/VBoxContainer" instance=ExtResource("2_qtb5q")]
+layout_mode = 2
+
+[node name="BorderSizeHBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="BorderSizeLabel" type="Label" parent="MarginContainer/VBoxContainer/BorderSizeHBox"]
+layout_mode = 2
+text = "Border Size"
+label_settings = ExtResource("3_uc373")
+
+[node name="BorderSizeSpinBox" type="SpinBox" parent="MarginContainer/VBoxContainer/BorderSizeHBox"]
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 4
+theme = ExtResource("6_0h7gu")
+min_value = 1.0
+max_value = 255.0
+value = 1.0
+rounded = true
+alignment = 2
+
+[node name="BorderColorHBox" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="BorderColorLabel" type="Label" parent="MarginContainer/VBoxContainer/BorderColorHBox"]
+layout_mode = 2
+text = "Border Color"
+label_settings = ExtResource("3_uc373")
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="MarginContainer/VBoxContainer/BorderColorHBox"]
+layout_mode = 2
+size_flags_horizontal = 10
+icon = SubResource("GradientTexture1D_5ujdp")
+
+[connection signal="item_selected" from="MarginContainer/VBoxContainer/PresetHBox/PresetOptions" to="." method="_on_preset_options_item_selected"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/PresetHBox/AddPreset" to="." method="_on_add_preset_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/PresetHBox/RemovePreset" to="." method="_on_remove_preset_pressed"]

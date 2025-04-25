@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://cuhago8f7mb4k" path="res://Icons/drawer_close.svg" id="5_fh5r5"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p7i72"]
-bg_color = Color(0, 0, 0, 0.313726)
+bg_color = Color(0.3, 0.3, 0.3, 0.862745)
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2

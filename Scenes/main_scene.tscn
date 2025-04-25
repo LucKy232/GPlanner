@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://bfydfy3iq0rjx"]
+[gd_scene load_steps=32 format=3 uid="uid://bfydfy3iq0rjx"]
 
 [ext_resource type="Script" uid="uid://dj8gdy8d87lam" path="res://Scripts/main.gd" id="1_52fb6"]
 [ext_resource type="StyleBox" uid="uid://wrrl0mk4mdli" path="res://Themes/active_priority_button_stylebox.tres" id="2_mai8y"]
@@ -17,6 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://l7psu5evarxp" path="res://Icons/add_line.svg" id="13_psl12"]
 [ext_resource type="Texture2D" uid="uid://1jids2awyagv" path="res://Icons/remove_line.svg" id="14_2ebs2"]
 [ext_resource type="Texture2D" uid="uid://dfq5wqtp3gjfd" path="res://Icons/checkbox.svg" id="15_2ebs2"]
+[ext_resource type="PackedScene" uid="uid://cwbooma1lih12" path="res://Scenes/element_settings.tscn" id="17_oyb3p"]
 [ext_resource type="Theme" uid="uid://nujp3orsr2ol" path="res://Themes/popup_dialogue_theme.tres" id="18_2ebs2"]
 
 [sub_resource type="Theme" id="Theme_6l7je"]
@@ -218,6 +219,19 @@ offset_top = -222.0
 offset_bottom = 0.0
 grow_vertical = 0
 
+[node name="ElementSettings" parent="." instance=ExtResource("17_oyb3p")]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -384.0
+offset_top = 140.0
+offset_right = -84.0
+offset_bottom = -123.0
+grow_horizontal = 0
+grow_vertical = 2
+
 [node name="StatusBar" parent="." instance=ExtResource("5_iacmt")]
 z_index = 5
 layout_mode = 1
@@ -331,6 +345,7 @@ ok_button_text = "    Yes    "
 [connection signal="pressed" from="MarginContainer/FileButtons/SaveButton" to="." method="_on_save_button_pressed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/SaveAsButton" to="." method="_on_save_as_button_pressed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/LoadButton" to="." method="_on_load_button_pressed"]
+[connection signal="preset_changed" from="ElementSettings" to="." method="_on_element_settings_preset_changed"]
 [connection signal="tab_changed" from="BottomBar/HBoxContainer/FileTabBar" to="." method="_on_file_tab_bar_tab_changed"]
 [connection signal="tab_close_pressed" from="BottomBar/HBoxContainer/FileTabBar" to="." method="_on_file_tab_bar_tab_close_pressed"]
 [connection signal="pressed" from="BottomBar/HBoxContainer/AddFileButton" to="." method="_on_add_file_button_pressed"]
