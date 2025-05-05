@@ -110,6 +110,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 selected = 0
 fit_to_longest_item = false
+allow_reselect = true
 item_count = 1
 popup/item_0/text = "None"
 popup/item_0/id = 0
@@ -118,12 +119,14 @@ popup/item_0/id = 0
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 icon = ExtResource("4_1og04")
+text_overrun_behavior = 1
 icon_alignment = 1
 
 [node name="RemovePreset" type="Button" parent="MarginContainer/VBoxContainer/PresetHBox"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 icon = ExtResource("5_0h7gu")
+text_overrun_behavior = 1
 icon_alignment = 1
 
 [node name="BackgroundTitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]

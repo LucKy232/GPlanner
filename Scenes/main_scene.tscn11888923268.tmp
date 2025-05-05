@@ -347,7 +347,6 @@ ok_button_text = "    Yes    "
 [connection signal="pressed" from="MarginContainer/FileButtons/LoadButton" to="." method="_on_load_button_pressed"]
 [connection signal="preset_changed" from="ElementSettings" to="." method="_on_element_settings_preset_changed"]
 [connection signal="preset_removed" from="ElementSettings" to="." method="_on_element_settings_preset_removed"]
-[connection signal="preset_selected" from="ElementSettings" to="." method="_on_element_settings_preset_selected"]
 [connection signal="tab_changed" from="BottomBar/HBoxContainer/FileTabBar" to="." method="_on_file_tab_bar_tab_changed"]
 [connection signal="tab_close_pressed" from="BottomBar/HBoxContainer/FileTabBar" to="." method="_on_file_tab_bar_tab_close_pressed"]
 [connection signal="pressed" from="BottomBar/HBoxContainer/AddFileButton" to="." method="_on_add_file_button_pressed"]

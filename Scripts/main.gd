@@ -203,6 +203,9 @@ func switch_main_canvas(id: int) -> void:
 	if file_tab_bar.tab_count == 0:
 		file_tab_bar.add_tab("")
 	set_tab_name_and_title_from_canvas(cc)
+	canvases[cc].selected_preset_style = "none"
+	element_settings.erase_everything()
+	element_settings.rebuild_options_and_dictionary_from_canvas(canvases[cc].style_presets)
 
 
 func set_current_tab_title(title: String, tooltip: String, token: String) -> void:
@@ -234,6 +237,7 @@ func new_file(add_canvas: bool) -> int:
 		new_canvas.done_adding_elements.connect(_on_canvas_done_adding_elements)
 		new_canvas.changed_zoom.connect(_on_canvas_changed_zoom)
 		new_canvas.has_changed.connect(_on_canvas_has_changed.bind(new_canvas.id))
+		new_canvas.selected_style_changed.connect(_on_canvas_selected_style_changed)
 		new_canvas.element_scene = element_scene
 		new_canvas.connection_scene = connection_scene
 		new_canvas.priority_colors = priority_colors
@@ -316,7 +320,9 @@ func load_file(path: String) -> void:
 			canvases[cc].file_name_short = path.get_file().get_slice(".", 0)
 			canvases[cc].rebuild_canvas_state(state)
 			if data.has("StylePresets"):
-				canvases[cc].element_presets = element_settings.rebuild_options_and_dictionary(presets)
+				element_settings.erase_everything()
+				element_settings.rebuild_options_and_dictionary_from_json(presets)
+				canvases[cc].update_all_style_presets(element_settings.presets)
 		canvases[cc].rebuild_elements(elems)
 		canvases[cc].rebuild_connections(conns)
 		_on_priority_filter_value_changed(canvases[cc].priority_filter_value)
@@ -613,10 +619,39 @@ func _on_canvas_has_changed(id: int) -> void:
 
 func _on_element_settings_preset_changed() -> void:
 	if canvases.has(cc):
-		canvases[cc].element_presets = element_settings.presets
-		var selected_element = get_selected_element()
-		if selected_element != null and element_settings.preset_options.selected > 0:
-			var selected_preset = element_settings.get_selected_preset()
-			# TODO set by ID to load at start & check if changed
-			# After the first time the unique resource changes at the same time for all assigned
-			selected_element.change_style_preset(selected_preset)
+		var style_preset: ElementPresetStyle = element_settings.get_selected_preset()
+		canvases[cc].update_single_style_preset(style_preset)
+
+
+func _on_element_settings_preset_removed(preset_id: String) -> void:
+	if canvases.has(cc):
+		canvases[cc].canvas_changed()
+		canvases[cc].remove_style_preset(preset_id)
+
+
+func _on_element_settings_preset_selected() -> void:
+	if !canvases.has(cc):
+		return
+	
+	var style_preset: ElementPresetStyle = element_settings.get_selected_preset()
+	var selected_element = get_selected_element()
+	if element_settings.preset_options.selected > 0:
+		if canvases[cc].selected_preset_style != style_preset.id:
+			canvases[cc].selected_preset_style = style_preset.id
+			if selected_element != null:
+				canvases[cc].canvas_changed()
+				canvases[cc].update_connection_color(selected_element.id, style_preset.background_color)
+				selected_element.change_style_preset(style_preset)
+	elif element_settings.preset_options.selected == 0:
+		canvases[cc].selected_preset_style = "none"
+		if selected_element != null:
+			canvases[cc].canvas_changed()
+			selected_element.unassign_preset_style()
+			canvases[cc].update_connection_color(selected_element.id, selected_element.get_bg_color())
+			#TODO set none_preset inside element_settings as element's themes bundled in a ElementPresetStyle
+
+
+func _on_canvas_selected_style_changed() -> void:
+	if !canvases.has(cc):
+		return
+	element_settings.select_by_style_preset_id(canvases[cc].selected_preset_style)

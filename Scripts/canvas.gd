@@ -1,6 +1,7 @@
 extends Control
 class_name PlannerCanvas
 
+## Manages a single file / tab
 @onready var connection_container: Control = $ConnectionContainer
 @onready var selection_viewer: Panel = $SelectionViewer
 @onready var connection_indicator: Panel = $ConnectionIndicator
@@ -12,7 +13,7 @@ var connections: Dictionary[int, Connection]
 var connections_p1: Dictionary[int, PackedInt32Array]	## ELEMENT ID key, Array of CONNECTION ID value
 var connections_p2: Dictionary[int, PackedInt32Array]	## ELEMENT ID key, Array of CONNECTION ID value
 var elements_to_connection: Dictionary[Vector2i, int]	## ELEMENT ID Vector2i(ID1, ID2) key, CONNECTION ID value
-var element_presets: Dictionary[int, ElementPreset]
+var style_presets: Dictionary[String, ElementPresetStyle]	## PRESET ID key (not option_selector like in element_setting.gd)
 
 var element_id_counter: int = 0
 var connection_id_counter: int = 0
@@ -28,6 +29,7 @@ var color_picker_color: Color = Color.WHITE
 var opened_file_path: String = ""
 var file_name_short: String = ""
 var selected_element: int = -1
+var selected_preset_style: String = "none"
 
 var is_dragging: bool = false
 var is_resizing: bool = false
@@ -37,7 +39,7 @@ var is_adding_elements: bool = false
 var is_element_just_created: bool = false
 var has_changes: bool = false
 var drag_start_mouse_pos: Vector2
-var original_size: Vector2
+var original_elem_size: Vector2
 var zoom_level: float = 1.0
 var zoom_limits: Vector2
 var zoom_speed: float
@@ -45,6 +47,7 @@ var zoom_speed: float
 signal done_adding_elements
 signal changed_zoom
 signal has_changed
+signal selected_style_changed
 
 enum Checkbox {
 	SHOW_PRIORITIES,
@@ -105,6 +108,27 @@ func canvas_changed(reset: bool = false) -> bool:
 	return has_changes
 
 
+func update_all_style_presets(dict: Dictionary[int, ElementPresetStyle]) -> void:
+	style_presets.clear()
+	for key in dict:
+		style_presets[dict[key].id] = dict[key]
+
+
+func update_single_style_preset(style_preset: ElementPresetStyle) -> void:
+	style_presets[style_preset.id] = style_preset
+	for e_id in elements:
+		if elements[e_id].has_style_preset and elements[e_id].style_preset_id == style_preset.id:
+			update_connection_color(e_id, style_preset.background_color)
+
+
+func remove_style_preset(style_id: String) -> void:
+	if style_presets.has(style_id):
+		style_presets.erase(style_id)
+		for elem_id in elements:
+			if elements[elem_id].style_preset_id == style_id:
+				elements[elem_id].unassign_preset_style()
+
+
 func pan_limits(pos: Vector2) -> Vector2:
 	var screen_size: Vector2 = get_viewport_rect().size
 	if pos.x > 0.0:
@@ -120,7 +144,7 @@ func pan_limits(pos: Vector2) -> Vector2:
 
 func add_element_label(at_position: Vector2, id_specified: int = -1) -> void:
 	canvas_changed()
-	var new_element = load(element_scene).instantiate()
+	var new_element: ElementLabel = load(element_scene).instantiate()
 	var elem_id: int
 	if id_specified < 0:
 		elem_id = element_id_counter
@@ -140,6 +164,8 @@ func add_element_label(at_position: Vector2, id_specified: int = -1) -> void:
 	new_element.set_priority_color(priority_colors[Priority.NONE])
 	new_element.set_priority_visible(checkbox_data[Checkbox.SHOW_PRIORITIES])
 	new_element.z_index = 1
+	if style_presets.has(selected_preset_style):
+		new_element.change_style_preset(style_presets[selected_preset_style])
 	if id_specified < 0:	# Don't select elements when creating them in bulk by specifying their ids
 		elements[elem_id].line_edit.edit()	# NOTE Also signals select_element(elem_id)
 		is_element_just_created = true
@@ -241,6 +267,12 @@ func select_element(elem_id: int) -> void:
 		selection_viewer.size = elements[elem_id].size
 		selection_viewer.position = elements[elem_id].position
 		elements[selected_element].z_index = 2
+		if selected_preset_style != elements[selected_element].style_preset_id:
+			if style_presets.has(elements[selected_element].style_preset_id):
+				selected_preset_style = elements[selected_element].style_preset_id
+			else:
+				selected_preset_style = "none"
+			selected_style_changed.emit()
 	else:	# Deselect element if elem_id invalid
 		#print("ID invalid")
 		selection_viewer.visible = false
@@ -264,38 +296,20 @@ func update_connections(elem_id: int) -> void:
 			connections[conn_id].update_positions()
 
 
-func single_element_to_json(elem_id: int) -> Dictionary:
-	var e = elements[elem_id]
-	var bgc: Color = elements[elem_id].get_bg_color()
-	return {
-		"id": e.id,
-		"priority_id": e.priority_id,
-		"completed": e.completed,
-		"pos.x": e.position.x,
-		"pos.y": e.position.y,
-		"size.x": e.size.x,
-		"size.y": e.size.y,
-		"text": e.line_edit.text,
-		"bgcolor.r": bgc.r,
-		"bgcolor.g": bgc.g,
-		"bgcolor.b": bgc.b,
-		"bgcolor.a": bgc.a,
-	}
-
-
 func all_elements_to_Json() -> Dictionary:
 	var dict: Dictionary = {}
 	for elem_id in elements:
 		if elements[elem_id] != null:
-			dict[elem_id] = single_element_to_json(elem_id)
+			dict[elem_id] = elements[elem_id].to_json()
 	return dict
 
 
 func all_presets_to_json() -> Dictionary:
 	var dict: Dictionary
-	for key in element_presets:
-		dict[key] = element_presets[key].to_json()
-	print(dict)
+	var entry_id: int = 1	# Put the style presets in order, same way they get read in element_settings.gd
+	for key in style_presets:
+		dict[entry_id] = style_presets[key].to_json()
+		entry_id += 1
 	return dict
 
 
@@ -346,12 +360,20 @@ func rebuild_elements(json_elems: Dictionary) -> void:
 	for i in json_elems:
 		if !json_elems[i].is_empty():
 			var elem_id: int = int(json_elems[i]["id"])
+			var style_id: String = "none"
 			var completed: bool = false
+			var has_style: bool = false
+			var priority_id: int = Priority.NONE
 			if json_elems[i].has("completed"):		# Field only exists at version 0.1.3 or above
 				completed = bool(json_elems[i]["completed"])
-			var priority_id: int = Priority.NONE
 			if json_elems[i].has("priority_id"):
 				priority_id = int(json_elems[i]["priority_id"])
+			if json_elems[i].has("priority_id"):
+				priority_id = int(json_elems[i]["priority_id"])
+			if json_elems[i].has("has_style_preset"):
+				has_style = bool(json_elems[i]["has_style_preset"])
+			if json_elems[i].has("style_preset_id"):
+				style_id = str(json_elems[i]["style_preset_id"])
 			var pos: Vector2 = Vector2(json_elems[i]["pos.x"], json_elems[i]["pos.y"])
 			add_element_label(pos, elem_id)
 			elements[elem_id].change_size(Vector2(json_elems[i]["size.x"], json_elems[i]["size.y"]))
@@ -362,6 +384,9 @@ func rebuild_elements(json_elems: Dictionary) -> void:
 			elements[elem_id].line_edit.text = json_elems[i]["text"]
 			if completed:
 				elements[elem_id].toggle_completed()
+			if has_style and style_presets.has(style_id):
+				elements[elem_id].style_preset_id = style_id
+				elements[elem_id].change_style_preset(style_presets[style_id])
 			if elem_id > max_id:
 				max_id = elem_id
 			elements[elem_id].manual_resize = false
@@ -544,7 +569,7 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 				if event.position.distance_to(elements[elem_id].size) < 12.0:
 					is_resizing = true
 					is_panning = false
-					original_size = elements[elem_id].size
+					original_elem_size = elements[elem_id].size
 					drag_start_mouse_pos = event.position
 				if !is_dragging and !is_resizing:
 					is_dragging = true
@@ -578,7 +603,7 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 			selection_viewer.position = elements[elem_id].position
 			update_connections(elem_id)
 		if is_resizing:
-			elements[elem_id].change_size(original_size + move)
+			elements[elem_id].change_size(original_elem_size + move)
 			#selection_viewer.size = elements[elem_id].size
 			update_connections(elem_id)
 

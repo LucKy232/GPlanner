@@ -1,6 +1,7 @@
-class_name ElementPreset
+class_name ElementPresetStyle
 
-var id: int = -1	# Not used
+var id: String = "unassigned_id"
+var name: String = ""
 var font_size: int = 16
 var outline_size: int = 2
 var border_size: int = 2
@@ -12,7 +13,7 @@ var background_panel_style_box: StyleBoxFlat
 var line_edit_theme: Theme
 
 
-func _init(idx: int) -> void:
+func _init(idx: String) -> void:
 	id = idx
 
 
@@ -56,6 +57,8 @@ func set_border_size(size: int) -> void:
 
 func to_json() -> Dictionary:
 	return {
+		"id": id,
+		"name": name,
 		"font_size": font_size,
 		"outline_size": outline_size,
 		"border_size": border_size,

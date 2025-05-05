@@ -15,11 +15,16 @@ class_name ElementLabel
 @onready var hide_options_timer: Timer = $HideOptionsTimer
 @onready var resize_timer: Timer = $ResizeTimer
 
+var individual_style: ElementPresetStyle
 var background_stylebox: StyleBoxFlat
 var priority_stylebox: StyleBoxFlat
-var priority_id: int
+var preset_line_edit_theme: Theme
+var preset_background_stylebox: StyleBoxFlat
 var id: int
+var priority_id: int
+var style_preset_id: String = "none"
 var completed: bool = false
+var has_style_preset: bool = false
 var priority_enabled: bool = false
 var priority_tool_shown: bool = false
 var priority_tool_enabled: bool = true
@@ -28,8 +33,8 @@ var manual_resize: bool = false
 signal became_selected
 signal changed_priority
 
-
 func _ready() -> void:
+	individual_style = ElementPresetStyle.new("individual")
 	background_stylebox = background.get_theme_stylebox("panel").duplicate()
 	priority_stylebox = priority.get_theme_stylebox("panel").duplicate()
 	background.add_theme_stylebox_override("panel", background_stylebox)
@@ -45,11 +50,14 @@ func toggle_completed() -> void:
 		priority.visible = false
 		line_edit.theme = line_edit_completed_theme
 		z_index = completed_z_index
-		#TODO set priority completed color
 	else:
-		background.add_theme_stylebox_override("panel", background_stylebox)
+		if has_style_preset:
+			background.add_theme_stylebox_override("panel", preset_background_stylebox)
+			line_edit.theme = preset_line_edit_theme
+		else:
+			background.add_theme_stylebox_override("panel", background_stylebox)
+			line_edit.theme = line_edit_theme
 		priority.visible = true
-		line_edit.theme = line_edit_theme
 		z_index = active_z_index
 
 
@@ -92,9 +100,45 @@ func set_size_fixed() -> void:
 	resize_timer.start()
 
 
-func change_style_preset(preset: ElementPreset) -> void:
-	line_edit.theme = preset.line_edit_theme
-	background.add_theme_stylebox_override("panel", preset.background_panel_style_box)
+func change_style_preset(preset: ElementPresetStyle) -> void:
+	has_style_preset = true
+	style_preset_id = preset.id
+	preset_line_edit_theme = preset.line_edit_theme
+	preset_background_stylebox = preset.background_panel_style_box
+	if !completed:
+		line_edit.theme = preset.line_edit_theme
+		background.add_theme_stylebox_override("panel", preset.background_panel_style_box)
+
+
+func unassign_preset_style() -> void:
+	has_style_preset = false
+	style_preset_id = "none"
+	if completed:
+		background.add_theme_stylebox_override("panel", completed_stylebox)
+		line_edit.theme = line_edit_completed_theme
+	else:
+		background.add_theme_stylebox_override("panel", background_stylebox)
+		line_edit.theme = line_edit_theme
+
+
+func to_json() -> Dictionary:
+	var bgc: Color = background_stylebox.bg_color
+	return {
+		"id": id,
+		"priority_id": priority_id,
+		"completed": completed,
+		"has_style_preset": has_style_preset,
+		"style_preset_id": style_preset_id,
+		"pos.x": position.x,
+		"pos.y": position.y,
+		"size.x": size.x,
+		"size.y": size.y,
+		"text": line_edit.text,
+		"bgcolor.r": bgc.r,
+		"bgcolor.g": bgc.g,
+		"bgcolor.b": bgc.b,
+		"bgcolor.a": bgc.a,
+	}
 
 
 func _on_line_edit_editing_toggled(toggled_on: bool) -> void:
