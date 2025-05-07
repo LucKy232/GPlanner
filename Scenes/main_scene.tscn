@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://bfydfy3iq0rjx"]
+[gd_scene load_steps=30 format=3 uid="uid://bfydfy3iq0rjx"]
 
 [ext_resource type="Script" uid="uid://dj8gdy8d87lam" path="res://Scripts/main.gd" id="1_52fb6"]
 [ext_resource type="StyleBox" uid="uid://wrrl0mk4mdli" path="res://Themes/active_priority_button_stylebox.tres" id="2_mai8y"]
@@ -13,7 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://dh8rwukkdehkk" path="res://Icons/hand_cursor.svg" id="8_76v2p"]
 [ext_resource type="Texture2D" uid="uid://djq4xvrjpvfp5" path="res://Icons/plus.svg" id="9_7ewk0"]
 [ext_resource type="Texture2D" uid="uid://cjmn8wx7kwelm" path="res://Icons/minus.svg" id="10_lhp3t"]
-[ext_resource type="Texture2D" uid="uid://dlooftfvpp7o8" path="res://Icons/color_canvas.svg" id="12_lhp3t"]
+[ext_resource type="Texture2D" uid="uid://bcyljs0288jnt" path="res://Icons/settings_menu.svg" id="10_oyb3p"]
 [ext_resource type="Texture2D" uid="uid://l7psu5evarxp" path="res://Icons/add_line.svg" id="13_psl12"]
 [ext_resource type="Texture2D" uid="uid://1jids2awyagv" path="res://Icons/remove_line.svg" id="14_2ebs2"]
 [ext_resource type="Texture2D" uid="uid://dfq5wqtp3gjfd" path="res://Icons/checkbox.svg" id="15_2ebs2"]
@@ -56,22 +56,6 @@ ItemList/font_sizes/font_size = 1
 ItemList/fonts/font = null
 ItemList/styles/focus = null
 ItemList/styles/panel = SubResource("StyleBoxFlat_jv6wh")
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iacmt"]
-bg_color = Color(0.43, 0.43, 0.43, 0.470588)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.188235, 0.701961, 1, 1)
-border_blend = true
-expand_margin_left = 8.0
-expand_margin_top = 8.0
-expand_margin_right = 8.0
-expand_margin_bottom = 8.0
-
-[sub_resource type="Theme" id="Theme_6ev3c"]
-Panel/styles/panel = SubResource("StyleBoxFlat_iacmt")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_psl12"]
 content_margin_left = 10.0
@@ -154,8 +138,8 @@ item_1/text = "Add Element"
 item_1/icon = ExtResource("9_7ewk0")
 item_2/text = "Remove Element"
 item_2/icon = ExtResource("10_lhp3t")
-item_3/text = "Element Background Color"
-item_3/icon = ExtResource("12_lhp3t")
+item_3/text = "Element Style Settings"
+item_3/icon = ExtResource("10_oyb3p")
 item_4/text = "Add Connection"
 item_4/icon = ExtResource("13_psl12")
 item_5/text = "Remove All Connections to Element"
@@ -165,23 +149,6 @@ item_6/icon = ExtResource("15_2ebs2")
 
 [node name="ZoomIndicator" parent="MarginContainer" instance=ExtResource("3_jv6wh")]
 layout_mode = 2
-
-[node name="ColorPickerBG" type="Panel" parent="MarginContainer"]
-visible = false
-custom_minimum_size = Vector2(298, 572)
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme = SubResource("Theme_6ev3c")
-
-[node name="ColorPicker" type="ColorPicker" parent="MarginContainer"]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-alignment = 1
-color_mode = 3
-picker_shape = 3
 
 [node name="FileButtons" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
@@ -221,16 +188,12 @@ grow_vertical = 0
 
 [node name="ElementSettings" parent="." instance=ExtResource("17_oyb3p")]
 layout_mode = 1
-anchors_preset = 11
+anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -384.0
-offset_top = 140.0
-offset_right = -84.0
-offset_bottom = -123.0
+offset_left = -300.0
+offset_right = 0.0
 grow_horizontal = 0
-grow_vertical = 2
 
 [node name="StatusBar" parent="." instance=ExtResource("5_iacmt")]
 z_index = 5
@@ -340,12 +303,13 @@ theme = ExtResource("18_2ebs2")
 ok_button_text = "    Yes    "
 
 [connection signal="item_selected" from="MarginContainer/ToolBox" to="." method="_on_tool_box_item_selected"]
-[connection signal="color_changed" from="MarginContainer/ColorPicker" to="." method="_on_color_picker_color_changed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/NewButton" to="." method="_on_new_button_pressed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/SaveButton" to="." method="_on_save_button_pressed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/SaveAsButton" to="." method="_on_save_as_button_pressed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/LoadButton" to="." method="_on_load_button_pressed"]
+[connection signal="preset_added" from="ElementSettings" to="." method="_on_element_settings_preset_added"]
 [connection signal="preset_changed" from="ElementSettings" to="." method="_on_element_settings_preset_changed"]
+[connection signal="preset_color_changed" from="ElementSettings" to="." method="_on_element_settings_preset_color_changed"]
 [connection signal="preset_removed" from="ElementSettings" to="." method="_on_element_settings_preset_removed"]
 [connection signal="preset_selected" from="ElementSettings" to="." method="_on_element_settings_preset_selected"]
 [connection signal="tab_changed" from="BottomBar/HBoxContainer/FileTabBar" to="." method="_on_file_tab_bar_tab_changed"]

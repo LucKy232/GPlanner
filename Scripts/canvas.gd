@@ -25,7 +25,6 @@ var priority_filter_value: int = 0
 var CHECKBOX_NUMBER: int = 3
 var id: int
 var tool_id: int
-var color_picker_color: Color = Color.WHITE
 var opened_file_path: String = ""
 var file_name_short: String = ""
 var selected_element: int = -1
@@ -43,6 +42,7 @@ var original_elem_size: Vector2
 var zoom_level: float = 1.0
 var zoom_limits: Vector2
 var zoom_speed: float
+var is_user_input: bool = true
 
 signal done_adding_elements
 signal changed_zoom
@@ -58,7 +58,7 @@ enum Tool {
 	SELECT,
 	ADD_ELEMENT,
 	REMOVE_ELEMENT,
-	BG_COLOR,
+	ELEMENT_STYLE_SETTINGS,
 	ADD_CONNECTION,
 	REMOVE_CONNECTIONS,
 	MARK_COMPLETED,
@@ -93,6 +93,8 @@ func new_canvas() -> void:
 
 
 func canvas_changed(reset: bool = false) -> bool:
+	if !is_user_input:
+		return false
 	if reset:
 		if has_changes:
 			has_changes = false
@@ -116,9 +118,12 @@ func update_all_style_presets(dict: Dictionary[int, ElementPresetStyle]) -> void
 
 func update_single_style_preset(style_preset: ElementPresetStyle) -> void:
 	style_presets[style_preset.id] = style_preset
+
+
+func update_connection_color_by_preset(preset_id: String) -> void:
 	for e_id in elements:
-		if elements[e_id].has_style_preset and elements[e_id].style_preset_id == style_preset.id:
-			update_connection_color(e_id, style_preset.background_color)
+		if elements[e_id].has_style_preset and elements[e_id].style_preset_id == preset_id and style_presets.has(preset_id):
+			update_connection_color(e_id, style_presets[preset_id].background_color)
 
 
 func remove_style_preset(style_id: String) -> void:
@@ -267,7 +272,10 @@ func select_element(elem_id: int) -> void:
 		selection_viewer.size = elements[elem_id].size
 		selection_viewer.position = elements[elem_id].position
 		elements[selected_element].z_index = 2
-		if selected_preset_style != elements[selected_element].style_preset_id:
+		if elements[selected_element].style_preset_id == "none":
+			selected_preset_style = "none"
+			selected_style_changed.emit()
+		elif selected_preset_style != elements[selected_element].style_preset_id:
 			if style_presets.has(elements[selected_element].style_preset_id):
 				selected_preset_style = elements[selected_element].style_preset_id
 			else:
@@ -356,10 +364,13 @@ func rebuild_canvas_state(state: Dictionary) -> void:
 
 
 func rebuild_elements(json_elems: Dictionary) -> void:
+	is_user_input = false
 	var max_id: int = -1
 	for i in json_elems:
 		if !json_elems[i].is_empty():
 			var elem_id: int = int(json_elems[i]["id"])
+			var pos: Vector2 = Vector2(json_elems[i]["pos.x"], json_elems[i]["pos.y"])
+			add_element_label(pos, elem_id)
 			var style_id: String = "none"
 			var completed: bool = false
 			var has_style: bool = false
@@ -374,26 +385,29 @@ func rebuild_elements(json_elems: Dictionary) -> void:
 				has_style = bool(json_elems[i]["has_style_preset"])
 			if json_elems[i].has("style_preset_id"):
 				style_id = str(json_elems[i]["style_preset_id"])
-			var pos: Vector2 = Vector2(json_elems[i]["pos.x"], json_elems[i]["pos.y"])
-			add_element_label(pos, elem_id)
 			elements[elem_id].change_size(Vector2(json_elems[i]["size.x"], json_elems[i]["size.y"]))
 			elements[elem_id].priority_id = priority_id
 			elements[elem_id].set_priority_color(priority_colors[priority_id])
-			var c: Color = Color(json_elems[i]["bgcolor.r"], json_elems[i]["bgcolor.g"], json_elems[i]["bgcolor.b"], json_elems[i]["bgcolor.a"])
-			elements[elem_id].set_bg_color(c)
+			if json_elems[i].has("bgcolor.r"):	# Backwards compatibility
+				var c: Color = Color(json_elems[i]["bgcolor.r"], json_elems[i]["bgcolor.g"], json_elems[i]["bgcolor.b"], json_elems[i]["bgcolor.a"])
+				elements[elem_id].set_bg_color(c)
 			elements[elem_id].line_edit.text = json_elems[i]["text"]
 			if completed:
 				elements[elem_id].toggle_completed()
 			if has_style and style_presets.has(style_id):
 				elements[elem_id].style_preset_id = style_id
 				elements[elem_id].change_style_preset(style_presets[style_id])
+			elif json_elems[i].has("individual_style") and !has_style:
+				elements[elem_id].individual_style.rebuild_from_json_dict(json_elems[i]["individual_style"])
 			if elem_id > max_id:
 				max_id = elem_id
 			elements[elem_id].manual_resize = false
 	element_id_counter = max_id + 1
+	is_user_input = true
 
 
 func rebuild_connections(json_conns: Dictionary) -> void:
+	is_user_input = false
 	var max_id: int = -1
 	for i in json_conns:
 		var conn_id = int(i)
@@ -403,6 +417,7 @@ func rebuild_connections(json_conns: Dictionary) -> void:
 		if conn_id > max_id:
 			max_id = conn_id
 	connection_id_counter = max_id + 1
+	is_user_input = true
 
 
 func erase_everything() -> void:
@@ -525,7 +540,7 @@ func _on_gui_input(event: InputEvent) -> void:
 			if tool_id == Tool.ADD_ELEMENT:
 				add_element_label(event.position)
 				is_adding_elements = true
-			if tool_id == Tool.SELECT:
+			if (tool_id == Tool.SELECT or tool_id == Tool.ELEMENT_STYLE_SETTINGS):
 				if !is_element_just_created:
 					select_element(-1)	# Deselect any
 				else:
@@ -536,15 +551,15 @@ func _on_gui_input(event: InputEvent) -> void:
 		elif event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
 			if is_panning:
 				is_panning = false
-		if event.button_index == MOUSE_BUTTON_WHEEL_UP and tool_id == Tool.SELECT:
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP and (tool_id == Tool.SELECT or tool_id == Tool.ELEMENT_STYLE_SETTINGS):
 			var old_zoom: float = zoom_level
 			zoom_level = clampf(zoom_level * zoom_speed, zoom_limits.x, zoom_limits.y)
 			handle_zoom(old_zoom, get_window().get_mouse_position())
-		if event.button_index == MOUSE_BUTTON_WHEEL_DOWN and tool_id == Tool.SELECT:
+		if event.button_index == MOUSE_BUTTON_WHEEL_DOWN and (tool_id == Tool.SELECT or tool_id == Tool.ELEMENT_STYLE_SETTINGS):
 			var old_zoom: float = zoom_level
 			zoom_level = clampf(zoom_level * (2.0 - zoom_speed), zoom_limits.x, zoom_limits.y)
 			handle_zoom(old_zoom, get_viewport_rect().size * 0.5)
-	if event is InputEventMouseMotion and (tool_id == Tool.SELECT and is_panning):
+	if event is InputEventMouseMotion and is_panning and (tool_id == Tool.SELECT or tool_id == Tool.ELEMENT_STYLE_SETTINGS):
 		var move = (event.position - drag_start_mouse_pos) * scale.x
 		position = pan_limits(position + move)
 
@@ -564,7 +579,7 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 					add_connection()
 			if tool_id == Tool.REMOVE_CONNECTIONS:
 				remove_connections(elem_id)
-			if tool_id == Tool.SELECT:
+			if (tool_id == Tool.SELECT or tool_id == Tool.ELEMENT_STYLE_SETTINGS):
 				select_element(elem_id)
 				if event.position.distance_to(elements[elem_id].size) < 12.0:
 					is_resizing = true
@@ -575,11 +590,8 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 					is_dragging = true
 					is_panning = false
 					drag_start_mouse_pos = event.position
-			if tool_id == Tool.BG_COLOR:
-				canvas_changed()
+			if tool_id == Tool.ELEMENT_STYLE_SETTINGS:
 				select_element(elem_id)
-				elements[elem_id].set_bg_color(color_picker_color)
-				update_connection_color(elem_id, color_picker_color)
 			if tool_id == Tool.MARK_COMPLETED:
 				canvas_changed()
 				elements[elem_id].toggle_completed()
@@ -596,7 +608,7 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 				is_dragging = false
 			if is_resizing:
 				is_resizing = false
-	if event is InputEventMouseMotion and tool_id == Tool.SELECT:
+	if event is InputEventMouseMotion and (tool_id == Tool.SELECT or tool_id == Tool.ELEMENT_STYLE_SETTINGS):
 		var move = event.position - drag_start_mouse_pos
 		if is_dragging:
 			elements[elem_id].position += move
@@ -611,10 +623,6 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 func _on_element_text_box_active(elem_id: int) -> void:
 	if elements.has(elem_id):
 		select_element(elem_id)
-		if tool_id == Tool.BG_COLOR:
-			canvas_changed()
-			elements[elem_id].set_bg_color(color_picker_color)
-			update_connection_color(elem_id, color_picker_color)
 		if tool_id == Tool.MARK_COMPLETED:
 			canvas_changed()
 			elements[elem_id].toggle_completed()

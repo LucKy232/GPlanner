@@ -5,8 +5,6 @@ extends Control
 @onready var element_settings: Control = $ElementSettings
 
 @onready var zoom_indicator: VBoxContainer = $MarginContainer/ZoomIndicator
-@onready var color_picker: ColorPicker = $MarginContainer/ColorPicker
-@onready var color_picker_bg: Panel = $MarginContainer/ColorPickerBG
 @onready var status_bar: Label = $StatusBar
 @onready var margin_container: MarginContainer = $MarginContainer
 @onready var file_dialog_save: FileDialog = $FileDialogSave
@@ -55,7 +53,7 @@ enum Tool {
 	SELECT,
 	ADD_ELEMENT,
 	REMOVE_ELEMENT,
-	BG_COLOR,
+	ELEMENT_STYLE_SETTINGS,
 	ADD_CONNECTION,
 	REMOVE_CONNECTIONS,
 	MARK_COMPLETED,
@@ -108,9 +106,9 @@ func _process(_delta):
 	if Input.is_action_just_pressed(tool_keybinds[Tool.REMOVE_ELEMENT]) and !is_editing_text:
 		tool_box.select(Tool.REMOVE_ELEMENT)
 		_on_tool_box_item_selected(Tool.REMOVE_ELEMENT)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.BG_COLOR]) and !is_editing_text:
-		tool_box.select(Tool.BG_COLOR)
-		_on_tool_box_item_selected(Tool.BG_COLOR)
+	if Input.is_action_just_pressed(tool_keybinds[Tool.ELEMENT_STYLE_SETTINGS]) and !is_editing_text:
+		tool_box.select(Tool.ELEMENT_STYLE_SETTINGS)
+		_on_tool_box_item_selected(Tool.ELEMENT_STYLE_SETTINGS)
 	if Input.is_action_just_pressed(tool_keybinds[Tool.ADD_CONNECTION]) and !is_editing_text:
 		tool_box.select(Tool.ADD_CONNECTION)
 		_on_tool_box_item_selected(Tool.ADD_CONNECTION)
@@ -158,7 +156,7 @@ func create_tool_keybinds() -> void:
 	tool_keybinds[Tool.SELECT] = "select_element"
 	tool_keybinds[Tool.ADD_ELEMENT] = "add_element"
 	tool_keybinds[Tool.REMOVE_ELEMENT] = "remove_element"
-	tool_keybinds[Tool.BG_COLOR] = "element_bg_color"
+	tool_keybinds[Tool.ELEMENT_STYLE_SETTINGS] = "element_style_settings"
 	tool_keybinds[Tool.ADD_CONNECTION] = "add_connection"
 	tool_keybinds[Tool.REMOVE_CONNECTIONS] = "remove_connections"
 	tool_keybinds[Tool.MARK_COMPLETED] = "mark_completed"
@@ -425,19 +423,10 @@ func _on_tool_box_item_selected(index: int) -> void:
 		canvases[cc].tool_id = index
 		if index != Tool.ADD_CONNECTION:
 			canvases[cc].reset_adding_connection()
-	if index == Tool.BG_COLOR:
-		color_picker.visible = true
-		color_picker_bg.visible = true
-	elif index != Tool.BG_COLOR and color_picker.visible == true:
-		color_picker.visible = false
-		color_picker_bg.visible = false
-
-
-func _on_color_picker_color_changed(color: Color) -> void:
-	canvases[cc].color_picker_color = color
-	if tool_box.is_selected(Tool.BG_COLOR) and selected_element_exists():
-		get_selected_element().set_bg_color(color)
-		canvases[cc].update_connection_color(get_selected_element().id, color)
+	if index == Tool.ELEMENT_STYLE_SETTINGS:
+		element_settings.toggle_visible(true)
+	elif index != Tool.ELEMENT_STYLE_SETTINGS and element_settings.is_panel_visible():
+		element_settings.toggle_visible(false)
 
 
 func _on_new_button_pressed() -> void:
@@ -599,7 +588,6 @@ func _on_exit_tab_confirmation_confirmed() -> void:
 		confirmation_tab_save(file_tab_bar.current_tab + 1)
 	elif file_tab_bar.current_tab == file_tab_bar.tab_count - 1 and !cancel_quit:
 		# Delay application quit until after save file operation finishes: _on_save_button_pressed(), _on_file_dialog_save_file_selected
-		print("current %d, size %d" % [file_tab_bar.current_tab, file_tab_bar.tab_count])
 		queue_quit = true
 		_on_save_button_pressed()
 
@@ -617,24 +605,38 @@ func _on_canvas_has_changed(id: int) -> void:
 		set_tab_name_and_title_from_canvas(id)
 
 
+func _on_element_settings_preset_added() -> void:
+	if !canvases.has(cc):
+		return
+	var style_preset: ElementPresetStyle = element_settings.get_selected_preset()
+	canvases[cc].update_single_style_preset(style_preset)
+
+
 func _on_element_settings_preset_changed() -> void:
-	if canvases.has(cc):
-		var style_preset: ElementPresetStyle = element_settings.get_selected_preset()
-		canvases[cc].update_single_style_preset(style_preset)
+	if !canvases.has(cc):
+		return
+	canvases[cc].canvas_changed()
+
+
+func _on_element_settings_preset_color_changed() -> void:
+	if !canvases.has(cc):
+		return
+	var style_preset: ElementPresetStyle = element_settings.get_selected_preset()
+	canvases[cc].update_connection_color_by_preset(style_preset.id)
 
 
 func _on_element_settings_preset_removed(preset_id: String) -> void:
-	if canvases.has(cc):
-		canvases[cc].canvas_changed()
-		canvases[cc].remove_style_preset(preset_id)
+	if !canvases.has(cc):
+		return
+	canvases[cc].canvas_changed()
+	canvases[cc].remove_style_preset(preset_id)
 
 
 func _on_element_settings_preset_selected() -> void:
 	if !canvases.has(cc):
 		return
-	
 	var style_preset: ElementPresetStyle = element_settings.get_selected_preset()
-	var selected_element = get_selected_element()
+	var selected_element: ElementLabel = get_selected_element()
 	if element_settings.preset_options.selected > 0:
 		if canvases[cc].selected_preset_style != style_preset.id:
 			canvases[cc].selected_preset_style = style_preset.id
@@ -645,13 +647,18 @@ func _on_element_settings_preset_selected() -> void:
 	elif element_settings.preset_options.selected == 0:
 		canvases[cc].selected_preset_style = "none"
 		if selected_element != null:
-			canvases[cc].canvas_changed()
-			selected_element.unassign_preset_style()
-			canvases[cc].update_connection_color(selected_element.id, selected_element.get_bg_color())
-			#TODO set none_preset inside element_settings as element's themes bundled in a ElementPresetStyle
+			if selected_element.has_style_preset:
+				canvases[cc].canvas_changed()
+				selected_element.unassign_preset_style()
+				canvases[cc].update_connection_color(selected_element.id, selected_element.get_bg_color())
+			element_settings.none_preset = selected_element.individual_style
 
 
 func _on_canvas_selected_style_changed() -> void:
 	if !canvases.has(cc):
 		return
+	if canvases[cc].selected_preset_style == "none":
+		var selected_element: ElementLabel = get_selected_element()
+		if selected_element != null:
+			element_settings.none_preset = selected_element.individual_style
 	element_settings.select_by_style_preset_id(canvases[cc].selected_preset_style)

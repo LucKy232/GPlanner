@@ -4,4 +4,6 @@
 
 [node name="div1" type="Panel"]
 custom_minimum_size = Vector2(0, 6)
+offset_bottom = 6.0
+mouse_filter = 1
 theme = ExtResource("1_bg2d3")
