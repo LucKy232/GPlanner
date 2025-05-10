@@ -187,6 +187,7 @@ offset_bottom = 0.0
 grow_vertical = 0
 
 [node name="ElementSettings" parent="." instance=ExtResource("17_oyb3p")]
+z_index = 5
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -307,11 +308,13 @@ ok_button_text = "    Yes    "
 [connection signal="pressed" from="MarginContainer/FileButtons/SaveButton" to="." method="_on_save_button_pressed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/SaveAsButton" to="." method="_on_save_as_button_pressed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/LoadButton" to="." method="_on_load_button_pressed"]
+[connection signal="is_editing_text" from="ElementSettings" to="." method="_on_element_settings_is_editing_text"]
 [connection signal="preset_added" from="ElementSettings" to="." method="_on_element_settings_preset_added"]
 [connection signal="preset_changed" from="ElementSettings" to="." method="_on_element_settings_preset_changed"]
 [connection signal="preset_color_changed" from="ElementSettings" to="." method="_on_element_settings_preset_color_changed"]
 [connection signal="preset_removed" from="ElementSettings" to="." method="_on_element_settings_preset_removed"]
 [connection signal="preset_selected" from="ElementSettings" to="." method="_on_element_settings_preset_selected"]
+[connection signal="stopped_editing_text" from="ElementSettings" to="." method="_on_element_settings_stopped_editing_text"]
 [connection signal="tab_changed" from="BottomBar/HBoxContainer/FileTabBar" to="." method="_on_file_tab_bar_tab_changed"]
 [connection signal="tab_close_pressed" from="BottomBar/HBoxContainer/FileTabBar" to="." method="_on_file_tab_bar_tab_close_pressed"]
 [connection signal="pressed" from="BottomBar/HBoxContainer/AddFileButton" to="." method="_on_add_file_button_pressed"]

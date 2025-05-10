@@ -7,7 +7,7 @@
 [ext_resource type="Theme" uid="uid://dao6v8vx8h5ip" path="res://Themes/line_edit_theme.tres" id="3_qg77d"]
 [ext_resource type="LabelSettings" uid="uid://bdej1kps06ib8" path="res://Themes/element_settings_label_settings.tres" id="3_uc373"]
 [ext_resource type="Texture2D" uid="uid://bomg2pg3t5h4u" path="res://Icons/plus_small.svg" id="4_1og04"]
-[ext_resource type="Script" uid="uid://b55xehho2e04x" path="res://Scenes/preset_style_buttons.gd" id="4_qg77d"]
+[ext_resource type="Script" uid="uid://b55xehho2e04x" path="res://Scripts/preset_style_buttons.gd" id="4_qg77d"]
 [ext_resource type="Texture2D" uid="uid://dxu6xn75t1xmv" path="res://Icons/minus_small.svg" id="5_0h7gu"]
 [ext_resource type="Theme" uid="uid://d3ww4lksynj53" path="res://Themes/element_settings_spin_box_theme.tres" id="6_0h7gu"]
 
@@ -52,11 +52,11 @@ gradient = SubResource("Gradient_5y8lb")
 width = 72
 
 [node name="ElementSettings" type="Control"]
-z_index = 5
+z_index = 4
 layout_mode = 3
 anchors_preset = 0
 offset_right = 300.0
-offset_bottom = 649.0
+offset_bottom = 675.0
 mouse_filter = 2
 script = ExtResource("1_5y8lb")
 default_background_style_box = ExtResource("2_llryx")
@@ -69,189 +69,31 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
+
+[node name="CurrentPresetLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("1_3rqpg")
+text = "Current Style: "
+clip_text = true
+text_overrun_behavior = 3
 
 [node name="StyleButtons" type="MarginContainer" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 264)
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 script = ExtResource("4_qg77d")
+button_scene = "uid://dvorb6p8oev77"
 
 [node name="StyleButtonGrid" type="GridContainer" parent="VBoxContainer/StyleButtons"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 columns = 6
-
-[node name="Button" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button2" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button3" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button4" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button5" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button6" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button7" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button8" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button9" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button10" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button11" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button12" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button13" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button14" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button15" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button16" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button17" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button18" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button19" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button20" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button21" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button22" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button23" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button24" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button25" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button26" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button27" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button28" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button29" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button30" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button31" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button32" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button33" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button34" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button35" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button36" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button37" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button38" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button39" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button40" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button41" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
-
-[node name="Button42" type="Button" parent="VBoxContainer/StyleButtons/StyleButtonGrid"]
-custom_minimum_size = Vector2(32, 32)
-layout_mode = 2
 
 [node name="SettingsPanel" type="Panel" parent="VBoxContainer"]
 layout_mode = 2
@@ -459,12 +301,13 @@ icon = SubResource("GradientTexture1D_5ujdp")
 [node name="NameInsert" type="LineEdit" parent="."]
 visible = false
 layout_mode = 2
-offset_left = 216.0
-offset_top = 338.0
-offset_right = 284.563
-offset_bottom = 370.0
+offset_left = 221.0
+offset_top = 368.0
+offset_right = 289.563
+offset_bottom = 400.0
 placeholder_text = "Name..."
 
+[connection signal="preset_style_button_pressed" from="VBoxContainer/StyleButtons" to="." method="_on_style_buttons_preset_style_button_pressed"]
 [connection signal="item_selected" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/PresetHBox/PresetOptions" to="." method="_on_preset_options_item_selected"]
 [connection signal="pressed" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/PresetHBox/AddPreset" to="." method="_on_add_preset_pressed"]
 [connection signal="pressed" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/PresetHBox/RemovePreset" to="." method="_on_remove_preset_pressed"]

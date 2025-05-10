@@ -27,10 +27,12 @@ func update_p2(pos: Vector2, size: Vector2) -> void:
 
 func update_p1_color(color: Color) -> void:
 	gradient.colors[0] = color
+	gradient.colors[0].a = 1.0
 
 
 func update_p2_color(color: Color) -> void:
 	gradient.colors[1] = color
+	gradient.colors[1].a = 1.0
 
 
 func update_positions() -> void:

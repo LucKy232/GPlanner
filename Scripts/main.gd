@@ -33,7 +33,8 @@ var priority_filter: HScrollBar
 var priority_filter_label: Label
 
 var tool_keybinds: Dictionary[int, String] = {}
-var is_editing_text: bool = false
+var is_editing_element_text: bool = false
+var is_editing_preset_name: bool = false
 var update_checkboxes: bool = false
 var app_version: String = ""
 var canvases: Dictionary[int, PlannerCanvas]
@@ -84,11 +85,11 @@ func _ready() -> void:
 func _process(_delta):
 	if selected_element_exists():
 		if get_selected_element().line_edit.is_editing():
-			is_editing_text = true
+			is_editing_element_text = true
 		else:
-			is_editing_text = false
+			is_editing_element_text = false
 	else:
-		is_editing_text = false
+		is_editing_element_text = false
 	if Input.is_action_just_pressed("save_file"):	# Can do while editing text because ctrl+s doesn't insert anything
 		if canvases[cc].opened_file_path == "":
 			file_dialog_save.visible = true
@@ -97,25 +98,25 @@ func _process(_delta):
 	if Input.is_action_just_pressed("edit_element"):
 		if selected_element_exists() and !get_selected_element().line_edit.is_editing():
 			get_selected_element().line_edit.edit()
-	if Input.is_action_just_pressed(tool_keybinds[Tool.SELECT]) and !is_editing_text:
+	if Input.is_action_just_pressed(tool_keybinds[Tool.SELECT]) and !is_editing_text():
 		tool_box.select(Tool.SELECT)
 		_on_tool_box_item_selected(Tool.SELECT)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.ADD_ELEMENT]) and !is_editing_text:
+	if Input.is_action_just_pressed(tool_keybinds[Tool.ADD_ELEMENT]) and !is_editing_text():
 		tool_box.select(Tool.ADD_ELEMENT)
 		_on_tool_box_item_selected(Tool.ADD_ELEMENT)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.REMOVE_ELEMENT]) and !is_editing_text:
+	if Input.is_action_just_pressed(tool_keybinds[Tool.REMOVE_ELEMENT]) and !is_editing_text():
 		tool_box.select(Tool.REMOVE_ELEMENT)
 		_on_tool_box_item_selected(Tool.REMOVE_ELEMENT)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.ELEMENT_STYLE_SETTINGS]) and !is_editing_text:
+	if Input.is_action_just_pressed(tool_keybinds[Tool.ELEMENT_STYLE_SETTINGS]) and !is_editing_text():
 		tool_box.select(Tool.ELEMENT_STYLE_SETTINGS)
 		_on_tool_box_item_selected(Tool.ELEMENT_STYLE_SETTINGS)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.ADD_CONNECTION]) and !is_editing_text:
+	if Input.is_action_just_pressed(tool_keybinds[Tool.ADD_CONNECTION]) and !is_editing_text():
 		tool_box.select(Tool.ADD_CONNECTION)
 		_on_tool_box_item_selected(Tool.ADD_CONNECTION)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.REMOVE_CONNECTIONS]) and !is_editing_text:
+	if Input.is_action_just_pressed(tool_keybinds[Tool.REMOVE_CONNECTIONS]) and !is_editing_text():
 		tool_box.select(Tool.REMOVE_CONNECTIONS)
 		_on_tool_box_item_selected(Tool.REMOVE_CONNECTIONS)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.MARK_COMPLETED]) and !is_editing_text:
+	if Input.is_action_just_pressed(tool_keybinds[Tool.MARK_COMPLETED]) and !is_editing_text():
 		tool_box.select(Tool.MARK_COMPLETED)
 		_on_tool_box_item_selected(Tool.MARK_COMPLETED)
 	if update_checkboxes and canvases.has(cc):
@@ -418,6 +419,10 @@ func confirmation_tab_save(tab: int) -> void:
 		confirmation_tab_save(tab + 1)	# exit_tab_confirmation dialog increments it if the canvas has changes
 
 
+func is_editing_text() -> bool:
+	return is_editing_element_text or is_editing_preset_name
+
+
 func _on_tool_box_item_selected(index: int) -> void:
 	if canvases.has(cc):
 		canvases[cc].tool_id = index
@@ -662,3 +667,11 @@ func _on_canvas_selected_style_changed() -> void:
 		if selected_element != null:
 			element_settings.none_preset = selected_element.individual_style
 	element_settings.select_by_style_preset_id(canvases[cc].selected_preset_style)
+
+
+func _on_element_settings_is_editing_text() -> void:
+	is_editing_preset_name = true
+
+
+func _on_element_settings_stopped_editing_text() -> void:
+	is_editing_preset_name = false

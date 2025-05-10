@@ -33,7 +33,6 @@ var selected_preset_style: String = "none"
 var is_dragging: bool = false
 var is_resizing: bool = false
 var is_panning: bool = false
-var is_editing_text: bool = false
 var is_adding_elements: bool = false
 var is_element_just_created: bool = false
 var has_changes: bool = false

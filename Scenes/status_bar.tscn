@@ -1,7 +1,7 @@
 [gd_scene load_steps=7 format=3 uid="uid://c2apku3xuhhyp"]
 
 [ext_resource type="LabelSettings" uid="uid://ccff3ay0edn1k" path="res://Themes/status_bar_label_settings.tres" id="1_j0gso"]
-[ext_resource type="Script" uid="uid://d21dllhkeycf3" path="res://Scenes/status_bar.gd" id="1_mux0b"]
+[ext_resource type="Script" uid="uid://d21dllhkeycf3" path="res://Scripts/status_bar.gd" id="1_mux0b"]
 
 [sub_resource type="Animation" id="Animation_mux0b"]
 length = 0.001
