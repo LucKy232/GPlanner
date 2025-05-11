@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://lufadl7u0ek3"]
+[gd_scene load_steps=24 format=3 uid="uid://lufadl7u0ek3"]
 
 [ext_resource type="StyleBox" uid="uid://cdui0dgu3vdrr" path="res://Themes/element_background_style_box.tres" id="1_1b4pp"]
 [ext_resource type="StyleBox" uid="uid://8g7b3501cxjx" path="res://Themes/element_completed_style_box.tres" id="1_htelr"]
@@ -52,6 +52,8 @@ MarginContainer/constants/margin_left = 12
 MarginContainer/constants/margin_right = 8
 MarginContainer/constants/margin_top = 8
 
+[sub_resource type="Theme" id="Theme_847go"]
+
 [sub_resource type="Animation" id="Animation_01as5"]
 length = 0.001
 tracks/0/type = "value"
@@ -77,6 +79,18 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Color(1, 1, 1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PanelContainer/ToolMarginContainer/PriorityButtons:mouse_filter")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
 }
 
 [sub_resource type="Animation" id="Animation_5deko"]
@@ -105,6 +119,18 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PanelContainer/ToolMarginContainer/PriorityButtons:mouse_filter")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.6),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [2]
 }
 
 [sub_resource type="Animation" id="Animation_562gy"]
@@ -182,41 +208,41 @@ custom_minimum_size = Vector2(30, 12)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
-mouse_filter = 1
 theme_override_styles/pressed = SubResource("StyleBoxFlat_y2cp5")
 theme_override_styles/normal = ExtResource("5_y2cp5")
+action_mode = 0
 
 [node name="PriorityHigh" type="Button" parent="PanelContainer/ToolMarginContainer/PriorityButtons"]
 custom_minimum_size = Vector2(30, 12)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
-mouse_filter = 1
 theme_override_styles/normal = ExtResource("6_bfvbn")
+action_mode = 0
 
 [node name="PriorityMedium" type="Button" parent="PanelContainer/ToolMarginContainer/PriorityButtons"]
 custom_minimum_size = Vector2(30, 12)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
-mouse_filter = 1
 theme_override_styles/normal = ExtResource("7_y2cp5")
+action_mode = 0
 
 [node name="PriorityLow" type="Button" parent="PanelContainer/ToolMarginContainer/PriorityButtons"]
 custom_minimum_size = Vector2(30, 12)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
-mouse_filter = 1
 theme_override_styles/normal = ExtResource("8_847go")
+action_mode = 0
 
 [node name="PriorityNone" type="Button" parent="PanelContainer/ToolMarginContainer/PriorityButtons"]
 custom_minimum_size = Vector2(30, 12)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
-mouse_filter = 1
 theme_override_styles/normal = ExtResource("5_01as5")
+action_mode = 0
 
 [node name="Background" type="Panel" parent="PanelContainer"]
 layout_mode = 2
@@ -246,6 +272,7 @@ grow_vertical = 2
 theme = SubResource("Theme_id6lq")
 
 [node name="LineEdit" type="LineEdit" parent="PanelContainer/Background/TextMarginContainer"]
+z_index = 1
 layout_mode = 2
 size_flags_vertical = 4
 mouse_filter = 1
@@ -254,17 +281,19 @@ placeholder_text = "Text..."
 alignment = 1
 expand_to_text_length = true
 
-[node name="PriorityToolArea" type="Control" parent="."]
-custom_minimum_size = Vector2(40, 0)
+[node name="PriorityToolArea" type="Control" parent="PanelContainer/Background"]
+custom_minimum_size = Vector2(40, 80)
 layout_mode = 1
 anchors_preset = 11
 anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -40.0
 grow_horizontal = 0
 grow_vertical = 2
 size_flags_horizontal = 8
 mouse_filter = 1
+theme = SubResource("Theme_847go")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -288,7 +317,7 @@ one_shot = true
 [connection signal="pressed" from="PanelContainer/ToolMarginContainer/PriorityButtons/PriorityNone" to="." method="_on_priority_none_pressed"]
 [connection signal="resized" from="PanelContainer/Background/TextMarginContainer" to="." method="_on_text_margin_container_resized"]
 [connection signal="editing_toggled" from="PanelContainer/Background/TextMarginContainer/LineEdit" to="." method="_on_line_edit_editing_toggled"]
-[connection signal="mouse_entered" from="PriorityToolArea" to="." method="_on_priority_tool_area_mouse_entered"]
-[connection signal="mouse_exited" from="PriorityToolArea" to="." method="_on_priority_tool_area_mouse_exited"]
+[connection signal="mouse_entered" from="PanelContainer/Background/PriorityToolArea" to="." method="_on_priority_tool_area_mouse_entered"]
+[connection signal="mouse_exited" from="PanelContainer/Background/PriorityToolArea" to="." method="_on_priority_tool_area_mouse_exited"]
 [connection signal="timeout" from="HideOptionsTimer" to="." method="_on_hide_options_timer_timeout"]
 [connection signal="timeout" from="ResizeTimer" to="." method="_on_resize_timer_timeout"]

@@ -2,9 +2,9 @@ class_name ElementPresetStyle
 
 var id: String = "unassigned_id"
 var name: String = ""
-var font_size: int = 16
-var outline_size: int = 2
-var border_size: int = 2
+var font_size: int = 20
+var outline_size: int = 8
+var border_size: int = 1
 var background_color: Color = Color.DEEP_SKY_BLUE
 var font_color: Color = Color.WHITE
 var outline_color: Color = Color.BLACK

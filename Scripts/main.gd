@@ -95,28 +95,28 @@ func _process(_delta):
 			file_dialog_save.visible = true
 		else:
 			save_file(canvases[cc].opened_file_path)
-	if Input.is_action_just_pressed("edit_element"):
-		if selected_element_exists() and !get_selected_element().line_edit.is_editing():
+	if Input.is_action_just_pressed("edit_element") and !tool_box.is_selected(Tool.MARK_COMPLETED):
+		if selected_element_exists() and !is_editing_text() and !Input.is_key_pressed(KEY_CTRL):
 			get_selected_element().line_edit.edit()
-	if Input.is_action_just_pressed(tool_keybinds[Tool.SELECT]) and !is_editing_text():
+	if Input.is_action_just_pressed(tool_keybinds[Tool.SELECT]) and !is_editing_text() and !Input.is_key_pressed(KEY_CTRL):
 		tool_box.select(Tool.SELECT)
 		_on_tool_box_item_selected(Tool.SELECT)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.ADD_ELEMENT]) and !is_editing_text():
+	if Input.is_action_just_pressed(tool_keybinds[Tool.ADD_ELEMENT]) and !is_editing_text() and !Input.is_key_pressed(KEY_CTRL):
 		tool_box.select(Tool.ADD_ELEMENT)
 		_on_tool_box_item_selected(Tool.ADD_ELEMENT)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.REMOVE_ELEMENT]) and !is_editing_text():
+	if Input.is_action_just_pressed(tool_keybinds[Tool.REMOVE_ELEMENT]) and !is_editing_text() and !Input.is_key_pressed(KEY_CTRL):
 		tool_box.select(Tool.REMOVE_ELEMENT)
 		_on_tool_box_item_selected(Tool.REMOVE_ELEMENT)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.ELEMENT_STYLE_SETTINGS]) and !is_editing_text():
+	if Input.is_action_just_pressed(tool_keybinds[Tool.ELEMENT_STYLE_SETTINGS]) and !is_editing_text() and !Input.is_key_pressed(KEY_CTRL):
 		tool_box.select(Tool.ELEMENT_STYLE_SETTINGS)
 		_on_tool_box_item_selected(Tool.ELEMENT_STYLE_SETTINGS)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.ADD_CONNECTION]) and !is_editing_text():
+	if Input.is_action_just_pressed(tool_keybinds[Tool.ADD_CONNECTION]) and !is_editing_text() and !Input.is_key_pressed(KEY_CTRL):
 		tool_box.select(Tool.ADD_CONNECTION)
 		_on_tool_box_item_selected(Tool.ADD_CONNECTION)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.REMOVE_CONNECTIONS]) and !is_editing_text():
+	if Input.is_action_just_pressed(tool_keybinds[Tool.REMOVE_CONNECTIONS]) and !is_editing_text() and !Input.is_key_pressed(KEY_CTRL):
 		tool_box.select(Tool.REMOVE_CONNECTIONS)
 		_on_tool_box_item_selected(Tool.REMOVE_CONNECTIONS)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.MARK_COMPLETED]) and !is_editing_text():
+	if Input.is_action_just_pressed(tool_keybinds[Tool.MARK_COMPLETED]) and !is_editing_text() and !Input.is_key_pressed(KEY_CTRL):
 		tool_box.select(Tool.MARK_COMPLETED)
 		_on_tool_box_item_selected(Tool.MARK_COMPLETED)
 	if update_checkboxes and canvases.has(cc):

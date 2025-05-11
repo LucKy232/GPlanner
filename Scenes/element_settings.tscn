@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://cwbooma1lih12"]
+[gd_scene load_steps=22 format=3 uid="uid://cwbooma1lih12"]
 
 [ext_resource type="Theme" uid="uid://bbwxuag5f8w7g" path="res://Themes/settings_title_label.tres" id="1_3rqpg"]
 [ext_resource type="Script" uid="uid://jbprsvf8b31y" path="res://Scripts/element_settings.gd" id="1_5y8lb"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://b55xehho2e04x" path="res://Scripts/preset_style_buttons.gd" id="4_qg77d"]
 [ext_resource type="Texture2D" uid="uid://dxu6xn75t1xmv" path="res://Icons/minus_small.svg" id="5_0h7gu"]
 [ext_resource type="Theme" uid="uid://d3ww4lksynj53" path="res://Themes/element_settings_spin_box_theme.tres" id="6_0h7gu"]
+[ext_resource type="Theme" uid="uid://bqn3xw34vaklx" path="res://Themes/option_label_theme.tres" id="7_q0hxm"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ju8lp"]
 bg_color = Color(0.3, 0.3, 0.3, 0.862745)
@@ -56,7 +57,7 @@ z_index = 4
 layout_mode = 3
 anchors_preset = 0
 offset_right = 300.0
-offset_bottom = 675.0
+offset_bottom = 645.0
 mouse_filter = 2
 script = ExtResource("1_5y8lb")
 default_background_style_box = ExtResource("2_llryx")
@@ -79,7 +80,7 @@ clip_text = true
 text_overrun_behavior = 3
 
 [node name="StyleButtons" type="MarginContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 264)
+custom_minimum_size = Vector2(0, 228)
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/margin_left = 8
@@ -133,6 +134,7 @@ theme_override_constants/separation = 6
 
 [node name="Label" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/PresetHBox"]
 layout_mode = 2
+theme = ExtResource("7_q0hxm")
 text = "Preset"
 label_settings = ExtResource("3_uc373")
 
@@ -175,6 +177,7 @@ layout_mode = 2
 
 [node name="BackgroundColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BackgroundColorHBox"]
 layout_mode = 2
+theme = ExtResource("7_q0hxm")
 text = "Background Color"
 label_settings = ExtResource("3_uc373")
 
@@ -197,6 +200,7 @@ layout_mode = 2
 
 [node name="FontSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/FontSizeHBox"]
 layout_mode = 2
+theme = ExtResource("7_q0hxm")
 text = "Font Size"
 label_settings = ExtResource("3_uc373")
 
@@ -217,6 +221,7 @@ layout_mode = 2
 
 [node name="FontColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/FontColorHBox"]
 layout_mode = 2
+theme = ExtResource("7_q0hxm")
 text = "Font Color"
 label_settings = ExtResource("3_uc373")
 
@@ -230,6 +235,7 @@ layout_mode = 2
 
 [node name="FontOutlineSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/FontOutlineHBox"]
 layout_mode = 2
+theme = ExtResource("7_q0hxm")
 text = "Outline Size"
 label_settings = ExtResource("3_uc373")
 
@@ -249,6 +255,7 @@ layout_mode = 2
 
 [node name="FontOutlineColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/OutlineColorHBox"]
 layout_mode = 2
+theme = ExtResource("7_q0hxm")
 text = "Outline Color"
 label_settings = ExtResource("3_uc373")
 
@@ -271,6 +278,7 @@ layout_mode = 2
 
 [node name="BorderSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BorderSizeHBox"]
 layout_mode = 2
+theme = ExtResource("7_q0hxm")
 text = "Border Size"
 label_settings = ExtResource("3_uc373")
 
@@ -290,6 +298,7 @@ layout_mode = 2
 
 [node name="BorderColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BorderColorHBox"]
 layout_mode = 2
+theme = ExtResource("7_q0hxm")
 text = "Border Color"
 label_settings = ExtResource("3_uc373")
 
@@ -301,10 +310,10 @@ icon = SubResource("GradientTexture1D_5ujdp")
 [node name="NameInsert" type="LineEdit" parent="."]
 visible = false
 layout_mode = 2
-offset_left = 221.0
-offset_top = 368.0
-offset_right = 289.563
-offset_bottom = 400.0
+offset_left = 215.0
+offset_top = 332.0
+offset_right = 283.563
+offset_bottom = 364.0
 placeholder_text = "Name..."
 
 [connection signal="preset_style_button_pressed" from="VBoxContainer/StyleButtons" to="." method="_on_style_buttons_preset_style_button_pressed"]

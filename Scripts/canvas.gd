@@ -584,10 +584,12 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 					is_resizing = true
 					is_panning = false
 					original_elem_size = elements[elem_id].size
+					elements[elem_id].set_default_cursor_shape(Control.CURSOR_FDIAGSIZE)
 					drag_start_mouse_pos = event.position
 				if !is_dragging and !is_resizing:
 					is_dragging = true
 					is_panning = false
+					elements[elem_id].set_default_cursor_shape(Control.CURSOR_DRAG)
 					drag_start_mouse_pos = event.position
 			if tool_id == Tool.ELEMENT_STYLE_SETTINGS:
 				select_element(elem_id)
@@ -596,6 +598,7 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 				elements[elem_id].toggle_completed()
 				toggle_element_and_connections(elem_id, checkbox_data[Checkbox.SHOW_COMPLETED])
 		elif event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
+			elements[elem_id].set_default_cursor_shape(Control.CURSOR_POINTING_HAND)
 			if tool_id == Tool.REMOVE_ELEMENT:
 				canvas_changed()
 				remove_connections(elem_id)

@@ -3,3 +3,4 @@
 [resource]
 outline_size = 2
 outline_color = Color(0, 0, 0, 1)
+shadow_size = 0

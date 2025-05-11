@@ -4,6 +4,7 @@
 LineEdit/constants/caret_width = 1
 LineEdit/constants/minimum_character_width = 2
 LineEdit/constants/outline_size = 0
+LineEdit/font_sizes/font_size = 13
 SpinBox/constants/buttons_vertical_separation = 0
 SpinBox/constants/buttons_width = 16
 SpinBox/constants/field_and_buttons_separation = 1

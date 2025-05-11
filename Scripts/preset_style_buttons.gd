@@ -4,7 +4,7 @@ extends MarginContainer
 @onready var style_button_grid: GridContainer = $StyleButtonGrid
 
 var current_pressed: int = -1
-var MAX_BUTTON_COUNT = 42
+var MAX_BUTTON_COUNT = 36
 var buttons: Dictionary[int, Button]
 var keybinds: Dictionary[int, String]
 var tooltips: Dictionary[int, String]
@@ -67,29 +67,33 @@ func erase_everything() -> void:
 		if butt_id > 0:		# Keep none_preset
 			buttons[butt_id].queue_free()
 			to_erase.append(butt_id)
+	for tip in tooltips:
+		if tip > 0:
+			tooltips.erase(tip)
 	for butt_id in to_erase:
 		buttons.erase(butt_id)
 
 
 func rewind_button_dictionary(idx: int) -> void:
-	print("Removing %d" % [idx-1])
-	var last_key: int = 0
-	for butt_id in buttons:
-		if butt_id >= idx:
-			print("Placing %d into %d" % [butt_id, butt_id - 1])
-			tooltips[butt_id - 1] = tooltips[butt_id]
-			buttons[butt_id - 1] = buttons[butt_id]
-			buttons[butt_id - 1].text = str(butt_id - 1)
-			buttons[butt_id - 1].pressed.disconnect(_on_button_pressed)
-			buttons[butt_id - 1].pressed.connect(_on_button_pressed.bind(butt_id - 1))
-			if butt_id - 1 <= 10:
-				var events: Array[InputEvent] = InputMap.action_get_events(keybinds[butt_id - 1])
-				buttons[butt_id - 1].shortcut = Shortcut.new()
-				buttons[butt_id - 1].shortcut.events = InputMap.action_get_events(keybinds[butt_id - 1])
-				buttons[butt_id - 1].tooltip_text = ("%s (%s)" % [tooltips[butt_id - 1], events[0].as_text().split(" ")[0]])
-			last_key = butt_id
-	print("Removing %d" % last_key)
-	buttons.erase(last_key)
+	#print("Removing %d" % [idx-1])
+	var last_key: int = buttons.size() - 1
+	var i: int = idx
+	while i < buttons.size():
+		#print("Placing %d into %d" % [i, i - 1])
+		tooltips[i - 1] = tooltips[i]
+		buttons[i - 1] = buttons[i]
+		buttons[i - 1].text = str(i - 1)
+		buttons[i - 1].pressed.disconnect(_on_button_pressed)
+		buttons[i - 1].pressed.connect(_on_button_pressed.bind(i - 1))
+		if i - 1 <= 10:
+			var events: Array[InputEvent] = InputMap.action_get_events(keybinds[i - 1])
+			buttons[i - 1].shortcut = Shortcut.new()
+			buttons[i - 1].shortcut.events = InputMap.action_get_events(keybinds[i - 1])
+			buttons[i - 1].tooltip_text = ("%s (%s)" % [tooltips[i - 1], events[0].as_text().split(" ")[0]])
+		i += 1
+	if last_key > 0:
+		#print("Erasing last %d" % last_key)
+		buttons.erase(last_key)
 
 
 func focus_button(idx: int) -> void:
@@ -140,5 +144,5 @@ func change_button_background_color(idx: int, color: Color) -> void:
 
 
 func _on_button_pressed(idx: int) -> void:
-	print("Pressed %d" % idx)
+	#print("Pressed %d" % idx)
 	preset_style_button_pressed.emit(idx)

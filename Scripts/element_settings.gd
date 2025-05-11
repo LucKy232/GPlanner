@@ -221,7 +221,7 @@ func _on_background_color_picker_button_color_changed(color: Color) -> void:
 		return
 	if preset_options.selected == 0:
 		none_preset.set_background_color(color)
-		style_buttons.change_button_background_color(0, color)
+		#style_buttons.change_button_background_color(0, color)
 	else:
 		presets[preset_options.selected].set_background_color(color)
 		style_buttons.change_button_background_color(preset_options.selected, color)
@@ -234,7 +234,7 @@ func _on_font_size_spin_box_value_changed(value: float) -> void:
 		return
 	if preset_options.selected == 0:
 		none_preset.set_font_size(int(value))
-		style_buttons.change_button_font_size(0, int(value))
+		#style_buttons.change_button_font_size(0, int(value))
 	else:
 		presets[preset_options.selected].set_font_size(int(value))
 		style_buttons.change_button_font_size(preset_options.selected, int(value))
@@ -246,7 +246,7 @@ func _on_font_color_picker_button_color_changed(color: Color) -> void:
 		return
 	if preset_options.selected == 0:
 		none_preset.set_font_color(color)
-		style_buttons.change_button_font_color(0, color)
+		#style_buttons.change_button_font_color(0, color)
 	else:
 		presets[preset_options.selected].set_font_color(color)
 		style_buttons.change_button_font_color(preset_options.selected, color)
@@ -258,7 +258,7 @@ func _on_font_outline_spin_box_value_changed(value: float) -> void:
 		return
 	if preset_options.selected == 0:
 		none_preset.set_outline_size(int(value))
-		style_buttons.change_button_font_outline_size(0, int(value))
+		#style_buttons.change_button_font_outline_size(0, int(value))
 	else:
 		presets[preset_options.selected].set_outline_size(int(value))
 		style_buttons.change_button_font_outline_size(preset_options.selected, int(value))
@@ -270,7 +270,7 @@ func _on_font_outline_color_picker_button_color_changed(color: Color) -> void:
 		return
 	if preset_options.selected == 0:
 		none_preset.set_outline_color(color)
-		style_buttons.change_button_font_outline_color(0, color)
+		#style_buttons.change_button_font_outline_color(0, color)
 	else:
 		presets[preset_options.selected].set_outline_color(color)
 		style_buttons.change_button_font_outline_color(preset_options.selected, color)
@@ -292,7 +292,7 @@ func _on_border_color_picker_button_color_changed(color: Color) -> void:
 		return
 	if preset_options.selected == 0:
 		none_preset.set_border_color(color)
-		style_buttons.change_button_border_color(0, color)
+		#style_buttons.change_button_border_color(0, color)
 	else:
 		presets[preset_options.selected].set_border_color(color)
 		style_buttons.change_button_border_color(preset_options.selected, color)

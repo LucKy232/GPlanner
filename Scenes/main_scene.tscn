@@ -111,7 +111,6 @@ priority_filter_text = Array[String](["Only Active", "Active & High", "Medium an
 opened_files_file_name = "opened_files.json"
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
-z_index = 5
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -122,6 +121,7 @@ mouse_filter = 2
 theme = SubResource("Theme_6l7je")
 
 [node name="ToolBox" type="ItemList" parent="MarginContainer"]
+z_index = 5
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
@@ -148,9 +148,11 @@ item_6/text = "Mark Element As Complete"
 item_6/icon = ExtResource("15_2ebs2")
 
 [node name="ZoomIndicator" parent="MarginContainer" instance=ExtResource("3_jv6wh")]
+z_index = 5
 layout_mode = 2
 
 [node name="FileButtons" type="HBoxContainer" parent="MarginContainer"]
+z_index = 5
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
