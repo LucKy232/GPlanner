@@ -45,6 +45,7 @@ var is_user_input: bool = true
 
 signal done_adding_elements
 signal changed_zoom
+signal changed_position
 signal has_changed
 signal selected_style_changed
 
@@ -360,6 +361,7 @@ func rebuild_canvas_state(state: Dictionary) -> void:
 		checkbox_data[Checkbox.SHOW_PRIORITY_TOOL] = bool(state["show_priority_tool"])
 	if state.has("priority_filter_value"):
 		priority_filter_value = int(state["priority_filter_value"])
+	changed_position.emit()
 
 
 func rebuild_elements(json_elems: Dictionary) -> void:
@@ -500,6 +502,7 @@ func handle_zoom(old_zoom: float, target: Vector2) -> void:
 	var delta_scale = 1.0 - old_zoom / scale.x
 	
 	position = pan_limits(position - delta_screen_tl - target * delta_scale)
+	changed_position.emit()
 	changed_zoom.emit()
 
 
@@ -561,6 +564,7 @@ func _on_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and is_panning and (tool_id == Tool.SELECT or tool_id == Tool.ELEMENT_STYLE_SETTINGS):
 		var move = (event.position - drag_start_mouse_pos) * scale.x
 		position = pan_limits(position + move)
+		changed_position.emit()
 
 
 func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:

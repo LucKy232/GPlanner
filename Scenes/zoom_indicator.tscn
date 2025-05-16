@@ -278,7 +278,6 @@ mouse_filter = 2
 theme = SubResource("Theme_kgcqr")
 
 [node name="HideTimer" type="Timer" parent="."]
-wait_time = 2.5
 one_shot = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]

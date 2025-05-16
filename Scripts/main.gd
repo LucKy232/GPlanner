@@ -15,6 +15,7 @@ extends Control
 @onready var exit_tab_confirmation: AcceptDialog = $ExitTabConfirmation
 @onready var bottom_bar: ScrollContainer = $BottomBar
 @onready var file_tab_bar: TabBar = $BottomBar/HBoxContainer/FileTabBar
+@onready var pan_indicator_camera: Control = $PanIndicatorCamera
 
 @export_file("*.tscn") var element_scene
 @export_file("*.tscn") var connection_scene
@@ -44,6 +45,7 @@ var show_load_dialog: bool = false
 var close_this_tab: bool = false
 var cancel_quit: bool = false
 var queue_quit: bool = false
+var window_size: Vector2
 
 enum Checkbox {
 	SHOW_PRIORITIES,
@@ -62,6 +64,9 @@ enum Tool {
 
 
 func _ready() -> void:
+	window_size = get_viewport_rect().size
+	pan_indicator_camera.set_world_2d(get_world_2d())
+	pan_indicator_camera.set_window_size(window_size)
 	app_version = ProjectSettings.get_setting("application/config/version")
 	get_settings_drawer_object_references()
 	for i in priority_styleboxes.size():
@@ -80,6 +85,7 @@ func _ready() -> void:
 	close_tab_confirmation.add_cancel_button(" Cancel ")
 	exit_tab_confirmation.add_button("     No     ", true, "no_save")
 	exit_tab_confirmation.add_cancel_button(" Cancel ")
+
 
 
 func _process(_delta):
@@ -196,6 +202,8 @@ func switch_main_canvas(id: int) -> void:
 		#print("%d on" % [id])
 	cc = id
 	zoom_indicator.update_zoom(canvases[cc].scale.x)
+	pan_indicator_camera.set_canvas_size(canvases[cc].size)
+	pan_indicator_camera.update_zoom(canvases[cc].position, canvases[cc].scale.x)
 	priority_filter.value = canvases[cc].priority_filter_value
 	_on_priority_filter_value_changed(canvases[cc].priority_filter_value)
 	update_checkboxes = true
@@ -235,6 +243,7 @@ func new_file(add_canvas: bool) -> int:
 		canvases[new_canvas.id] = new_canvas
 		new_canvas.done_adding_elements.connect(_on_canvas_done_adding_elements)
 		new_canvas.changed_zoom.connect(_on_canvas_changed_zoom)
+		new_canvas.changed_position.connect(_on_canvas_changed_position)
 		new_canvas.has_changed.connect(_on_canvas_has_changed.bind(new_canvas.id))
 		new_canvas.selected_style_changed.connect(_on_canvas_selected_style_changed)
 		new_canvas.element_scene = element_scene
@@ -553,6 +562,11 @@ func _on_canvas_done_adding_elements() -> void:
 
 func _on_canvas_changed_zoom() -> void:
 	zoom_indicator.update_zoom(canvases[cc].scale.x)
+	pan_indicator_camera.update_zoom(canvases[cc].position, canvases[cc].scale.x)
+
+
+func _on_canvas_changed_position() -> void:
+	pan_indicator_camera.move_camera_and_highlight(canvases[cc].position)
 
 
 func _on_file_tab_bar_tab_changed(tab: int) -> void:
@@ -675,3 +689,9 @@ func _on_element_settings_is_editing_text() -> void:
 
 func _on_element_settings_stopped_editing_text() -> void:
 	is_editing_preset_name = false
+
+
+func _on_resized() -> void:
+	window_size = get_viewport_rect().size
+	if pan_indicator_camera:
+		pan_indicator_camera.set_window_size(window_size)

@@ -1,0 +1,146 @@
+[gd_scene load_steps=11 format=3 uid="uid://binp5ftakgned"]
+
+[ext_resource type="Script" uid="uid://2iqgth1fhn0u" path="res://Scripts/pan_indicator_camera.gd" id="1_0rcr7"]
+
+[sub_resource type="Theme" id="Theme_0rcr7"]
+Panel/styles/panel = null
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w370j"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.75, 0.75, 0.75, 0.588235)
+
+[sub_resource type="Theme" id="Theme_h4d5b"]
+Panel/styles/panel = SubResource("StyleBoxFlat_w370j")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0rcr7"]
+bg_color = Color(0.6, 0.6, 0.6, 0.384314)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.75, 0, 0, 0.588235)
+
+[sub_resource type="Theme" id="Theme_ql5u1"]
+Panel/styles/panel = SubResource("StyleBoxFlat_0rcr7")
+
+[sub_resource type="Animation" id="Animation_w370j"]
+resource_name = "hide"
+length = 0.4
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+
+[sub_resource type="Animation" id="Animation_0rcr7"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_h4d5b"]
+resource_name = "show"
+length = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ql5u1"]
+_data = {
+&"RESET": SubResource("Animation_0rcr7"),
+&"hide": SubResource("Animation_w370j"),
+&"show": SubResource("Animation_h4d5b")
+}
+
+[node name="PanIndicatorCamera" type="Control"]
+light_mask = 2
+visibility_layer = 2
+z_index = 5
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 2.0
+offset_right = -842.0
+offset_bottom = -496.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+mouse_filter = 2
+script = ExtResource("1_0rcr7")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme = SubResource("Theme_0rcr7")
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="MarginContainer/SubViewportContainer"]
+disable_3d = true
+handle_input_locally = false
+canvas_cull_mask = 4294967293
+size = Vector2i(300, 150)
+render_target_update_mode = 4
+
+[node name="Camera" type="Camera2D" parent="MarginContainer/SubViewportContainer/SubViewport"]
+anchor_mode = 0
+zoom = Vector2(0.1, 0.1)
+
+[node name="BorderPanel" type="Panel" parent="MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme = SubResource("Theme_h4d5b")
+
+[node name="HighlightPanel" type="Panel" parent="MarginContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme = SubResource("Theme_ql5u1")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_ql5u1")
+}
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
