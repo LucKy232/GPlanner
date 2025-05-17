@@ -15,7 +15,8 @@ extends Control
 @onready var exit_tab_confirmation: AcceptDialog = $ExitTabConfirmation
 @onready var bottom_bar: ScrollContainer = $BottomBar
 @onready var file_tab_bar: TabBar = $BottomBar/HBoxContainer/FileTabBar
-@onready var pan_indicator_camera: Control = $PanIndicatorCamera
+@onready var pan_indicator_camera: Control = $MarginContainer/PanIndicatorCamera
+
 
 @export_file("*.tscn") var element_scene
 @export_file("*.tscn") var connection_scene
