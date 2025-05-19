@@ -5,6 +5,7 @@ class_name PlannerCanvas
 @onready var connection_container: Control = $ConnectionContainer
 @onready var selection_viewer: Panel = $SelectionViewer
 @onready var connection_indicator: Panel = $ConnectionIndicator
+@onready var drawing_manager: Control = $DrawingManager
 var element_scene
 var connection_scene
 var priority_colors: Array[Color]
@@ -35,9 +36,11 @@ var is_resizing: bool = false
 var is_panning: bool = false
 var is_adding_elements: bool = false
 var is_element_just_created: bool = false
+var is_drawing: bool = false
 var has_changes: bool = false
 var drag_start_mouse_pos: Vector2
 var original_elem_size: Vector2
+var last_draw_event_position: Vector2 = Vector2.ZERO
 var zoom_level: float = 1.0
 var zoom_limits: Vector2
 var zoom_speed: float
@@ -62,6 +65,7 @@ enum Tool {
 	ADD_CONNECTION,
 	REMOVE_CONNECTIONS,
 	MARK_COMPLETED,
+	PENCIL,
 }
 enum Priority {
 	ACTIVE,
@@ -536,6 +540,10 @@ func change_priority_filter(value: int) -> void:
 		toggle_connections(i)
 
 
+func resize_drawing_manager() -> void:
+	drawing_manager.resize_to_window()
+
+
 func _on_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
@@ -550,9 +558,18 @@ func _on_gui_input(event: InputEvent) -> void:
 				if !is_panning:
 					is_panning = true
 					drag_start_mouse_pos = event.position
+			if (tool_id == Tool.PENCIL):
+				is_drawing = true
+				last_draw_event_position = event.position * scale + position
+				drawing_manager.resize_to_window()
+				drawing_manager.update_drawing_position_and_scale(-position, scale)
 		elif event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
 			if is_panning:
 				is_panning = false
+			if is_drawing:
+				is_drawing = false
+				last_draw_event_position = Vector2.ZERO
+				drawing_manager.end_stroke()
 		if event.button_index == MOUSE_BUTTON_WHEEL_UP and (tool_id == Tool.SELECT or tool_id == Tool.ELEMENT_STYLE_SETTINGS):
 			var old_zoom: float = zoom_level
 			zoom_level = clampf(zoom_level * zoom_speed, zoom_limits.x, zoom_limits.y)
@@ -565,6 +582,10 @@ func _on_gui_input(event: InputEvent) -> void:
 		var move = (event.position - drag_start_mouse_pos) * scale.x
 		position = pan_limits(position + move)
 		changed_position.emit()
+	if event is InputEventMouseMotion and is_drawing and tool_id == Tool.PENCIL:
+		var currrent_draw_event_position: Vector2 = event.position * scale + position
+		drawing_manager.receive_coords(last_draw_event_position, currrent_draw_event_position)
+		last_draw_event_position = currrent_draw_event_position
 
 
 func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:

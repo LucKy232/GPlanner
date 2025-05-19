@@ -61,6 +61,7 @@ enum Tool {
 	ADD_CONNECTION,
 	REMOVE_CONNECTIONS,
 	MARK_COMPLETED,
+	PENCIL,
 }
 
 
@@ -696,3 +697,5 @@ func _on_resized() -> void:
 	window_size = get_viewport_rect().size
 	if pan_indicator_camera:
 		pan_indicator_camera.set_window_size(window_size)
+	if canvases.has(cc):
+		canvases[cc].resize_drawing_manager()

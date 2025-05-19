@@ -141,11 +141,12 @@ z_index = 5
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
+mouse_filter = 1
 theme = SubResource("Theme_x6ack")
 allow_search = false
 auto_width = true
 auto_height = true
-item_count = 7
+item_count = 8
 max_columns = 8
 icon_mode = 0
 item_0/text = "Select & Move Elements, Pan & Zoom"
@@ -162,6 +163,8 @@ item_5/text = "Remove All Connections to Element"
 item_5/icon = ExtResource("14_2ebs2")
 item_6/text = "Mark Element As Complete"
 item_6/icon = ExtResource("15_2ebs2")
+item_7/text = "Pencil"
+item_7/icon = ExtResource("8_76v2p")
 
 [node name="ZoomIndicator" parent="MarginContainer" instance=ExtResource("3_jv6wh")]
 light_mask = 2

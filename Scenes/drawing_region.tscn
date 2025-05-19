@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://cco3y5ld1vdkm"]
+
+[ext_resource type="Script" uid="uid://btqu8l2ckq0do" path="res://Scripts/drawing_region.gd" id="1_3s5au"]
+
+[node name="DrawingRegion" type="TextureRect"]
+texture_filter = 1
+texture_repeat = 1
+script = ExtResource("1_3s5au")

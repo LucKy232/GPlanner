@@ -1,8 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://b1do6gcy6peum"]
+[gd_scene load_steps=11 format=3 uid="uid://b1do6gcy6peum"]
 
 [ext_resource type="Script" uid="uid://hgn4pm0uqt3l" path="res://Scripts/canvas.gd" id="1_jhfc7"]
 [ext_resource type="Texture2D" uid="uid://v481h4vkkmsb" path="res://Backgrounds/grid_pattern_dark.png" id="1_mrfg2"]
 [ext_resource type="Texture2D" uid="uid://cjir350kly5j8" path="res://Icons/connection_indicator.svg" id="2_jhfc7"]
+[ext_resource type="PackedScene" uid="uid://cg3drsp3kg5hm" path="res://Scenes/drawing_manager.tscn" id="4_5b2e5"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6l7je"]
 texture = ExtResource("1_mrfg2")
@@ -53,6 +54,9 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 mouse_filter = 1
 script = ExtResource("1_jhfc7")
+
+[node name="DrawingManager" parent="." instance=ExtResource("4_5b2e5")]
+layout_mode = 1
 
 [node name="Background" type="Panel" parent="."]
 z_index = -1

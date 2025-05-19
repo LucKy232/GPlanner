@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://cg3drsp3kg5hm"]
+
+[ext_resource type="Script" uid="uid://bl6j87vh8ghmf" path="res://Scripts/drawing_manager.gd" id="1_5m78p"]
+
+[node name="DrawingManager" type="Control"]
+z_index = 4
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1920.0
+offset_bottom = 1080.0
+mouse_filter = 2
+script = ExtResource("1_5m78p")
+temp_drawing_region_scene = "uid://cpu02i5li1jfy"
+drawing_region_scene = "uid://cco3y5ld1vdkm"
