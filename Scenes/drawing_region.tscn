@@ -1,8 +1,30 @@
-[gd_scene load_steps=2 format=3 uid="uid://cco3y5ld1vdkm"]
+[gd_scene load_steps=4 format=3 uid="uid://cco3y5ld1vdkm"]
 
 [ext_resource type="Script" uid="uid://btqu8l2ckq0do" path="res://Scripts/drawing_region.gd" id="1_3s5au"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3s5au"]
+draw_center = false
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.8, 0, 0, 1)
+
+[sub_resource type="Theme" id="Theme_r53h7"]
+Panel/styles/panel = SubResource("StyleBoxFlat_3s5au")
 
 [node name="DrawingRegion" type="TextureRect"]
 texture_filter = 1
 texture_repeat = 1
 script = ExtResource("1_3s5au")
+
+[node name="Panel" type="Panel" parent="."]
+z_index = -4
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = SubResource("Theme_r53h7")

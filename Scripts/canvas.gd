@@ -347,6 +347,7 @@ func canvas_state_to_json() -> Dictionary:
 		"show_priorities": checkbox_data[Checkbox.SHOW_PRIORITIES],
 		"show_priority_tool": checkbox_data[Checkbox.SHOW_PRIORITY_TOOL],
 		"priority_filter_value": priority_filter_value,
+		"drawing_folder_path": drawing_manager.folder_path,
 	}
 
 
@@ -365,6 +366,8 @@ func rebuild_canvas_state(state: Dictionary) -> void:
 		checkbox_data[Checkbox.SHOW_PRIORITY_TOOL] = bool(state["show_priority_tool"])
 	if state.has("priority_filter_value"):
 		priority_filter_value = int(state["priority_filter_value"])
+	if state.has("drawing_folder_path"):
+		drawing_manager.folder_path = state["drawing_folder_path"]
 	changed_position.emit()
 
 

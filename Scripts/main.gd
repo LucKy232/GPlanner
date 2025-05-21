@@ -277,12 +277,17 @@ func save_file(path: String) -> void:
 		printerr("FileAcces open error: ", FileAccess.get_open_error())
 		return
 	
+	var file_name_short: String = path.get_file().get_slice(".", 0)
+	canvases[cc].drawing_manager.make_drawing_actions_permanent()
+	if canvases[cc].drawing_manager.folder_path == "":
+		canvases[cc].drawing_manager.folder_path = str("%s %s" % [file_name_short, Time.get_datetime_string_from_system().replace(":", "")])
 	print("SAVING %s" % [path])
 	save_data = {
 		"State": canvases[cc].canvas_state_to_json(),
 		"StylePresets": canvases[cc].all_presets_to_json(),
 		"Elements": canvases[cc].all_elements_to_Json(),
-		"Connections": canvases[cc].all_connection_pairs_to_json()
+		"Connections": canvases[cc].all_connection_pairs_to_json(),
+		"DrawingRegions": canvases[cc].drawing_manager.drawing_region_paths_to_json(),
 	}
 	
 	var success: bool = file.store_string(JSON.stringify(save_data, "\t"))
@@ -291,7 +296,7 @@ func save_file(path: String) -> void:
 		#DisplayServer.window_set_title("GPlanner %s: %s" % [app_version, path])
 		get_tree().root.title = ("GPlanner %s: %s" % [app_version, path])
 		canvases[cc].opened_file_path = path
-		canvases[cc].file_name_short = path.get_file().get_slice(".", 0)
+		canvases[cc].file_name_short = file_name_short
 		canvases[cc].canvas_changed(true)
 		set_tab_name_and_title_from_canvas(cc)
 	else:
@@ -335,6 +340,8 @@ func load_file(path: String) -> void:
 				canvases[cc].update_all_style_presets(element_settings.presets)
 		canvases[cc].rebuild_elements(elems)
 		canvases[cc].rebuild_connections(conns)
+		if data.has("DrawingRegions"):
+			canvases[cc].drawing_manager.rebuild_from_json(data["DrawingRegions"])
 		_on_priority_filter_value_changed(canvases[cc].priority_filter_value)
 	
 	status_bar.update_status("File loaded: %s" % path)
