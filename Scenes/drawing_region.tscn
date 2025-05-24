@@ -4,21 +4,25 @@
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3s5au"]
 draw_center = false
-border_width_left = 4
-border_width_top = 4
-border_width_right = 4
-border_width_bottom = 4
-border_color = Color(0.8, 0, 0, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.8, 0, 0, 0.654902)
 
 [sub_resource type="Theme" id="Theme_r53h7"]
 Panel/styles/panel = SubResource("StyleBoxFlat_3s5au")
 
 [node name="DrawingRegion" type="TextureRect"]
+light_mask = 5
+visibility_layer = 5
 texture_filter = 1
 texture_repeat = 1
 script = ExtResource("1_3s5au")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Border" type="Panel" parent="."]
+light_mask = 12
+visibility_layer = 12
 z_index = -4
 layout_mode = 1
 anchors_preset = 15

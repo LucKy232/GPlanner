@@ -16,6 +16,7 @@ extends Control
 @onready var bottom_bar: ScrollContainer = $BottomBar
 @onready var file_tab_bar: TabBar = $BottomBar/HBoxContainer/FileTabBar
 @onready var pan_indicator_camera: Control = $MarginContainer/PanIndicatorCamera
+@onready var drawing_manager: DrawingManager = $DrawingManager
 
 
 @export_file("*.tscn") var element_scene
@@ -62,6 +63,7 @@ enum Tool {
 	REMOVE_CONNECTIONS,
 	MARK_COMPLETED,
 	PENCIL,
+	ERASER,
 }
 
 
@@ -203,9 +205,7 @@ func switch_main_canvas(id: int) -> void:
 		canvases[id].visible = true
 		#print("%d on" % [id])
 	cc = id
-	zoom_indicator.update_zoom(canvases[cc].scale.x)
 	pan_indicator_camera.set_canvas_size(canvases[cc].size)
-	pan_indicator_camera.update_zoom(canvases[cc].position, canvases[cc].scale.x)
 	priority_filter.value = canvases[cc].priority_filter_value
 	_on_priority_filter_value_changed(canvases[cc].priority_filter_value)
 	update_checkboxes = true
@@ -215,6 +215,9 @@ func switch_main_canvas(id: int) -> void:
 	canvases[cc].selected_preset_style = "none"
 	element_settings.erase_everything()
 	element_settings.rebuild_options_and_dictionary_from_canvas(canvases[cc].style_presets)
+	drawing_manager.change_active_canvas_drawing_group(cc)
+	call_deferred("_on_canvas_changed_zoom")
+	call_deferred("_on_canvas_changed_position")
 
 
 func set_current_tab_title(title: String, tooltip: String, token: String) -> void:
@@ -253,6 +256,8 @@ func new_file(add_canvas: bool) -> int:
 		new_canvas.priority_colors = priority_colors
 		new_canvas.zoom_limits = zoom_limits
 		new_canvas.zoom_speed = zoom_speed
+		drawing_manager.add_canvas_drawing_group(new_canvas.id)
+		new_canvas.drawing_manager = drawing_manager
 	elif canvases.has(cc):
 		new_canvas = canvases[cc]
 		new_canvas.erase_everything()
@@ -271,6 +276,8 @@ func new_file(add_canvas: bool) -> int:
 
 
 func save_file(path: String) -> void:
+	if !canvases.has(cc):
+		return
 	var file = FileAccess.open(path, FileAccess.WRITE)
 	var save_data: Dictionary
 	if file == null:
@@ -278,16 +285,17 @@ func save_file(path: String) -> void:
 		return
 	
 	var file_name_short: String = path.get_file().get_slice(".", 0)
-	canvases[cc].drawing_manager.make_drawing_actions_permanent()
-	if canvases[cc].drawing_manager.folder_path == "":
-		canvases[cc].drawing_manager.folder_path = str("%s %s" % [file_name_short, Time.get_datetime_string_from_system().replace(":", "")])
+	drawing_manager.change_active_canvas_drawing_group(cc)
+	drawing_manager.make_drawing_actions_permanent()
+	if !drawing_manager.has_folder_path():
+		drawing_manager.set_folder_path(cc, str("%s %s" % [file_name_short, Time.get_datetime_string_from_system().replace(":", "")]))
 	print("SAVING %s" % [path])
 	save_data = {
 		"State": canvases[cc].canvas_state_to_json(),
 		"StylePresets": canvases[cc].all_presets_to_json(),
 		"Elements": canvases[cc].all_elements_to_Json(),
 		"Connections": canvases[cc].all_connection_pairs_to_json(),
-		"DrawingRegions": canvases[cc].drawing_manager.drawing_region_paths_to_json(),
+		"DrawingRegions": drawing_manager.drawing_region_paths_to_json(),
 	}
 	
 	var success: bool = file.store_string(JSON.stringify(save_data, "\t"))
@@ -341,7 +349,7 @@ func load_file(path: String) -> void:
 		canvases[cc].rebuild_elements(elems)
 		canvases[cc].rebuild_connections(conns)
 		if data.has("DrawingRegions"):
-			canvases[cc].drawing_manager.rebuild_from_json(data["DrawingRegions"])
+			drawing_manager.rebuild_from_json(cc, data["DrawingRegions"])
 		_on_priority_filter_value_changed(canvases[cc].priority_filter_value)
 	
 	status_bar.update_status("File loaded: %s" % path)
@@ -409,6 +417,7 @@ func close_tab(tab: int) -> void:
 	if file_tab_bar.tab_count >= 1:
 		canvases[tab_to_canvas[tab]].queue_free()
 		canvases.erase(tab_to_canvas[tab])
+		drawing_manager.erase_canvas_drawing_group(tab_to_canvas[tab])
 		var tab_id = tab
 		while tab_id < file_tab_bar.tab_count - 1:
 			tab_to_canvas[tab_id] = tab_to_canvas[tab_id + 1]
@@ -572,10 +581,12 @@ func _on_canvas_done_adding_elements() -> void:
 func _on_canvas_changed_zoom() -> void:
 	zoom_indicator.update_zoom(canvases[cc].scale.x)
 	pan_indicator_camera.update_zoom(canvases[cc].position, canvases[cc].scale.x)
+	drawing_manager.scale = canvases[cc].scale
 
 
 func _on_canvas_changed_position() -> void:
 	pan_indicator_camera.move_camera_and_highlight(canvases[cc].position)
+	drawing_manager.position = canvases[cc].position
 
 
 func _on_file_tab_bar_tab_changed(tab: int) -> void:
@@ -704,5 +715,5 @@ func _on_resized() -> void:
 	window_size = get_viewport_rect().size
 	if pan_indicator_camera:
 		pan_indicator_camera.set_window_size(window_size)
-	if canvases.has(cc):
-		canvases[cc].resize_drawing_manager()
+	if drawing_manager:
+		drawing_manager.resize_to_window()

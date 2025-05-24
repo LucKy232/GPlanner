@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://bl6j87vh8ghmf" path="res://Scripts/drawing_manager.gd" id="1_5m78p"]
 
 [node name="DrawingManager" type="Control"]
+light_mask = 5
+visibility_layer = 5
 z_index = 4
 layout_mode = 3
 anchors_preset = 0
@@ -10,5 +12,21 @@ offset_right = 1920.0
 offset_bottom = 1080.0
 mouse_filter = 2
 script = ExtResource("1_5m78p")
+canvas_drawing_group_scene = "uid://ciqbw443fikno"
 temp_drawing_region_scene = "uid://cpu02i5li1jfy"
 drawing_region_scene = "uid://cco3y5ld1vdkm"
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+handle_input_locally = false
+canvas_item_default_texture_filter = 0
+canvas_cull_mask = 4294966277
+size = Vector2i(1024, 1024)
+render_target_update_mode = 4
+
+[node name="Camera2D" type="Camera2D" parent="SubViewport"]
+top_level = true
+light_mask = 5
+visibility_layer = 5
+anchor_mode = 0
+editor_draw_limits = true

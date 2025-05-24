@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://bfydfy3iq0rjx"]
+[gd_scene load_steps=32 format=3 uid="uid://bfydfy3iq0rjx"]
 
 [ext_resource type="Script" uid="uid://dj8gdy8d87lam" path="res://Scripts/main.gd" id="1_52fb6"]
 [ext_resource type="StyleBox" uid="uid://wrrl0mk4mdli" path="res://Themes/active_priority_button_stylebox.tres" id="2_mai8y"]
@@ -17,6 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://l7psu5evarxp" path="res://Icons/add_line.svg" id="13_psl12"]
 [ext_resource type="Texture2D" uid="uid://1jids2awyagv" path="res://Icons/remove_line.svg" id="14_2ebs2"]
 [ext_resource type="Texture2D" uid="uid://dfq5wqtp3gjfd" path="res://Icons/checkbox.svg" id="15_2ebs2"]
+[ext_resource type="PackedScene" uid="uid://cg3drsp3kg5hm" path="res://Scenes/drawing_manager.tscn" id="17_b48ew"]
 [ext_resource type="PackedScene" uid="uid://cwbooma1lih12" path="res://Scenes/element_settings.tscn" id="17_oyb3p"]
 [ext_resource type="Theme" uid="uid://nujp3orsr2ol" path="res://Themes/popup_dialogue_theme.tres" id="18_2ebs2"]
 [ext_resource type="PackedScene" uid="uid://binp5ftakgned" path="res://Scenes/pan_indicator_camera.tscn" id="19_jvnna"]
@@ -146,8 +147,8 @@ theme = SubResource("Theme_x6ack")
 allow_search = false
 auto_width = true
 auto_height = true
-item_count = 8
-max_columns = 8
+item_count = 9
+max_columns = 9
 icon_mode = 0
 item_0/text = "Select & Move Elements, Pan & Zoom"
 item_0/icon = ExtResource("8_76v2p")
@@ -165,6 +166,8 @@ item_6/text = "Mark Element As Complete"
 item_6/icon = ExtResource("15_2ebs2")
 item_7/text = "Pencil"
 item_7/icon = ExtResource("8_76v2p")
+item_8/text = "Eraser"
+item_8/icon = ExtResource("8_76v2p")
 
 [node name="ZoomIndicator" parent="MarginContainer" instance=ExtResource("3_jv6wh")]
 light_mask = 2
@@ -201,6 +204,8 @@ text = " Save As "
 layout_mode = 2
 theme = ExtResource("4_x6ack")
 text = " Load "
+
+[node name="DrawingManager" parent="." instance=ExtResource("17_b48ew")]
 
 [node name="SettingsDrawer" parent="." instance=ExtResource("8_2ebs2")]
 light_mask = 2

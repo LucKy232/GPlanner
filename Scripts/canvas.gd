@@ -5,7 +5,7 @@ class_name PlannerCanvas
 @onready var connection_container: Control = $ConnectionContainer
 @onready var selection_viewer: Panel = $SelectionViewer
 @onready var connection_indicator: Panel = $ConnectionIndicator
-@onready var drawing_manager: Control = $DrawingManager
+
 var element_scene
 var connection_scene
 var priority_colors: Array[Color]
@@ -15,6 +15,7 @@ var connections_p1: Dictionary[int, PackedInt32Array]	## ELEMENT ID key, Array o
 var connections_p2: Dictionary[int, PackedInt32Array]	## ELEMENT ID key, Array of CONNECTION ID value
 var elements_to_connection: Dictionary[Vector2i, int]	## ELEMENT ID Vector2i(ID1, ID2) key, CONNECTION ID value
 var style_presets: Dictionary[String, ElementPresetStyle]	## PRESET ID key (not option_selector like in element_setting.gd)
+var drawing_manager: DrawingManager
 
 var element_id_counter: int = 0
 var connection_id_counter: int = 0
@@ -66,6 +67,7 @@ enum Tool {
 	REMOVE_CONNECTIONS,
 	MARK_COMPLETED,
 	PENCIL,
+	ERASER,
 }
 enum Priority {
 	ACTIVE,
@@ -73,6 +75,10 @@ enum Priority {
 	MEDIUM,
 	LOW,
 	NONE,
+}
+enum DrawTool {
+	PENCIL,
+	ERASER,
 }
 
 
@@ -167,6 +173,7 @@ func add_element_label(at_position: Vector2, id_specified: int = -1) -> void:
 	new_element.became_selected.connect(_on_element_text_box_active.bind(elem_id))
 	new_element.changed_priority.connect(_on_element_changed_priority.bind(elem_id))
 	add_child(new_element)
+	new_element.name = "ElementLabel"
 	new_element.position = at_position
 	new_element.priority_id = Priority.NONE
 	new_element.priority_tool_enabled = checkbox_data[Checkbox.SHOW_PRIORITY_TOOL]
@@ -205,6 +212,7 @@ func add_connection(id_specified: int = -1) -> void:
 		connections_p2[connection_candidate_2].append(conn_id)
 		elements_to_connection[Vector2i(connection_candidate_1, connection_candidate_2)] = conn_id
 		connection_container.add_child(new_connection)
+		new_connection.name = "LineConnection"
 		new_connection.update_p1(elements[connection_candidate_1].position, elements[connection_candidate_1].size)
 		new_connection.update_p2(elements[connection_candidate_2].position, elements[connection_candidate_2].size)
 		new_connection.update_p1_color(elements[connection_candidate_1].get_bg_color())
@@ -347,7 +355,7 @@ func canvas_state_to_json() -> Dictionary:
 		"show_priorities": checkbox_data[Checkbox.SHOW_PRIORITIES],
 		"show_priority_tool": checkbox_data[Checkbox.SHOW_PRIORITY_TOOL],
 		"priority_filter_value": priority_filter_value,
-		"drawing_folder_path": drawing_manager.folder_path,
+		"drawing_folder_path": drawing_manager.get_folder_path(id),
 	}
 
 
@@ -367,7 +375,7 @@ func rebuild_canvas_state(state: Dictionary) -> void:
 	if state.has("priority_filter_value"):
 		priority_filter_value = int(state["priority_filter_value"])
 	if state.has("drawing_folder_path"):
-		drawing_manager.folder_path = state["drawing_folder_path"]
+		drawing_manager.set_folder_path(id, state["drawing_folder_path"])
 	changed_position.emit()
 
 
@@ -561,7 +569,7 @@ func _on_gui_input(event: InputEvent) -> void:
 				if !is_panning:
 					is_panning = true
 					drag_start_mouse_pos = event.position
-			if (tool_id == Tool.PENCIL):
+			if tool_id == Tool.PENCIL or tool_id == Tool.ERASER:
 				is_drawing = true
 				last_draw_event_position = event.position * scale + position
 				drawing_manager.resize_to_window()
@@ -586,8 +594,14 @@ func _on_gui_input(event: InputEvent) -> void:
 		position = pan_limits(position + move)
 		changed_position.emit()
 	if event is InputEventMouseMotion and is_drawing and tool_id == Tool.PENCIL:
+		canvas_changed()
 		var currrent_draw_event_position: Vector2 = event.position * scale + position
-		drawing_manager.receive_coords(last_draw_event_position, currrent_draw_event_position)
+		drawing_manager.receive_coords(last_draw_event_position, currrent_draw_event_position, DrawTool.PENCIL)
+		last_draw_event_position = currrent_draw_event_position
+	if event is InputEventMouseMotion and is_drawing and tool_id == Tool.ERASER:
+		canvas_changed()
+		var currrent_draw_event_position: Vector2 = event.position * scale + position
+		drawing_manager.receive_coords(last_draw_event_position, currrent_draw_event_position, DrawTool.ERASER)
 		last_draw_event_position = currrent_draw_event_position
 
 

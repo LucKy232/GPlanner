@@ -1,9 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://b1do6gcy6peum"]
+[gd_scene load_steps=10 format=3 uid="uid://b1do6gcy6peum"]
 
 [ext_resource type="Script" uid="uid://hgn4pm0uqt3l" path="res://Scripts/canvas.gd" id="1_jhfc7"]
 [ext_resource type="Texture2D" uid="uid://v481h4vkkmsb" path="res://Backgrounds/grid_pattern_dark.png" id="1_mrfg2"]
 [ext_resource type="Texture2D" uid="uid://cjir350kly5j8" path="res://Icons/connection_indicator.svg" id="2_jhfc7"]
-[ext_resource type="PackedScene" uid="uid://cg3drsp3kg5hm" path="res://Scenes/drawing_manager.tscn" id="4_5b2e5"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6l7je"]
 texture = ExtResource("1_mrfg2")
@@ -42,6 +41,8 @@ texture = ExtResource("2_jhfc7")
 Panel/styles/panel = SubResource("StyleBoxTexture_2ebs2")
 
 [node name="Canvas" type="Control"]
+light_mask = 8
+visibility_layer = 8
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -55,10 +56,9 @@ size_flags_vertical = 3
 mouse_filter = 1
 script = ExtResource("1_jhfc7")
 
-[node name="DrawingManager" parent="." instance=ExtResource("4_5b2e5")]
-layout_mode = 1
-
 [node name="Background" type="Panel" parent="."]
+light_mask = 8
+visibility_layer = 8
 z_index = -1
 texture_filter = 5
 layout_mode = 1
@@ -71,6 +71,8 @@ mouse_filter = 1
 theme = SubResource("Theme_52fb6")
 
 [node name="ConnectionContainer" type="Control" parent="."]
+light_mask = 8
+visibility_layer = 8
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -81,6 +83,8 @@ mouse_filter = 1
 
 [node name="SelectionViewer" type="Panel" parent="."]
 visible = false
+light_mask = 8
+visibility_layer = 8
 z_index = 2
 layout_mode = 0
 offset_right = 40.0
@@ -90,6 +94,8 @@ theme = SubResource("Theme_iacmt")
 
 [node name="ConnectionIndicator" type="Panel" parent="."]
 visible = false
+light_mask = 8
+visibility_layer = 8
 z_index = 3
 layout_mode = 0
 offset_right = 40.0
