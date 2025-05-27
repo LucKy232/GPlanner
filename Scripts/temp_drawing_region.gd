@@ -34,11 +34,13 @@ func make_mask() -> void:
 func eraser_pencil_1px(p1: Vector2, p2: Vector2) -> void:
 	#print("Drawing (%f %f) (%f %f)" % [p1.x, p1.y, p2.x, p2.y])
 	if width != size.x or height != size.y:
+		#print("reinit")
 		init_image(int(size.x), int(size.y))
 	#print("Draw p1 %f %f p2 %f %f" % [p1.x, p1.y, p2.x, p2.y])
 	for pixel in Geometry2D.bresenham_line(p1 * capped_zoom, p2 * capped_zoom):
 			if (pixel.x > 0 and pixel.x < width) and (pixel.y > 0 and pixel.y < height):
-				image.set_pixel(pixel.x, pixel.y, Color.TRANSPARENT)
+				image.set_pixel(pixel.x, pixel.y, Color.WHITE)
+				#image.set_pixel(pixel.x, pixel.y, Color.TRANSPARENT)
 	texture = ImageTexture.create_from_image(image)
 
 
@@ -79,3 +81,21 @@ func get_drawing_region_chunks() -> Dictionary[Vector4i, Image]:
 				#else:
 					#print("INVISIBLE")
 	return dict
+
+
+func get_drawing_reions_array() -> Array[Vector2i]:
+	var arr: Array[Vector2i] = []
+	var img_used_space: Rect2i = image.get_used_rect()
+	var img_start: Vector2 = position + Vector2(float(img_used_space.position.x), float(img_used_space.position.y)) * scale
+	var img_end: Vector2 = position + Vector2(img_used_space.end.x, img_used_space.end.y) * scale
+	#print("Occupied img: ", img_used_space.position, img_used_space.end, img_used_space.size)
+	#print("Occupied img * scale: ", Vector2(float(img_used_space.position.x), float(img_used_space.position.y)) * scale, Vector2(img_used_space.end.x, img_used_space.end.y) * scale, Vector2(img_used_space.size.x, img_used_space.size.y) * scale)
+	var region_x_start: int = floori(img_start.x / 1024.0)
+	var region_x_end: int = floori(img_end.x / 1024.0) + 1
+	var region_y_start: int = floori(img_start.y / 1024.0)
+	var region_y_end: int = floori(img_end.y / 1024.0) + 1
+	for i in range(region_x_start, region_x_end):
+		for j in range(region_y_start, region_y_end):
+			arr.append(Vector2i(i, j))
+	#print("Temp regions: ", position, scale, size, arr)
+	return arr

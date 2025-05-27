@@ -114,9 +114,6 @@ priority_styleboxes = Array[StyleBoxFlat]([ExtResource("2_mai8y"), ExtResource("
 priority_filter_text = Array[String](["Only Active", "Active & High", "Medium and higher", "Low and higher", "All"])
 opened_files_file_name = "opened_files.json"
 
-[node name="MainCamera" type="Camera2D" parent="."]
-anchor_mode = 0
-
 [node name="MarginContainer" type="MarginContainer" parent="."]
 light_mask = 3
 visibility_layer = 3
@@ -206,6 +203,7 @@ theme = ExtResource("4_x6ack")
 text = " Load "
 
 [node name="DrawingManager" parent="." instance=ExtResource("17_b48ew")]
+layout_mode = 1
 
 [node name="SettingsDrawer" parent="." instance=ExtResource("8_2ebs2")]
 light_mask = 2

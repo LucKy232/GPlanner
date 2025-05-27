@@ -14,21 +14,28 @@ func _init() -> void:
 	texture = ImageTexture.create_from_image(image)
 
 
-func blit_at(coords: Vector2i, img: Image) -> void:
-	has_changes = true
-	image.blend_rect(img, Rect2i(0, 0, img.get_width(), img.get_height()), coords)
-	texture = ImageTexture.create_from_image(image)
+#func blit_at(coords: Vector2i, img: Image) -> void:
+	#has_changes = true
+	#image.blend_rect(img, Rect2i(0, 0, img.get_width(), img.get_height()), coords)
+	#texture = ImageTexture.create_from_image(image)
 
 
-func mask_at(coords: Vector2i, img: Image) -> void:
-	has_changes = true
-	var mask: Image = Image.create_empty(IMG_WIDTH, IMG_HEIGHT, false, Image.FORMAT_RGBA8)
-	mask.fill(Color.WHITE)
-	mask.blit_rect(img, Rect2i(0, 0, img.get_width(), img.get_height()), coords)
-	image.blend_rect_mask(image, mask, Rect2i(0, 0, image.get_width(), image.get_height()), Vector2i(0, 0))
-	texture = ImageTexture.create_from_image(image)
+#func mask_at(coords: Vector2i, img: Image) -> void:
+	#has_changes = true
+	#var mask: Image = Image.create_empty(IMG_WIDTH, IMG_HEIGHT, false, Image.FORMAT_RGBA8)
+	#mask.fill(Color.WHITE)
+	#mask.blit_rect(img, Rect2i(0, 0, img.get_width(), img.get_height()), coords)
+	#image.blend_rect_mask(image, mask, Rect2i(0, 0, image.get_width(), image.get_height()), Vector2i(0, 0))
+	#texture = ImageTexture.create_from_image(image)
 
 
-func update_texture(img: Image) -> void:
+func update_from_image(img: Image, changes: bool = true) -> void:
+	has_changes = changes
 	image = img
 	texture = ImageTexture.create_from_image(img)
+
+
+func update_from_texture(txtr: Texture2D, changes: bool = true) -> void:
+	has_changes = changes
+	texture = txtr
+	image = txtr.get_image()

@@ -278,6 +278,15 @@ func new_file(add_canvas: bool) -> int:
 func save_file(path: String) -> void:
 	if !canvases.has(cc):
 		return
+	
+	# Wait for the DrawingManager to screenshot the changed images
+	# Otherwise it would save the file before DrawingManager saves the images
+	# Recall this function with a signal when it's finished
+	if drawing_manager.canvas_drawing_group_has_changes(cc):
+		drawing_manager.finished_saving.connect(_on_drawing_manager_finished_saving.bind(path, cc), CONNECT_ONE_SHOT)
+		drawing_manager.begin_complete_save_sequence()
+		return
+	
 	var file = FileAccess.open(path, FileAccess.WRITE)
 	var save_data: Dictionary
 	if file == null:
@@ -285,8 +294,6 @@ func save_file(path: String) -> void:
 		return
 	
 	var file_name_short: String = path.get_file().get_slice(".", 0)
-	drawing_manager.change_active_canvas_drawing_group(cc)
-	drawing_manager.make_drawing_actions_permanent()
 	if !drawing_manager.has_folder_path():
 		drawing_manager.set_folder_path(cc, str("%s %s" % [file_name_short, Time.get_datetime_string_from_system().replace(":", "")]))
 	print("SAVING %s" % [path])
@@ -717,3 +724,10 @@ func _on_resized() -> void:
 		pan_indicator_camera.set_window_size(window_size)
 	if drawing_manager:
 		drawing_manager.resize_to_window()
+
+
+func _on_drawing_manager_finished_saving(path: String, save_canvas: int) -> void:
+	print("RETRY SAVE")
+	if cc != save_canvas:
+		switch_main_canvas(save_canvas)
+	save_file(path)

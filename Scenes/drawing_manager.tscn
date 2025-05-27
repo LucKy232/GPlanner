@@ -7,9 +7,11 @@ light_mask = 5
 visibility_layer = 5
 z_index = 4
 layout_mode = 3
-anchors_preset = 0
-offset_right = 1920.0
-offset_bottom = 1080.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_5m78p")
 canvas_drawing_group_scene = "uid://ciqbw443fikno"
@@ -19,14 +21,16 @@ drawing_region_scene = "uid://cco3y5ld1vdkm"
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
 handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
 canvas_item_default_texture_filter = 0
 canvas_cull_mask = 4294966277
 size = Vector2i(1024, 1024)
 render_target_update_mode = 4
 
-[node name="Camera2D" type="Camera2D" parent="SubViewport"]
-top_level = true
-light_mask = 5
-visibility_layer = 5
-anchor_mode = 0
-editor_draw_limits = true
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.05
+one_shot = true
+
+[connection signal="item_rect_changed" from="." to="." method="_on_item_rect_changed"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

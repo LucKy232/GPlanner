@@ -1,16 +1,14 @@
 [gd_scene load_steps=10 format=3 uid="uid://b1do6gcy6peum"]
 
 [ext_resource type="Script" uid="uid://hgn4pm0uqt3l" path="res://Scripts/canvas.gd" id="1_jhfc7"]
-[ext_resource type="Texture2D" uid="uid://v481h4vkkmsb" path="res://Backgrounds/grid_pattern_dark.png" id="1_mrfg2"]
+[ext_resource type="Script" uid="uid://c5qfp4llclgt" path="res://Scripts/background.gd" id="2_5b2e5"]
 [ext_resource type="Texture2D" uid="uid://cjir350kly5j8" path="res://Icons/connection_indicator.svg" id="2_jhfc7"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6l7je"]
-texture = ExtResource("1_mrfg2")
-axis_stretch_horizontal = 1
-axis_stretch_vertical = 1
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jhfc7"]
+bg_color = Color(0, 0, 0, 1)
 
-[sub_resource type="Theme" id="Theme_52fb6"]
-Panel/styles/panel = SubResource("StyleBoxTexture_6l7je")
+[sub_resource type="Theme" id="Theme_5b2e5"]
+Panel/styles/panel = SubResource("StyleBoxFlat_jhfc7")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x6ack"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -60,7 +58,7 @@ script = ExtResource("1_jhfc7")
 light_mask = 8
 visibility_layer = 8
 z_index = -1
-texture_filter = 5
+texture_filter = 3
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -68,7 +66,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-theme = SubResource("Theme_52fb6")
+theme = SubResource("Theme_5b2e5")
+script = ExtResource("2_5b2e5")
+line_color = Color(0.169583, 0.190176, 0.210148, 1)
+background_color = Color(0, 0, 0, 1)
 
 [node name="ConnectionContainer" type="Control" parent="."]
 light_mask = 8

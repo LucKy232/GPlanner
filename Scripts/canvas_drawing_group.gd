@@ -24,14 +24,23 @@ func init(manager_size: Vector2) -> void:
 	pencil_material = CanvasItemMaterial.new()
 	pencil_material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
 	eraser_material = CanvasItemMaterial.new()
-	eraser_material.blend_mode = CanvasItemMaterial.BLEND_MODE_MUL
+	eraser_material.blend_mode = CanvasItemMaterial.BLEND_MODE_SUB
 	size = manager_size
 	current_stroke = add_temp_drawing_region()
 
 
+func has_changes() -> bool:
+	if past_drawing_actions.size() > 0:
+		return true
+	#for r in regions:	# This should just be for saving
+		#if regions[r].has_changes:
+			#return true
+	return false
+
+
 func receive_coords(p1: Vector2, p2: Vector2, draw_tool: int) -> void:
-	if draw_tool == DrawTool.ERASER and current_stroke.type != DrawTool.ERASER:
-		current_stroke.make_mask()
+	#if draw_tool == DrawTool.ERASER and current_stroke.type != DrawTool.ERASER:
+		#current_stroke.make_mask()
 	current_stroke.type = draw_tool
 	if draw_tool == DrawTool.PENCIL:
 		current_stroke.material = pencil_material
@@ -42,10 +51,10 @@ func receive_coords(p1: Vector2, p2: Vector2, draw_tool: int) -> void:
 
 
 func end_stroke() -> void:
-	print(past_drawing_actions.size())
 	if past_drawing_actions.size() >= MAX_PAST_ACTIONS:
 		var removed_last_action: TempDrawingRegion = past_drawing_actions.pop_front()
-		blit_into_drawing_region(removed_last_action.get_drawing_region_chunks(), removed_last_action.type)
+		# TODO Hide the rest and integrate the 100th action into the permanent DrawingRegion(s)
+		#blit_into_drawing_region(removed_last_action.get_drawing_region_chunks(), removed_last_action.type)
 		removed_last_action.queue_free()
 	past_drawing_actions.append(current_stroke)
 	current_stroke = add_temp_drawing_region()
@@ -67,23 +76,45 @@ func redo_drawing_action() -> void:
 	past_drawing_actions.append(future_drawing_actions.pop_back())
 
 
-func make_drawing_actions_permanent() -> void:
-	printt("Actions: %d" % past_drawing_actions.size())
+func make_drawing_actions_permanent() -> Array[Vector2i]:
+	var all_requests: Array[Vector2i] = []
 	for action in past_drawing_actions:
-		blit_into_drawing_region(action.get_drawing_region_chunks(), action.type)
+		var requests = action.get_drawing_reions_array()
+		for r in requests:
+			if !all_requests.has(r):
+				all_requests.append(r)
+		#blit_into_drawing_region(action.get_drawing_region_chunks(), action.type)
+	#clear_all_drawing_actions()
+	return all_requests
+
+
+func clear_all_drawing_actions() -> void:
+	for action in past_drawing_actions:
 		action.queue_free()
 	past_drawing_actions.clear()
+	for action in future_drawing_actions:
+		action.queue_free()
+	future_drawing_actions.clear()
 
 
-func blit_into_drawing_region(dict: Dictionary[Vector4i, Image], draw_tool: int) -> void:
-	for key in dict:
-		var region_v2i: Vector2i = Vector2i(key.x, key.y)
-		if !regions.has(region_v2i):
-			add_drawing_region(region_v2i)
-		if draw_tool == DrawTool.PENCIL:
-			regions[region_v2i].blit_at(Vector2i(key.z, key.w), dict[key])
-		if draw_tool == DrawTool.ERASER:
-			regions[region_v2i].mask_at(Vector2i(key.z, key.w), dict[key])
+# TODO clear past_drawing_actions after screenshots
+# TODO set has_changes to false on every drawing_region after screenshots
+func update_regions_from_screenshots(screenshots: Dictionary[Vector2i, Image]) -> void:
+	for r in screenshots:
+		if !regions.has(r):
+			add_drawing_region(r)
+		regions[r].update_from_image(screenshots[r])
+
+
+#func blit_into_drawing_region(dict: Dictionary[Vector4i, Image], draw_tool: int) -> void:
+	#for key in dict:
+		#var region_v2i: Vector2i = Vector2i(key.x, key.y)
+		#if !regions.has(region_v2i):
+			#add_drawing_region(region_v2i)
+		#if draw_tool == DrawTool.PENCIL:
+			# regions[region_v2i].blit_at(Vector2i(key.z, key.w), dict[key])
+		#if draw_tool == DrawTool.ERASER:
+			# regions[region_v2i].mask_at(Vector2i(key.z, key.w), dict[key])
 
 
 func add_temp_drawing_region() -> TempDrawingRegion:
@@ -144,6 +175,12 @@ func rebuild_from_json(dict: Dictionary) -> void:
 		if FileAccess.file_exists(image_path):
 			var image: Image = Image.load_from_file(image_path)
 			add_drawing_region(reg_v2i)
-			regions[reg_v2i].update_texture(image)
+			regions[reg_v2i].update_from_image(image, false)
 		else:
 			printerr("Drawing region image file doesn't exist, check user:// folder or JSON save file")
+
+
+func resize(s: Vector2) -> void:
+	size = s
+	current_stroke.size = s
+	current_stroke.init_image(int(s.x), int(s.y))

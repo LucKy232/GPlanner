@@ -5,6 +5,7 @@ class_name PlannerCanvas
 @onready var connection_container: Control = $ConnectionContainer
 @onready var selection_viewer: Panel = $SelectionViewer
 @onready var connection_indicator: Panel = $ConnectionIndicator
+@onready var background: Panel = $Background
 
 var element_scene
 var connection_scene
