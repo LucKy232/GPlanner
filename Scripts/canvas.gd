@@ -552,11 +552,9 @@ func change_priority_filter(value: int) -> void:
 		toggle_connections(i)
 
 
-func resize_drawing_manager() -> void:
-	drawing_manager.resize_to_window()
-
-
 func _on_gui_input(event: InputEvent) -> void:
+	if drawing_manager.is_taking_screenshots:
+		return
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
 			if tool_id == Tool.ADD_ELEMENT:
@@ -607,6 +605,8 @@ func _on_gui_input(event: InputEvent) -> void:
 
 
 func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
+	if drawing_manager.is_taking_screenshots:
+		return
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
 			if tool_id == Tool.ADD_CONNECTION:

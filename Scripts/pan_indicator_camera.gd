@@ -1,4 +1,5 @@
 extends Control
+class_name PanIndicatorCamera
 
 @onready var sub_viewport: SubViewport = $SubViewportContainer/SubViewport
 @onready var camera: Camera2D = $SubViewportContainer/SubViewport/Camera
@@ -36,7 +37,7 @@ func set_window_size(s: Vector2) -> void:
 func move_camera_and_highlight(c_position: Vector2) -> void:
 	if !animation_player.is_playing() and modulate.a == 0.0:
 		animation_player.play("show")
-		
+	
 	timer.start()
 	camera.position = c_position
 	highlight_panel.position = -c_position * indicator_size_ratio / canvas_scale

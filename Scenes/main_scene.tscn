@@ -364,5 +364,6 @@ ok_button_text = "    Yes    "
 [connection signal="custom_action" from="LoadFileConfirmation" to="." method="_on_load_file_confirmation_custom_action"]
 [connection signal="confirmed" from="CloseTabConfirmation" to="." method="_on_close_tab_confirmation_confirmed"]
 [connection signal="custom_action" from="CloseTabConfirmation" to="." method="_on_close_tab_confirmation_custom_action"]
+[connection signal="canceled" from="ExitTabConfirmation" to="." method="_on_exit_tab_confirmation_canceled"]
 [connection signal="confirmed" from="ExitTabConfirmation" to="." method="_on_exit_tab_confirmation_confirmed"]
 [connection signal="custom_action" from="ExitTabConfirmation" to="." method="_on_exit_tab_confirmation_custom_action"]

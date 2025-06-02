@@ -5,6 +5,7 @@ extends Control
 @onready var element_settings: Control = $ElementSettings
 
 @onready var zoom_indicator: VBoxContainer = $MarginContainer/ZoomIndicator
+@onready var pan_indicator_camera: Control = $MarginContainer/PanIndicatorCamera
 @onready var status_bar: Label = $StatusBar
 @onready var margin_container: MarginContainer = $MarginContainer
 @onready var file_dialog_save: FileDialog = $FileDialogSave
@@ -15,7 +16,6 @@ extends Control
 @onready var exit_tab_confirmation: AcceptDialog = $ExitTabConfirmation
 @onready var bottom_bar: ScrollContainer = $BottomBar
 @onready var file_tab_bar: TabBar = $BottomBar/HBoxContainer/FileTabBar
-@onready var pan_indicator_camera: Control = $MarginContainer/PanIndicatorCamera
 @onready var drawing_manager: DrawingManager = $DrawingManager
 
 
@@ -38,16 +38,20 @@ var priority_filter_label: Label
 var tool_keybinds: Dictionary[int, String] = {}
 var is_editing_element_text: bool = false
 var is_editing_preset_name: bool = false
+var is_saving_images: bool = false
 var update_checkboxes: bool = false
 var app_version: String = ""
 var canvases: Dictionary[int, PlannerCanvas]
 var tab_to_canvas: Dictionary[int, int]
 var cc: int = -1		## Current Canvas ID
+var max_canvas_id: int = 0
 var show_load_dialog: bool = false
 var close_this_tab: bool = false
 var cancel_quit: bool = false
 var queue_quit: bool = false
+var exiting_app: bool = false
 var window_size: Vector2
+
 
 enum Checkbox {
 	SHOW_PRIORITIES,
@@ -68,6 +72,7 @@ enum Tool {
 
 
 func _ready() -> void:
+	Performance.add_custom_monitor("Saving Images", func(): return int(is_saving_images))
 	window_size = get_viewport_rect().size
 	pan_indicator_camera.set_world_2d(get_world_2d())
 	pan_indicator_camera.set_window_size(window_size)
@@ -91,7 +96,6 @@ func _ready() -> void:
 	exit_tab_confirmation.add_cancel_button(" Cancel ")
 
 
-
 func _process(_delta):
 	if selected_element_exists():
 		if get_selected_element().line_edit.is_editing():
@@ -105,28 +109,33 @@ func _process(_delta):
 			file_dialog_save.visible = true
 		else:
 			save_file(canvases[cc].opened_file_path)
+			print("Saved")
 	if Input.is_action_just_pressed("edit_element") and !tool_box.is_selected(Tool.MARK_COMPLETED):
-		if selected_element_exists() and !is_editing_text() and !Input.is_key_pressed(KEY_CTRL):
+		if selected_element_exists() and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
 			get_selected_element().line_edit.edit()
-	if Input.is_action_just_pressed(tool_keybinds[Tool.SELECT]) and !is_editing_text() and !Input.is_key_pressed(KEY_CTRL):
+	if Input.is_action_just_pressed("undo") and !disable_input():
+		drawing_manager.undo_drawing_action()
+	if Input.is_action_just_pressed("redo") and !disable_input():
+		drawing_manager.redo_drawing_action()
+	if Input.is_action_just_pressed(tool_keybinds[Tool.SELECT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
 		tool_box.select(Tool.SELECT)
 		_on_tool_box_item_selected(Tool.SELECT)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.ADD_ELEMENT]) and !is_editing_text() and !Input.is_key_pressed(KEY_CTRL):
+	if Input.is_action_just_pressed(tool_keybinds[Tool.ADD_ELEMENT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
 		tool_box.select(Tool.ADD_ELEMENT)
 		_on_tool_box_item_selected(Tool.ADD_ELEMENT)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.REMOVE_ELEMENT]) and !is_editing_text() and !Input.is_key_pressed(KEY_CTRL):
+	if Input.is_action_just_pressed(tool_keybinds[Tool.REMOVE_ELEMENT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
 		tool_box.select(Tool.REMOVE_ELEMENT)
 		_on_tool_box_item_selected(Tool.REMOVE_ELEMENT)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.ELEMENT_STYLE_SETTINGS]) and !is_editing_text() and !Input.is_key_pressed(KEY_CTRL):
+	if Input.is_action_just_pressed(tool_keybinds[Tool.ELEMENT_STYLE_SETTINGS]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
 		tool_box.select(Tool.ELEMENT_STYLE_SETTINGS)
 		_on_tool_box_item_selected(Tool.ELEMENT_STYLE_SETTINGS)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.ADD_CONNECTION]) and !is_editing_text() and !Input.is_key_pressed(KEY_CTRL):
+	if Input.is_action_just_pressed(tool_keybinds[Tool.ADD_CONNECTION]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
 		tool_box.select(Tool.ADD_CONNECTION)
 		_on_tool_box_item_selected(Tool.ADD_CONNECTION)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.REMOVE_CONNECTIONS]) and !is_editing_text() and !Input.is_key_pressed(KEY_CTRL):
+	if Input.is_action_just_pressed(tool_keybinds[Tool.REMOVE_CONNECTIONS]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
 		tool_box.select(Tool.REMOVE_CONNECTIONS)
 		_on_tool_box_item_selected(Tool.REMOVE_CONNECTIONS)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.MARK_COMPLETED]) and !is_editing_text() and !Input.is_key_pressed(KEY_CTRL):
+	if Input.is_action_just_pressed(tool_keybinds[Tool.MARK_COMPLETED]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
 		tool_box.select(Tool.MARK_COMPLETED)
 		_on_tool_box_item_selected(Tool.MARK_COMPLETED)
 	if update_checkboxes and canvases.has(cc):
@@ -136,6 +145,7 @@ func _process(_delta):
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		cancel_quit = false
+		exiting_app = true
 		confirmation_tab_save(0)
 		#get_tree().quit() # Default behavior
 
@@ -195,7 +205,7 @@ func update_zoom_limits(limits: Vector2) -> void:
 
 
 func switch_main_canvas(id: int) -> void:
-	#print("Switch to %d" % [id])
+	print("Switch to %d" % [id])
 	if cc == id:
 		return
 	if canvases.has(cc):	# Disable old canvas visibility
@@ -244,7 +254,8 @@ func new_file(add_canvas: bool) -> int:
 		element_settings.move_to_front()
 		settings_drawer.move_to_front()
 		bottom_bar.move_to_front()
-		new_canvas.id = canvases.size()
+		new_canvas.id = max_canvas_id
+		max_canvas_id += 1
 		canvases[new_canvas.id] = new_canvas
 		new_canvas.done_adding_elements.connect(_on_canvas_done_adding_elements)
 		new_canvas.changed_zoom.connect(_on_canvas_changed_zoom)
@@ -261,17 +272,19 @@ func new_file(add_canvas: bool) -> int:
 	elif canvases.has(cc):
 		new_canvas = canvases[cc]
 		new_canvas.erase_everything()
+		drawing_manager.clear_canvas_drawing_group(cc)
 	else:
 		return -1
 	
 	new_canvas.new_canvas()
-	zoom_indicator.update_zoom(1.0)
 	#DisplayServer.window_set_title("GPlanner %s: New File" % [app_version])
 	get_tree().root.title = ("GPlanner %s: New File" % [app_version])
 	status_bar.update_status("New File")
 	tool_box.select(Tool.SELECT)
 	_on_tool_box_item_selected(Tool.SELECT)
 	update_checkboxes = true
+	_on_canvas_changed_position()
+	_on_canvas_changed_zoom()
 	return new_canvas.id
 
 
@@ -282,10 +295,14 @@ func save_file(path: String) -> void:
 	# Wait for the DrawingManager to screenshot the changed images
 	# Otherwise it would save the file before DrawingManager saves the images
 	# Recall this function with a signal when it's finished
-	if drawing_manager.canvas_drawing_group_has_changes(cc):
+	var needs_save: bool = drawing_manager.save_if_canvas_drawing_group_has_changes(cc)
+	print("Breakpoint need to save images")
+	if needs_save:
+		print("Needs to save drawings")
+		is_saving_images = true
 		drawing_manager.finished_saving.connect(_on_drawing_manager_finished_saving.bind(path, cc), CONNECT_ONE_SHOT)
-		drawing_manager.begin_complete_save_sequence()
 		return
+	print("Breakpoint continuing save")
 	
 	var file = FileAccess.open(path, FileAccess.WRITE)
 	var save_data: Dictionary
@@ -305,6 +322,7 @@ func save_file(path: String) -> void:
 		"DrawingRegions": drawing_manager.drawing_region_paths_to_json(),
 	}
 	
+	print("Breakpoint end save")
 	var success: bool = file.store_string(JSON.stringify(save_data, "\t"))
 	if success:
 		status_bar.update_status("File saved to path: %s" % path)
@@ -356,15 +374,19 @@ func load_file(path: String) -> void:
 		canvases[cc].rebuild_elements(elems)
 		canvases[cc].rebuild_connections(conns)
 		if data.has("DrawingRegions"):
+			drawing_manager.clear_canvas_drawing_group(cc)
 			drawing_manager.rebuild_from_json(cc, data["DrawingRegions"])
+			
 		_on_priority_filter_value_changed(canvases[cc].priority_filter_value)
 	
 	status_bar.update_status("File loaded: %s" % path)
 	canvases[cc].canvas_changed(true)
 	set_tab_name_and_title_from_canvas(cc)
+	_on_canvas_changed_position()
+	_on_canvas_changed_zoom()
 
 
-func save_opened_file_paths(path: String) -> void:
+func save_opened_file_paths_and_quit(path: String) -> void:
 	var file = FileAccess.open("user://" + path, FileAccess.WRITE)
 	var save_data: Dictionary
 	var opened_files: Dictionary
@@ -376,15 +398,13 @@ func save_opened_file_paths(path: String) -> void:
 			if canvases[c_id].opened_file_path != "":
 				opened_files[c_id] = canvases[c_id].opened_file_path
 				print("Saving canvas %d file location: %s" % [c_id, canvases[c_id].opened_file_path])
-			#else:
-				#switch_main_canvas(c_id)
-				#canvases[c_id].opened_file_path = "user://unsaved" + Time.get_datetime_string_from_system().replace(":", "") + ".json"
-				#save_file(canvases[c_id].opened_file_path)
 	save_data["OpenedFiles"] = opened_files
 	save_data["CurrentID"] = cc
 	
 	file.store_string(JSON.stringify(save_data, "\t"))
 	file.close()
+	print("saved file paths")
+	get_tree().quit()
 
 
 func load_opened_file_paths(path: String) -> void:
@@ -435,26 +455,29 @@ func close_tab(tab: int) -> void:
 		_on_add_file_button_pressed()
 
 
-# Increments the tab from 0 to tab_count
+# Increments the tab from 0 to tab_count, checking if the file in the tab has changes 
+# And popping a dialog box "exit_tab_confirmation" to confirm the save
 func confirmation_tab_save(tab: int) -> void:
+	print("Confirmation tab save")
 	if tab == file_tab_bar.tab_count:	# If past the last tab, finish cycling and quit app / return
 		if cancel_quit:
 			queue_quit = false
 			cancel_quit = false
+			exiting_app = false
 		else:
-			save_opened_file_paths(opened_files_file_name)
-			get_tree().quit()
+			save_opened_file_paths_and_quit(opened_files_file_name)
 		return
 	if canvases[tab_to_canvas[tab]].has_changes:
+		# exit_tab_confirmation dialog also calls confirmation_tab_save(current_tab + 1) after save / no save
 		file_tab_bar.current_tab = tab
 		exit_tab_confirmation.dialog_text = ("Save %s?" % [canvases[tab_to_canvas[tab]].file_name_short])
 		exit_tab_confirmation.visible = true
 	else:
-		confirmation_tab_save(tab + 1)	# exit_tab_confirmation dialog increments it if the canvas has changes
+		confirmation_tab_save(tab + 1)
 
 
-func is_editing_text() -> bool:
-	return is_editing_element_text or is_editing_preset_name
+func disable_input() -> bool:
+	return is_editing_element_text or is_editing_preset_name or is_saving_images
 
 
 func _on_tool_box_item_selected(index: int) -> void:
@@ -469,6 +492,8 @@ func _on_tool_box_item_selected(index: int) -> void:
 
 
 func _on_new_button_pressed() -> void:
+	if is_saving_images:
+		return
 	if canvases.size() == 0:
 		new_file(true)
 		set_current_tab_title("New File", "New File", "")
@@ -494,18 +519,24 @@ func _on_new_file_confirmation_custom_action(action: StringName) -> void:
 
 
 func _on_save_button_pressed() -> void:
+	if is_saving_images:
+		return
 	if canvases[cc].opened_file_path == "":
 		file_dialog_save.visible = true
 	else:
 		save_file(canvases[cc].opened_file_path)
+		print("After save")
 		if close_this_tab:
 			close_this_tab = false
 			close_tab(file_tab_bar.current_tab)
-		if queue_quit and !cancel_quit:
-			confirmation_tab_save(file_tab_bar.current_tab + 1)
+		#if queue_quit and !cancel_quit:
+			#print("Continue")
+			#confirmation_tab_save(file_tab_bar.current_tab + 1)
 
 
 func _on_save_as_button_pressed() -> void:
+	if is_saving_images:
+		return
 	file_dialog_save.visible = true
 
 
@@ -518,8 +549,8 @@ func _on_file_dialog_save_file_selected(path: String) -> void:
 	if close_this_tab:
 		close_this_tab = false
 		close_tab(file_tab_bar.current_tab)
-	if queue_quit and !cancel_quit:
-		confirmation_tab_save(file_tab_bar.current_tab + 1)
+	#if queue_quit and !cancel_quit:
+		#confirmation_tab_save(file_tab_bar.current_tab + 1)
 
 
 func _on_file_dialog_save_canceled() -> void:
@@ -527,7 +558,9 @@ func _on_file_dialog_save_canceled() -> void:
 
 
 func _on_load_button_pressed() -> void:
-	if canvases.has(cc) and canvases[cc].elements.size() > 0 and !canvases[cc].has_changes:
+	if is_saving_images:
+		return
+	if canvases.has(cc) and canvases[cc].has_changes:
 		load_file_confirmation.dialog_text = ("This will erase any unsaved changes.\nSave %s?" % [canvases[cc].file_name_short])
 		load_file_confirmation.visible = true
 	else:	# If empty file, load a new one without confirmation
@@ -586,22 +619,30 @@ func _on_canvas_done_adding_elements() -> void:
 
 
 func _on_canvas_changed_zoom() -> void:
+	if !canvases.has(cc):
+		return
 	zoom_indicator.update_zoom(canvases[cc].scale.x)
 	pan_indicator_camera.update_zoom(canvases[cc].position, canvases[cc].scale.x)
 	drawing_manager.scale = canvases[cc].scale
 
 
 func _on_canvas_changed_position() -> void:
+	if !canvases.has(cc):
+		return
 	pan_indicator_camera.move_camera_and_highlight(canvases[cc].position)
 	drawing_manager.position = canvases[cc].position
 
 
 func _on_file_tab_bar_tab_changed(tab: int) -> void:
+	if is_saving_images:	# NOTE switch the canvas after the file is saved?
+		return
 	if tab_to_canvas.has(tab):
 		switch_main_canvas(tab_to_canvas[tab])
 
 
 func _on_add_file_button_pressed() -> void:
+	if is_saving_images:
+		return
 	var canvas_id: int = new_file(true)
 	tab_to_canvas[file_tab_bar.tab_count] = canvas_id
 	file_tab_bar.add_tab("New File")
@@ -609,6 +650,8 @@ func _on_add_file_button_pressed() -> void:
 
 
 func _on_file_tab_bar_tab_close_pressed(tab: int) -> void:
+	if is_saving_images:
+		return
 	if canvases[tab_to_canvas[tab]].has_changes:
 		close_tab_confirmation.dialog_text = ("This will erase any unsaved changes.\nSave %s?" % [canvases[cc].file_name_short])
 		close_tab_confirmation.visible = true
@@ -631,7 +674,7 @@ func _on_close_tab_confirmation_custom_action(action: StringName) -> void:
 func _on_exit_tab_confirmation_confirmed() -> void:
 	if file_tab_bar.current_tab < file_tab_bar.tab_count - 1:
 		_on_save_button_pressed()
-		confirmation_tab_save(file_tab_bar.current_tab + 1)
+		#confirmation_tab_save(file_tab_bar.current_tab + 1)
 	elif file_tab_bar.current_tab == file_tab_bar.tab_count - 1 and !cancel_quit:
 		# Delay application quit until after save file operation finishes: _on_save_button_pressed(), _on_file_dialog_save_file_selected
 		queue_quit = true
@@ -643,6 +686,11 @@ func _on_exit_tab_confirmation_custom_action(action: StringName) -> void:
 		exit_tab_confirmation.visible = false
 		if file_tab_bar.current_tab < file_tab_bar.tab_count:
 			confirmation_tab_save(file_tab_bar.current_tab + 1)
+
+
+func _on_exit_tab_confirmation_canceled() -> void:
+	print("exit_canceled")
+	exiting_app = false
 
 
 func _on_canvas_has_changed(id: int) -> void:
@@ -727,7 +775,10 @@ func _on_resized() -> void:
 
 
 func _on_drawing_manager_finished_saving(path: String, save_canvas: int) -> void:
-	print("RETRY SAVE")
+	print("CONTIUNUE SAVE")
+	is_saving_images = false
 	if cc != save_canvas:
 		switch_main_canvas(save_canvas)
 	save_file(path)
+	if exiting_app:
+		confirmation_tab_save(file_tab_bar.current_tab + 1)

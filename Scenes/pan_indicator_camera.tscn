@@ -98,6 +98,7 @@ mouse_filter = 2
 script = ExtResource("1_0rcr7")
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+modulate = Color(1, 1, 1, 0.666667)
 layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5

@@ -4,6 +4,7 @@ class_name DrawingManager
 #@onready var camera_2d: Camera2D = $SubViewport/Camera2D
 @onready var sub_viewport: SubViewport = $SubViewport
 @onready var timer: Timer = $Timer
+@onready var curtain: Panel = $Curtain
 
 @export_file("*.tscn") var canvas_drawing_group_scene
 @export_file("*.tscn") var temp_drawing_region_scene
@@ -12,11 +13,12 @@ class_name DrawingManager
 var canvas_groups: Dictionary[int, CanvasDrawingGroup]
 var current_canvas: int = -1
 var folder_path: String		## Folder inside user:// in which the images are stored, created on save_file() inside main.gd
+var curtain_stylebox: StyleBoxTexture
 
 var screenshot_requests: Array[Vector2i]
 var screenshots_done: Dictionary[Vector2i, Image]
 var current_screenshot_region: Vector2i = Vector2i(0, 0)
-var is_taking_screenshots: bool = false
+var is_taking_screenshots: bool = false			# Used to disable canvas gui inputs
 var initial_position: Vector2 = Vector2(0.0, 0.0)
 var initial_scale: Vector2 = Vector2(1.0, 1.0)
 
@@ -25,35 +27,30 @@ signal finished_saving
 
 func _ready() -> void:
 	sub_viewport.world_2d = get_world_2d()
-
-
-func _process(_delta: float) -> void:
-	# TODO: move into main.gd or canvas.
-	if Input.is_action_just_pressed("undo"):
-		undo_drawing_action()
-	if Input.is_action_just_pressed("redo"):
-		redo_drawing_action()
-	if Input.is_action_just_pressed("test"):
-		screenshot_requests = [Vector2i(0, 0), Vector2i(0, 1), Vector2i(1, 0), Vector2i(1, 1)]
-		begin_screenshot_sequence()
+	curtain_stylebox = StyleBoxTexture.new()
+	curtain.add_theme_stylebox_override("panel", curtain_stylebox)
 
 
 func take_screenshot() -> void:
 	screenshots_done[current_screenshot_region] = sub_viewport.get_texture().get_image()
-	#print(position, scale, camera_2d.position, camera_2d.scale, camera_2d.zoom)
-	#print("POSITION X %f Y %f SCALE X %f Y %f" % [position.x, position.y, scale.x, scale.y])
-	#sub_viewport.get_texture().get_image().save_png("user://ss(%d %d).png" % [current_screenshot_region.x, current_screenshot_region.y])
-	#screenshots_done[current_screenshot_region].save_png("user://ss(%d %d).png" % [current_screenshot_region.x, current_screenshot_region.y])
-	#sub_viewport.get_texture().get_image().save_png("user://test%d.png" % img_count)
+	#print("Taking screenshot, canvas %d" % current_canvas)
 
 
 func canvas_drawing_group_has_changes(id: int) -> bool:
 	if current_canvas != id and canvas_groups.has(id):
 		change_active_canvas_drawing_group(id)
-	var has: bool = canvas_groups[current_canvas].has_changes()
-	var s: String = "has" if has else "doesn't have"
-	print("Canvas drawing ground %s changes" % s)
 	return canvas_groups[current_canvas].has_changes()
+
+
+func save_if_canvas_drawing_group_has_changes(id: int) -> bool:
+	if current_canvas != id and canvas_groups.has(id):
+		change_active_canvas_drawing_group(id)
+	var changes: bool = canvas_groups[current_canvas].has_changes()
+	if !changes:
+		finished_saving.emit()
+	else:
+		begin_complete_save_sequence()
+	return changes
 
 
 func begin_complete_save_sequence() -> void:
@@ -61,9 +58,11 @@ func begin_complete_save_sequence() -> void:
 	begin_screenshot_sequence()
 
 
-# TODO hide stuff to not flash images quickly
 func begin_screenshot_sequence() -> void:
 	if screenshot_requests.size() > 0:
+		var curtain_image: ImageTexture = ImageTexture.create_from_image(get_viewport().get_texture().get_image())
+		curtain_stylebox.texture = curtain_image
+		curtain.visible = true
 		initial_position = position
 		initial_scale = scale
 		is_taking_screenshots = true
@@ -79,7 +78,7 @@ func next_screnshot() -> void:
 		current_screenshot_region = screenshot_requests.pop_front()
 		timer.start()
 	else:
-		end_screenshot_sequence()
+		finish_saving()
 
 
 func end_screenshot_sequence() -> void:
@@ -89,6 +88,12 @@ func end_screenshot_sequence() -> void:
 	canvas_groups[current_canvas].update_regions_from_screenshots(screenshots_done)
 	canvas_groups[current_canvas].clear_all_drawing_actions()
 	screenshots_done.clear()
+	curtain.visible = false
+
+
+func finish_saving() -> void:
+	end_screenshot_sequence()
+	canvas_groups[current_canvas].save_all_regions_to_disk()
 	finished_saving.emit()
 
 
@@ -131,6 +136,7 @@ func rebuild_from_json(canvas_id: int, dict: Dictionary) -> void:
 		canvas_groups[canvas_id].rebuild_from_json(dict)
 
 
+# Repositions the temp drawing region where the drawing takes place
 func update_drawing_position_and_scale(pos: Vector2, scl: Vector2) -> void:
 	canvas_groups[current_canvas].update_drawing_position_and_scale(pos, scl)
 
@@ -168,9 +174,16 @@ func add_canvas_drawing_group(canvas_id: int) -> void:
 
 func erase_canvas_drawing_group(canvas_id: int) -> void:
 	if canvas_groups.has(canvas_id):
+		canvas_groups[canvas_id].erase_everything()
 		canvas_groups[canvas_id].queue_free()
 		canvas_groups.erase(canvas_id)
 		current_canvas = -1
+
+
+func clear_canvas_drawing_group(canvas_id: int) -> void:
+	if canvas_groups.has(canvas_id):
+		canvas_groups[canvas_id].erase_everything()
+	#print("CLEAR")
 
 
 func change_active_canvas_drawing_group(canvas_id: int) -> void:

@@ -32,15 +32,10 @@ func init(manager_size: Vector2) -> void:
 func has_changes() -> bool:
 	if past_drawing_actions.size() > 0:
 		return true
-	#for r in regions:	# This should just be for saving
-		#if regions[r].has_changes:
-			#return true
 	return false
 
 
 func receive_coords(p1: Vector2, p2: Vector2, draw_tool: int) -> void:
-	#if draw_tool == DrawTool.ERASER and current_stroke.type != DrawTool.ERASER:
-		#current_stroke.make_mask()
 	current_stroke.type = draw_tool
 	if draw_tool == DrawTool.PENCIL:
 		current_stroke.material = pencil_material
@@ -54,7 +49,6 @@ func end_stroke() -> void:
 	if past_drawing_actions.size() >= MAX_PAST_ACTIONS:
 		var removed_last_action: TempDrawingRegion = past_drawing_actions.pop_front()
 		# TODO Hide the rest and integrate the 100th action into the permanent DrawingRegion(s)
-		#blit_into_drawing_region(removed_last_action.get_drawing_region_chunks(), removed_last_action.type)
 		removed_last_action.queue_free()
 	past_drawing_actions.append(current_stroke)
 	current_stroke = add_temp_drawing_region()
@@ -83,8 +77,6 @@ func make_drawing_actions_permanent() -> Array[Vector2i]:
 		for r in requests:
 			if !all_requests.has(r):
 				all_requests.append(r)
-		#blit_into_drawing_region(action.get_drawing_region_chunks(), action.type)
-	#clear_all_drawing_actions()
 	return all_requests
 
 
@@ -97,8 +89,13 @@ func clear_all_drawing_actions() -> void:
 	future_drawing_actions.clear()
 
 
-# TODO clear past_drawing_actions after screenshots
-# TODO set has_changes to false on every drawing_region after screenshots
+func erase_everything() -> void:
+	clear_all_drawing_actions()
+	for r in regions:
+		regions[r].queue_free()
+	regions.clear()
+
+
 func update_regions_from_screenshots(screenshots: Dictionary[Vector2i, Image]) -> void:
 	for r in screenshots:
 		if !regions.has(r):
@@ -136,6 +133,7 @@ func add_drawing_region(region_v2i: Vector2i) -> void:
 	regions[region_v2i] = reg
 
 
+# Repositions the temp drawing region where the drawing takes place
 func update_drawing_position_and_scale(pos: Vector2, scl: Vector2) -> void:
 	var new_scale_x: float = 1.0 / scl.x
 	var new_scale_y: float = 1.0 / scl.x
@@ -149,23 +147,28 @@ func update_drawing_position_and_scale(pos: Vector2, scl: Vector2) -> void:
 
 
 func drawing_region_paths_to_json() -> Dictionary:
-	var saved_num: int = 0
 	var dict: Dictionary = {}
-	if !DirAccess.dir_exists_absolute("user://%s" % folder_path):
-		DirAccess.make_dir_absolute("user://%s" % folder_path)
 	for r in regions:
 		if !regions[r].image.is_invisible():
 			dict["%02d-%02d"%[r.x, r.y]] = "user://%s/%02d-%02d.png" % [folder_path, r.x, r.y]
-			if regions[r].has_changes:
-				regions[r].image.save_png("user://%s/%02d-%02d.png" % [folder_path, r.x, r.y])
-				regions[r].has_changes = false
-				saved_num += 1
+	return dict
+
+
+func save_all_regions_to_disk() -> void:
+	var saved_num: int = 0
+	if !DirAccess.dir_exists_absolute("user://%s" % folder_path):
+		DirAccess.make_dir_absolute("user://%s" % folder_path)
+	for r in regions:
+		if !regions[r].image.is_invisible() and regions[r].has_changes:
+			regions[r].image.save_png("user://%s/%02d-%02d.png" % [folder_path, r.x, r.y])
+			regions[r].set_has_changes(false, "Saved to disk")
+			saved_num += 1
+		
 		# If images get fully erased, they don't get saved in place of the old one,
 		# The old image needs to be deleted because it is outdated
 		if regions[r].image.is_invisible() and regions[r].has_changes:
 			DirAccess.remove_absolute("user://%s/%02d-%02d.png" % [folder_path, r.x, r.y])
 	print("Saved %d images" % saved_num)
-	return dict
 
 
 func rebuild_from_json(dict: Dictionary) -> void:

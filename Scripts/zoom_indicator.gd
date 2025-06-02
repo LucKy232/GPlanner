@@ -1,4 +1,5 @@
 extends VBoxContainer
+class_name ZoomIndicator
 
 #@onready var name_label: Label = $NameLabel
 @onready var zoom_icon: Panel = $ZoomIcon
