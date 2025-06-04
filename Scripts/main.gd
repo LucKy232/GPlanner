@@ -295,6 +295,10 @@ func save_file(path: String) -> void:
 	# Wait for the DrawingManager to screenshot the changed images
 	# Otherwise it would save the file before DrawingManager saves the images
 	# Recall this function with a signal when it's finished
+	var file_name_short: String = path.get_file().get_slice(".", 0)
+	if !drawing_manager.has_folder_path(cc):
+		drawing_manager.set_folder_path(cc, str("%s %s" % [file_name_short, Time.get_datetime_string_from_system().replace(":", "")]))
+	
 	var needs_save: bool = drawing_manager.save_if_canvas_drawing_group_has_changes(cc)
 	print("Breakpoint need to save images")
 	if needs_save:
@@ -310,9 +314,6 @@ func save_file(path: String) -> void:
 		printerr("FileAcces open error: ", FileAccess.get_open_error())
 		return
 	
-	var file_name_short: String = path.get_file().get_slice(".", 0)
-	if !drawing_manager.has_folder_path():
-		drawing_manager.set_folder_path(cc, str("%s %s" % [file_name_short, Time.get_datetime_string_from_system().replace(":", "")]))
 	print("SAVING %s" % [path])
 	save_data = {
 		"State": canvases[cc].canvas_state_to_json(),
@@ -394,10 +395,9 @@ func save_opened_file_paths_and_quit(path: String) -> void:
 		printerr("FileAcces open error: ", FileAccess.get_open_error())
 		return
 	for c_id in canvases:
-		if canvases[c_id].elements.size() > 0:
-			if canvases[c_id].opened_file_path != "":
-				opened_files[c_id] = canvases[c_id].opened_file_path
-				print("Saving canvas %d file location: %s" % [c_id, canvases[c_id].opened_file_path])
+		if canvases[c_id].opened_file_path != "":
+			opened_files[c_id] = canvases[c_id].opened_file_path
+			print("Saving canvas %d file location: %s" % [c_id, canvases[c_id].opened_file_path])
 	save_data["OpenedFiles"] = opened_files
 	save_data["CurrentID"] = cc
 	

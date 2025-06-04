@@ -1,9 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://cpu02i5li1jfy"]
+[gd_scene load_steps=2 format=3 uid="uid://cpu02i5li1jfy"]
 
 [ext_resource type="Script" uid="uid://7d2lj2kc8a2d" path="res://Scripts/temp_drawing_region.gd" id="1_s0ehb"]
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_s0ehb"]
-blend_mode = 2
 
 [node name="TempDrawingRegion" type="TextureRect"]
 light_mask = 5
@@ -11,7 +8,6 @@ visibility_layer = 5
 z_index = 1
 texture_filter = 1
 texture_repeat = 1
-material = SubResource("CanvasItemMaterial_s0ehb")
 size_flags_horizontal = 0
 size_flags_vertical = 0
 script = ExtResource("1_s0ehb")

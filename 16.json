@@ -1,0 +1,68 @@
+{
+	"Connections": {
+
+	},
+	"DrawingRegions": {
+		"05-02": "user://16 2025-06-03T121008/05-02.png",
+		"05-03": "user://16 2025-06-03T121008/05-03.png",
+		"06-02": "user://16 2025-06-03T121008/06-02.png",
+		"06-03": "user://16 2025-06-03T121008/06-03.png",
+		"07-02": "user://16 2025-06-03T121008/07-02.png",
+		"07-03": "user://16 2025-06-03T121008/07-03.png",
+		"08-02": "user://16 2025-06-03T121008/08-02.png",
+		"08-04": "user://16 2025-06-03T121008/08-04.png",
+		"09-04": "user://16 2025-06-03T121008/09-04.png"
+	},
+	"Elements": {
+		"0": {
+			"completed": false,
+			"has_style_preset": false,
+			"id": 0,
+			"individual_style": {
+				"background_color.a": 1.0,
+				"background_color.b": 0.600000023841858,
+				"background_color.g": 0.550000011920929,
+				"background_color.r": 0.0,
+				"border_color.a": 1.0,
+				"border_color.b": 0.0,
+				"border_color.g": 0.0,
+				"border_color.r": 0.0,
+				"border_size": 1,
+				"font_color.a": 1.0,
+				"font_color.b": 1.0,
+				"font_color.g": 1.0,
+				"font_color.r": 1.0,
+				"font_size": 20,
+				"id": "individual",
+				"name": "",
+				"outline_color.a": 1.0,
+				"outline_color.b": 0.0,
+				"outline_color.g": 0.0,
+				"outline_color.r": 0.0,
+				"outline_size": 8
+			},
+			"pos.x": 8966.693359375,
+			"pos.y": 4431.57421875,
+			"priority_id": 4,
+			"size.x": 1086.0,
+			"size.y": 424.0,
+			"style_preset_id": "none",
+			"text": ""
+		}
+	},
+	"State": {
+		"drawing_folder_path": "16 2025-06-03T121008",
+		"position.x": -15341.078125,
+		"position.y": -5443.9404296875,
+		"priority_filter_value": 4,
+		"scale.x": 2.0,
+		"scale.y": 2.0,
+		"show_completed": false,
+		"show_priorities": false,
+		"show_priority_tool": false,
+		"zoom_level": 2.0
+	},
+	"StylePresets": {
+
+	}
+}

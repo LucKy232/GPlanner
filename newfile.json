@@ -1,0 +1,29 @@
+{
+	"Connections": {
+
+	},
+	"DrawingRegions": {
+		"08-04": "user://newfile 2025-06-03T114515/08-04.png",
+		"09-04": "user://newfile 2025-06-03T114515/09-04.png",
+		"10-04": "user://newfile 2025-06-03T114515/10-04.png",
+		"11-04": "user://newfile 2025-06-03T114515/11-04.png"
+	},
+	"Elements": {
+
+	},
+	"State": {
+		"drawing_folder_path": "newfile 2025-06-03T114515",
+		"position.x": -2637.71215820313,
+		"position.y": -1281.50415039063,
+		"priority_filter_value": 4,
+		"scale.x": 0.323533535003662,
+		"scale.y": 0.323533535003662,
+		"show_completed": false,
+		"show_priorities": false,
+		"show_priority_tool": false,
+		"zoom_level": 0.323533544973709
+	},
+	"StylePresets": {
+
+	}
+}

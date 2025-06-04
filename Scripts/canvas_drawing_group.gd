@@ -7,6 +7,7 @@ var future_drawing_actions: Array[TempDrawingRegion]
 var regions: Dictionary[Vector2i, DrawingRegion]
 var pencil_material: CanvasItemMaterial
 var eraser_material: CanvasItemMaterial
+var mask_eraser_material: CanvasItemMaterial
 
 var temp_drawing_region_scene
 var drawing_region_scene
@@ -23,8 +24,13 @@ enum DrawTool {
 func init(manager_size: Vector2) -> void:
 	pencil_material = CanvasItemMaterial.new()
 	pencil_material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	#pencil_material.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
 	eraser_material = CanvasItemMaterial.new()
 	eraser_material.blend_mode = CanvasItemMaterial.BLEND_MODE_SUB
+	#eraser_material.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
+	mask_eraser_material = CanvasItemMaterial.new()
+	mask_eraser_material.blend_mode = CanvasItemMaterial.BLEND_MODE_MUL
+	#mask_eraser_material.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
 	size = manager_size
 	current_stroke = add_temp_drawing_region()
 
@@ -39,10 +45,15 @@ func receive_coords(p1: Vector2, p2: Vector2, draw_tool: int) -> void:
 	current_stroke.type = draw_tool
 	if draw_tool == DrawTool.PENCIL:
 		current_stroke.material = pencil_material
-		current_stroke.draw_pencil_1px(p1, p2)
-	elif draw_tool == DrawTool.ERASER:
+		current_stroke.draw_pencil_1px(p1, p2, Color.BLUE_VIOLET)
+	elif draw_tool == 2:
 		current_stroke.material = eraser_material
 		current_stroke.eraser_pencil_1px(p1, p2)
+	elif draw_tool == DrawTool.ERASER:
+		current_stroke.material = mask_eraser_material
+		if !current_stroke.is_mask:
+			current_stroke.make_mask()
+		current_stroke.mask_eraser_pencil_1px(p1, p2)
 
 
 func end_stroke() -> void:

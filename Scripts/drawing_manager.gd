@@ -33,7 +33,7 @@ func _ready() -> void:
 
 func take_screenshot() -> void:
 	screenshots_done[current_screenshot_region] = sub_viewport.get_texture().get_image()
-	#print("Taking screenshot, canvas %d" % current_canvas)
+	print("Taking screenshot, canvas %d, position x %05f y %05f, scale x %05f, y %05f" % [current_canvas, position.x, position.y, scale.x, scale.y])
 
 
 func canvas_drawing_group_has_changes(id: int) -> bool:
@@ -68,7 +68,7 @@ func begin_screenshot_sequence() -> void:
 		is_taking_screenshots = true
 		move_to_region(screenshot_requests[0])
 		current_screenshot_region = screenshot_requests.pop_front()
-		timer.start()
+		timer.start(0.1)
 
 
 func next_screnshot() -> void:
@@ -76,7 +76,7 @@ func next_screnshot() -> void:
 	if screenshot_requests.size() > 0:	# Prepare for the next frame
 		move_to_region(screenshot_requests[0])
 		current_screenshot_region = screenshot_requests.pop_front()
-		timer.start()
+		timer.start(0.05)
 	else:
 		finish_saving()
 
@@ -153,11 +153,11 @@ func get_folder_path(canvas_id: int) -> String:
 	return canvas_groups[canvas_id].folder_path
 
 
-func has_folder_path() -> bool:
-	if !canvas_groups.has(current_canvas):
+func has_folder_path(canvas_id: int) -> bool:
+	if !canvas_groups.has(canvas_id):
 		return false
-	print("Canvas drawing group has folder path: %s PATH: %s" % [str(!canvas_groups[current_canvas].folder_path == ""), canvas_groups[current_canvas].folder_path])
-	return !canvas_groups[current_canvas].folder_path == ""
+	print("Canvas drawing group has folder path: %s PATH: %s" % [str(!canvas_groups[canvas_id].folder_path == ""), canvas_groups[canvas_id].folder_path])
+	return !canvas_groups[canvas_id].folder_path == ""
 
 
 func add_canvas_drawing_group(canvas_id: int) -> void:

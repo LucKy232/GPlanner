@@ -65,7 +65,7 @@ mouse_filter = 1
 theme = SubResource("Theme_5b2e5")
 script = ExtResource("2_5b2e5")
 line_color = Color(0.169583, 0.190176, 0.210148, 1)
-background_color = Color(0, 0, 0, 1)
+background_color = Color(1, 1, 1, 1)
 
 [node name="ConnectionContainer" type="Control" parent="."]
 light_mask = 8

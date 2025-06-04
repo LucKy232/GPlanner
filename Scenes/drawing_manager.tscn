@@ -63,6 +63,7 @@ size = Vector2i(1024, 1024)
 render_target_update_mode = 4
 
 [node name="Timer" type="Timer" parent="."]
+process_callback = 0
 wait_time = 0.05
 one_shot = true
 

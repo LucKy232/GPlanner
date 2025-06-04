@@ -7,6 +7,7 @@ var height: int
 ## To keep this capped at 100% size under >100% zoom, modify the coordinates at which to draw to when canvas has a different zoom level
 var capped_zoom: float = 1.0
 var type: int = 0
+var is_mask: bool = false
 
 
 func init_image(img_width: int, img_height: int) -> void:
@@ -16,18 +17,19 @@ func init_image(img_width: int, img_height: int) -> void:
 	texture = ImageTexture.create_from_image(image)
 
 
-func draw_pencil_1px(p1: Vector2, p2: Vector2) -> void:
+func draw_pencil_1px(p1: Vector2, p2: Vector2, c: Color) -> void:
 	#print("Drawing (%f %f) (%f %f)" % [p1.x, p1.y, p2.x, p2.y])
 	if width != size.x or height != size.y:
 		init_image(int(size.x), int(size.y))
 	#print("Draw p1 %f %f p2 %f %f" % [p1.x, p1.y, p2.x, p2.y])
 	for pixel in Geometry2D.bresenham_line(p1 * capped_zoom, p2 * capped_zoom):
 			if (pixel.x > 0 and pixel.x < width) and (pixel.y > 0 and pixel.y < height):
-				image.set_pixel(pixel.x, pixel.y, Color.WHITE)
+				image.set_pixel(pixel.x, pixel.y, c)
 	texture = ImageTexture.create_from_image(image)
 
 
 func make_mask() -> void:
+	is_mask = true
 	image.fill(Color.WHITE)
 
 
@@ -41,6 +43,15 @@ func eraser_pencil_1px(p1: Vector2, p2: Vector2) -> void:
 			if (pixel.x > 0 and pixel.x < width) and (pixel.y > 0 and pixel.y < height):
 				image.set_pixel(pixel.x, pixel.y, Color.WHITE)
 				#image.set_pixel(pixel.x, pixel.y, Color.TRANSPARENT)
+	texture = ImageTexture.create_from_image(image)
+
+
+func mask_eraser_pencil_1px(p1: Vector2, p2: Vector2) -> void:
+	if width != size.x or height != size.y:
+		init_image(int(size.x), int(size.y))
+	for pixel in Geometry2D.bresenham_line(p1 * capped_zoom, p2 * capped_zoom):
+			if (pixel.x > 0 and pixel.x < width) and (pixel.y > 0 and pixel.y < height):
+				image.set_pixel(pixel.x, pixel.y, Color.TRANSPARENT)
 	texture = ImageTexture.create_from_image(image)
 
 
