@@ -53,7 +53,7 @@ gradient = SubResource("Gradient_5y8lb")
 width = 72
 
 [node name="ElementSettings" type="Control"]
-z_index = 4
+z_index = 5
 layout_mode = 3
 anchors_preset = 0
 offset_right = 300.0

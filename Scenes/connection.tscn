@@ -7,6 +7,8 @@ interpolation_mode = 2
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
 
 [node name="ConnectionLine" type="Line2D"]
+light_mask = 8
+visibility_layer = 8
 points = PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0)
 width = 4.0
 gradient = SubResource("Gradient_w0fw0")

@@ -52,7 +52,9 @@ signal done_adding_elements
 signal changed_zoom
 signal changed_position
 signal has_changed
-signal selected_style_changed
+#signal selected_style_changed
+signal has_selected_element
+signal has_deselected_element
 
 enum Checkbox {
 	SHOW_PRIORITIES,
@@ -93,7 +95,7 @@ func new_canvas() -> void:
 	checkbox_data.resize(CHECKBOX_NUMBER)
 	for i in CHECKBOX_NUMBER:
 		checkbox_data[i] = false
-	selected_element = -1
+	deselect_element()
 	opened_file_path = ""
 	file_name_short = "New File"
 	position = -size * 0.5 + get_viewport_rect().size * 0.5	# Start from the center on New File
@@ -285,25 +287,38 @@ func select_element(elem_id: int) -> void:
 		selection_viewer.size = elements[elem_id].size
 		selection_viewer.position = elements[elem_id].position
 		elements[selected_element].z_index = 2
-		if elements[selected_element].style_preset_id == "none":
-			selected_preset_style = "none"
-			selected_style_changed.emit()
-		elif selected_preset_style != elements[selected_element].style_preset_id:
-			if style_presets.has(elements[selected_element].style_preset_id):
-				selected_preset_style = elements[selected_element].style_preset_id
-			else:
-				selected_preset_style = "none"
-			selected_style_changed.emit()
+		change_selected_preset_style(elements[selected_element].style_preset_id)
+		has_selected_element.emit()
 	else:	# Deselect element if elem_id invalid
 		#print("ID invalid")
-		selection_viewer.visible = false
-		selected_element = -1
+		deselect_element()
+
+
+func deselect_element() -> void:
+	selected_element = -1
+	selection_viewer.visible = false
+	has_deselected_element.emit()
 
 
 func reset_adding_connection() -> void:
 	connection_candidate_1 = -1
 	connection_candidate_2 = -1
 	connection_indicator.visible = false
+
+
+# NOTE called when select_element() changes the selected element
+# from main.gd called on switch_main_canvas() with "none"
+# from main.gd _on_element_settings_preset_selected() passes the selected preset from the style settings panel
+func change_selected_preset_style(style_id: String) -> void:
+	if style_id == "none":
+		selected_preset_style = "none"
+		#selected_style_changed.emit()
+	elif selected_preset_style != style_id:
+		if style_presets.has(style_id):
+			selected_preset_style = style_id
+		else:
+			selected_preset_style = "none"
+		#selected_style_changed.emit()
 
 
 func update_connections(elem_id: int) -> void:
@@ -442,7 +457,8 @@ func erase_everything() -> void:
 	opened_file_path = ""
 	file_name_short = "New File"
 	selection_viewer.visible = false
-	selected_element = -1
+	deselect_element()
+	has_deselected_element.emit()
 	zoom_level = 1.0
 	connections_p1 = {}
 	connections_p2 = {}
@@ -465,8 +481,7 @@ func erase_everything() -> void:
 
 func toggle_element_and_connections(elem_id: int, state: bool) -> void:
 	if selected_element == elem_id:
-		selected_element = -1
-		selection_viewer.visible = false
+		deselect_element()
 	elements[elem_id].visible = state
 	
 	if elem_id in connections_p1:
@@ -479,8 +494,7 @@ func toggle_element_and_connections(elem_id: int, state: bool) -> void:
 
 func toggle_element(elem_id: int, state: bool) -> void:
 	if selected_element == elem_id:
-		selected_element = -1
-		selection_viewer.visible = false
+		deselect_element()
 	elements[elem_id].visible = state
 
 
@@ -644,11 +658,10 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 			elements[elem_id].set_default_cursor_shape(Control.CURSOR_POINTING_HAND)
 			if tool_id == Tool.REMOVE_ELEMENT:
 				canvas_changed()
+				deselect_element()
 				remove_connections(elem_id)
 				elements[elem_id].queue_free()
-				selected_element = -1
 				elements.erase(elem_id)
-				selection_viewer.visible = false
 			if is_dragging:
 				is_dragging = false
 			if is_resizing:

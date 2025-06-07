@@ -1,6 +1,9 @@
 {
 	"Connections": {
-
+		"0": {
+			"id1": 0,
+			"id2": 1
+		}
 	},
 	"DrawingRegions": {
 		"00-02": "user://test3 2025-06-03T120151/00-02.png",
@@ -39,6 +42,7 @@
 		"06-07": "user://test3 2025-06-03T120151/06-07.png",
 		"06-08": "user://test3 2025-06-03T120151/06-08.png",
 		"07-03": "user://test3 2025-06-03T120151/07-03.png",
+		"07-04": "user://test3 2025-06-03T120151/07-04.png",
 		"07-05": "user://test3 2025-06-03T120151/07-05.png",
 		"07-06": "user://test3 2025-06-03T120151/07-06.png",
 		"07-07": "user://test3 2025-06-03T120151/07-07.png",
@@ -66,11 +70,21 @@
 		"10-03": "user://test3 2025-06-03T120151/10-03.png",
 		"10-04": "user://test3 2025-06-03T120151/10-04.png",
 		"10-05": "user://test3 2025-06-03T120151/10-05.png",
+		"10-06": "user://test3 2025-06-03T120151/10-06.png",
+		"10-07": "user://test3 2025-06-03T120151/10-07.png",
 		"10-08": "user://test3 2025-06-03T120151/10-08.png",
 		"10-09": "user://test3 2025-06-03T120151/10-09.png",
 		"11-00": "user://test3 2025-06-03T120151/11-00.png",
+		"11-05": "user://test3 2025-06-03T120151/11-05.png",
+		"11-06": "user://test3 2025-06-03T120151/11-06.png",
+		"11-07": "user://test3 2025-06-03T120151/11-07.png",
 		"11-09": "user://test3 2025-06-03T120151/11-09.png",
 		"12-00": "user://test3 2025-06-03T120151/12-00.png",
+		"12-04": "user://test3 2025-06-03T120151/12-04.png",
+		"12-05": "user://test3 2025-06-03T120151/12-05.png",
+		"12-06": "user://test3 2025-06-03T120151/12-06.png",
+		"12-07": "user://test3 2025-06-03T120151/12-07.png",
+		"13-07": "user://test3 2025-06-03T120151/13-07.png",
 		"16-04": "user://test3 2025-06-03T120151/16-04.png",
 		"17-04": "user://test3 2025-06-03T120151/17-04.png",
 		"17-05": "user://test3 2025-06-03T120151/17-05.png",
@@ -81,19 +95,88 @@
 		"19-05": "user://test3 2025-06-03T120151/19-05.png"
 	},
 	"Elements": {
-
+		"0": {
+			"completed": false,
+			"has_style_preset": false,
+			"id": 0,
+			"individual_style": {
+				"background_color.a": 1.0,
+				"background_color.b": 0.600000023841858,
+				"background_color.g": 0.550000011920929,
+				"background_color.r": 0.0,
+				"border_color.a": 1.0,
+				"border_color.b": 0.0,
+				"border_color.g": 0.0,
+				"border_color.r": 0.0,
+				"border_size": 1,
+				"font_color.a": 1.0,
+				"font_color.b": 1.0,
+				"font_color.g": 1.0,
+				"font_color.r": 1.0,
+				"font_size": 20,
+				"id": "individual",
+				"name": "",
+				"outline_color.a": 1.0,
+				"outline_color.b": 0.0,
+				"outline_color.g": 0.0,
+				"outline_color.r": 0.0,
+				"outline_size": 8
+			},
+			"pos.x": 10301.7392578125,
+			"pos.y": 5901.51611328125,
+			"priority_id": 4,
+			"size.x": 120.0,
+			"size.y": 80.0,
+			"style_preset_id": "none",
+			"text": ""
+		},
+		"1": {
+			"completed": true,
+			"has_style_preset": false,
+			"id": 1,
+			"individual_style": {
+				"background_color.a": 1.0,
+				"background_color.b": 0.600000023841858,
+				"background_color.g": 0.550000011920929,
+				"background_color.r": 0.0,
+				"border_color.a": 1.0,
+				"border_color.b": 0.0,
+				"border_color.g": 0.0,
+				"border_color.r": 0.0,
+				"border_size": 1,
+				"font_color.a": 1.0,
+				"font_color.b": 1.0,
+				"font_color.g": 1.0,
+				"font_color.r": 1.0,
+				"font_size": 20,
+				"id": "individual",
+				"name": "",
+				"outline_color.a": 1.0,
+				"outline_color.b": 0.0,
+				"outline_color.g": 0.0,
+				"outline_color.r": 0.0,
+				"outline_size": 8
+			},
+			"pos.x": 10608.8427734375,
+			"pos.y": 5991.822265625,
+			"priority_id": 4,
+			"size.x": 120.0,
+			"size.y": 80.0,
+			"style_preset_id": "none",
+			"text": ""
+		}
 	},
 	"State": {
 		"drawing_folder_path": "test3 2025-06-03T120151",
-		"position.x": -568.0,
-		"position.y": -602.0,
+		"position.x": -12233.669921875,
+		"position.y": -6107.16796875,
 		"priority_filter_value": 4,
-		"scale.x": 0.125,
-		"scale.y": 0.125,
-		"show_completed": false,
+		"scale.x": 1.27438187599182,
+		"scale.y": 1.27438187599182,
+		"show_completed": true,
 		"show_priorities": false,
 		"show_priority_tool": false,
-		"zoom_level": 0.125
+		"zoom_level": 1.27438192543309
 	},
 	"StylePresets": {
 

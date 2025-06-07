@@ -9,6 +9,7 @@ var size_1: Vector2
 var size_2: Vector2
 var TEST_MARGIN: float = 25.0
 var CONNECTION_MARGIN: float = 10.0
+var SNAP_TO: float = 10.0
 
 
 func _ready() -> void:
@@ -53,20 +54,20 @@ func update_positions() -> void:
 		points[0] = middle_of_bottom(p1, size_1) if p1_on_top else middle_of_top(p1, size_1)
 		points[3] = middle_of_top(p2, size_2) if p1_on_top else middle_of_bottom(p2, size_2)
 		if abs(points[0].x - points[3].x) < 10.0:	# Average x coord if in range to prevent very small difference in points[1] & points[2] for aesthetic reasons
-			var mid_x: float = snappedf((points[0].x + points[3].x) * 0.5, 10.0)
+			var mid_x: float = snappedf((points[0].x + points[3].x) * 0.5, SNAP_TO)
 			points[0].x = mid_x
 			points[3].x = mid_x
-		var mid_y: float = snappedf((points[0].y + points[3].y) * 0.5, 10.0)
+		var mid_y: float = snappedf((points[0].y + points[3].y) * 0.5, SNAP_TO)
 		points[1] = Vector2(points[0].x, mid_y)
 		points[2] = Vector2(points[3].x, mid_y)
 	elif !p1_left and !p1_right and !p2_left and !p2_right:		# Side-Side = No overlap
 		points[0] = right_side(p1, size_1) if p1_on_left else left_side(p1, size_1)
 		points[3] = left_side(p2, size_2) if p1_on_left else right_side(p2, size_2)
 		if abs(points[0].y - points[3].y) < 10.0:	# Average y coord if in range to prevent very small difference in points[1] & points[2] for aesthetic reasons
-			var mid_y: float = snappedf((points[0].y + points[3].y) * 0.5, 10.0)
+			var mid_y: float = snappedf((points[0].y + points[3].y) * 0.5, SNAP_TO)
 			points[0].y = mid_y
 			points[3].y = mid_y
-		var mid_x: float = snappedf((points[0].x + points[3].x) * 0.5, 10.0)
+		var mid_x: float = snappedf((points[0].x + points[3].x) * 0.5, SNAP_TO)
 		points[1] = Vector2(mid_x, points[0].y)
 		points[2] = Vector2(mid_x, points[3].y)
 	elif p1_left or p1_right or p2_left or p2_right:			# Partial overlap: Top-Bottom or Top-Side
@@ -81,10 +82,10 @@ func update_positions() -> void:
 				points[3] = middle_of_top(p2, size_2) if overlap_middle else right_side(p2, size_2)
 			if overlap_middle:
 				if abs(points[0].x - points[3].x) < 10.0:	# Average x coord if in range to prevent very small difference in points[1] & points[2] for aesthetic reasons
-					var mid_x: float = snappedf((points[0].x + points[3].x) * 0.5, 10.0)
+					var mid_x: float = snappedf((points[0].x + points[3].x) * 0.5, SNAP_TO)
 					points[0].x = mid_x
 					points[3].x = mid_x
-				var mid_y: float = snappedf((points[0].y + points[3].y) * 0.5, 10.0)
+				var mid_y: float = snappedf((points[0].y + points[3].y) * 0.5, SNAP_TO)
 				points[1] = Vector2(points[0].x, mid_y)
 				points[2] = Vector2(points[3].x, mid_y)
 			else:
@@ -101,10 +102,10 @@ func update_positions() -> void:
 				points[0] = middle_of_top(p1, size_1) if overlap_middle else right_side(p1, size_1)
 			if overlap_middle:
 				if abs(points[0].x - points[3].x) < 10.0:	# Average x coord if in range to prevent very small difference in points[1] & points[2] for aesthetic reasons
-					var mid_x: float = snappedf((points[0].x + points[3].x) * 0.5, 10.0)
+					var mid_x: float = snappedf((points[0].x + points[3].x) * 0.5, SNAP_TO)
 					points[0].x = mid_x
 					points[3].x = mid_x
-				var mid_y: float = snappedf((points[0].y + points[3].y) * 0.5, 10.0)
+				var mid_y: float = snappedf((points[0].y + points[3].y) * 0.5, SNAP_TO)
 				points[1] = Vector2(points[0].x, mid_y)
 				points[2] = Vector2(points[3].x, mid_y)
 			else:

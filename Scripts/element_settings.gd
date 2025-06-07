@@ -1,4 +1,5 @@
 extends Control
+class_name ElementSettings
 
 @export var default_background_style_box: StyleBoxFlat
 @export var default_line_edit_theme: Theme
@@ -104,7 +105,7 @@ func erase_everything() -> void:
 
 
 func reset_none_preset() -> void:
-	none_preset = ElementPresetStyle.new("none_preset")
+	none_preset = ElementPresetStyle.new("individual")
 	none_preset.background_panel_style_box = default_background_style_box.duplicate()
 	none_preset.line_edit_theme = default_line_edit_theme.duplicate()
 
@@ -178,6 +179,29 @@ func select_by_style_preset_id(idx: String) -> void:
 		change_preset(0)
 
 
+func toggle_none_preset_inputs(toggled_on: bool) -> void:
+	if preset_options.selected == 0:
+		background_color_picker_button.disabled = !toggled_on
+		font_color_picker_button.disabled = !toggled_on
+		font_outline_color_picker_button.disabled = !toggled_on
+		border_color_picker_button.disabled = !toggled_on
+		
+		font_size_spin_box.editable = toggled_on
+		font_outline_spin_box.editable = toggled_on
+		border_size_spin_box.editable = toggled_on
+
+
+func toggle_preset_inputs(toggled_on: bool) -> void:
+	background_color_picker_button.disabled = !toggled_on
+	font_color_picker_button.disabled = !toggled_on
+	font_outline_color_picker_button.disabled = !toggled_on
+	border_color_picker_button.disabled = !toggled_on
+	
+	font_size_spin_box.editable = toggled_on
+	font_outline_spin_box.editable = toggled_on
+	border_size_spin_box.editable = toggled_on
+
+
 func _on_add_preset_pressed() -> void:
 	name_insert.visible = true
 	name_insert.edit()
@@ -211,6 +235,7 @@ func _on_preset_options_item_selected(index: int) -> void:
 		border_size_spin_box.value = presets[index].border_size
 		border_color_picker_button.color = presets[index].border_color
 		current_preset_label.text = ("Current Style: %s" % presets[index].name)
+		toggle_preset_inputs(true)
 		preset_selected.emit()
 	style_buttons.focus_button(index)
 	is_user_input = true

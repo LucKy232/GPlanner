@@ -2,7 +2,7 @@ extends Control
 
 @onready var tool_box: ItemList = $MarginContainer/ToolBox
 @onready var settings_drawer: Control = $SettingsDrawer
-@onready var element_settings: Control = $ElementSettings
+@onready var element_settings: ElementSettings = $ElementSettings
 
 @onready var zoom_indicator: VBoxContainer = $MarginContainer/ZoomIndicator
 @onready var pan_indicator_camera: Control = $MarginContainer/PanIndicatorCamera
@@ -48,9 +48,8 @@ var max_canvas_id: int = 0
 var show_load_dialog: bool = false
 var close_this_tab: bool = false
 var cancel_quit: bool = false
-var queue_quit: bool = false
 var exiting_app: bool = false
-var window_size: Vector2
+var queued_file_action: FileAction
 
 
 enum Checkbox {
@@ -69,11 +68,20 @@ enum Tool {
 	PENCIL,
 	ERASER,
 }
+enum FileActionType {
+	NEW_FILE,
+	NEW_TAB,
+	SAVE_FILE,
+	LOAD_FILE,
+	CLOSE_TAB,
+	CHANGE_TAB,
+	CONFIRMATION_TAB,
+}
 
 
 func _ready() -> void:
 	Performance.add_custom_monitor("Saving Images", func(): return int(is_saving_images))
-	window_size = get_viewport_rect().size
+	var window_size: Vector2 = get_viewport_rect().size
 	pan_indicator_camera.set_world_2d(get_world_2d())
 	pan_indicator_camera.set_window_size(window_size)
 	app_version = ProjectSettings.get_setting("application/config/version")
@@ -109,7 +117,6 @@ func _process(_delta):
 			file_dialog_save.visible = true
 		else:
 			save_file(canvases[cc].opened_file_path)
-			print("Saved")
 	if Input.is_action_just_pressed("edit_element") and !tool_box.is_selected(Tool.MARK_COMPLETED):
 		if selected_element_exists() and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
 			get_selected_element().line_edit.edit()
@@ -222,7 +229,7 @@ func switch_main_canvas(id: int) -> void:
 	if file_tab_bar.tab_count == 0:
 		file_tab_bar.add_tab("")
 	set_tab_name_and_title_from_canvas(cc)
-	canvases[cc].selected_preset_style = "none"
+	canvases[cc].change_selected_preset_style("none")
 	element_settings.erase_everything()
 	element_settings.rebuild_options_and_dictionary_from_canvas(canvases[cc].style_presets)
 	drawing_manager.change_active_canvas_drawing_group(cc)
@@ -261,7 +268,9 @@ func new_file(add_canvas: bool) -> int:
 		new_canvas.changed_zoom.connect(_on_canvas_changed_zoom)
 		new_canvas.changed_position.connect(_on_canvas_changed_position)
 		new_canvas.has_changed.connect(_on_canvas_has_changed.bind(new_canvas.id))
-		new_canvas.selected_style_changed.connect(_on_canvas_selected_style_changed)
+		#new_canvas.selected_style_changed.connect(_on_canvas_selected_style_changed)
+		new_canvas.has_selected_element.connect(_on_canvas_has_selected_element)
+		new_canvas.has_deselected_element.connect(_on_canvas_has_deselected_element)
 		new_canvas.element_scene = element_scene
 		new_canvas.connection_scene = connection_scene
 		new_canvas.priority_colors = priority_colors
@@ -328,6 +337,7 @@ func save_file(path: String) -> void:
 	if success:
 		status_bar.update_status("File saved to path: %s" % path)
 		#DisplayServer.window_set_title("GPlanner %s: %s" % [app_version, path])
+		print("Saved %s" % path)
 		get_tree().root.title = ("GPlanner %s: %s" % [app_version, path])
 		canvases[cc].opened_file_path = path
 		canvases[cc].file_name_short = file_name_short
@@ -335,6 +345,7 @@ func save_file(path: String) -> void:
 		set_tab_name_and_title_from_canvas(cc)
 	else:
 		status_bar.update_status("Error when saving file to path: %s" % path)
+		
 	file.close()
 
 
@@ -461,7 +472,6 @@ func confirmation_tab_save(tab: int) -> void:
 	print("Confirmation tab save")
 	if tab == file_tab_bar.tab_count:	# If past the last tab, finish cycling and quit app / return
 		if cancel_quit:
-			queue_quit = false
 			cancel_quit = false
 			exiting_app = false
 		else:
@@ -474,6 +484,24 @@ func confirmation_tab_save(tab: int) -> void:
 		exit_tab_confirmation.visible = true
 	else:
 		confirmation_tab_save(tab + 1)
+
+
+func exectute_file_action(act: FileAction) -> void:
+	match act.action_type:
+		FileActionType.NEW_FILE:
+			pass
+		FileActionType.NEW_TAB:
+			pass
+		FileActionType.SAVE_FILE:
+			pass
+		FileActionType.LOAD_FILE:
+			pass
+		FileActionType.CLOSE_TAB:
+			pass
+		FileActionType.CHANGE_TAB:
+			pass
+		FileActionType.CONFIRMATION_TAB:
+			pass
 
 
 func disable_input() -> bool:
@@ -529,7 +557,7 @@ func _on_save_button_pressed() -> void:
 		if close_this_tab:
 			close_this_tab = false
 			close_tab(file_tab_bar.current_tab)
-		#if queue_quit and !cancel_quit:
+		#if !cancel_quit:
 			#print("Continue")
 			#confirmation_tab_save(file_tab_bar.current_tab + 1)
 
@@ -549,7 +577,7 @@ func _on_file_dialog_save_file_selected(path: String) -> void:
 	if close_this_tab:
 		close_this_tab = false
 		close_tab(file_tab_bar.current_tab)
-	#if queue_quit and !cancel_quit:
+	#if !cancel_quit:	# Now handled by _on_drawing_manager_finished_saving when DrawingManager signals (no save necessary or save finished)
 		#confirmation_tab_save(file_tab_bar.current_tab + 1)
 
 
@@ -672,12 +700,7 @@ func _on_close_tab_confirmation_custom_action(action: StringName) -> void:
 
 
 func _on_exit_tab_confirmation_confirmed() -> void:
-	if file_tab_bar.current_tab < file_tab_bar.tab_count - 1:
-		_on_save_button_pressed()
-		#confirmation_tab_save(file_tab_bar.current_tab + 1)
-	elif file_tab_bar.current_tab == file_tab_bar.tab_count - 1 and !cancel_quit:
-		# Delay application quit until after save file operation finishes: _on_save_button_pressed(), _on_file_dialog_save_file_selected
-		queue_quit = true
+	if file_tab_bar.current_tab < file_tab_bar.tab_count:
 		_on_save_button_pressed()
 
 
@@ -716,7 +739,14 @@ func _on_element_settings_preset_color_changed() -> void:
 	if !canvases.has(cc):
 		return
 	var style_preset: ElementPresetStyle = element_settings.get_selected_preset()
-	canvases[cc].update_connection_color_by_preset(style_preset.id)
+	if style_preset.id == "individual":
+		var selected_elem: ElementLabel = get_selected_element()
+		if selected_elem != null:
+			canvases[cc].update_connection_color(selected_elem.id, style_preset.background_color)
+		else:
+			print("null elem")
+	else:
+		canvases[cc].update_connection_color_by_preset(style_preset.id)
 
 
 func _on_element_settings_preset_removed(preset_id: String) -> void:
@@ -733,29 +763,49 @@ func _on_element_settings_preset_selected() -> void:
 	var selected_element: ElementLabel = get_selected_element()
 	if element_settings.preset_options.selected > 0:
 		if canvases[cc].selected_preset_style != style_preset.id:
-			canvases[cc].selected_preset_style = style_preset.id
+			canvases[cc].change_selected_preset_style(style_preset.id)
 			if selected_element != null:
 				canvases[cc].canvas_changed()
 				canvases[cc].update_connection_color(selected_element.id, style_preset.background_color)
 				selected_element.change_style_preset(style_preset)
 	elif element_settings.preset_options.selected == 0:
-		canvases[cc].selected_preset_style = "none"
+		canvases[cc].change_selected_preset_style("none")
 		if selected_element != null:
 			if selected_element.has_style_preset:
 				canvases[cc].canvas_changed()
 				selected_element.unassign_preset_style()
 				canvases[cc].update_connection_color(selected_element.id, selected_element.get_bg_color())
 			element_settings.none_preset = selected_element.individual_style
+		else:
+			element_settings.toggle_none_preset_inputs(false)
 
 
-func _on_canvas_selected_style_changed() -> void:
+#func _on_canvas_selected_style_changed() -> void:
+	#if !canvases.has(cc):
+		#return
+	#if canvases[cc].selected_preset_style == "none":
+		#var selected_element: ElementLabel = get_selected_element()
+		#if selected_element != null:
+			#element_settings.none_preset = selected_element.individual_style
+	#element_settings.select_by_style_preset_id(canvases[cc].selected_preset_style)
+
+
+func _on_canvas_has_selected_element() -> void:
+	print("Selected element %d" % get_selected_element().id)
 	if !canvases.has(cc):
 		return
+	
 	if canvases[cc].selected_preset_style == "none":
 		var selected_element: ElementLabel = get_selected_element()
 		if selected_element != null:
 			element_settings.none_preset = selected_element.individual_style
 	element_settings.select_by_style_preset_id(canvases[cc].selected_preset_style)
+	element_settings.toggle_none_preset_inputs(true)
+
+
+func _on_canvas_has_deselected_element() -> void:
+	print("Deselected element")
+	element_settings.toggle_none_preset_inputs(false)
 
 
 func _on_element_settings_is_editing_text() -> void:
@@ -767,7 +817,7 @@ func _on_element_settings_stopped_editing_text() -> void:
 
 
 func _on_resized() -> void:
-	window_size = get_viewport_rect().size
+	var window_size: Vector2 = get_viewport_rect().size
 	if pan_indicator_camera:
 		pan_indicator_camera.set_window_size(window_size)
 	if drawing_manager:

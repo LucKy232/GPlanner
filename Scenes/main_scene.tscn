@@ -236,7 +236,6 @@ horizontal_alignment = 1
 [node name="ElementSettings" parent="." instance=ExtResource("17_oyb3p")]
 light_mask = 2
 visibility_layer = 2
-z_index = 5
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0

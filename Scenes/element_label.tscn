@@ -169,6 +169,8 @@ _data = {
 }
 
 [node name="Element" type="Panel"]
+light_mask = 8
+visibility_layer = 8
 custom_minimum_size = Vector2(64, 64)
 offset_right = 120.0
 offset_bottom = 80.0

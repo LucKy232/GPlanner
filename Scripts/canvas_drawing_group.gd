@@ -1,6 +1,9 @@
 extends CanvasGroup
 class_name CanvasDrawingGroup
 
+@onready var drawing_regions_container: Control = $DrawingRegionsContainer
+@onready var temp_drawing_regions_container: Control = $TempDrawingRegionsContainer
+
 var current_stroke: TempDrawingRegion
 var past_drawing_actions: Array[TempDrawingRegion]
 var future_drawing_actions: Array[TempDrawingRegion]
@@ -23,7 +26,7 @@ enum DrawTool {
 
 func init(manager_size: Vector2) -> void:
 	pencil_material = CanvasItemMaterial.new()
-	pencil_material.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	pencil_material.blend_mode = CanvasItemMaterial.BLEND_MODE_MIX
 	#pencil_material.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
 	eraser_material = CanvasItemMaterial.new()
 	eraser_material.blend_mode = CanvasItemMaterial.BLEND_MODE_SUB
@@ -45,11 +48,11 @@ func receive_coords(p1: Vector2, p2: Vector2, draw_tool: int) -> void:
 	current_stroke.type = draw_tool
 	if draw_tool == DrawTool.PENCIL:
 		current_stroke.material = pencil_material
-		current_stroke.draw_pencil_1px(p1, p2, Color.BLUE_VIOLET)
-	elif draw_tool == 2:
+		current_stroke.draw_pencil_1px(p1, p2, Color.WHITE)
+	elif draw_tool == DrawTool.ERASER:
 		current_stroke.material = eraser_material
 		current_stroke.eraser_pencil_1px(p1, p2)
-	elif draw_tool == DrawTool.ERASER:
+	elif draw_tool == 5:	# unused
 		current_stroke.material = mask_eraser_material
 		if !current_stroke.is_mask:
 			current_stroke.make_mask()
@@ -127,7 +130,7 @@ func update_regions_from_screenshots(screenshots: Dictionary[Vector2i, Image]) -
 
 func add_temp_drawing_region() -> TempDrawingRegion:
 	var temp = load(temp_drawing_region_scene).instantiate()
-	add_child(temp)
+	temp_drawing_regions_container.add_child(temp)
 	temp.name = "TempDrawingRegion"
 	temp.size = size
 	temp.position = position
@@ -137,11 +140,12 @@ func add_temp_drawing_region() -> TempDrawingRegion:
 
 func add_drawing_region(region_v2i: Vector2i) -> void:
 	var reg = load(drawing_region_scene).instantiate()
-	add_child(reg)
+	drawing_regions_container.add_child(reg)
 	reg.name = "DrawingRegion (%02d %02d)" % [region_v2i.x, region_v2i.y]
 	reg.size = Vector2(1024.0, 1024.0)
 	reg.position = Vector2(region_v2i.x * 1024.0, region_v2i.y * 1024.0)
 	regions[region_v2i] = reg
+	reg.move_to_front()
 
 
 # Repositions the temp drawing region where the drawing takes place

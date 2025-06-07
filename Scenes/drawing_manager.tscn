@@ -6,12 +6,12 @@
 
 [sub_resource type="LabelSettings" id="LabelSettings_5m78p"]
 font_size = 40
-outline_size = 4
+outline_size = 10
 outline_color = Color(0, 0, 0, 1)
 
 [node name="DrawingManager" type="Control"]
-light_mask = 5
-visibility_layer = 5
+light_mask = 4
+visibility_layer = 4
 z_index = 4
 layout_mode = 3
 anchors_preset = 15
@@ -30,7 +30,7 @@ visible = false
 top_level = true
 light_mask = 8
 visibility_layer = 8
-z_index = 5
+z_index = 10
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -67,5 +67,4 @@ process_callback = 0
 wait_time = 0.05
 one_shot = true
 
-[connection signal="item_rect_changed" from="." to="." method="_on_item_rect_changed"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
