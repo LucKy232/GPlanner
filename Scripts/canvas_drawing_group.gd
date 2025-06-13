@@ -70,18 +70,20 @@ func end_stroke() -> void:
 		future_drawing_actions.pop_front().queue_free()
 
 
-func undo_drawing_action() -> void:
+func undo_drawing_action() -> bool:
 	if past_drawing_actions.size() == 0:
-		return
+		return false
 	past_drawing_actions[-1].visible = false
 	future_drawing_actions.append(past_drawing_actions.pop_back())
+	return true
 
 
-func redo_drawing_action() -> void:
+func redo_drawing_action() -> bool:
 	if future_drawing_actions.size() == 0:
-		return
+		return false
 	future_drawing_actions[-1].visible = true
 	past_drawing_actions.append(future_drawing_actions.pop_back())
+	return true
 
 
 func make_drawing_actions_permanent() -> Array[Vector2i]:

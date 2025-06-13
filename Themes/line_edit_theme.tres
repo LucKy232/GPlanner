@@ -13,13 +13,13 @@ border_color = Color(0.8, 0.8, 0.8, 0)
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [resource]
-LineEdit/colors/caret_color = Color(0.95, 0.95, 0.95, 1)
+LineEdit/colors/caret_color = Color(0.954911, 0.954911, 0.954911, 0.862745)
 LineEdit/colors/font_color = Color(1, 1, 1, 1)
 LineEdit/colors/font_outline_color = Color(0, 0, 0, 1)
 LineEdit/colors/font_placeholder_color = Color(0.64603, 0.646029, 0.646029, 1)
 LineEdit/colors/font_selected_color = Color(1, 1, 1, 1)
 LineEdit/colors/selection_color = Color(0.5, 0.5, 0.5, 1)
-LineEdit/constants/caret_width = 1
+LineEdit/constants/caret_width = 2
 LineEdit/constants/minimum_character_width = 4
 LineEdit/constants/outline_size = 8
 LineEdit/font_sizes/font_size = 20

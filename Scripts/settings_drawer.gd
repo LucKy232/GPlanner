@@ -6,6 +6,7 @@ extends Control
 @onready var priority_filter_label: Label = $PanelContainer/HBoxContainer/Background/MarginContainer/Scroll/Settings/PriorityFilterLabel
 @onready var priority_filter: HScrollBar = $PanelContainer/HBoxContainer/Background/MarginContainer/Scroll/Settings/PriorityFilter
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
+@onready var toggle_drawer: Button = $PanelContainer/HBoxContainer/ToggleDrawer
 
 var checkboxes: Array[CheckBox] = []
 
@@ -16,6 +17,8 @@ enum Checkbox {
 }
 
 func _ready() -> void:
+	toggle_drawer.set_pressed_no_signal(false)
+	_on_toggle_drawer_toggled(false)
 	checkboxes = [show_priorities, show_priority_tool, show_completed]
 
 

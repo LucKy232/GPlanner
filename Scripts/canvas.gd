@@ -18,14 +18,15 @@ var elements_to_connection: Dictionary[Vector2i, int]	## ELEMENT ID Vector2i(ID1
 var style_presets: Dictionary[String, ElementPresetStyle]	## PRESET ID key (not option_selector like in element_setting.gd)
 var drawing_manager: DrawingManager
 
+var CHECKBOX_NUMBER: int = 3
 var element_id_counter: int = 0
 var connection_id_counter: int = 0
 var connection_candidate_1: int = -1
 var connection_candidate_2: int = -1
 var checkbox_data: Array[bool]
 var priority_filter_value: int = 0
+var save_state: SaveState
 
-var CHECKBOX_NUMBER: int = 3
 var id: int
 var tool_id: int
 var opened_file_path: String = ""
@@ -39,7 +40,6 @@ var is_panning: bool = false
 var is_adding_elements: bool = false
 var is_element_just_created: bool = false
 var is_drawing: bool = false
-var has_changes: bool = false
 var drag_start_mouse_pos: Vector2
 var original_elem_size: Vector2
 var last_draw_event_position: Vector2 = Vector2.ZERO
@@ -85,6 +85,10 @@ enum DrawTool {
 }
 
 
+func _init() -> void:
+	save_state = SaveState.new()
+
+
 func _process(_delta: float) -> void:
 	if !Input.is_key_pressed(KEY_CTRL) and is_adding_elements:
 		is_adding_elements = false
@@ -105,22 +109,87 @@ func new_canvas() -> void:
 	#print("New canvas id %d" % [id])
 
 
-func canvas_changed(reset: bool = false) -> bool:
+func canvas_changed(reset: bool = false) -> void:
 	if !is_user_input:
-		return false
+		return
 	if reset:
-		if has_changes:
-			has_changes = false
+		# NOTE Needs to change the state before emitting, but also check old value, so order of operations is correct here
+		if save_state.has_changes:
+			save_state.has_changes = false
 			has_changed.emit()
 		else:
-			has_changes = false
+			save_state.has_changes = false
 	else:
-		if !has_changes:
-			has_changes = true
+		if !save_state.has_changes:
+			save_state.has_changes = true
 			has_changed.emit()
 		else:
-			has_changes = true
-	return has_changes
+			save_state.has_changes = true
+
+
+func drawings_changed(reset: bool = false) -> void:
+	if !is_user_input:
+		return
+	if reset:
+		# NOTE Needs to change the state before emitting, but also check old value, so order of operations is correct here
+		if save_state.needs_to_save_images:
+			save_state.needs_to_save_images = false
+			has_changed.emit()
+		else:
+			save_state.needs_to_save_images = false
+	else:
+		if save_state.needs_to_save_images:
+			save_state.needs_to_save_images = true
+			has_changed.emit()
+		else:
+			save_state.needs_to_save_images = true
+
+
+func has_changes() -> bool:
+	return save_state.has_changes or save_state.needs_to_save_images
+
+
+func has_requested_save_action() -> bool:
+	return save_state.has_requested_action()
+
+
+func get_requested_save_action() -> int:
+	return save_state.action_type
+
+
+func reset_requested_save_action() -> void:
+	save_state.reset_requested_action()
+
+
+func set_requested_save_action(act: int) -> void:
+	print("Request action %d" % act)
+	save_state.set_requested_action(act)
+
+
+func is_ready_for_action() -> bool:
+	return save_state.is_ready_to_save()
+
+
+#func ignore_save() -> void:
+	#save_state.ignore_save = true
+
+
+func set_file_names(path: String) -> void:
+	opened_file_path = path
+	file_name_short = opened_file_path.get_file().get_slice(".", 0)
+
+
+func get_file_name_short() -> String:
+	if file_name_short == "" or file_name_short == "New File":
+		return ""
+	else:
+		return file_name_short
+
+
+func reset_save_state() -> void:
+	canvas_changed(true)
+	drawings_changed(true)
+	save_state = SaveState.new()
 
 
 func update_all_style_presets(dict: Dictionary[int, ElementPresetStyle]) -> void:
@@ -607,12 +676,12 @@ func _on_gui_input(event: InputEvent) -> void:
 		position = pan_limits(position + move)
 		changed_position.emit()
 	if event is InputEventMouseMotion and is_drawing and tool_id == Tool.PENCIL:
-		canvas_changed()
+		drawings_changed()
 		var currrent_draw_event_position: Vector2 = event.position * scale + position
 		drawing_manager.receive_coords(last_draw_event_position, currrent_draw_event_position, DrawTool.PENCIL)
 		last_draw_event_position = currrent_draw_event_position
 	if event is InputEventMouseMotion and is_drawing and tool_id == Tool.ERASER:
-		canvas_changed()
+		drawings_changed()
 		var currrent_draw_event_position: Vector2 = event.position * scale + position
 		drawing_manager.receive_coords(last_draw_event_position, currrent_draw_event_position, DrawTool.ERASER)
 		last_draw_event_position = currrent_draw_event_position

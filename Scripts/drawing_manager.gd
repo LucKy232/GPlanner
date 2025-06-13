@@ -33,7 +33,7 @@ func _ready() -> void:
 
 func take_screenshot() -> void:
 	screenshots_done[current_screenshot_region] = sub_viewport.get_texture().get_image()
-	print("Taking screenshot, canvas %d, position x %05f y %05f, scale x %05f, y %05f" % [current_canvas, position.x, position.y, scale.x, scale.y])
+	#print("Taking screenshot, canvas %d, position x %05f y %05f, scale x %05f, y %05f" % [current_canvas, position.x, position.y, scale.x, scale.y])
 
 
 func canvas_drawing_group_has_changes(id: int) -> bool:
@@ -111,12 +111,12 @@ func end_stroke() -> void:
 	canvas_groups[current_canvas].end_stroke()
 
 
-func undo_drawing_action() -> void:
-	canvas_groups[current_canvas].undo_drawing_action()
+func undo_drawing_action() -> bool:
+	return canvas_groups[current_canvas].undo_drawing_action()
 
 
-func redo_drawing_action() -> void:
-	canvas_groups[current_canvas].redo_drawing_action()
+func redo_drawing_action() -> bool:
+	return canvas_groups[current_canvas].redo_drawing_action()
 
 
 func make_drawing_actions_permanent() -> void:
@@ -156,7 +156,7 @@ func get_folder_path(canvas_id: int) -> String:
 func has_folder_path(canvas_id: int) -> bool:
 	if !canvas_groups.has(canvas_id):
 		return false
-	print("Canvas drawing group has folder path: %s PATH: %s" % [str(!canvas_groups[canvas_id].folder_path == ""), canvas_groups[canvas_id].folder_path])
+	#print("Canvas drawing group has folder path: %s PATH: %s" % [str(!canvas_groups[canvas_id].folder_path == ""), canvas_groups[canvas_id].folder_path])
 	return !canvas_groups[canvas_id].folder_path == ""
 
 
