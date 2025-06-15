@@ -58,6 +58,11 @@ func begin_complete_save_sequence() -> void:
 	begin_screenshot_sequence()
 
 
+func begin_overflow_actions_save_sequence() -> void:
+	screenshot_requests = canvas_groups[current_canvas].make_past_overflow_actions_permanent()
+	begin_screenshot_sequence()
+
+
 func begin_screenshot_sequence() -> void:
 	if screenshot_requests.size() > 0:
 		var curtain_image: ImageTexture = ImageTexture.create_from_image(get_viewport().get_texture().get_image())
@@ -71,28 +76,34 @@ func begin_screenshot_sequence() -> void:
 		timer.start(0.1)
 
 
-func next_screnshot() -> void:
+# Triggered by Timer if complete save sequence, or TimerOF if saving overflow past actions
+func next_screnshot(complete_save: bool) -> void:
 	take_screenshot()
 	if screenshot_requests.size() > 0:	# Prepare for the next frame
 		move_to_region(screenshot_requests[0])
 		current_screenshot_region = screenshot_requests.pop_front()
 		timer.start(0.05)
-	else:
+	elif complete_save:
 		finish_saving()
+	else:
+		end_screenshot_sequence(false)
 
 
-func end_screenshot_sequence() -> void:
+func end_screenshot_sequence(complete_save: bool) -> void:
 	position = initial_position
 	scale = initial_scale
 	is_taking_screenshots = false
 	canvas_groups[current_canvas].update_regions_from_screenshots(screenshots_done)
-	canvas_groups[current_canvas].clear_all_drawing_actions()
+	if complete_save:
+		canvas_groups[current_canvas].clear_all_drawing_actions()
+	else:
+		canvas_groups[current_canvas].clear_all_overflow_actions()
 	screenshots_done.clear()
 	curtain.visible = false
 
 
 func finish_saving() -> void:
-	end_screenshot_sequence()
+	end_screenshot_sequence(true)
 	canvas_groups[current_canvas].save_all_regions_to_disk()
 	finished_saving.emit()
 
@@ -109,6 +120,7 @@ func receive_coords(p1: Vector2, p2: Vector2, draw_tool: int) -> void:
 
 func end_stroke() -> void:
 	canvas_groups[current_canvas].end_stroke()
+	
 
 
 func undo_drawing_action() -> bool:
@@ -195,7 +207,11 @@ func change_active_canvas_drawing_group(canvas_id: int) -> void:
 
 
 func _on_timer_timeout() -> void:
-	next_screnshot()
+	next_screnshot(true)
+
+
+func _on_timer_of_timeout() -> void:
+	next_screnshot(false)
 
 
 #func _on_item_rect_changed() -> void:

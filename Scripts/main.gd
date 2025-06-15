@@ -331,10 +331,10 @@ func save_file(path: String) -> void:
 	if success:
 		status_bar.update_status("File saved to path: %s" % path)
 		#DisplayServer.window_set_title("GPlanner %s: %s" % [app_version, path])
-		print("Saved %s" % path)
 		get_tree().root.title = ("GPlanner %s: %s" % [app_version, path])
 		canvases[cc].reset_save_state()
 		set_tab_name_and_title_from_canvas(cc)
+		print("Saved %s" % path)
 	else:
 		status_bar.update_status("Error when saving file to path: %s" % path)
 	file.close()
@@ -463,13 +463,11 @@ func close_tab(tab: int) -> void:
 
 
 # Increments the tab from 0 to tab_count, checking if the file in the tab has changes 
-# And popping a dialog box "exit_tab_confirmation" to confirm the save
+# And showing a dialog box "exit_tab_confirmation" to confirm the save
+# exit_tab_confirmation dialog also calls confirmation_tab_save(current_tab + 1) after
+# either on file save / no save or after saving images + file (as the canvas.save_state.set_requested_action() to be executed later, because saving images is asynchronous)
 func confirmation_tab_save(tab: int) -> void:
-	#print("Confirmation tab save")
 	if is_saving_images:
-		#print("Confirmation tab queue file action | is empty: %s" % str(queued_file_action.is_empty()))
-		#if queued_file_action.is_empty():
-			#queued_file_action.new_tab_action(FileActionType.CONFIRMATION_TAB, tab)
 		return
 	
 	if tab == file_tab_bar.tab_count:	# If past the last tab, finish cycling and quit app / return
@@ -483,11 +481,9 @@ func confirmation_tab_save(tab: int) -> void:
 		printerr("Tab not found in main.gd:confirmation_tab_save() %d" % tab)
 		return
 	if canvases[tab_to_canvas[tab]].has_changes():
-		# exit_tab_confirmation dialog also calls confirmation_tab_save(current_tab + 1) after save / no save
-		file_tab_bar.current_tab = tab
+		file_tab_bar.current_tab = tab		# Also calls switch_main_canvas()
 		exit_tab_confirmation.dialog_text = ("Save %s?" % [canvases[tab_to_canvas[tab]].file_name_short])
 		exit_tab_confirmation.visible = true
-		# FIXME there's a different confirmation dialog window already visible???
 	else:
 		confirmation_tab_save(tab + 1)
 
@@ -617,7 +613,8 @@ func _on_file_dialog_save_file_selected(path: String) -> void:
 		if new_file_requested:
 			new_file(false)
 			set_current_tab_title("New File", "New File", "")
-		if exiting_app:	# Now handled by _on_drawing_manager_finished_saving when DrawingManager signals (no save necessary or save finished)
+		if exiting_app:
+			file_dialog_save.visible = false	# FileDialogSave is still showing as an exclusive window, need to show ExitTabConfirmation instead
 			confirmation_tab_save(file_tab_bar.current_tab + 1)
 
 

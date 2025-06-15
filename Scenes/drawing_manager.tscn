@@ -67,4 +67,10 @@ process_callback = 0
 wait_time = 0.05
 one_shot = true
 
+[node name="TimerOF" type="Timer" parent="."]
+process_callback = 0
+wait_time = 0.05
+one_shot = true
+
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="TimerOF" to="." method="_on_timer_of_timeout"]

@@ -8,6 +8,9 @@ var height: int
 var capped_zoom: float = 1.0
 var type: int = 0
 var is_mask: bool = false
+var is_finished: bool = false
+var used_rect: Rect2i
+var data_usage: int = 0
 
 
 func init_image(img_width: int, img_height: int) -> void:
@@ -55,13 +58,12 @@ func mask_eraser_pencil_1px(p1: Vector2, p2: Vector2) -> void:
 	texture = ImageTexture.create_from_image(image)
 
 
-func get_drawing_reions_array() -> Array[Vector2i]:
+func get_drawing_regions_array() -> Array[Vector2i]:
 	var arr: Array[Vector2i] = []
-	var img_used_space: Rect2i = image.get_used_rect()
-	var img_start: Vector2 = position + Vector2(float(img_used_space.position.x), float(img_used_space.position.y)) * scale
-	var img_end: Vector2 = position + Vector2(img_used_space.end.x, img_used_space.end.y) * scale
-	#print("Occupied img: ", img_used_space.position, img_used_space.end, img_used_space.size)
-	#print("Occupied img * scale: ", Vector2(float(img_used_space.position.x), float(img_used_space.position.y)) * scale, Vector2(img_used_space.end.x, img_used_space.end.y) * scale, Vector2(img_used_space.size.x, img_used_space.size.y) * scale)
+	var img_start: Vector2 = position + Vector2(float(used_rect.position.x), float(used_rect.position.y)) * scale
+	var img_end: Vector2 = position + Vector2(used_rect.end.x, used_rect.end.y) * scale
+	#print("Occupied img: ", used_rect.position, used_rect.end, used_rect.size)
+	#print("Occupied img * scale: ", Vector2(float(used_rect.position.x), float(used_rect.position.y)) * scale, Vector2(used_rect.end.x, used_rect.end.y) * scale, Vector2(used_rect.size.x, used_rect.size.y) * scale)
 	var region_x_start: int = floori(img_start.x / 1024.0)
 	var region_x_end: int = floori(img_end.x / 1024.0) + 1
 	var region_y_start: int = floori(img_start.y / 1024.0)
@@ -69,5 +71,21 @@ func get_drawing_reions_array() -> Array[Vector2i]:
 	for i in range(region_x_start, region_x_end):
 		for j in range(region_y_start, region_y_end):
 			arr.append(Vector2i(i, j))
-	#print("Temp regions: ", position, scale, size, arr)
 	return arr
+
+
+# Returns true if image is 0 pixels and needs to be deleted, and false if >0 pixels
+func trim_down() -> bool:
+	var img_used_space: Rect2i = image.get_used_rect()
+	if img_used_space.size.x == 0 and img_used_space.size.y == 0:
+		return true
+	var trimmed_img: Image = Image.create_empty(img_used_space.size.x, img_used_space.size.y, false, Image.FORMAT_RGBA8)
+	trimmed_img.blit_rect(image, img_used_space, Vector2i.ZERO)
+	image = trimmed_img
+	texture = ImageTexture.create_from_image(image)
+	position += Vector2(img_used_space.position.x * scale.x, img_used_space.position.y * scale.y)
+	size = img_used_space.size
+	used_rect = image.get_used_rect()
+	data_usage = image.get_data_size()
+	image = Image.new()	# Save RAM usage, shouldn't be accessed afterwards
+	return false

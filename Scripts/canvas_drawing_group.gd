@@ -6,7 +6,10 @@ class_name CanvasDrawingGroup
 
 var current_stroke: TempDrawingRegion
 var past_drawing_actions: Array[TempDrawingRegion]
+## When undo-ing, the last TempDrawingRegion from past_drawing_actions gets removed and placed here
 var future_drawing_actions: Array[TempDrawingRegion]
+## When past_drawing_actions is full, the front TempDrawingRegion gets removed and placed here
+var past_actions_overflow: Array[TempDrawingRegion]
 var regions: Dictionary[Vector2i, DrawingRegion]
 var pencil_material: CanvasItemMaterial
 var eraser_material: CanvasItemMaterial
@@ -16,12 +19,19 @@ var temp_drawing_region_scene
 var drawing_region_scene
 var folder_path: String = ""
 var size: Vector2
-var MAX_PAST_ACTIONS: int = 100
+var MAX_PAST_ACTIONS: int = 10
 
 enum DrawTool {
 	PENCIL,
 	ERASER,
 }
+
+
+func _process(_delta: float) -> void:
+	if Input.is_action_just_pressed("test"):
+		toggle_past_drawing_actions(false)
+	if Input.is_action_just_pressed("test2"):
+		toggle_past_drawing_actions(true)
 
 
 func init(manager_size: Vector2) -> void:
@@ -60,12 +70,17 @@ func receive_coords(p1: Vector2, p2: Vector2, draw_tool: int) -> void:
 
 
 func end_stroke() -> void:
+	print("%03d actions %03d overflow actions" % [past_drawing_actions.size(), past_actions_overflow.size()])
 	if past_drawing_actions.size() >= MAX_PAST_ACTIONS:
-		var removed_last_action: TempDrawingRegion = past_drawing_actions.pop_front()
-		# TODO Hide the rest and integrate the 100th action into the permanent DrawingRegion(s)
-		removed_last_action.queue_free()
-	past_drawing_actions.append(current_stroke)
+		past_actions_overflow.append(past_drawing_actions.pop_front())
+	current_stroke.is_finished = true
+	var to_delete: bool = current_stroke.trim_down()
+	if to_delete:
+		current_stroke.queue_free()
+	else:
+		past_drawing_actions.append(current_stroke)
 	current_stroke = add_temp_drawing_region()
+	# If inputting an action, can't redo anymore
 	for i in future_drawing_actions.size():
 		future_drawing_actions.pop_front().queue_free()
 
@@ -86,10 +101,26 @@ func redo_drawing_action() -> bool:
 	return true
 
 
+func toggle_past_drawing_actions(toggled_on: bool) -> void:
+	for act in past_drawing_actions:
+		act.visible = toggled_on
+
+
 func make_drawing_actions_permanent() -> Array[Vector2i]:
 	var all_requests: Array[Vector2i] = []
 	for action in past_drawing_actions:
-		var requests = action.get_drawing_reions_array()
+		var requests = action.get_drawing_regions_array()
+		for r in requests:
+			if !all_requests.has(r):
+				all_requests.append(r)
+	return all_requests
+
+
+func make_past_overflow_actions_permanent() -> Array[Vector2i]:
+	toggle_past_drawing_actions(false)
+	var all_requests: Array[Vector2i] = []
+	for action in past_actions_overflow:
+		var requests = action.get_drawing_regions_array()
 		for r in requests:
 			if !all_requests.has(r):
 				all_requests.append(r)
@@ -103,6 +134,9 @@ func clear_all_drawing_actions() -> void:
 	for action in future_drawing_actions:
 		action.queue_free()
 	future_drawing_actions.clear()
+	for action in past_actions_overflow:
+		action.queue_free()
+	past_actions_overflow.clear()
 
 
 func erase_everything() -> void:
@@ -202,5 +236,6 @@ func rebuild_from_json(dict: Dictionary) -> void:
 
 func resize(s: Vector2) -> void:
 	size = s
-	current_stroke.size = s
-	current_stroke.init_image(int(s.x), int(s.y))
+	if !current_stroke.is_finished:
+		current_stroke.size = s
+		current_stroke.init_image(int(s.x), int(s.y))
