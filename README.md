@@ -2,7 +2,7 @@
 A simple idea planner made in Godot.
 
 
-Features: (0.5.0)
+Features: (v0.5.0)
 - Add elements similar to sticky notes that contain a single line of text. Can move, resize, hide & change their style.
 - Can give elements a priority that shows as a color band.
 - Make / Remove line connections between elements.
