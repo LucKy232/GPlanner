@@ -15,23 +15,30 @@ var pencil_material: CanvasItemMaterial
 var eraser_material: CanvasItemMaterial
 var mask_eraser_material: CanvasItemMaterial
 
+var MAX_PAST_ACTIONS: int = 100
+var SAVE_REQUEST_KB_LIMIT: float = 50000.0
+var FORCE_SAVE_REQUEST_KB_LIMIT: float = 500000.0
 var temp_drawing_region_scene
 var drawing_region_scene
 var folder_path: String = ""
 var size: Vector2
-var MAX_PAST_ACTIONS: int = 10
+var used_temp_data_kb: float = 0.0
+
+signal save_request
+signal force_save_request
+@warning_ignore("unused_signal")
+signal saving_images_to_disk
 
 enum DrawTool {
 	PENCIL,
 	ERASER,
 }
 
-
-func _process(_delta: float) -> void:
-	if Input.is_action_just_pressed("test"):
-		toggle_past_drawing_actions(false)
-	if Input.is_action_just_pressed("test2"):
-		toggle_past_drawing_actions(true)
+#func _process(_delta: float) -> void:
+	#if Input.is_action_just_pressed("test"):
+		#toggle_past_drawing_actions(false)
+	#if Input.is_action_just_pressed("test2"):
+		#toggle_past_drawing_actions(true)
 
 
 func init(manager_size: Vector2) -> void:
@@ -55,18 +62,38 @@ func has_changes() -> bool:
 
 
 func receive_coords(p1: Vector2, p2: Vector2, draw_tool: int) -> void:
-	current_stroke.type = draw_tool
+	var to_set_material: bool = true if current_stroke.type != draw_tool else false
+	if to_set_material:
+		current_stroke.type = draw_tool
 	if draw_tool == DrawTool.PENCIL:
-		current_stroke.material = pencil_material
+		if to_set_material:
+			current_stroke.material = pencil_material
 		current_stroke.draw_pencil_1px(p1, p2, Color.WHITE)
 	elif draw_tool == DrawTool.ERASER:
-		current_stroke.material = eraser_material
+		if to_set_material:
+			current_stroke.material = eraser_material
 		current_stroke.eraser_pencil_1px(p1, p2)
-	elif draw_tool == 5:	# unused
-		current_stroke.material = mask_eraser_material
+	elif draw_tool == 99:	# unused
+		if to_set_material:
+			current_stroke.material = mask_eraser_material
 		if !current_stroke.is_mask:
 			current_stroke.make_mask()
 		current_stroke.mask_eraser_pencil_1px(p1, p2)
+
+
+func receive_click(p: Vector2, draw_tool: int) -> void:
+	current_stroke.type = draw_tool
+	if draw_tool == DrawTool.PENCIL:
+		current_stroke.material = pencil_material
+		current_stroke.draw_pencil_dot_1px(p, Color.WHITE)
+	elif draw_tool == DrawTool.ERASER:
+		current_stroke.material = eraser_material
+		current_stroke.eraser_pencil_dot_1px(p)
+	elif draw_tool == 99:	# unused
+		current_stroke.material = mask_eraser_material
+		if !current_stroke.is_mask:
+			current_stroke.make_mask()
+		current_stroke.mask_eraser_pencil_dot_1px(p)
 
 
 func end_stroke() -> void:
@@ -79,10 +106,22 @@ func end_stroke() -> void:
 		current_stroke.queue_free()
 	else:
 		past_drawing_actions.append(current_stroke)
+	used_temp_data_kb += float(current_stroke.data_usage) / 1024.0
+	check_save_request_needed()
 	current_stroke = add_temp_drawing_region()
 	# If inputting an action, can't redo anymore
 	for i in future_drawing_actions.size():
-		future_drawing_actions.pop_front().queue_free()
+		var remove: TempDrawingRegion = future_drawing_actions.pop_front()
+		used_temp_data_kb -= float(remove.data_usage) / 1024.0
+		remove.queue_free()
+
+
+func check_save_request_needed() -> void:
+	print("Used Data: %0.0dkb" % [used_temp_data_kb])
+	if past_actions_overflow.size() > 0 and used_temp_data_kb > SAVE_REQUEST_KB_LIMIT:
+		save_request.emit()
+	if used_temp_data_kb > FORCE_SAVE_REQUEST_KB_LIMIT:
+		force_save_request.emit()
 
 
 func undo_drawing_action() -> bool:
@@ -137,6 +176,7 @@ func clear_all_drawing_actions() -> void:
 	for action in past_actions_overflow:
 		action.queue_free()
 	past_actions_overflow.clear()
+	used_temp_data_kb = 0.0
 
 
 func erase_everything() -> void:
@@ -144,6 +184,7 @@ func erase_everything() -> void:
 	for r in regions:
 		regions[r].queue_free()
 	regions.clear()
+	used_temp_data_kb = 0.0
 
 
 func update_regions_from_screenshots(screenshots: Dictionary[Vector2i, Image]) -> void:
@@ -200,26 +241,33 @@ func update_drawing_position_and_scale(pos: Vector2, scl: Vector2) -> void:
 func drawing_region_paths_to_json() -> Dictionary:
 	var dict: Dictionary = {}
 	for r in regions:
-		if !regions[r].image.is_invisible():
+		if !regions[r].is_invisible:
 			dict["%02d-%02d"%[r.x, r.y]] = "user://%s/%02d-%02d.png" % [folder_path, r.x, r.y]
 	return dict
 
 
 func save_all_regions_to_disk() -> void:
 	var saved_num: int = 0
+	var regions_to_save: Array[Vector2i]
 	if !DirAccess.dir_exists_absolute("user://%s" % folder_path):
 		DirAccess.make_dir_absolute("user://%s" % folder_path)
+	call_deferred("emit_signal", "saving_images_to_disk", "Preparing to save images")
 	for r in regions:
-		if !regions[r].image.is_invisible() and regions[r].has_changes:
-			regions[r].image.save_png("user://%s/%02d-%02d.png" % [folder_path, r.x, r.y])
-			regions[r].set_has_changes(false, "Saved to disk")
-			saved_num += 1
-		
-		# If images get fully erased, they don't get saved in place of the old one,
-		# The old image needs to be deleted because it is outdated
+		if regions[r].prepare_image_to_save():
+			regions_to_save.append(r)
+	
+	for save_r in regions_to_save:
+		regions[save_r].save_image("user://%s/%02d-%02d.png" % [folder_path, save_r.x, save_r.y])
+		saved_num += 1
+		call_deferred("emit_signal", "saving_images_to_disk", "Saving images to disk: %d / %d" % [saved_num, regions_to_save.size()])
+	
+	# If images get fully erased, they don't get saved in place of the old one,
+	# The old image needs to be deleted because it is outdated
+	for r in regions:
 		if regions[r].image.is_invisible() and regions[r].has_changes:
 			DirAccess.remove_absolute("user://%s/%02d-%02d.png" % [folder_path, r.x, r.y])
-	print("Saved %d images" % saved_num)
+		regions[r].free_image()
+	#print("Saved %d images" % saved_num)
 
 
 func rebuild_from_json(dict: Dictionary) -> void:
@@ -230,8 +278,9 @@ func rebuild_from_json(dict: Dictionary) -> void:
 			var image: Image = Image.load_from_file(image_path)
 			add_drawing_region(reg_v2i)
 			regions[reg_v2i].update_from_image(image, false)
+			#image = Image.new()
 		else:
-			printerr("Drawing region image file doesn't exist, check user:// folder or JSON save file")
+			printerr("Drawing region (%d, %d) image file doesn't exist, check user:// folder or JSON save file" % [reg_v2i.x, reg_v2i.y])
 
 
 func resize(s: Vector2) -> void:

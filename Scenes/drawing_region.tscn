@@ -23,6 +23,7 @@ texture_repeat = 1
 script = ExtResource("1_3s5au")
 
 [node name="Border" type="Panel" parent="."]
+visible = false
 light_mask = 8
 visibility_layer = 8
 layout_mode = 1

@@ -47,7 +47,6 @@ var cc: int = -1		## Current Canvas ID
 var max_canvas_id: int = 0
 var show_load_dialog: bool = false
 var close_this_tab: bool = false
-var cancel_quit: bool = false
 var exiting_app: bool = false
 
 
@@ -98,9 +97,13 @@ func _ready() -> void:
 	close_tab_confirmation.add_cancel_button(" Cancel ")
 	exit_tab_confirmation.add_button("     No     ", true, "no_save")
 	exit_tab_confirmation.add_cancel_button(" Cancel ")
+	drawing_manager.requested_status_message.connect(_on_drawing_manager_status_message)
 
 
 func _process(_delta):
+	#print(is_saving_images)
+	if Input.is_action_just_pressed("test3"):
+		print("Is still running")
 	if selected_element_exists():
 		if get_selected_element().line_edit.is_editing():
 			is_editing_element_text = true
@@ -146,7 +149,8 @@ func _process(_delta):
 
 func _notification(what):
 	if what == NOTIFICATION_WM_CLOSE_REQUEST:
-		cancel_quit = false
+		if is_saving_images:
+			return
 		exiting_app = true
 		confirmation_tab_save(0)
 		#get_tree().quit() # Default behavior
@@ -304,6 +308,11 @@ func save_images() -> void:
 	var needs_save: bool = drawing_manager.save_if_canvas_drawing_group_has_changes(cc)
 	if needs_save:
 		is_saving_images = true
+		file_tab_bar.visible = false
+		get_window().unresizable = true
+		# Maybe not necessary, the drawing tool can't input on canvas with the curtain up and doesn't interfere with the image saving afterwards
+		tool_box.select(Tool.SELECT)
+		_on_tool_box_item_selected(Tool.SELECT)
 
 
 func save_file(path: String) -> void:
@@ -329,14 +338,14 @@ func save_file(path: String) -> void:
 	
 	var success: bool = file.store_string(JSON.stringify(save_data, "\t"))
 	if success:
-		status_bar.update_status("File saved to path: %s" % path)
+		status_bar.update_status("File saved to path: %s" % path, Color(0.3, 0.55, 0.3, 0.5))
 		#DisplayServer.window_set_title("GPlanner %s: %s" % [app_version, path])
 		get_tree().root.title = ("GPlanner %s: %s" % [app_version, path])
 		canvases[cc].reset_save_state()
 		set_tab_name_and_title_from_canvas(cc)
 		print("Saved %s" % path)
 	else:
-		status_bar.update_status("Error when saving file to path: %s" % path)
+		status_bar.update_status("Error when saving file to path: %s" % path, Color(0.55, 0.3, 0.3, 0.5))
 	file.close()
 
 
@@ -358,7 +367,7 @@ func load_file(path: String) -> void:
 	var data = JSON.parse_string(content)
 	
 	if data == null:
-		status_bar.update_status("Can't load file / Can't parse JSON string: %s" % path)
+		status_bar.update_status("Can't load file / Can't parse JSON string: %s" % path, Color(0.55, 0.3, 0.3, 0.5))
 		printerr("Can't parse JSON string @ main.gd:load_file()")
 		return
 	else:
@@ -384,7 +393,7 @@ func load_file(path: String) -> void:
 			
 		_on_priority_filter_value_changed(canvases[cc].priority_filter_value)
 	
-	status_bar.update_status("File loaded: %s" % path)
+	status_bar.update_status("File loaded: %s" % path, Color(0.3, 0.55, 0.3, 0.5))
 	canvases[cc].canvas_changed(true)
 	set_tab_name_and_title_from_canvas(cc)
 	_on_canvas_changed_position()
@@ -407,7 +416,6 @@ func save_opened_file_paths_and_quit(path: String) -> void:
 	
 	file.store_string(JSON.stringify(save_data, "\t"))
 	file.close()
-	print("saved file paths")
 	get_tree().quit()
 
 
@@ -422,7 +430,7 @@ func load_opened_file_paths(path: String) -> void:
 		file.close()
 		var data = JSON.parse_string(content)
 		if data == null:
-			status_bar.update_status("Can't load file / Can't parse JSON string: %s" % path)
+			status_bar.update_status("Can't load file / Can't parse JSON string: %s" % path, Color(0.55, 0.3, 0.3, 0.5))
 			printerr("Can't parse JSON string @ main.gd:load_file()")
 			return
 		else:
@@ -471,10 +479,7 @@ func confirmation_tab_save(tab: int) -> void:
 		return
 	
 	if tab == file_tab_bar.tab_count:	# If past the last tab, finish cycling and quit app / return
-		if cancel_quit:
-			cancel_quit = false
-			exiting_app = false
-		else:
+		if exiting_app:
 			save_opened_file_paths_and_quit(opened_files_file_name)
 		return
 	if !tab_to_canvas.has(tab):
@@ -864,6 +869,8 @@ func _on_resized() -> void:
 
 func _on_drawing_manager_finished_saving(save_canvas: int) -> void:
 	is_saving_images = false
+	file_tab_bar.visible = true
+	get_window().unresizable = false
 	if !canvases.has(save_canvas):
 		printerr("Canvas doesn't exist in main.gd:_on_drawing_manager_finished_saving()")
 		return
@@ -878,3 +885,7 @@ func _on_drawing_manager_finished_saving(save_canvas: int) -> void:
 		exectute_file_action(save_action)
 	#if exiting_app:
 		#confirmation_tab_save(file_tab_bar.current_tab + 1)
+
+
+func _on_drawing_manager_status_message(message: String) -> void:
+	status_bar.update_status_immediate(message)

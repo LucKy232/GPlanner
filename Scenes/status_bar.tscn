@@ -1,7 +1,19 @@
-[gd_scene load_steps=7 format=3 uid="uid://c2apku3xuhhyp"]
+[gd_scene load_steps=9 format=3 uid="uid://c2apku3xuhhyp"]
 
 [ext_resource type="LabelSettings" uid="uid://ccff3ay0edn1k" path="res://Themes/status_bar_label_settings.tres" id="1_j0gso"]
 [ext_resource type="Script" uid="uid://d21dllhkeycf3" path="res://Scripts/status_bar.gd" id="1_mux0b"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_psl12"]
+content_margin_left = 10.0
+content_margin_top = 3.0
+content_margin_right = 10.0
+content_margin_bottom = 36.0
+bg_color = Color(0.6, 0.6, 0.6, 0.45098)
+border_width_bottom = 31
+border_color = Color(0.8, 0.8, 0.8, 0)
+
+[sub_resource type="Theme" id="Theme_j0gso"]
+Label/styles/normal = SubResource("StyleBoxFlat_psl12")
 
 [sub_resource type="Animation" id="Animation_mux0b"]
 length = 0.001
@@ -103,6 +115,7 @@ offset_bottom = 23.0
 grow_horizontal = 0
 size_flags_horizontal = 8
 size_flags_vertical = 8
+theme = SubResource("Theme_j0gso")
 text = "Text Goes Here..."
 label_settings = ExtResource("1_j0gso")
 script = ExtResource("1_mux0b")

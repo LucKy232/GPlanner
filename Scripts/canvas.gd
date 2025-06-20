@@ -162,8 +162,8 @@ func reset_requested_save_action() -> void:
 
 
 func set_requested_save_action(act: int) -> void:
-	print("Request action %d" % act)
 	save_state.set_requested_action(act)
+	#print("Request action %d" % act)
 
 
 func is_ready_for_action() -> bool:
@@ -656,6 +656,10 @@ func _on_gui_input(event: InputEvent) -> void:
 				last_draw_event_position = event.position * scale + position
 				drawing_manager.resize_to_window()
 				drawing_manager.update_drawing_position_and_scale(-position, scale)
+				if tool_id == Tool.PENCIL:
+					drawing_manager.receive_click(last_draw_event_position, DrawTool.PENCIL)
+				if tool_id == Tool.ERASER:
+					drawing_manager.receive_click(last_draw_event_position, DrawTool.ERASER)
 		elif event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
 			if is_panning:
 				is_panning = false
