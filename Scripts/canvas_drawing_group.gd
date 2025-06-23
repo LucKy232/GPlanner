@@ -1,5 +1,8 @@
 extends CanvasGroup
 class_name CanvasDrawingGroup
+## Group together TempDrawingRegions & DrawingRegions to blend them together
+## and make materials with BLEND_MODE_SUB subtract from the resulting image easily
+## CanvasDrawingGroup, TempDrawingRegion & DrawingRegion need to all be on the same z_index
 
 @onready var drawing_regions_container: Control = $DrawingRegionsContainer
 @onready var temp_drawing_regions_container: Control = $TempDrawingRegionsContainer
@@ -15,7 +18,7 @@ var pencil_material: CanvasItemMaterial
 var eraser_material: CanvasItemMaterial
 var mask_eraser_material: CanvasItemMaterial
 
-var MAX_PAST_ACTIONS: int = 100
+var MAX_PAST_ACTIONS: int = 50
 var SAVE_REQUEST_KB_LIMIT: float = 50000.0
 var FORCE_SAVE_REQUEST_KB_LIMIT: float = 500000.0
 var temp_drawing_region_scene
@@ -23,10 +26,12 @@ var drawing_region_scene
 var folder_path: String = ""
 var size: Vector2
 var used_temp_data_kb: float = 0.0
+var used_overflow_data_kb: float = 0.0
 
 signal save_request
 signal force_save_request
 @warning_ignore("unused_signal")
+## Used inside a call_deferred, due to save_all_regions_to_disk() being called from a different thread
 signal saving_images_to_disk
 
 enum DrawTool {
@@ -97,30 +102,32 @@ func receive_click(p: Vector2, draw_tool: int) -> void:
 
 
 func end_stroke() -> void:
-	print("%03d actions %03d overflow actions" % [past_drawing_actions.size(), past_actions_overflow.size()])
 	if past_drawing_actions.size() >= MAX_PAST_ACTIONS:
-		past_actions_overflow.append(past_drawing_actions.pop_front())
+		var front_action: TempDrawingRegion = past_drawing_actions.pop_front()
+		past_actions_overflow.append(front_action)
+		used_temp_data_kb -= front_action.data_usage_kb
+		used_overflow_data_kb += front_action.data_usage_kb
 	current_stroke.is_finished = true
 	var to_delete: bool = current_stroke.trim_down()
 	if to_delete:
 		current_stroke.queue_free()
 	else:
 		past_drawing_actions.append(current_stroke)
-	used_temp_data_kb += float(current_stroke.data_usage) / 1024.0
+	used_temp_data_kb += current_stroke.data_usage_kb
 	check_save_request_needed()
 	current_stroke = add_temp_drawing_region()
 	# If inputting an action, can't redo anymore
 	for i in future_drawing_actions.size():
 		var remove: TempDrawingRegion = future_drawing_actions.pop_front()
-		used_temp_data_kb -= float(remove.data_usage) / 1024.0
+		used_temp_data_kb -= remove.data_usage_kb
 		remove.queue_free()
 
 
 func check_save_request_needed() -> void:
-	print("Used Data: %0.0dkb" % [used_temp_data_kb])
-	if past_actions_overflow.size() > 0 and used_temp_data_kb > SAVE_REQUEST_KB_LIMIT:
+	print("%03d %0.0fkb actions %03d %0.0fkb overflow actions" % [past_drawing_actions.size(), used_temp_data_kb, past_actions_overflow.size(), used_overflow_data_kb])
+	if used_overflow_data_kb > SAVE_REQUEST_KB_LIMIT:
 		save_request.emit()
-	if used_temp_data_kb > FORCE_SAVE_REQUEST_KB_LIMIT:
+	if used_temp_data_kb + used_overflow_data_kb > FORCE_SAVE_REQUEST_KB_LIMIT:
 		force_save_request.emit()
 
 
@@ -152,10 +159,22 @@ func make_drawing_actions_permanent() -> Array[Vector2i]:
 		for r in requests:
 			if !all_requests.has(r):
 				all_requests.append(r)
+	for action in past_actions_overflow:
+		var requests = action.get_drawing_regions_array()
+		for r in requests:
+			if !all_requests.has(r):
+				all_requests.append(r)
 	return all_requests
 
 
-func make_past_overflow_actions_permanent() -> Array[Vector2i]:
+func make_past_and_overflow_actions_permanent(past_ratio: float) -> Array[Vector2i]:
+	past_ratio = clampf(past_ratio, 0.0, 1.0)
+	var past_action_count: int = int(past_ratio * past_drawing_actions.size())
+	for count in range(past_action_count):
+		var front_action: TempDrawingRegion = past_drawing_actions.pop_front()
+		past_actions_overflow.append(front_action)
+		used_temp_data_kb -= front_action.data_usage_kb
+		used_overflow_data_kb += front_action.data_usage_kb
 	toggle_past_drawing_actions(false)
 	var all_requests: Array[Vector2i] = []
 	for action in past_actions_overflow:
@@ -176,6 +195,7 @@ func clear_all_drawing_actions() -> void:
 	for action in past_actions_overflow:
 		action.queue_free()
 	past_actions_overflow.clear()
+	used_overflow_data_kb = 0.0
 	used_temp_data_kb = 0.0
 
 
@@ -184,7 +204,6 @@ func erase_everything() -> void:
 	for r in regions:
 		regions[r].queue_free()
 	regions.clear()
-	used_temp_data_kb = 0.0
 
 
 func update_regions_from_screenshots(screenshots: Dictionary[Vector2i, Image]) -> void:

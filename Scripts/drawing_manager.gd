@@ -1,9 +1,7 @@
 extends Control
 class_name DrawingManager
 
-#@onready var camera_2d: Camera2D = $SubViewport/Camera2D
 @onready var sub_viewport: SubViewport = $SubViewport
-@onready var timer: Timer = $Timer
 @onready var curtain: Panel = $Curtain
 @onready var screenshot_progress_label: Label = $Curtain/CenterContainer/VBoxContainer/ScreenshotProgressLabel
 
@@ -13,7 +11,7 @@ class_name DrawingManager
 
 var canvas_groups: Dictionary[int, CanvasDrawingGroup]
 var current_canvas: int = -1
-var folder_path: String		## Folder inside user:// in which the images are stored, created on save_file() inside main.gd
+var folder_path: String		## Folder inside user:// in which the images are stored, created on save_images() inside main.gd
 var curtain_stylebox: StyleBoxTexture
 
 var screenshot_requests: Array[Vector2i]
@@ -25,9 +23,18 @@ var initial_position: Vector2 = Vector2(0.0, 0.0)
 var initial_scale: Vector2 = Vector2(1.0, 1.0)
 var save_thread: Thread = Thread.new()
 var save_thread_running: bool = false
+var save_type: SaveType
 
 signal finished_saving
 signal requested_status_message
+signal requested_save_on_tool_change
+signal forced_save_started
+
+enum SaveType {
+	NORMAL,		# Screenshot every region with an action and save images to disk
+	PARTIAL,	# On tool change, screenshot every region with an overflow action, don't save to disk
+	FORCED,		# Immediately, move 50% of the past actions to past_overflow_actions, screenshot every region with an overflow action, don't save to disk
+}
 
 
 func _ready() -> void:
@@ -43,11 +50,6 @@ func _process(_delta: float) -> void:
 		finished_saving.emit()
 
 
-func take_screenshot() -> void:
-	screenshots_done[current_screenshot_region] = sub_viewport.get_texture().get_image()
-	#print("Taking screenshot, canvas %d, position x %05f y %05f, scale x %05f, y %05f" % [current_canvas, position.x, position.y, scale.x, scale.y])
-
-
 func canvas_drawing_group_has_changes(id: int) -> bool:
 	if current_canvas != id and canvas_groups.has(id):
 		change_active_canvas_drawing_group(id)
@@ -61,18 +63,18 @@ func save_if_canvas_drawing_group_has_changes(id: int) -> bool:
 	if !changes:
 		finished_saving.emit()
 	else:
-		begin_complete_save_sequence()
+		save_type = SaveType.NORMAL
+		begin_save_sequence()
 	return changes
 
 
-func begin_complete_save_sequence() -> void:
-	screenshot_requests = canvas_groups[current_canvas].make_drawing_actions_permanent()
-	needed_screenshot_number = screenshot_requests.size()
-	begin_screenshot_sequence()
-
-
-func begin_overflow_actions_save_sequence() -> void:
-	screenshot_requests = canvas_groups[current_canvas].make_past_overflow_actions_permanent()
+func begin_save_sequence() -> void:
+	if save_type == SaveType.NORMAL:
+		screenshot_requests = canvas_groups[current_canvas].make_drawing_actions_permanent()
+	elif save_type == SaveType.PARTIAL:
+		screenshot_requests = canvas_groups[current_canvas].make_past_and_overflow_actions_permanent(0.0)
+	elif save_type == SaveType.FORCED:
+		screenshot_requests = canvas_groups[current_canvas].make_past_and_overflow_actions_permanent(0.5)
 	needed_screenshot_number = screenshot_requests.size()
 	begin_screenshot_sequence()
 
@@ -85,30 +87,39 @@ func begin_screenshot_sequence() -> void:
 		initial_position = position
 		initial_scale = scale
 		is_taking_screenshots = true
+		
 		move_to_region(screenshot_requests[0])
 		current_screenshot_region = screenshot_requests.pop_front()
-		timer.start(0.1)
+		await get_tree().physics_frame			# Wait for the subviewport to move
+		await RenderingServer.frame_post_draw	# Wait for the subviewport to render after moving
+		screenshot_progress_label.text = "Screenshot region %d / %d" % [needed_screenshot_number - screenshot_requests.size() + 1, needed_screenshot_number]
+		next_screnshot()
 
 
-# Triggered by Timer if complete save sequence, or TimerOF if saving overflow past actions
-func next_screnshot(complete_save: bool) -> void:
-	take_screenshot()
+# Calls itself until screenshot_requests is empty
+func next_screnshot() -> void:
+	screenshots_done[current_screenshot_region] = sub_viewport.get_texture().get_image()
+	#print("Taking screenshot, canvas %d, position x %05f y %05f, scale x %05f, y %05f" % [current_canvas, position.x, position.y, scale.x, scale.y])
 	if screenshot_requests.size() > 0:	# Prepare for the next frame
 		move_to_region(screenshot_requests[0])
 		current_screenshot_region = screenshot_requests.pop_front()
-		timer.start(0.05)
-	elif complete_save:
-		finish_saving()
+		await get_tree().physics_frame			# Wait for the subviewport to move
+		await RenderingServer.frame_post_draw	# Wait for the subviewport to render after moving
+		screenshot_progress_label.text = "Screenshot region %d / %d" % [needed_screenshot_number - screenshot_requests.size() + 1, needed_screenshot_number]
+		next_screnshot()
 	else:
-		end_screenshot_sequence(false)
+		if save_type == SaveType.NORMAL:
+			finish_saving()		# Save images to disk
+		else:
+			end_screenshot_sequence()
 
 
-func end_screenshot_sequence(complete_save: bool) -> void:
+func end_screenshot_sequence() -> void:
 	position = initial_position
 	scale = initial_scale
 	is_taking_screenshots = false
 	canvas_groups[current_canvas].update_regions_from_screenshots(screenshots_done)
-	if complete_save:
+	if save_type == SaveType.NORMAL:
 		canvas_groups[current_canvas].clear_all_drawing_actions()
 	else:
 		canvas_groups[current_canvas].clear_all_overflow_actions()
@@ -117,7 +128,7 @@ func end_screenshot_sequence(complete_save: bool) -> void:
 
 
 func finish_saving() -> void:
-	end_screenshot_sequence(true)
+	end_screenshot_sequence()
 	#canvas_groups[current_canvas].finished_saving.connect(_on_canvas_group_finished_saving.bind(current_canvas), CONNECT_ONE_SHOT)
 	if save_thread.is_alive():
 		printerr("Trying to save 2 file's images to disk at the same time!")
@@ -142,7 +153,7 @@ func receive_click(p: Vector2, draw_tool: int) -> void:
 
 func end_stroke() -> void:
 	canvas_groups[current_canvas].end_stroke()
-	
+
 
 func undo_drawing_action() -> bool:
 	return canvas_groups[current_canvas].undo_drawing_action()
@@ -150,11 +161,6 @@ func undo_drawing_action() -> bool:
 
 func redo_drawing_action() -> bool:
 	return canvas_groups[current_canvas].redo_drawing_action()
-
-
-#func make_drawing_actions_permanent() -> void:
-	#screenshot_requests = canvas_groups[current_canvas].make_drawing_actions_permanent()
-	
 
 
 func resize_to_window() -> void:
@@ -220,41 +226,37 @@ func erase_canvas_drawing_group(canvas_id: int) -> void:
 func clear_canvas_drawing_group(canvas_id: int) -> void:
 	if canvas_groups.has(canvas_id):
 		canvas_groups[canvas_id].erase_everything()
-	#print("CLEAR")
 
 
 func change_active_canvas_drawing_group(canvas_id: int) -> void:
 	if canvas_groups.has(current_canvas):
 		canvas_groups[current_canvas].visible = false
-	current_canvas = canvas_id
-	if canvas_groups.has(current_canvas):
-		canvas_groups[current_canvas].visible = true
-
-
-func _on_timer_timeout() -> void:
-	screenshot_progress_label.text = "Screenshot region %d / %d" % [needed_screenshot_number - screenshot_requests.size() + 1, needed_screenshot_number]
-	next_screnshot(true)
-
-
-func _on_timer_of_timeout() -> void:
-	screenshot_progress_label.text = "Screenshot region %d / %d" % [needed_screenshot_number - screenshot_requests.size() + 1, needed_screenshot_number]
-	next_screnshot(false)
+	if canvas_groups.has(canvas_id):
+		current_canvas = canvas_id
+		canvas_groups[canvas_id].visible = true
+	else:
+		printerr("Given canvas ID %d doesn't exist in DrawingManager! (change_active_canvas_drawing_group())" % canvas_id)
+		current_canvas = -1
 
 
 func _on_canvas_drawing_group_save_request(id: int) -> void:
+	requested_save_on_tool_change.emit(id)
 	print("Saving canvas %d on next tool change" % id)
 
 
 func _on_canvas_drawing_group_force_save_request(id: int) -> void:
+	save_type = SaveType.FORCED
+	forced_save_started.emit()
+	begin_save_sequence()
 	print("Saving canvas %d immediatelly" % id)
-
-
-func _on_canvas_group_finished_saving(_id: int) -> void:
-	finished_saving.emit()
 
 
 func _on_canvas_drawing_group_saving_images(message: String) -> void:
 	requested_status_message.emit(message)
+
+
+#func _on_canvas_group_finished_saving(_id: int) -> void:
+	#finished_saving.emit()
 
 
 #func _on_item_rect_changed() -> void:

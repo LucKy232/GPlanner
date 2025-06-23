@@ -48,6 +48,7 @@ var max_canvas_id: int = 0
 var show_load_dialog: bool = false
 var close_this_tab: bool = false
 var exiting_app: bool = false
+var need_to_save_images_on_tool_change = false
 
 
 enum Checkbox {
@@ -98,6 +99,8 @@ func _ready() -> void:
 	exit_tab_confirmation.add_button("     No     ", true, "no_save")
 	exit_tab_confirmation.add_cancel_button(" Cancel ")
 	drawing_manager.requested_status_message.connect(_on_drawing_manager_status_message)
+	drawing_manager.requested_save_on_tool_change.connect(_on_drawing_manager_requested_save_on_tool_change)
+	drawing_manager.forced_save_started.connect(_on_drawing_manager_forced_save_started)
 
 
 func _process(_delta):
@@ -307,12 +310,23 @@ func save_images() -> void:
 	drawing_manager.finished_saving.connect(_on_drawing_manager_finished_saving.bind(cc), CONNECT_ONE_SHOT)
 	var needs_save: bool = drawing_manager.save_if_canvas_drawing_group_has_changes(cc)
 	if needs_save:
-		is_saving_images = true
-		file_tab_bar.visible = false
-		get_window().unresizable = true
-		# Maybe not necessary, the drawing tool can't input on canvas with the curtain up and doesn't interfere with the image saving afterwards
-		tool_box.select(Tool.SELECT)
-		_on_tool_box_item_selected(Tool.SELECT)
+		prepare_to_save_images_lock_UI()
+
+
+func prepare_to_save_images_lock_UI() -> void:
+	is_saving_images = true
+	file_tab_bar.visible = false
+	get_window().unresizable = true
+	# Maybe not necessary, the drawing tool can't input on canvas with the curtain up
+	# and doesn't interfere with the image saving afterwards
+	tool_box.select(Tool.SELECT)
+	_on_tool_box_item_selected(Tool.SELECT)
+
+
+func finish_saving_images_unlock_UI() -> void:
+	is_saving_images = false
+	file_tab_bar.visible = true
+	get_window().unresizable = false
 
 
 func save_file(path: String) -> void:
@@ -868,9 +882,7 @@ func _on_resized() -> void:
 
 
 func _on_drawing_manager_finished_saving(save_canvas: int) -> void:
-	is_saving_images = false
-	file_tab_bar.visible = true
-	get_window().unresizable = false
+	finish_saving_images_unlock_UI()
 	if !canvases.has(save_canvas):
 		printerr("Canvas doesn't exist in main.gd:_on_drawing_manager_finished_saving()")
 		return
@@ -889,3 +901,16 @@ func _on_drawing_manager_finished_saving(save_canvas: int) -> void:
 
 func _on_drawing_manager_status_message(message: String) -> void:
 	status_bar.update_status_immediate(message)
+
+
+func _on_drawing_manager_requested_save_on_tool_change(c_id: int) -> void:
+	# TODO on tool change check if it's still needed, prepare_to_save_images_lock_UI(), set save_type in DrawingManager, save images, need_to_save_images_on_tool_change = false
+	status_bar.update_status("Need to save images on next tool change to save VRAM usage", Color(0.55, 0.55, 0.3, 0.5))
+	need_to_save_images_on_tool_change = true
+	# TODO bad if changing canvas, set need_to_save_images_on_tool_change per canvas instead
+	# TODO how to unlock UI without saving the file
+
+
+func _on_drawing_manager_forced_save_started() -> void:
+	status_bar.update_status("Need to save images to save VRAM usage", Color(0.55, 0.3, 0.3, 0.5))
+	prepare_to_save_images_lock_UI()

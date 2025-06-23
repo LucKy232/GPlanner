@@ -10,7 +10,7 @@ var type: int = 0
 var is_mask: bool = false
 var is_finished: bool = false
 var used_rect: Rect2i
-var data_usage: int = 0
+var data_usage_kb: float = 0.0
 
 
 func init_image(img_width: int, img_height: int) -> void:
@@ -113,6 +113,6 @@ func trim_down() -> bool:
 	position += Vector2(img_used_space.position.x * scale.x, img_used_space.position.y * scale.y)
 	size = img_used_space.size
 	used_rect = image.get_used_rect()
-	data_usage = image.get_data_size()
+	data_usage_kb = float(image.get_data_size()) / 1024.0
 	image = Image.new()	# Save RAM usage, shouldn't be accessed afterwards
 	return false
