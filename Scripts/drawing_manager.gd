@@ -3,7 +3,8 @@ class_name DrawingManager
 
 @onready var sub_viewport: SubViewport = $SubViewport
 @onready var curtain: Panel = $Curtain
-@onready var screenshot_progress_label: Label = $Curtain/CenterContainer/VBoxContainer/ScreenshotProgressLabel
+@onready var greyout_panel: Panel = $Curtain/GreyoutPanel
+@onready var screenshot_progress_label: Label = $Curtain/MarginContainer/VBoxContainer/ScreenshotProgressLabel
 
 @export_file("*.tscn") var canvas_drawing_group_scene
 @export_file("*.tscn") var temp_drawing_region_scene
@@ -25,15 +26,16 @@ var save_thread: Thread = Thread.new()
 var save_thread_running: bool = false
 var save_type: SaveType
 
-signal finished_saving
+signal finished_saving		## Unlocks the UI in main.gd, emitted from _process() if save_thread is running
 signal requested_status_message
-signal requested_save_on_tool_change
 signal forced_save_started
+signal forced_save_ended
+#signal requested_save_on_tool_change
 
 enum SaveType {
 	NORMAL,		# Screenshot every region with an action and save images to disk
-	PARTIAL,	# On tool change, screenshot every region with an overflow action, don't save to disk
 	FORCED,		# Immediately, move 50% of the past actions to past_overflow_actions, screenshot every region with an overflow action, don't save to disk
+	#PARTIAL,	# unused; On tool change, screenshot every region with an overflow action, don't save to disk
 }
 
 
@@ -71,28 +73,32 @@ func save_if_canvas_drawing_group_has_changes(id: int) -> bool:
 func begin_save_sequence() -> void:
 	if save_type == SaveType.NORMAL:
 		screenshot_requests = canvas_groups[current_canvas].make_drawing_actions_permanent()
-	elif save_type == SaveType.PARTIAL:
-		screenshot_requests = canvas_groups[current_canvas].make_past_and_overflow_actions_permanent(0.0)
 	elif save_type == SaveType.FORCED:
 		screenshot_requests = canvas_groups[current_canvas].make_past_and_overflow_actions_permanent(0.5)
+	#elif save_type == SaveType.PARTIAL:
+		#screenshot_requests = canvas_groups[current_canvas].make_past_and_overflow_actions_permanent(0.0)
+	printt("Requests: ", screenshot_requests)
 	needed_screenshot_number = screenshot_requests.size()
 	begin_screenshot_sequence()
 
 
 func begin_screenshot_sequence() -> void:
 	if screenshot_requests.size() > 0:
+		await get_tree().physics_frame			# Wait for the subviewport to move
+		await RenderingServer.frame_post_draw	# Wait for the subviewport to render after moving
 		var curtain_image: ImageTexture = ImageTexture.create_from_image(get_viewport().get_texture().get_image())
 		curtain_stylebox.texture = curtain_image
 		curtain.visible = true
+		if needed_screenshot_number > 9:
+			greyout_panel.visible = true
+		else:
+			greyout_panel.visible = false
 		initial_position = position
 		initial_scale = scale
 		is_taking_screenshots = true
 		
 		move_to_region(screenshot_requests[0])
-		current_screenshot_region = screenshot_requests.pop_front()
-		await get_tree().physics_frame			# Wait for the subviewport to move
-		await RenderingServer.frame_post_draw	# Wait for the subviewport to render after moving
-		screenshot_progress_label.text = "Screenshot region %d / %d" % [needed_screenshot_number - screenshot_requests.size() + 1, needed_screenshot_number]
+		await prepare_next_screenshot()
 		next_screnshot()
 
 
@@ -102,16 +108,21 @@ func next_screnshot() -> void:
 	#print("Taking screenshot, canvas %d, position x %05f y %05f, scale x %05f, y %05f" % [current_canvas, position.x, position.y, scale.x, scale.y])
 	if screenshot_requests.size() > 0:	# Prepare for the next frame
 		move_to_region(screenshot_requests[0])
-		current_screenshot_region = screenshot_requests.pop_front()
-		await get_tree().physics_frame			# Wait for the subviewport to move
-		await RenderingServer.frame_post_draw	# Wait for the subviewport to render after moving
-		screenshot_progress_label.text = "Screenshot region %d / %d" % [needed_screenshot_number - screenshot_requests.size() + 1, needed_screenshot_number]
+		await prepare_next_screenshot()
 		next_screnshot()
 	else:
 		if save_type == SaveType.NORMAL:
-			finish_saving()		# Save images to disk
+			end_screenshot_sequence()
+			save_all_images_to_disk()
 		else:
 			end_screenshot_sequence()
+
+
+func prepare_next_screenshot() -> void:
+	current_screenshot_region = screenshot_requests.pop_front()
+	screenshot_progress_label.text = "Screenshot region %d / %d" % [needed_screenshot_number - screenshot_requests.size() + 1, needed_screenshot_number]
+	await get_tree().physics_frame			# Wait for the subviewport to move
+	await RenderingServer.frame_post_draw	# Wait for the subviewport to render after moving
 
 
 func end_screenshot_sequence() -> void:
@@ -123,13 +134,14 @@ func end_screenshot_sequence() -> void:
 		canvas_groups[current_canvas].clear_all_drawing_actions()
 	else:
 		canvas_groups[current_canvas].clear_all_overflow_actions()
+		canvas_groups[current_canvas].toggle_past_drawing_actions(true)
+		forced_save_ended.emit()
 	screenshots_done.clear()
 	curtain.visible = false
+	greyout_panel.visible = false
 
 
-func finish_saving() -> void:
-	end_screenshot_sequence()
-	#canvas_groups[current_canvas].finished_saving.connect(_on_canvas_group_finished_saving.bind(current_canvas), CONNECT_ONE_SHOT)
+func save_all_images_to_disk() -> void:
 	if save_thread.is_alive():
 		printerr("Trying to save 2 file's images to disk at the same time!")
 		return
@@ -208,9 +220,10 @@ func add_canvas_drawing_group(canvas_id: int) -> void:
 	add_child(new_group)
 	new_group.temp_drawing_region_scene = temp_drawing_region_scene
 	new_group.drawing_region_scene = drawing_region_scene
-	new_group.save_request.connect(_on_canvas_drawing_group_save_request.bind(canvas_id))
-	new_group.force_save_request.connect(_on_canvas_drawing_group_force_save_request.bind(canvas_id))
+	#new_group.save_request.connect(_on_canvas_drawing_group_save_request.bind(canvas_id))
+	new_group.force_save_request.connect(_on_canvas_drawing_group_force_save_request)
 	new_group.saving_images_to_disk.connect(_on_canvas_drawing_group_saving_images)
+	new_group.force_save_message.connect(_on_canvas_drawing_group_force_save_message)
 	new_group.init(size)
 	canvas_groups[canvas_id] = new_group
 
@@ -239,24 +252,23 @@ func change_active_canvas_drawing_group(canvas_id: int) -> void:
 		current_canvas = -1
 
 
-func _on_canvas_drawing_group_save_request(id: int) -> void:
-	requested_save_on_tool_change.emit(id)
-	print("Saving canvas %d on next tool change" % id)
-
-
-func _on_canvas_drawing_group_force_save_request(id: int) -> void:
+func _on_canvas_drawing_group_force_save_request() -> void:
 	save_type = SaveType.FORCED
 	forced_save_started.emit()
 	begin_save_sequence()
-	print("Saving canvas %d immediatelly" % id)
 
 
 func _on_canvas_drawing_group_saving_images(message: String) -> void:
 	requested_status_message.emit(message)
 
 
-#func _on_canvas_group_finished_saving(_id: int) -> void:
-	#finished_saving.emit()
+func _on_canvas_drawing_group_force_save_message(message: String) -> void:
+	requested_status_message.emit(message)
+
+
+#func _on_canvas_drawing_group_save_request(id: int) -> void:
+	#requested_save_on_tool_change.emit(id)
+	#print("Saving canvas %d on next tool change" % id)
 
 
 #func _on_item_rect_changed() -> void:

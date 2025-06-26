@@ -11,6 +11,7 @@ var is_mask: bool = false
 var is_finished: bool = false
 var used_rect: Rect2i
 var data_usage_kb: float = 0.0
+var occupied_regions: Array[Vector2i] = []
 
 
 func init_image(img_width: int, img_height: int) -> void:
@@ -87,17 +88,26 @@ func mask_eraser_pencil_dot_1px(p: Vector2) -> void:
 
 func get_drawing_regions_array() -> Array[Vector2i]:
 	var arr: Array[Vector2i] = []
+	# used_rect.position might always == Vector2i.ZERO
 	var img_start: Vector2 = position + Vector2(float(used_rect.position.x), float(used_rect.position.y)) * scale
 	var img_end: Vector2 = position + Vector2(used_rect.end.x, used_rect.end.y) * scale
-	#print("Occupied img: ", used_rect.position, used_rect.end, used_rect.size)
-	#print("Occupied img * scale: ", Vector2(float(used_rect.position.x), float(used_rect.position.y)) * scale, Vector2(used_rect.end.x, used_rect.end.y) * scale, Vector2(used_rect.size.x, used_rect.size.y) * scale)
+	
 	var region_x_start: int = floori(img_start.x / 1024.0)
 	var region_x_end: int = floori(img_end.x / 1024.0) + 1
 	var region_y_start: int = floori(img_start.y / 1024.0)
 	var region_y_end: int = floori(img_end.y / 1024.0) + 1
+	var grid_length: int = int(1024.0 / scale.x)
+	var grid_offset := Vector2i(int(position.x / scale.x) % grid_length, int(position.y / scale.y) % grid_length)
+	# Divide the image by the scaled 1024x1024 image grid and check if the image region corresponding to the grid cell isn't invisible before adding it to the array
+	# Might have precision errors
 	for i in range(region_x_start, region_x_end):
 		for j in range(region_y_start, region_y_end):
-			arr.append(Vector2i(i, j))
+			var reg := Vector2i(i - region_x_start, j - region_y_start)
+			var img_reg_start := Vector2i(clampi(grid_length * reg.x - grid_offset.x, 0, int(size.x)), clampi(grid_length * reg.y - grid_offset.y, 0, int(size.y)))
+			var img_reg_end := Vector2i(clampi(grid_length * (reg.x + 1) - grid_offset.x, 0, int(size.x)), clampi(grid_length * (reg.y + 1) - grid_offset.y, 0, int(size.y)))
+			var img_region := Rect2i(img_reg_start, img_reg_end - img_reg_start)
+			if img_region.has_area() and !image.get_region(img_region).is_invisible():
+				arr.append(Vector2i(i, j))
 	return arr
 
 
@@ -113,6 +123,7 @@ func trim_down() -> bool:
 	position += Vector2(img_used_space.position.x * scale.x, img_used_space.position.y * scale.y)
 	size = img_used_space.size
 	used_rect = image.get_used_rect()
-	data_usage_kb = float(image.get_data_size()) / 1024.0
-	image = Image.new()	# Save RAM usage, shouldn't be accessed afterwards
+	occupied_regions = get_drawing_regions_array()
+	data_usage_kb = float(image.get_data_size()) / 1024.0	# Approximate VRAM usage
+	image = Image.new()			# Save RAM usage, shouldn't be accessed afterwards
 	return false

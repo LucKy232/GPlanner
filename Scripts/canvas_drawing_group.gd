@@ -18,9 +18,9 @@ var pencil_material: CanvasItemMaterial
 var eraser_material: CanvasItemMaterial
 var mask_eraser_material: CanvasItemMaterial
 
-var MAX_PAST_ACTIONS: int = 50
-var SAVE_REQUEST_KB_LIMIT: float = 50000.0
-var FORCE_SAVE_REQUEST_KB_LIMIT: float = 500000.0
+var MAX_PAST_ACTIONS: int = 40
+#var SAVE_REQUEST_KB_LIMIT: float = 50000.0
+var FORCE_SAVE_REQUEST_KB_LIMIT: float = 51200.0
 var temp_drawing_region_scene
 var drawing_region_scene
 var folder_path: String = ""
@@ -28,7 +28,8 @@ var size: Vector2
 var used_temp_data_kb: float = 0.0
 var used_overflow_data_kb: float = 0.0
 
-signal save_request
+#signal save_request
+signal force_save_message
 signal force_save_request
 @warning_ignore("unused_signal")
 ## Used inside a call_deferred, due to save_all_regions_to_disk() being called from a different thread
@@ -39,11 +40,14 @@ enum DrawTool {
 	ERASER,
 }
 
-#func _process(_delta: float) -> void:
-	#if Input.is_action_just_pressed("test"):
-		#toggle_past_drawing_actions(false)
-	#if Input.is_action_just_pressed("test2"):
-		#toggle_past_drawing_actions(true)
+func _process(_delta: float) -> void:
+	if Input.is_action_just_pressed("test"):
+		print("Unload")
+		for r in regions:
+			regions[r].unload()
+	if Input.is_action_just_pressed("test2"):
+		print("ReLoad")
+		#for r in regions:
 
 
 func init(manager_size: Vector2) -> void:
@@ -125,10 +129,12 @@ func end_stroke() -> void:
 
 func check_save_request_needed() -> void:
 	print("%03d %0.0fkb actions %03d %0.0fkb overflow actions" % [past_drawing_actions.size(), used_temp_data_kb, past_actions_overflow.size(), used_overflow_data_kb])
-	if used_overflow_data_kb > SAVE_REQUEST_KB_LIMIT:
-		save_request.emit()
 	if used_temp_data_kb + used_overflow_data_kb > FORCE_SAVE_REQUEST_KB_LIMIT:
 		force_save_request.emit()
+	elif used_temp_data_kb + used_overflow_data_kb > FORCE_SAVE_REQUEST_KB_LIMIT * 0.8:
+		force_save_message.emit("Consider saving to free %0.0fMb VRAM. WIll force save changes at %0.0fMb" % [(used_temp_data_kb + used_overflow_data_kb) / 1024.0, FORCE_SAVE_REQUEST_KB_LIMIT / 1024.0])
+	#if used_overflow_data_kb > SAVE_REQUEST_KB_LIMIT:
+		#save_request.emit()
 
 
 func undo_drawing_action() -> bool:
@@ -155,12 +161,12 @@ func toggle_past_drawing_actions(toggled_on: bool) -> void:
 func make_drawing_actions_permanent() -> Array[Vector2i]:
 	var all_requests: Array[Vector2i] = []
 	for action in past_drawing_actions:
-		var requests = action.get_drawing_regions_array()
+		var requests = action.occupied_regions
 		for r in requests:
 			if !all_requests.has(r):
 				all_requests.append(r)
 	for action in past_actions_overflow:
-		var requests = action.get_drawing_regions_array()
+		var requests = action.occupied_regions
 		for r in requests:
 			if !all_requests.has(r):
 				all_requests.append(r)
@@ -178,7 +184,7 @@ func make_past_and_overflow_actions_permanent(past_ratio: float) -> Array[Vector
 	toggle_past_drawing_actions(false)
 	var all_requests: Array[Vector2i] = []
 	for action in past_actions_overflow:
-		var requests = action.get_drawing_regions_array()
+		var requests = action.occupied_regions
 		for r in requests:
 			if !all_requests.has(r):
 				all_requests.append(r)
@@ -197,6 +203,16 @@ func clear_all_drawing_actions() -> void:
 	past_actions_overflow.clear()
 	used_overflow_data_kb = 0.0
 	used_temp_data_kb = 0.0
+
+
+func clear_all_overflow_actions() -> void:
+	for action in future_drawing_actions:
+		action.queue_free()
+	future_drawing_actions.clear()
+	for action in past_actions_overflow:
+		action.queue_free()
+	past_actions_overflow.clear()
+	used_overflow_data_kb = 0.0
 
 
 func erase_everything() -> void:
@@ -284,6 +300,8 @@ func save_all_regions_to_disk() -> void:
 	# The old image needs to be deleted because it is outdated
 	for r in regions:
 		if regions[r].image.is_invisible() and regions[r].has_changes:
+			#print("DrawingRegion erased ", r)
+			regions[r].is_invisible = true
 			DirAccess.remove_absolute("user://%s/%02d-%02d.png" % [folder_path, r.x, r.y])
 		regions[r].free_image()
 	#print("Saved %d images" % saved_num)
@@ -297,7 +315,6 @@ func rebuild_from_json(dict: Dictionary) -> void:
 			var image: Image = Image.load_from_file(image_path)
 			add_drawing_region(reg_v2i)
 			regions[reg_v2i].update_from_image(image, false)
-			#image = Image.new()
 		else:
 			printerr("Drawing region (%d, %d) image file doesn't exist, check user:// folder or JSON save file" % [reg_v2i.x, reg_v2i.y])
 

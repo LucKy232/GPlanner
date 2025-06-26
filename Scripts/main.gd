@@ -99,8 +99,9 @@ func _ready() -> void:
 	exit_tab_confirmation.add_button("     No     ", true, "no_save")
 	exit_tab_confirmation.add_cancel_button(" Cancel ")
 	drawing_manager.requested_status_message.connect(_on_drawing_manager_status_message)
-	drawing_manager.requested_save_on_tool_change.connect(_on_drawing_manager_requested_save_on_tool_change)
 	drawing_manager.forced_save_started.connect(_on_drawing_manager_forced_save_started)
+	drawing_manager.forced_save_ended.connect(_on_drawing_manager_forced_save_ended)
+	#drawing_manager.requested_save_on_tool_change.connect(_on_drawing_manager_requested_save_on_tool_change)
 
 
 func _process(_delta):
@@ -313,14 +314,15 @@ func save_images() -> void:
 		prepare_to_save_images_lock_UI()
 
 
+# is_saving_images & the DrawingManager Curtain block most of the user input that interfere with image screenshotting
 func prepare_to_save_images_lock_UI() -> void:
 	is_saving_images = true
 	file_tab_bar.visible = false
 	get_window().unresizable = true
 	# Maybe not necessary, the drawing tool can't input on canvas with the curtain up
 	# and doesn't interfere with the image saving afterwards
-	tool_box.select(Tool.SELECT)
-	_on_tool_box_item_selected(Tool.SELECT)
+	#tool_box.select(Tool.SELECT)
+	#_on_tool_box_item_selected(Tool.SELECT)
 
 
 func finish_saving_images_unlock_UI() -> void:
@@ -507,7 +509,7 @@ func confirmation_tab_save(tab: int) -> void:
 		confirmation_tab_save(tab + 1)
 
 
-func exectute_file_action(act: RequestedActionType) -> void:
+func execute_file_action(act: RequestedActionType) -> void:
 	match act:
 		RequestedActionType.NEW_BUTTON:
 			canvases[cc].reset_save_state()
@@ -894,23 +896,26 @@ func _on_drawing_manager_finished_saving(save_canvas: int) -> void:
 	
 	save_file(canvases[save_canvas].opened_file_path)
 	if save_action != -1:
-		exectute_file_action(save_action)
-	#if exiting_app:
-		#confirmation_tab_save(file_tab_bar.current_tab + 1)
+		execute_file_action(save_action)
 
 
 func _on_drawing_manager_status_message(message: String) -> void:
-	status_bar.update_status_immediate(message)
-
-
-func _on_drawing_manager_requested_save_on_tool_change(c_id: int) -> void:
-	# TODO on tool change check if it's still needed, prepare_to_save_images_lock_UI(), set save_type in DrawingManager, save images, need_to_save_images_on_tool_change = false
-	status_bar.update_status("Need to save images on next tool change to save VRAM usage", Color(0.55, 0.55, 0.3, 0.5))
-	need_to_save_images_on_tool_change = true
-	# TODO bad if changing canvas, set need_to_save_images_on_tool_change per canvas instead
-	# TODO how to unlock UI without saving the file
+	status_bar.update_status_immediate(message, Color(0.6, 0.6, 0.3, 0.55))
 
 
 func _on_drawing_manager_forced_save_started() -> void:
-	status_bar.update_status("Need to save images to save VRAM usage", Color(0.55, 0.3, 0.3, 0.5))
+	status_bar.update_status("Need to capture images to reduce VRAM usage", Color(0.55, 0.3, 0.3, 0.5))
 	prepare_to_save_images_lock_UI()
+
+
+func _on_drawing_manager_forced_save_ended() -> void:
+	status_bar.update_status("Done capturing images to reduce VRAM usage", Color(0.3, 0.55, 0.3, 0.5))
+	finish_saving_images_unlock_UI()
+
+
+#func _on_drawing_manager_requested_save_on_tool_change(c_id: int) -> void:
+	# TODO on tool change check if it's still needed or is_saving_images, prepare_to_save_images_lock_UI(), set save_type in DrawingManager, save images, need_to_save_images_on_tool_change = false
+	# TODO bad if changing canvas / tabs, set need_to_save_images_on_tool_change per canvas instead
+	# TODO unlock UI without saving the file
+	#status_bar.update_status_immediate("Need to screenshot images on next tool change to reduce VRAM usage", Color(0.55, 0.55, 0.3, 0.5))
+	#need_to_save_images_on_tool_change = true
