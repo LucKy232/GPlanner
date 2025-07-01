@@ -1,6 +1,6 @@
 [gd_scene load_steps=10 format=3 uid="uid://b1do6gcy6peum"]
 
-[ext_resource type="Script" uid="uid://hgn4pm0uqt3l" path="res://Scripts/canvas.gd" id="1_jhfc7"]
+[ext_resource type="Script" uid="uid://hgn4pm0uqt3l" path="res://Scripts/planner_canvas.gd" id="1_jhfc7"]
 [ext_resource type="Script" uid="uid://c5qfp4llclgt" path="res://Scripts/background.gd" id="2_5b2e5"]
 [ext_resource type="Texture2D" uid="uid://cjir350kly5j8" path="res://Icons/connection_indicator.svg" id="2_jhfc7"]
 

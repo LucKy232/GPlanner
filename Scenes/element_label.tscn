@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://lufadl7u0ek3"]
+[gd_scene load_steps=23 format=3 uid="uid://lufadl7u0ek3"]
 
 [ext_resource type="StyleBox" uid="uid://cdui0dgu3vdrr" path="res://Themes/element_background_style_box.tres" id="1_1b4pp"]
 [ext_resource type="StyleBox" uid="uid://8g7b3501cxjx" path="res://Themes/element_completed_style_box.tres" id="1_htelr"]
@@ -51,8 +51,6 @@ MarginContainer/constants/margin_bottom = 8
 MarginContainer/constants/margin_left = 12
 MarginContainer/constants/margin_right = 8
 MarginContainer/constants/margin_top = 8
-
-[sub_resource type="Theme" id="Theme_847go"]
 
 [sub_resource type="Animation" id="Animation_01as5"]
 length = 0.001
@@ -283,26 +281,13 @@ placeholder_text = "Text..."
 alignment = 1
 expand_to_text_length = true
 
-[node name="PriorityToolArea" type="Control" parent="PanelContainer/Background"]
-custom_minimum_size = Vector2(40, 80)
-layout_mode = 1
-anchors_preset = 11
-anchor_left = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -40.0
-grow_horizontal = 0
-grow_vertical = 2
-size_flags_horizontal = 8
-mouse_filter = 1
-theme = SubResource("Theme_847go")
-
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 &"": SubResource("AnimationLibrary_5deko")
 }
 
 [node name="HideOptionsTimer" type="Timer" parent="."]
+wait_time = 1.5
 one_shot = true
 
 [node name="ResizeTimer" type="Timer" parent="."]
@@ -317,9 +302,8 @@ one_shot = true
 [connection signal="pressed" from="PanelContainer/ToolMarginContainer/PriorityButtons/PriorityMedium" to="." method="_on_priority_medium_pressed"]
 [connection signal="pressed" from="PanelContainer/ToolMarginContainer/PriorityButtons/PriorityLow" to="." method="_on_priority_low_pressed"]
 [connection signal="pressed" from="PanelContainer/ToolMarginContainer/PriorityButtons/PriorityNone" to="." method="_on_priority_none_pressed"]
+[connection signal="gui_input" from="PanelContainer/Background" to="." method="_on_background_gui_input"]
 [connection signal="resized" from="PanelContainer/Background/TextMarginContainer" to="." method="_on_text_margin_container_resized"]
 [connection signal="editing_toggled" from="PanelContainer/Background/TextMarginContainer/LineEdit" to="." method="_on_line_edit_editing_toggled"]
-[connection signal="mouse_entered" from="PanelContainer/Background/PriorityToolArea" to="." method="_on_priority_tool_area_mouse_entered"]
-[connection signal="mouse_exited" from="PanelContainer/Background/PriorityToolArea" to="." method="_on_priority_tool_area_mouse_exited"]
 [connection signal="timeout" from="HideOptionsTimer" to="." method="_on_hide_options_timer_timeout"]
 [connection signal="timeout" from="ResizeTimer" to="." method="_on_resize_timer_timeout"]

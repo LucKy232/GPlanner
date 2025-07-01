@@ -18,22 +18,26 @@ var pencil_material: CanvasItemMaterial
 var eraser_material: CanvasItemMaterial
 var mask_eraser_material: CanvasItemMaterial
 
-var MAX_PAST_ACTIONS: int = 40
-#var SAVE_REQUEST_KB_LIMIT: float = 50000.0
-var FORCE_SAVE_REQUEST_KB_LIMIT: float = 51200.0
-var temp_drawing_region_scene
-var drawing_region_scene
-var folder_path: String = ""
+var MAX_PAST_ACTIONS: int = 40	## Actions available to undo.
+var FORCE_SAVE_REQUEST_KB_LIMIT: float = 512000.0	## When the force_save_request signal will be triggered, (used_temp_data_kb + used_overflow_data_kb is measured currently). A message will be sent using StatusBar via force_save_message signal at 75% of this value.
+var temp_drawing_region_scene	## Scene to instantiate for a single drawing stroke / action.
+var drawing_region_scene		## Scene to instantiate for a final image (1024x1024) that will get saved to disk.
+var folder_path: String = ""	## Folder inside user:// in which the images are stored, created on save_images() inside main.gd or loaded on rebuild_canvas_state() inside canvas.gd
 var size: Vector2
-var used_temp_data_kb: float = 0.0
-var used_overflow_data_kb: float = 0.0
+var used_temp_data_kb: float = 0.0		## Counts the image sizes of past_drawing_actions
+var used_overflow_data_kb: float = 0.0	## Counts the image sizes of past_actions_overflow
+var image_load_tasks: Dictionary[int, Vector2i]			## Used to check if the task is finished to then render the texture (can only be done on main thread).
+var regions_being_loaded: Dictionary[Vector2i, bool]	## Bool not used, just searching the hash map to not cycle trough all regions or use array search.
 
-#signal save_request
+## Emits when 75% of FORCE_SAVE_REQUEST_KB_LIMIT is reached to inform the user that they should save.
 signal force_save_message
+## Emits when FORCE_SAVE_REQUEST_KB_LIMIT is reached to force save in order to save VRAM.
 signal force_save_request
 @warning_ignore("unused_signal")
-## Used inside a call_deferred, due to save_all_regions_to_disk() being called from a different thread
+## Emits to give a progress message to be displayed when images are saved. Used inside a call_deferred, due to save_all_regions_to_disk() being called from a different thread
 signal saving_images_to_disk
+
+signal all_drawing_regions_visible
 
 enum DrawTool {
 	PENCIL,
@@ -41,13 +45,26 @@ enum DrawTool {
 }
 
 func _process(_delta: float) -> void:
-	if Input.is_action_just_pressed("test"):
-		print("Unload")
-		for r in regions:
-			regions[r].unload()
-	if Input.is_action_just_pressed("test2"):
-		print("ReLoad")
-		#for r in regions:
+	if image_load_tasks.size() > 0:
+		check_image_load_tasks_completed()
+
+
+func check_image_load_tasks_completed() -> void:
+	var tasks_completed: Array[int] = []
+	for task in image_load_tasks:
+		if WorkerThreadPool.is_task_completed(task):
+			#print("Task %d done" % task)
+			regions[image_load_tasks[task]].redraw_existing_image()
+			tasks_completed.append(task)
+	for task in tasks_completed:
+		var reg: Vector2i = image_load_tasks[task]
+		# If file tab changed before the tasks were finished. Can't stop threads, so unload the textures after the tasks are finished.
+		if !visible:
+			regions[reg].unload()
+		regions_being_loaded.erase(reg)
+		image_load_tasks.erase(task)
+	if image_load_tasks.size() == 0:
+		all_drawing_regions_visible.emit()
 
 
 func init(manager_size: Vector2) -> void:
@@ -128,13 +145,11 @@ func end_stroke() -> void:
 
 
 func check_save_request_needed() -> void:
-	print("%03d %0.0fkb actions %03d %0.0fkb overflow actions" % [past_drawing_actions.size(), used_temp_data_kb, past_actions_overflow.size(), used_overflow_data_kb])
+	#print("%03d %0.0fkb actions %03d %0.0fkb overflow actions" % [past_drawing_actions.size(), used_temp_data_kb, past_actions_overflow.size(), used_overflow_data_kb])
 	if used_temp_data_kb + used_overflow_data_kb > FORCE_SAVE_REQUEST_KB_LIMIT:
 		force_save_request.emit()
-	elif used_temp_data_kb + used_overflow_data_kb > FORCE_SAVE_REQUEST_KB_LIMIT * 0.8:
+	elif used_temp_data_kb + used_overflow_data_kb > FORCE_SAVE_REQUEST_KB_LIMIT * 0.75:
 		force_save_message.emit("Consider saving to free %0.0fMb VRAM. WIll force save changes at %0.0fMb" % [(used_temp_data_kb + used_overflow_data_kb) / 1024.0, FORCE_SAVE_REQUEST_KB_LIMIT / 1024.0])
-	#if used_overflow_data_kb > SAVE_REQUEST_KB_LIMIT:
-		#save_request.emit()
 
 
 func undo_drawing_action() -> bool:
@@ -260,7 +275,7 @@ func add_drawing_region(region_v2i: Vector2i) -> void:
 	reg.move_to_front()
 
 
-# Repositions the temp drawing region where the drawing takes place
+## Repositions the current_stroke TempDrawingRegion to the current viewport
 func update_drawing_position_and_scale(pos: Vector2, scl: Vector2) -> void:
 	var new_scale_x: float = 1.0 / scl.x
 	var new_scale_y: float = 1.0 / scl.x
@@ -292,7 +307,9 @@ func save_all_regions_to_disk() -> void:
 			regions_to_save.append(r)
 	
 	for save_r in regions_to_save:
-		regions[save_r].save_image("user://%s/%02d-%02d.png" % [folder_path, save_r.x, save_r.y])
+		var image_path: String = "user://%s/%02d-%02d.png" % [folder_path, save_r.x, save_r.y]
+		regions[save_r].save_image(image_path)
+		regions[save_r].file_path = image_path
 		saved_num += 1
 		call_deferred("emit_signal", "saving_images_to_disk", "Saving images to disk: %d / %d" % [saved_num, regions_to_save.size()])
 	
@@ -302,9 +319,38 @@ func save_all_regions_to_disk() -> void:
 		if regions[r].image.is_invisible() and regions[r].has_changes:
 			#print("DrawingRegion erased ", r)
 			regions[r].is_invisible = true
+			regions[r].file_path = ""
 			DirAccess.remove_absolute("user://%s/%02d-%02d.png" % [folder_path, r.x, r.y])
 		regions[r].free_image()
-	#print("Saved %d images" % saved_num)
+	print("Saved %d images" % saved_num)
+
+
+func unload_all_drawing_regions_with_path() -> void:
+	for r in regions:
+		if regions[r].file_path != "" and regions[r].is_loaded:
+			regions[r].unload()
+
+
+func reload_all_drawing_regions_from_path() -> bool:
+	for r in regions:
+		if regions[r].file_path != "" and !regions[r].is_loaded and !regions_being_loaded.has(r):
+			var task_id = WorkerThreadPool.add_task(regions[r].load_from_path, false)
+			image_load_tasks[task_id] = r
+			regions_being_loaded[r] = true
+	if image_load_tasks.size() == 0:
+		return false
+	return true
+
+
+func rebuild_file_paths_from_json(dict: Dictionary) -> void:
+	for key in dict:
+		var reg_v2i: Vector2i = Vector2i(int(key.get_slice("-", 0)), int(key.get_slice("-", 1)))
+		var image_path: String = dict[key]
+		if FileAccess.file_exists(image_path):
+			add_drawing_region(reg_v2i)
+			regions[reg_v2i].file_path = image_path
+		else:
+			printerr("Drawing region (%d, %d) image file doesn't exist, check user:// folder or JSON save file" % [reg_v2i.x, reg_v2i.y])
 
 
 func rebuild_from_json(dict: Dictionary) -> void:
@@ -315,6 +361,7 @@ func rebuild_from_json(dict: Dictionary) -> void:
 			var image: Image = Image.load_from_file(image_path)
 			add_drawing_region(reg_v2i)
 			regions[reg_v2i].update_from_image(image, false)
+			regions[reg_v2i].file_path = image_path
 		else:
 			printerr("Drawing region (%d, %d) image file doesn't exist, check user:// folder or JSON save file" % [reg_v2i.x, reg_v2i.y])
 

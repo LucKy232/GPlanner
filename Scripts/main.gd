@@ -105,9 +105,6 @@ func _ready() -> void:
 
 
 func _process(_delta):
-	#print(is_saving_images)
-	if Input.is_action_just_pressed("test3"):
-		print("Is still running")
 	if selected_element_exists():
 		if get_selected_element().line_edit.is_editing():
 			is_editing_element_text = true
@@ -357,7 +354,9 @@ func save_file(path: String) -> void:
 		status_bar.update_status("File saved to path: %s" % path, Color(0.3, 0.55, 0.3, 0.5))
 		#DisplayServer.window_set_title("GPlanner %s: %s" % [app_version, path])
 		get_tree().root.title = ("GPlanner %s: %s" % [app_version, path])
-		canvases[cc].reset_save_state()
+		# If drawing in the time between saving the images and saving the file
+		if !drawing_manager.canvas_drawing_group_has_changes(cc):
+			canvases[cc].reset_save_state()
 		set_tab_name_and_title_from_canvas(cc)
 		print("Saved %s" % path)
 	else:
@@ -457,7 +456,10 @@ func load_opened_file_paths(path: String) -> void:
 					load_file(files[f])
 			var current = int(data["CurrentID"])
 			if canvases.has(current):
-				file_tab_bar.current_tab = current
+				if file_tab_bar.current_tab == current:
+					drawing_manager.reload_all_drawing_regions(current)
+				else:
+					file_tab_bar.current_tab = current
 			else:
 				file_tab_bar.current_tab = file_tab_bar.tab_count - 1
 	else:
@@ -803,7 +805,7 @@ func _on_element_settings_preset_color_changed() -> void:
 		if selected_elem != null:
 			canvases[cc].update_connection_color(selected_elem.id, style_preset.background_color)
 		else:
-			print("null elem")
+			printerr("Null element %d in canvas %d at main.gd:func _on_element_settings_preset_color_changed" % [selected_elem, cc])
 	else:
 		canvases[cc].update_connection_color_by_preset(style_preset.id)
 

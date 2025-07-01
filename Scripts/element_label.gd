@@ -194,16 +194,6 @@ func _on_priority_buttons_mouse_exited() -> void:
 		hide_options_timer.start()
 
 
-func _on_priority_tool_area_mouse_entered() -> void:
-	if !animation_player.is_playing() and !completed and priority_enabled:
-		toggle_priority_tool(true)
-
-
-func _on_priority_tool_area_mouse_exited() -> void:
-	if hide_options_timer.is_inside_tree():
-		hide_options_timer.start()
-
-
 func _on_text_margin_container_resized() -> void:
 	if is_node_ready() and !manual_resize:
 		size.x = text_margin_container.size.x
@@ -217,3 +207,11 @@ func _on_resize_timer_timeout() -> void:
 func _on_visibility_changed() -> void:
 	if is_node_ready():
 		set_size_fixed()
+
+
+func _on_background_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion and event.position.x > (size.x - 25.0):
+		if !completed and priority_enabled:
+			toggle_priority_tool(true)
+		if hide_options_timer.is_inside_tree():
+			hide_options_timer.start()

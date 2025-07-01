@@ -1,7 +1,7 @@
 extends Control
 class_name PlannerCanvas
-
 ## Manages a single file / tab
+
 @onready var connection_container: Control = $ConnectionContainer
 @onready var selection_viewer: Panel = $SelectionViewer
 @onready var connection_indicator: Panel = $ConnectionIndicator
@@ -170,10 +170,6 @@ func is_ready_for_action() -> bool:
 	return save_state.is_ready_to_save()
 
 
-#func ignore_save() -> void:
-	#save_state.ignore_save = true
-
-
 func set_file_names(path: String) -> void:
 	opened_file_path = path
 	file_name_short = opened_file_path.get_file().get_slice(".", 0)
@@ -336,7 +332,6 @@ func remove_connections(elem_id: int) -> void:
 
 
 func select_element(elem_id: int) -> void:
-	#printt("Trying", elem_id)
 	if elem_id == selected_element:
 		#print("Same ID")
 		return
