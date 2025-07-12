@@ -185,11 +185,12 @@ func drawing_region_paths_to_json() -> Dictionary:
 	return canvas_groups[current_canvas].drawing_region_paths_to_json()
 
 
-func rebuild_from_json(canvas_id: int, dict: Dictionary) -> void:
+func rebuild_paths_from_json(canvas_id: int, dict: Dictionary) -> void:
 	if canvas_groups.has(canvas_id):
 		canvas_groups[canvas_id].rebuild_file_paths_from_json(dict)
 
 
+# Called before starting to draw a new current_stroke (from planner_canvas.gd)
 # Repositions the temp drawing region where the drawing takes place
 func update_drawing_position_and_scale(pos: Vector2, scl: Vector2) -> void:
 	canvas_groups[current_canvas].update_drawing_position_and_scale(pos, scl)
@@ -277,4 +278,4 @@ func _on_canvas_drawing_group_force_save_message(message: String) -> void:
 
 
 #func _on_item_rect_changed() -> void:
-	#print("MOVED", get_rect().position)
+#	print("MOVED", get_rect().position)

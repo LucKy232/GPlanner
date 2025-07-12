@@ -17,7 +17,7 @@ class_name ElementSettings
 @onready var current_preset_label: Label = $VBoxContainer/CurrentPresetLabel
 
 
-var presets: Dictionary[int, ElementPresetStyle]	## KEY: preset_options selector ID (not preset ID like in canvas.gd)
+var presets: Dictionary[int, ElementPresetStyle]	## KEY: preset_options selector ID (not preset ID like in planner_canvas.gd)
 var none_preset: ElementPresetStyle
 var max_option_id: int = 1
 var is_user_input: bool = true

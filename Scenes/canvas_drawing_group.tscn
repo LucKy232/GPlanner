@@ -1,13 +1,26 @@
-[gd_scene load_steps=2 format=3 uid="uid://ciqbw443fikno"]
+[gd_scene load_steps=8 format=3 uid="uid://ciqbw443fikno"]
 
 [ext_resource type="Script" uid="uid://df6kuq4i0as3x" path="res://Scripts/canvas_drawing_group.gd" id="1_565vn"]
+[ext_resource type="Shader" uid="uid://d21quv16sw5wy" path="res://Materials/canvas_drawing_group.gdshader" id="1_i8jcu"]
+[ext_resource type="Texture2D" uid="uid://cf020yg47act0" path="res://Textures/brush_circle.png" id="2_5j5e7"]
+[ext_resource type="Texture2D" uid="uid://b6h5u1wyn1e2h" path="res://Textures/blank_img.png" id="3_tbb7e"]
+[ext_resource type="Material" uid="uid://dpldbrfjtyvts" path="res://Materials/brush_shader_material.tres" id="4_tbb7e"]
+[ext_resource type="Material" uid="uid://dgmaedihci14t" path="res://Materials/eraser_shader_material.tres" id="5_ojdrw"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bq4r3"]
+shader = ExtResource("1_i8jcu")
 
 [node name="CanvasDrawingGroup" type="CanvasGroup"]
 light_mask = 4
 visibility_layer = 4
 z_index = -3
 z_as_relative = false
+material = SubResource("ShaderMaterial_bq4r3")
 script = ExtResource("1_565vn")
+brush = ExtResource("2_5j5e7")
+blank_img = ExtResource("3_tbb7e")
+brush_material = ExtResource("4_tbb7e")
+eraser_brush_material = ExtResource("5_ojdrw")
 
 [node name="DrawingRegionsContainer" type="Control" parent="."]
 light_mask = 4
@@ -18,9 +31,23 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="TempDrawingRegionsContainer" type="Control" parent="."]
-light_mask = 4
-visibility_layer = 4
+light_mask = 128
+visibility_layer = 128
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="BrushDrawViewportContainer" type="SubViewportContainer" parent="."]
+light_mask = 5
+visibility_layer = 5
+offset_right = 1024.0
+offset_bottom = 512.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="BrushSubViewport" type="SubViewport" parent="BrushDrawViewportContainer"]
+transparent_bg = true
+handle_input_locally = false
+canvas_cull_mask = 4294966400
+render_target_update_mode = 4

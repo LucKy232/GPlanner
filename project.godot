@@ -157,10 +157,11 @@ test3={
 
 [layer_names]
 
-2d_render/layer_1="All"
+2d_render/layer_1="Default"
 2d_render/layer_2="UI"
 2d_render/layer_3="Drawing"
 2d_render/layer_4="Canvas"
+2d_render/layer_8="TempBrushDrawing"
 
 [rendering]
 

@@ -27,7 +27,7 @@ func set_requested_action(act: RequestedActionType) -> void:
 	if act >= 0 and act < RequestedActionType.size():
 		action_type = act
 	else:
-		printerr("Wrong save action type index in canvas.gd:set_requested_save_action()")
+		printerr("Wrong save action type index in planner_canvas.gd:set_requested_save_action()")
 
 
 func reset_requested_action() -> void:

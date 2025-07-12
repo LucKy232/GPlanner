@@ -90,6 +90,6 @@ handle_input_locally = false
 snap_2d_transforms_to_pixel = true
 snap_2d_vertices_to_pixel = true
 canvas_item_default_texture_filter = 0
-canvas_cull_mask = 4294966277
+canvas_cull_mask = 4294966405
 size = Vector2i(1024, 1024)
 render_target_update_mode = 4

@@ -64,8 +64,7 @@ grow_vertical = 2
 mouse_filter = 1
 theme = SubResource("Theme_5b2e5")
 script = ExtResource("2_5b2e5")
-drawing_regions = true
-line_color = Color(0.169583, 0.190176, 0.210148, 1)
+line_color = Color(0.1134, 0.1267, 0.14, 1)
 background_color = Color(0, 0, 0, 1)
 
 [node name="ConnectionContainer" type="Control" parent="."]

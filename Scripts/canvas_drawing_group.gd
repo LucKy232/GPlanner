@@ -4,8 +4,14 @@ class_name CanvasDrawingGroup
 ## and make materials with BLEND_MODE_SUB subtract from the resulting image easily
 ## CanvasDrawingGroup, TempDrawingRegion & DrawingRegion need to all be on the same z_index
 
+@export var brush: CompressedTexture2D
+@export var blank_img: CompressedTexture2D
+@export var brush_material: ShaderMaterial
+@export var eraser_brush_material: ShaderMaterial
 @onready var drawing_regions_container: Control = $DrawingRegionsContainer
 @onready var temp_drawing_regions_container: Control = $TempDrawingRegionsContainer
+@onready var brush_sub_viewport: SubViewport = $BrushDrawViewportContainer/BrushSubViewport
+@onready var brush_draw_viewport_container: SubViewportContainer = $BrushDrawViewportContainer
 
 var current_stroke: TempDrawingRegion
 var past_drawing_actions: Array[TempDrawingRegion]
@@ -18,16 +24,18 @@ var pencil_material: CanvasItemMaterial
 var eraser_material: CanvasItemMaterial
 var mask_eraser_material: CanvasItemMaterial
 
+
 var MAX_PAST_ACTIONS: int = 40	## Actions available to undo.
 var FORCE_SAVE_REQUEST_KB_LIMIT: float = 512000.0	## When the force_save_request signal will be triggered, (used_temp_data_kb + used_overflow_data_kb is measured currently). A message will be sent using StatusBar via force_save_message signal at 75% of this value.
 var temp_drawing_region_scene	## Scene to instantiate for a single drawing stroke / action.
 var drawing_region_scene		## Scene to instantiate for a final image (1024x1024) that will get saved to disk.
-var folder_path: String = ""	## Folder inside user:// in which the images are stored, created on save_images() inside main.gd or loaded on rebuild_canvas_state() inside canvas.gd
+var folder_path: String = ""	## Folder inside user:// in which the images are stored, created on save_images() inside main.gd or loaded on rebuild_canvas_state() inside planner_canvas.gd
 var size: Vector2
 var used_temp_data_kb: float = 0.0		## Counts the image sizes of past_drawing_actions
 var used_overflow_data_kb: float = 0.0	## Counts the image sizes of past_actions_overflow
 var image_load_tasks: Dictionary[int, Vector2i]			## Used to check if the task is finished to then render the texture (can only be done on main thread).
 var regions_being_loaded: Dictionary[Vector2i, bool]	## Bool not used, just searching the hash map to not cycle trough all regions or use array search.
+var active_brush_shader: ShaderMaterial
 
 ## Emits when 75% of FORCE_SAVE_REQUEST_KB_LIMIT is reached to inform the user that they should save.
 signal force_save_message
@@ -36,7 +44,7 @@ signal force_save_request
 @warning_ignore("unused_signal")
 ## Emits to give a progress message to be displayed when images are saved. Used inside a call_deferred, due to save_all_regions_to_disk() being called from a different thread
 signal saving_images_to_disk
-
+## Emitted when all regions are visible, used when screenshotting images changes to ensure all are loaded
 signal all_drawing_regions_visible
 
 enum DrawTool {
@@ -47,6 +55,12 @@ enum DrawTool {
 func _process(_delta: float) -> void:
 	if image_load_tasks.size() > 0:
 		check_image_load_tasks_completed()
+
+
+func _on_post_render() -> void:
+	var prev_img: Image = brush_sub_viewport.get_texture().get_image()
+	var img_tex: ImageTexture = ImageTexture.create_from_image(prev_img);
+	active_brush_shader.set_shader_parameter("prev_img", img_tex)
 
 
 func check_image_load_tasks_completed() -> void:
@@ -89,17 +103,31 @@ func has_changes() -> bool:
 
 func receive_coords(p1: Vector2, p2: Vector2, draw_tool: int) -> void:
 	var to_set_material: bool = true if current_stroke.type != draw_tool else false
-	if to_set_material:
-		current_stroke.type = draw_tool
-	if draw_tool == DrawTool.PENCIL:
+	#if to_set_material:
+		#current_stroke.type = draw_tool
+	
+	if draw_tool == DrawTool.PENCIL:	# Set to DrawTool.BRUSH
+		if to_set_material:
+			position_brush_to_current_stroke()
+			setup_shader(Color.AQUAMARINE)
+			current_stroke.type = draw_tool
+		current_stroke.draw_brush_line(p1, p2, 1.0)
+	elif draw_tool == DrawTool.ERASER:	# Set to DrawTool.ERASERBRUSH
+		if to_set_material:
+			position_brush_to_current_stroke()
+			setup_shader(Color.WHITE, true)
+			current_stroke.type = draw_tool
+		current_stroke.eraser_brush_line(p1, p2, 1.0)
+	
+	if draw_tool == 97:			# Set to DrawTool.PENCIL, set type
 		if to_set_material:
 			current_stroke.material = pencil_material
 		current_stroke.draw_pencil_1px(p1, p2, Color.WHITE)
-	elif draw_tool == DrawTool.ERASER:
+	elif draw_tool == 98:		# Set to DrawTool.ERASER, set type
 		if to_set_material:
 			current_stroke.material = eraser_material
 		current_stroke.eraser_pencil_1px(p1, p2)
-	elif draw_tool == 99:	# unused
+	elif draw_tool == 99:		# unused
 		if to_set_material:
 			current_stroke.material = mask_eraser_material
 		if !current_stroke.is_mask:
@@ -108,14 +136,29 @@ func receive_coords(p1: Vector2, p2: Vector2, draw_tool: int) -> void:
 
 
 func receive_click(p: Vector2, draw_tool: int) -> void:
-	current_stroke.type = draw_tool
-	if draw_tool == DrawTool.PENCIL:
+	var to_set_material: bool = true if current_stroke.type != draw_tool else false
+	#if to_set_material:
+		#current_stroke.type = draw_tool
+	if draw_tool == DrawTool.PENCIL:	# Set to DrawTool.BRUSH
+		if to_set_material:
+			position_brush_to_current_stroke()
+			setup_shader(Color.AQUAMARINE)
+			current_stroke.type = draw_tool
+		current_stroke.draw_brush_point(p, 1.0)
+	elif draw_tool == DrawTool.ERASER:	# Set to DrawTool.ERASERBRUSH
+		if to_set_material:
+			position_brush_to_current_stroke()
+			setup_shader(Color.WHITE, true)
+			current_stroke.type = draw_tool
+		current_stroke.eraser_brush_point(p, 1.0)
+	
+	if draw_tool == 97:			# Set to DrawTool.PENCIL, set type
 		current_stroke.material = pencil_material
 		current_stroke.draw_pencil_dot_1px(p, Color.WHITE)
-	elif draw_tool == DrawTool.ERASER:
+	elif draw_tool == 98:		# Set to DrawTool.ERASER, set type
 		current_stroke.material = eraser_material
 		current_stroke.eraser_pencil_dot_1px(p)
-	elif draw_tool == 99:	# unused
+	elif draw_tool == 99:		# unused
 		current_stroke.material = mask_eraser_material
 		if !current_stroke.is_mask:
 			current_stroke.make_mask()
@@ -128,6 +171,9 @@ func end_stroke() -> void:
 		past_actions_overflow.append(front_action)
 		used_temp_data_kb -= front_action.data_usage_kb
 		used_overflow_data_kb += front_action.data_usage_kb
+	
+	if RenderingServer.frame_post_draw.is_connected(_on_post_render):
+		end_brush_stroke()
 	current_stroke.is_finished = true
 	var to_delete: bool = current_stroke.trim_down()
 	if to_delete:
@@ -136,12 +182,47 @@ func end_stroke() -> void:
 		past_drawing_actions.append(current_stroke)
 	used_temp_data_kb += current_stroke.data_usage_kb
 	check_save_request_needed()
+	
 	current_stroke = add_temp_drawing_region()
 	# If inputting an action, can't redo anymore
 	for i in future_drawing_actions.size():
 		var remove: TempDrawingRegion = future_drawing_actions.pop_front()
 		used_temp_data_kb -= remove.data_usage_kb
 		remove.queue_free()
+
+
+func end_brush_stroke() -> void:
+	RenderingServer.frame_post_draw.disconnect(_on_post_render)
+	active_brush_shader.set_shader_parameter("can_draw", false)
+	var prev_img: Image = brush_sub_viewport.get_texture().get_image()
+	current_stroke.set_final_texture(prev_img)
+	current_stroke.material = Material.new()
+	current_stroke.reparent(temp_drawing_regions_container)
+	current_stroke.set_visibility_layer_bit(2, true)	# Only layers 1 & 3 active
+	current_stroke.set_visibility_layer_bit(7, false)
+
+
+# Called when setting up the material for the current_stroke
+func position_brush_to_current_stroke() -> void:
+	brush_draw_viewport_container.size = current_stroke.size
+	brush_sub_viewport.size = current_stroke.size
+	current_stroke.reparent(brush_sub_viewport)
+	current_stroke.position = Vector2.ZERO
+
+
+func setup_shader(c: Color, eraser: bool = false) -> void:
+	if eraser:
+		current_stroke.material = eraser_brush_material.duplicate()
+	else:
+		current_stroke.material = brush_material.duplicate()
+	current_stroke.set_visibility_layer_bit(2, false)# 	Only layers 1 & 8 active - Only one that the BrushSubViewport can see
+	current_stroke.set_visibility_layer_bit(7, true)
+	active_brush_shader = current_stroke.material
+	active_brush_shader.set_shader_parameter("brush", brush)
+	active_brush_shader.set_shader_parameter("prev_img", blank_img)
+	active_brush_shader.set_shader_parameter("brush_scale", Vector2(0.02, 0.02))
+	active_brush_shader.set_shader_parameter("brush_color", Vector4(c.r, c.g, c.b, c.a))
+	RenderingServer.frame_post_draw.connect(_on_post_render)
 
 
 func check_save_request_needed() -> void:
@@ -241,6 +322,7 @@ func update_regions_from_screenshots(screenshots: Dictionary[Vector2i, Image]) -
 	for r in screenshots:
 		if !regions.has(r):
 			add_drawing_region(r)
+		screenshots[r].save_png("user://test%d.png" % Time.get_ticks_msec())
 		regions[r].update_from_image(screenshots[r])
 
 
@@ -286,6 +368,8 @@ func update_drawing_position_and_scale(pos: Vector2, scl: Vector2) -> void:
 	current_stroke.scale = Vector2(clamped_scale_x, clamped_scale_y)
 	current_stroke.position = pos * Vector2(new_scale_x, new_scale_y)
 	current_stroke.capped_zoom = new_scale_x if new_scale_x < 1.0 else 1.0
+	brush_draw_viewport_container.scale = Vector2(clamped_scale_x, clamped_scale_y)
+	brush_draw_viewport_container.position = pos * Vector2(new_scale_x, new_scale_y)
 
 
 func drawing_region_paths_to_json() -> Dictionary:
@@ -305,7 +389,7 @@ func save_all_regions_to_disk() -> void:
 	for r in regions:
 		if regions[r].prepare_image_to_save():
 			regions_to_save.append(r)
-	
+	print("SAVE # %d" % regions_to_save.size())
 	for save_r in regions_to_save:
 		var image_path: String = "user://%s/%02d-%02d.png" % [folder_path, save_r.x, save_r.y]
 		regions[save_r].save_image(image_path)

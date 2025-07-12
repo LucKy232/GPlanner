@@ -94,6 +94,7 @@ tracks/2/keys = {
 [sub_resource type="Animation" id="Animation_5deko"]
 resource_name = "hide_priority_buttons"
 length = 0.6
+step = 0.0166667
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true

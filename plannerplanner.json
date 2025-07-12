@@ -898,7 +898,17 @@
 		}
 	},
 	"DrawingRegions": {
-
+		"00-00": "user://plannerplanner 2025-07-03T100205/00-00.png",
+		"00-01": "user://plannerplanner 2025-07-03T100205/00-01.png",
+		"01-00": "user://plannerplanner 2025-07-03T100205/01-00.png",
+		"01-01": "user://plannerplanner 2025-07-03T100205/01-01.png",
+		"02-00": "user://plannerplanner 2025-07-03T100205/02-00.png",
+		"02-03": "user://plannerplanner 2025-07-03T100205/02-03.png",
+		"03-02": "user://plannerplanner 2025-07-03T100205/03-02.png",
+		"03-03": "user://plannerplanner 2025-07-03T100205/03-03.png",
+		"04-02": "user://plannerplanner 2025-07-03T100205/04-02.png",
+		"04-03": "user://plannerplanner 2025-07-03T100205/04-03.png",
+		"05-03": "user://plannerplanner 2025-07-03T100205/05-03.png"
 	},
 	"Elements": {
 		"0": {
@@ -6511,16 +6521,16 @@
 		}
 	},
 	"State": {
-		"drawing_folder_path": "",
-		"position.x": -574.841064453125,
-		"position.y": 0.0,
+		"drawing_folder_path": "plannerplanner 2025-07-03T100205",
+		"position.x": 0.0,
+		"position.y": -55.0726051330566,
 		"priority_filter_value": 4,
-		"scale.x": 0.442219853401184,
-		"scale.y": 0.442219853401184,
+		"scale.x": 0.322734594345093,
+		"scale.y": 0.322734594345093,
 		"show_completed": false,
 		"show_priorities": true,
-		"show_priority_tool": true,
-		"zoom_level": 0.442219864409578
+		"show_priority_tool": false,
+		"zoom_level": 0.322734590236266
 	},
 	"StylePresets": {
 		"1": {

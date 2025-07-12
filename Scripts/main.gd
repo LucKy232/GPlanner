@@ -364,7 +364,7 @@ func save_file(path: String) -> void:
 	file.close()
 
 
-func load_file(path: String) -> void:
+func load_file(path: String, app_startup: bool = false) -> void:
 	if is_saving_images:
 		return
 	var file
@@ -402,9 +402,11 @@ func load_file(path: String) -> void:
 				canvases[cc].update_all_style_presets(element_settings.presets)
 		canvases[cc].rebuild_elements(elems)
 		canvases[cc].rebuild_connections(conns)
+		drawing_manager.clear_canvas_drawing_group(cc)
 		if data.has("DrawingRegions"):
-			drawing_manager.clear_canvas_drawing_group(cc)
-			drawing_manager.rebuild_from_json(cc, data["DrawingRegions"])
+			drawing_manager.rebuild_paths_from_json(cc, data["DrawingRegions"])
+			if !app_startup:
+				drawing_manager.reload_all_drawing_regions(cc)
 			
 		_on_priority_filter_value_changed(canvases[cc].priority_filter_value)
 	
@@ -453,7 +455,7 @@ func load_opened_file_paths(path: String) -> void:
 			for f in files:
 				if files[f] != "":
 					_on_add_file_button_pressed()	# new_file(), new tab, switch tab -> switch_main_canvas()
-					load_file(files[f])
+					load_file(files[f], true)
 			var current = int(data["CurrentID"])
 			if canvases.has(current):
 				if file_tab_bar.current_tab == current:

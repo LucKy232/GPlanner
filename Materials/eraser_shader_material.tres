@@ -1,0 +1,14 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dgmaedihci14t"]
+
+[ext_resource type="Shader" uid="uid://dyu5ledhsnpnb" path="res://Materials/eraser_shader_material.gdshader" id="1_t46v1"]
+
+[resource]
+shader = ExtResource("1_t46v1")
+shader_parameter/can_draw = false
+shader_parameter/mouse_pos = Vector2(0, 0)
+shader_parameter/p1 = Vector2(0, 0)
+shader_parameter/p2 = Vector2(0, 0)
+shader_parameter/pressure = 0.0
+shader_parameter/brush_scale = Vector2(0, 0)
+shader_parameter/brush_color = Vector4(0, 0, 0, 0)
+shader_parameter/zoom = Vector2(0, 0)

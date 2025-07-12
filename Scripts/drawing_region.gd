@@ -5,13 +5,14 @@ var image: Image
 var has_changes: bool = false		## Used to check which images to save to disk
 var is_invisible: bool = true		## Used to check which image paths to save
 var is_loaded: bool = false
-var file_path: String = ""			## Set on load from .json or on save CanvasDrawingGroup:save_all_regions_to_disk()
+var file_path: String = ""			## Set on file load from .json or on save CanvasDrawingGroup:save_all_regions_to_disk()
 
 
 func update_from_image(img: Image, changes: bool = true) -> void:
 	set_has_changes(changes, "Update from image")
 	texture = ImageTexture.create_from_image(img)
 	is_loaded = true
+	print("UPDATE")
 	if !img.is_invisible():
 		is_invisible = false
 
