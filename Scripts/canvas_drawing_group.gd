@@ -1,33 +1,36 @@
 extends CanvasGroup
 class_name CanvasDrawingGroup
-## Group together TempDrawingRegions & DrawingRegions to blend them together
+## Group together TempDrawingActions & DrawingRegions to blend them together
 ## and make materials with BLEND_MODE_SUB subtract from the resulting image easily
-## CanvasDrawingGroup, TempDrawingRegion & DrawingRegion need to all be on the same z_index
+## CanvasDrawingGroup, TempDrawingAction & DrawingRegion need to all be on the same z_index
 
 @export var brush: CompressedTexture2D
 @export var blank_img: CompressedTexture2D
 @export var brush_material: ShaderMaterial
-@export var eraser_brush_material: ShaderMaterial
 @onready var drawing_regions_container: Control = $DrawingRegionsContainer
-@onready var temp_drawing_regions_container: Control = $TempDrawingRegionsContainer
+@onready var temp_drawing_actions_container: Control = $TempDrawingActionsContainer
 @onready var brush_sub_viewport: SubViewport = $BrushDrawViewportContainer/BrushSubViewport
 @onready var brush_draw_viewport_container: SubViewportContainer = $BrushDrawViewportContainer
+@onready var eraser_sub_viewport: SubViewport = $EraserSubViewport
+@onready var brush_eraser_texture: TempDrawingAction = $EraserSubViewport/BrushEraserTexture
+#@onready var eraser_sub_viewport: SubViewport = $SubViewportContainer/EraserSubViewport
+#@onready var brush_eraser_texture: TempDrawingAction = $SubViewportContainer/EraserSubViewport/BrushEraserTexture
 
-var current_stroke: TempDrawingRegion
-var past_drawing_actions: Array[TempDrawingRegion]
-## When undo-ing, the last TempDrawingRegion from past_drawing_actions gets removed and placed here
-var future_drawing_actions: Array[TempDrawingRegion]
-## When past_drawing_actions is full, the front TempDrawingRegion gets removed and placed here
-var past_actions_overflow: Array[TempDrawingRegion]
+
+var current_stroke: TempDrawingAction
+var past_drawing_actions: Array[TempDrawingAction]
+## When undo-ing, the last TempDrawingAction from past_drawing_actions gets removed and placed here
+var future_drawing_actions: Array[TempDrawingAction]
+## When past_drawing_actions is full, the front TempDrawingAction gets removed and placed here
+var past_actions_overflow: Array[TempDrawingAction]
 var regions: Dictionary[Vector2i, DrawingRegion]
-var pencil_material: CanvasItemMaterial
-var eraser_material: CanvasItemMaterial
-var mask_eraser_material: CanvasItemMaterial
-
+var pencil_material: CanvasItemMaterial			## CanvasItemMaterial.BLEND_MODE_MIX set up in init()
+var eraser_material: CanvasItemMaterial			## CanvasItemMaterial.BLEND_MODE_SUB set up in init()
+var mask_eraser_material: CanvasItemMaterial	## CanvasItemMaterial.BLEND_MODE_MUL set up in init()
 
 var MAX_PAST_ACTIONS: int = 40	## Actions available to undo.
 var FORCE_SAVE_REQUEST_KB_LIMIT: float = 512000.0	## When the force_save_request signal will be triggered, (used_temp_data_kb + used_overflow_data_kb is measured currently). A message will be sent using StatusBar via force_save_message signal at 75% of this value.
-var temp_drawing_region_scene	## Scene to instantiate for a single drawing stroke / action.
+var temp_drawing_action_scene	## Scene to instantiate for a single drawing stroke / action.
 var drawing_region_scene		## Scene to instantiate for a final image (1024x1024) that will get saved to disk.
 var folder_path: String = ""	## Folder inside user:// in which the images are stored, created on save_images() inside main.gd or loaded on rebuild_canvas_state() inside planner_canvas.gd
 var size: Vector2
@@ -35,7 +38,7 @@ var used_temp_data_kb: float = 0.0		## Counts the image sizes of past_drawing_ac
 var used_overflow_data_kb: float = 0.0	## Counts the image sizes of past_actions_overflow
 var image_load_tasks: Dictionary[int, Vector2i]			## Used to check if the task is finished to then render the texture (can only be done on main thread).
 var regions_being_loaded: Dictionary[Vector2i, bool]	## Bool not used, just searching the hash map to not cycle trough all regions or use array search.
-var active_brush_shader: ShaderMaterial
+var active_brush_shader: ShaderMaterial					## The material of the current_stroke
 
 ## Emits when 75% of FORCE_SAVE_REQUEST_KB_LIMIT is reached to inform the user that they should save.
 signal force_save_message
@@ -52,15 +55,26 @@ enum DrawTool {
 	ERASER,
 }
 
+
 func _process(_delta: float) -> void:
 	if image_load_tasks.size() > 0:
 		check_image_load_tasks_completed()
 
 
+# Update the shader brush texture from the brush_sub_viewport to accumulate shader contributions
 func _on_post_render() -> void:
 	var prev_img: Image = brush_sub_viewport.get_texture().get_image()
 	var img_tex: ImageTexture = ImageTexture.create_from_image(prev_img);
 	active_brush_shader.set_shader_parameter("prev_img", img_tex)
+
+
+# Update the shader brush texture as before, but invisible to the user, to be used as a subtractive texture
+func _on_post_render_eraser() -> void:
+	var prev_img: Image = eraser_sub_viewport.get_texture().get_image()
+	var img_tex: ImageTexture = ImageTexture.create_from_image(prev_img);
+	active_brush_shader.set_shader_parameter("prev_img", img_tex)
+	brush_eraser_texture.texture = img_tex
+	current_stroke.texture = img_tex	# Is set to BlendMode.Subtract
 
 
 func check_image_load_tasks_completed() -> void:
@@ -92,7 +106,7 @@ func init(manager_size: Vector2) -> void:
 	mask_eraser_material.blend_mode = CanvasItemMaterial.BLEND_MODE_MUL
 	#mask_eraser_material.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
 	size = manager_size
-	current_stroke = add_temp_drawing_region()
+	current_stroke = add_temp_drawing_action()
 
 
 func has_changes() -> bool:
@@ -103,8 +117,6 @@ func has_changes() -> bool:
 
 func receive_coords(p1: Vector2, p2: Vector2, draw_tool: int) -> void:
 	var to_set_material: bool = true if current_stroke.type != draw_tool else false
-	#if to_set_material:
-		#current_stroke.type = draw_tool
 	
 	if draw_tool == DrawTool.PENCIL:	# Set to DrawTool.BRUSH
 		if to_set_material:
@@ -114,21 +126,25 @@ func receive_coords(p1: Vector2, p2: Vector2, draw_tool: int) -> void:
 		current_stroke.draw_brush_line(p1, p2, 1.0)
 	elif draw_tool == DrawTool.ERASER:	# Set to DrawTool.ERASERBRUSH
 		if to_set_material:
-			position_brush_to_current_stroke()
-			setup_shader(Color.WHITE, true)
+			position_eraser_to_current_stroke()
+			setup_eraser_shader()
+			current_stroke.material = eraser_material.duplicate()
 			current_stroke.type = draw_tool
-		current_stroke.eraser_brush_line(p1, p2, 1.0)
+		brush_eraser_texture.draw_brush_line(p1, p2, 1.0)
 	
-	if draw_tool == 97:			# Set to DrawTool.PENCIL, set type
+	if draw_tool == 97:			# Set to DrawTool.PENCIL
 		if to_set_material:
+			current_stroke.type = draw_tool
 			current_stroke.material = pencil_material
 		current_stroke.draw_pencil_1px(p1, p2, Color.WHITE)
-	elif draw_tool == 98:		# Set to DrawTool.ERASER, set type
+	elif draw_tool == 98:		# Set to DrawTool.ERASER
 		if to_set_material:
+			current_stroke.type = draw_tool
 			current_stroke.material = eraser_material
 		current_stroke.eraser_pencil_1px(p1, p2)
-	elif draw_tool == 99:		# unused
+	elif draw_tool == 99:		# Mask pencil eraser, unused
 		if to_set_material:
+			current_stroke.type = draw_tool
 			current_stroke.material = mask_eraser_material
 		if !current_stroke.is_mask:
 			current_stroke.make_mask()
@@ -137,8 +153,7 @@ func receive_coords(p1: Vector2, p2: Vector2, draw_tool: int) -> void:
 
 func receive_click(p: Vector2, draw_tool: int) -> void:
 	var to_set_material: bool = true if current_stroke.type != draw_tool else false
-	#if to_set_material:
-		#current_stroke.type = draw_tool
+	
 	if draw_tool == DrawTool.PENCIL:	# Set to DrawTool.BRUSH
 		if to_set_material:
 			position_brush_to_current_stroke()
@@ -147,19 +162,26 @@ func receive_click(p: Vector2, draw_tool: int) -> void:
 		current_stroke.draw_brush_point(p, 1.0)
 	elif draw_tool == DrawTool.ERASER:	# Set to DrawTool.ERASERBRUSH
 		if to_set_material:
-			position_brush_to_current_stroke()
-			setup_shader(Color.WHITE, true)
+			position_eraser_to_current_stroke()
+			setup_eraser_shader()
+			current_stroke.material = eraser_material.duplicate()
 			current_stroke.type = draw_tool
-		current_stroke.eraser_brush_point(p, 1.0)
+		brush_eraser_texture.draw_brush_point(p, 1.0)
 	
-	if draw_tool == 97:			# Set to DrawTool.PENCIL, set type
-		current_stroke.material = pencil_material
+	if draw_tool == 97:			# Set to DrawTool.PENCIL
+		if to_set_material:
+			current_stroke.type = draw_tool
+			current_stroke.material = pencil_material
 		current_stroke.draw_pencil_dot_1px(p, Color.WHITE)
-	elif draw_tool == 98:		# Set to DrawTool.ERASER, set type
-		current_stroke.material = eraser_material
+	elif draw_tool == 98:		# Set to DrawTool.ERASER
+		if to_set_material:
+			current_stroke.type = draw_tool
+			current_stroke.material = eraser_material
 		current_stroke.eraser_pencil_dot_1px(p)
-	elif draw_tool == 99:		# unused
-		current_stroke.material = mask_eraser_material
+	elif draw_tool == 99:		# Mask pencil eraser, unused
+		if to_set_material:
+			current_stroke.type = draw_tool
+			current_stroke.material = mask_eraser_material
 		if !current_stroke.is_mask:
 			current_stroke.make_mask()
 		current_stroke.mask_eraser_pencil_dot_1px(p)
@@ -167,13 +189,15 @@ func receive_click(p: Vector2, draw_tool: int) -> void:
 
 func end_stroke() -> void:
 	if past_drawing_actions.size() >= MAX_PAST_ACTIONS:
-		var front_action: TempDrawingRegion = past_drawing_actions.pop_front()
+		var front_action: TempDrawingAction = past_drawing_actions.pop_front()
 		past_actions_overflow.append(front_action)
 		used_temp_data_kb -= front_action.data_usage_kb
 		used_overflow_data_kb += front_action.data_usage_kb
 	
 	if RenderingServer.frame_post_draw.is_connected(_on_post_render):
 		end_brush_stroke()
+	if RenderingServer.frame_post_draw.is_connected(_on_post_render_eraser):
+		end_eraser_brush_stroke()
 	current_stroke.is_finished = true
 	var to_delete: bool = current_stroke.trim_down()
 	if to_delete:
@@ -183,10 +207,10 @@ func end_stroke() -> void:
 	used_temp_data_kb += current_stroke.data_usage_kb
 	check_save_request_needed()
 	
-	current_stroke = add_temp_drawing_region()
+	current_stroke = add_temp_drawing_action()
 	# If inputting an action, can't redo anymore
 	for i in future_drawing_actions.size():
-		var remove: TempDrawingRegion = future_drawing_actions.pop_front()
+		var remove: TempDrawingAction = future_drawing_actions.pop_front()
 		used_temp_data_kb -= remove.data_usage_kb
 		remove.queue_free()
 
@@ -197,32 +221,52 @@ func end_brush_stroke() -> void:
 	var prev_img: Image = brush_sub_viewport.get_texture().get_image()
 	current_stroke.set_final_texture(prev_img)
 	current_stroke.material = Material.new()
-	current_stroke.reparent(temp_drawing_regions_container)
+	current_stroke.reparent(temp_drawing_actions_container)
 	current_stroke.set_visibility_layer_bit(2, true)	# Only layers 1 & 3 active
 	current_stroke.set_visibility_layer_bit(7, false)
+
+
+func end_eraser_brush_stroke() -> void:
+	RenderingServer.frame_post_draw.disconnect(_on_post_render_eraser)
+	active_brush_shader.set_shader_parameter("can_draw", false)
+	var prev_img: Image = eraser_sub_viewport.get_texture().get_image()
+	current_stroke.set_final_texture(prev_img)
+	brush_eraser_texture.texture = blank_img.duplicate()
 
 
 # Called when setting up the material for the current_stroke
 func position_brush_to_current_stroke() -> void:
 	brush_draw_viewport_container.size = current_stroke.size
-	brush_sub_viewport.size = current_stroke.size
 	current_stroke.reparent(brush_sub_viewport)
 	current_stroke.position = Vector2.ZERO
 
 
-func setup_shader(c: Color, eraser: bool = false) -> void:
-	if eraser:
-		current_stroke.material = eraser_brush_material.duplicate()
-	else:
-		current_stroke.material = brush_material.duplicate()
+func position_eraser_to_current_stroke() -> void:
+	eraser_sub_viewport.size = current_stroke.size
+	brush_eraser_texture.size = current_stroke.size
+	brush_eraser_texture.position = Vector2.ZERO
+
+
+func setup_shader(c: Color) -> void:
+	current_stroke.material = brush_material.duplicate()
 	current_stroke.set_visibility_layer_bit(2, false)# 	Only layers 1 & 8 active - Only one that the BrushSubViewport can see
 	current_stroke.set_visibility_layer_bit(7, true)
 	active_brush_shader = current_stroke.material
 	active_brush_shader.set_shader_parameter("brush", brush)
 	active_brush_shader.set_shader_parameter("prev_img", blank_img)
-	active_brush_shader.set_shader_parameter("brush_scale", Vector2(0.02, 0.02))
+	active_brush_shader.set_shader_parameter("brush_scale", Vector2(0.1, 0.1))
 	active_brush_shader.set_shader_parameter("brush_color", Vector4(c.r, c.g, c.b, c.a))
 	RenderingServer.frame_post_draw.connect(_on_post_render)
+
+
+func setup_eraser_shader() -> void:
+	brush_eraser_texture.material = brush_material.duplicate()
+	active_brush_shader = brush_eraser_texture.material
+	active_brush_shader.set_shader_parameter("brush", brush)
+	active_brush_shader.set_shader_parameter("prev_img", blank_img)
+	active_brush_shader.set_shader_parameter("brush_scale", Vector2(0.1, 0.1))
+	active_brush_shader.set_shader_parameter("brush_color", Vector4(1.0, 1.0, 1.0, 1.0))
+	RenderingServer.frame_post_draw.connect(_on_post_render_eraser)
 
 
 func check_save_request_needed() -> void:
@@ -273,7 +317,7 @@ func make_past_and_overflow_actions_permanent(past_ratio: float) -> Array[Vector
 	past_ratio = clampf(past_ratio, 0.0, 1.0)
 	var past_action_count: int = int(past_ratio * past_drawing_actions.size())
 	for count in range(past_action_count):
-		var front_action: TempDrawingRegion = past_drawing_actions.pop_front()
+		var front_action: TempDrawingAction = past_drawing_actions.pop_front()
 		past_actions_overflow.append(front_action)
 		used_temp_data_kb -= front_action.data_usage_kb
 		used_overflow_data_kb += front_action.data_usage_kb
@@ -337,10 +381,10 @@ func update_regions_from_screenshots(screenshots: Dictionary[Vector2i, Image]) -
 			# regions[region_v2i].mask_at(Vector2i(key.z, key.w), dict[key])
 
 
-func add_temp_drawing_region() -> TempDrawingRegion:
-	var temp = load(temp_drawing_region_scene).instantiate()
-	temp_drawing_regions_container.add_child(temp)
-	temp.name = "TempDrawingRegion"
+func add_temp_drawing_action() -> TempDrawingAction:
+	var temp = load(temp_drawing_action_scene).instantiate()
+	temp_drawing_actions_container.add_child(temp)
+	temp.name = "TempDrawingAction"
 	temp.size = size
 	temp.position = position
 	temp.init_image(size.x, size.y)
@@ -357,17 +401,20 @@ func add_drawing_region(region_v2i: Vector2i) -> void:
 	reg.move_to_front()
 
 
-## Repositions the current_stroke TempDrawingRegion to the current viewport
+## Repositions the current_stroke TempDrawingAction to the current viewport
 func update_drawing_position_and_scale(pos: Vector2, scl: Vector2) -> void:
 	var new_scale_x: float = 1.0 / scl.x
 	var new_scale_y: float = 1.0 / scl.x
-	# Clamping to 1.0 minimum scale so the pixels on the TempDrawingRegion 
+	# Clamping to 1.0 minimum scale so the pixels on the TempDrawingAction 
 	# Won't be smaller than the pixels in the final DrawingRegion
 	var clamped_scale_x: float = clampf(1.0 / scl.x, 1.0, 100.0)
 	var clamped_scale_y: float = clampf(1.0 / scl.x, 1.0, 100.0)
 	current_stroke.scale = Vector2(clamped_scale_x, clamped_scale_y)
 	current_stroke.position = pos * Vector2(new_scale_x, new_scale_y)
 	current_stroke.capped_zoom = new_scale_x if new_scale_x < 1.0 else 1.0
+	brush_eraser_texture.scale = Vector2(clamped_scale_x, clamped_scale_y)
+	brush_eraser_texture.position = pos * Vector2(new_scale_x, new_scale_y)
+	brush_eraser_texture.capped_zoom = new_scale_x if new_scale_x < 1.0 else 1.0
 	brush_draw_viewport_container.scale = Vector2(clamped_scale_x, clamped_scale_y)
 	brush_draw_viewport_container.position = pos * Vector2(new_scale_x, new_scale_y)
 
@@ -452,6 +499,8 @@ func rebuild_from_json(dict: Dictionary) -> void:
 
 func resize(s: Vector2) -> void:
 	size = s
+	brush_eraser_texture.size = s
+	eraser_sub_viewport.size = s
 	if !current_stroke.is_finished:
 		current_stroke.size = s
 		current_stroke.init_image(int(s.x), int(s.y))

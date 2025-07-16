@@ -1,15 +1,13 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dpldbrfjtyvts"]
 
-[ext_resource type="Shader" uid="uid://csdd7scvgra6x" path="res://addons/brush_test.gdshader" id="1_a7nit"]
+[ext_resource type="Shader" uid="uid://b6m8r5vx36ogp" path="res://Materials/brush_shader_material.gdshader" id="1_a7nit"]
 
 [resource]
 shader = ExtResource("1_a7nit")
 shader_parameter/can_draw = false
-shader_parameter/mouse_pos = Vector2(0, 0)
 shader_parameter/p1 = Vector2(0, 0)
 shader_parameter/p2 = Vector2(0, 0)
 shader_parameter/pressure = 0.0
 shader_parameter/brush_scale = Vector2(0.01, 0.01)
 shader_parameter/brush_color = Vector4(1, 1, 1, 0)
-shader_parameter/zoom = Vector2(0, 0)
-shader_parameter/eraser = 0.0
+shader_parameter/screen_ratio = 0.0

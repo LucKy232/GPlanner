@@ -7,7 +7,7 @@ class_name DrawingManager
 @onready var screenshot_progress_label: Label = $Curtain/MarginContainer/VBoxContainer/ScreenshotProgressLabel
 
 @export_file("*.tscn") var canvas_drawing_group_scene
-@export_file("*.tscn") var temp_drawing_region_scene
+@export_file("*.tscn") var temp_drawing_action_scene
 @export_file("*.tscn") var drawing_region_scene
 
 var canvas_groups: Dictionary[int, CanvasDrawingGroup]
@@ -221,7 +221,7 @@ func add_canvas_drawing_group(canvas_id: int) -> void:
 		return
 	var new_group = load(canvas_drawing_group_scene).instantiate()
 	add_child(new_group)
-	new_group.temp_drawing_region_scene = temp_drawing_region_scene
+	new_group.temp_drawing_action_scene = temp_drawing_action_scene
 	new_group.drawing_region_scene = drawing_region_scene
 	#new_group.save_request.connect(_on_canvas_drawing_group_save_request.bind(canvas_id))
 	new_group.force_save_request.connect(_on_canvas_drawing_group_force_save_request)

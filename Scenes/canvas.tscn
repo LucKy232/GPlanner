@@ -66,6 +66,8 @@ theme = SubResource("Theme_5b2e5")
 script = ExtResource("2_5b2e5")
 line_color = Color(0.1134, 0.1267, 0.14, 1)
 background_color = Color(0, 0, 0, 1)
+drawing_region_limits_thickness = 4.0
+drawing_region_limits_color_alpha = 0.25
 
 [node name="ConnectionContainer" type="Control" parent="."]
 light_mask = 8

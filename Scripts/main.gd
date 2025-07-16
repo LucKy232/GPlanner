@@ -915,11 +915,3 @@ func _on_drawing_manager_forced_save_started() -> void:
 func _on_drawing_manager_forced_save_ended() -> void:
 	status_bar.update_status("Done capturing images to reduce VRAM usage", Color(0.3, 0.55, 0.3, 0.5))
 	finish_saving_images_unlock_UI()
-
-
-#func _on_drawing_manager_requested_save_on_tool_change(c_id: int) -> void:
-	# TODO on tool change check if it's still needed or is_saving_images, prepare_to_save_images_lock_UI(), set save_type in DrawingManager, save images, need_to_save_images_on_tool_change = false
-	# TODO bad if changing canvas / tabs, set need_to_save_images_on_tool_change per canvas instead
-	# TODO unlock UI without saving the file
-	#status_bar.update_status_immediate("Need to screenshot images on next tool change to reduce VRAM usage", Color(0.55, 0.55, 0.3, 0.5))
-	#need_to_save_images_on_tool_change = true

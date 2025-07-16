@@ -3,7 +3,6 @@ class_name SaveState
 var action_type: int = -1
 var needs_to_save_images: bool = false
 var has_changes: bool = false
-#var ignore_save: bool = false # TODO no?
 
 enum RequestedActionType {
 	NEW_BUTTON,

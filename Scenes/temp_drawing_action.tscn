@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://cpu02i5li1jfy"]
+
+[ext_resource type="Script" uid="uid://7d2lj2kc8a2d" path="res://Scripts/temp_drawing_action.gd" id="1_s0ehb"]
+
+[node name="TempDrawingAction" type="TextureRect"]
+light_mask = 5
+visibility_layer = 5
+z_index = -3
+z_as_relative = false
+texture_filter = 1
+texture_repeat = 1
+size_flags_horizontal = 0
+size_flags_vertical = 0
+script = ExtResource("1_s0ehb")

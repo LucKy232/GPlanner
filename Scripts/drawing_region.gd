@@ -12,7 +12,6 @@ func update_from_image(img: Image, changes: bool = true) -> void:
 	set_has_changes(changes, "Update from image")
 	texture = ImageTexture.create_from_image(img)
 	is_loaded = true
-	print("UPDATE")
 	if !img.is_invisible():
 		is_invisible = false
 

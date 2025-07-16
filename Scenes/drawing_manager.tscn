@@ -33,7 +33,7 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_5m78p")
 canvas_drawing_group_scene = "uid://ciqbw443fikno"
-temp_drawing_region_scene = "uid://cpu02i5li1jfy"
+temp_drawing_action_scene = "uid://cpu02i5li1jfy"
 drawing_region_scene = "uid://cco3y5ld1vdkm"
 
 [node name="Curtain" type="Panel" parent="."]

@@ -1,5 +1,5 @@
 extends TextureRect
-class_name TempDrawingRegion
+class_name TempDrawingAction
 
 var image: Image
 var width: int
@@ -33,6 +33,7 @@ func draw_brush_point(p: Vector2, pressure: float) -> void:
 	var p_gpu: Vector2 = Vector2(p.x / size.x, p.y / size.y) * capped_zoom
 	material.set_shader_parameter("p1", p_gpu)
 	material.set_shader_parameter("p2", p_gpu)
+	material.set_shader_parameter("screen_ratio", size.x / size.y)
 	material.set_shader_parameter("can_draw", true)
 
 
@@ -44,27 +45,7 @@ func draw_brush_line(p1: Vector2, p2: Vector2, pressure: float) -> void:
 	var p2_gpu: Vector2 = Vector2(p2.x / size.x, p2.y / size.y) * capped_zoom
 	material.set_shader_parameter("p1", p1_gpu)
 	material.set_shader_parameter("p2", p2_gpu)
-	material.set_shader_parameter("can_draw", true)
-
-
-func eraser_brush_point(p: Vector2, pressure: float) -> void:
-	material.set_shader_parameter("zoom", capped_zoom)
-	#material.set_shader_parameter("screen_size", size)
-	material.set_shader_parameter("pressure", pressure)
-	var p_gpu: Vector2 = Vector2(p.x / size.x, p.y / size.y) * capped_zoom
-	material.set_shader_parameter("p1", p_gpu)
-	material.set_shader_parameter("p2", p_gpu)
-	material.set_shader_parameter("can_draw", true)
-
-
-func eraser_brush_line(p1: Vector2, p2: Vector2, pressure: float) -> void:
-	material.set_shader_parameter("zoom", capped_zoom)
-	#material.set_shader_parameter("screen_size", size)
-	material.set_shader_parameter("pressure", pressure)
-	var p1_gpu: Vector2 = Vector2(p1.x / size.x, p1.y / size.y) * capped_zoom
-	var p2_gpu: Vector2 = Vector2(p2.x / size.x, p2.y / size.y) * capped_zoom
-	material.set_shader_parameter("p1", p1_gpu)
-	material.set_shader_parameter("p2", p2_gpu)
+	material.set_shader_parameter("screen_ratio", size.x / size.y)
 	material.set_shader_parameter("can_draw", true)
 
 
