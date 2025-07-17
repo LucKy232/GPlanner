@@ -1,8 +1,8 @@
 [gd_scene load_steps=8 format=3 uid="uid://ciqbw443fikno"]
 
 [ext_resource type="Script" uid="uid://df6kuq4i0as3x" path="res://Scripts/canvas_drawing_group.gd" id="1_565vn"]
-[ext_resource type="Shader" uid="uid://d21quv16sw5wy" path="res://Materials/canvas_drawing_group.gdshader" id="1_i8jcu"]
-[ext_resource type="Texture2D" uid="uid://boloshi425blp" path="res://addons/brush_test.png" id="3_i8jcu"]
+[ext_resource type="Shader" uid="uid://03rxqcahk6uj" path="res://Scenes/canvas_drawing_group2.gdshader" id="1_i8jcu"]
+[ext_resource type="Texture2D" uid="uid://cf020yg47act0" path="res://Textures/brush_circle.png" id="3_i8jcu"]
 [ext_resource type="Texture2D" uid="uid://b6h5u1wyn1e2h" path="res://Textures/blank_img.png" id="3_tbb7e"]
 [ext_resource type="Material" uid="uid://dpldbrfjtyvts" path="res://Materials/brush_shader_material.tres" id="4_tbb7e"]
 [ext_resource type="PackedScene" uid="uid://cpu02i5li1jfy" path="res://Scenes/temp_drawing_action.tscn" id="7_bq4r3"]

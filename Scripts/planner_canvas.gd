@@ -47,6 +47,7 @@ var zoom_level: float = 1.0
 var zoom_limits: Vector2
 var zoom_speed: float
 var is_user_input: bool = true
+var last_pressure_event: float = 1.0
 
 signal done_adding_elements
 signal changed_zoom
@@ -631,6 +632,8 @@ func change_priority_filter(value: int) -> void:
 
 
 func _on_gui_input(event: InputEvent) -> void:
+	if event is InputEventMouseMotion:
+		last_pressure_event = event.pressure
 	if drawing_manager.is_taking_screenshots:
 		return
 	if event is InputEventMouseButton:
@@ -652,9 +655,9 @@ func _on_gui_input(event: InputEvent) -> void:
 				drawing_manager.resize_to_window()
 				drawing_manager.update_drawing_position_and_scale(-position, scale)
 				if tool_id == Tool.PENCIL:
-					drawing_manager.receive_click(last_draw_event_position, DrawTool.PENCIL)
+					drawing_manager.receive_coords(last_draw_event_position, last_draw_event_position, DrawTool.PENCIL, last_pressure_event)
 				if tool_id == Tool.ERASER:
-					drawing_manager.receive_click(last_draw_event_position, DrawTool.ERASER)
+					drawing_manager.receive_coords(last_draw_event_position, last_draw_event_position, DrawTool.ERASER, last_pressure_event)
 		elif event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
 			if is_panning:
 				is_panning = false
@@ -677,12 +680,12 @@ func _on_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and is_drawing and tool_id == Tool.PENCIL:
 		drawings_changed()
 		var currrent_draw_event_position: Vector2 = event.position * scale + position
-		drawing_manager.receive_coords(last_draw_event_position, currrent_draw_event_position, DrawTool.PENCIL)
+		drawing_manager.receive_coords(last_draw_event_position, currrent_draw_event_position, DrawTool.PENCIL, last_pressure_event)
 		last_draw_event_position = currrent_draw_event_position
 	if event is InputEventMouseMotion and is_drawing and tool_id == Tool.ERASER:
 		drawings_changed()
 		var currrent_draw_event_position: Vector2 = event.position * scale + position
-		drawing_manager.receive_coords(last_draw_event_position, currrent_draw_event_position, DrawTool.ERASER)
+		drawing_manager.receive_coords(last_draw_event_position, currrent_draw_event_position, DrawTool.ERASER, last_pressure_event)
 		last_draw_event_position = currrent_draw_event_position
 
 

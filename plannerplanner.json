@@ -895,29 +895,74 @@
 		"384": {
 			"id1": 335,
 			"id2": 86
+		},
+		"385": {
+			"id1": 336,
+			"id2": 4
+		},
+		"386": {
+			"id1": 337,
+			"id2": 4
+		},
+		"387": {
+			"id1": 338,
+			"id2": 4
+		},
+		"388": {
+			"id1": 110,
+			"id2": 340
+		},
+		"389": {
+			"id1": 3,
+			"id2": 341
+		},
+		"390": {
+			"id1": 3,
+			"id2": 342
+		},
+		"391": {
+			"id1": 343,
+			"id2": 86
+		},
+		"392": {
+			"id1": 343,
+			"id2": 344
+		},
+		"393": {
+			"id1": 3,
+			"id2": 345
+		},
+		"394": {
+			"id1": 345,
+			"id2": 346
+		},
+		"395": {
+			"id1": 347,
+			"id2": 345
+		},
+		"396": {
+			"id1": 345,
+			"id2": 348
+		},
+		"397": {
+			"id1": 350,
+			"id2": 345
+		},
+		"398": {
+			"id1": 3,
+			"id2": 351
+		},
+		"399": {
+			"id1": 351,
+			"id2": 352
+		},
+		"400": {
+			"id1": 3,
+			"id2": 353
 		}
 	},
 	"DrawingRegions": {
-		"00-00": "user://plannerplanner 2025-07-03T100205/00-00.png",
-		"00-01": "user://plannerplanner 2025-07-03T100205/00-01.png",
-		"00-02": "user://plannerplanner 2025-07-03T100205/00-02.png",
-		"01-00": "user://plannerplanner 2025-07-03T100205/01-00.png",
-		"01-01": "user://plannerplanner 2025-07-03T100205/01-01.png",
-		"01-02": "user://plannerplanner 2025-07-03T100205/01-02.png",
-		"01-03": "user://plannerplanner 2025-07-03T100205/01-03.png",
-		"02-01": "user://plannerplanner 2025-07-03T100205/02-01.png",
-		"02-02": "user://plannerplanner 2025-07-03T100205/02-02.png",
-		"02-03": "user://plannerplanner 2025-07-03T100205/02-03.png",
-		"03-01": "user://plannerplanner 2025-07-03T100205/03-01.png",
-		"03-02": "user://plannerplanner 2025-07-03T100205/03-02.png",
-		"03-03": "user://plannerplanner 2025-07-03T100205/03-03.png",
-		"04-01": "user://plannerplanner 2025-07-03T100205/04-01.png",
-		"04-02": "user://plannerplanner 2025-07-03T100205/04-02.png",
-		"04-03": "user://plannerplanner 2025-07-03T100205/04-03.png",
-		"05-01": "user://plannerplanner 2025-07-03T100205/05-01.png",
-		"05-02": "user://plannerplanner 2025-07-03T100205/05-02.png",
-		"06-01": "user://plannerplanner 2025-07-03T100205/06-01.png",
-		"06-02": "user://plannerplanner 2025-07-03T100205/06-02.png"
+
 	},
 	"Elements": {
 		"0": {
@@ -1992,8 +2037,8 @@
 			"completed": false,
 			"has_style_preset": true,
 			"id": 56,
-			"pos.x": 2237.169921875,
-			"pos.y": 1522.62915039063,
+			"pos.x": 2242.169921875,
+			"pos.y": 1524.62915039063,
 			"priority_id": 3,
 			"size.x": 177.8916015625,
 			"size.y": 64.0,
@@ -2429,8 +2474,8 @@
 			"completed": false,
 			"has_style_preset": true,
 			"id": 87,
-			"pos.x": 2301.23583984375,
-			"pos.y": 1743.1015625,
+			"pos.x": 2304.58618164063,
+			"pos.y": 1884.92553710938,
 			"priority_id": 2,
 			"size.x": 128.0,
 			"size.y": 72.5909423828125,
@@ -2476,10 +2521,10 @@
 			"completed": false,
 			"has_style_preset": true,
 			"id": 89,
-			"pos.x": 1999.6826171875,
-			"pos.y": 1745.08630371094,
+			"pos.x": 1986.28186035156,
+			"pos.y": 1869.04272460938,
 			"priority_id": 1,
-			"size.x": 216.0,
+			"size.x": 215.999877929688,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Autosave succesful"
@@ -2570,8 +2615,8 @@
 			"completed": false,
 			"has_style_preset": true,
 			"id": 93,
-			"pos.x": 1924.80224609375,
-			"pos.y": 1811.4228515625,
+			"pos.x": 1913.63500976563,
+			"pos.y": 1938.7294921875,
 			"priority_id": 3,
 			"size.x": 289.63330078125,
 			"size.y": 64.0,
@@ -2594,8 +2639,8 @@
 			"completed": false,
 			"has_style_preset": true,
 			"id": 97,
-			"pos.x": 2178.76953125,
-			"pos.y": 1452.87377929688,
+			"pos.x": 2176.61303710938,
+			"pos.y": 1455.10852050781,
 			"priority_id": 3,
 			"size.x": 244.70068359375,
 			"size.y": 67.3822021484375,
@@ -3004,10 +3049,10 @@
 			"completed": false,
 			"has_style_preset": true,
 			"id": 115,
-			"pos.x": 1985.68408203125,
-			"pos.y": 162.583572387695,
+			"pos.x": 1984.05456542969,
+			"pos.y": 161.768783569336,
 			"priority_id": 0,
-			"size.x": 132.34814453125,
+			"size.x": 142.940307617188,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T14:18:44 1336605",
 			"text": "Comments"
@@ -4316,7 +4361,7 @@
 			"completed": false,
 			"has_style_preset": true,
 			"id": 183,
-			"pos.x": 2112.98828125,
+			"pos.x": 2109.98828125,
 			"pos.y": 1387.92309570313,
 			"priority_id": 2,
 			"size.x": 310.0,
@@ -5607,8 +5652,8 @@
 			"completed": false,
 			"has_style_preset": true,
 			"id": 277,
-			"pos.x": 2596.86669921875,
-			"pos.y": 886.013061523438,
+			"pos.x": 2597.33569335938,
+			"pos.y": 884.444213867188,
 			"priority_id": 0,
 			"size.x": 237.0,
 			"size.y": 64.0000610351563,
@@ -5619,8 +5664,8 @@
 			"completed": false,
 			"has_style_preset": true,
 			"id": 278,
-			"pos.x": 2475.7353515625,
-			"pos.y": 678.229736328125,
+			"pos.x": 2474.14990234375,
+			"pos.y": 679.815002441406,
 			"priority_id": 0,
 			"size.x": 359.55615234375,
 			"size.y": 64.0000610351563,
@@ -6160,13 +6205,13 @@
 			"completed": false,
 			"has_style_preset": true,
 			"id": 305,
-			"pos.x": 2225.921875,
-			"pos.y": 1654.43664550781,
+			"pos.x": 2163.28515625,
+			"pos.y": 1591.283203125,
 			"priority_id": 2,
-			"size.x": 186.960205078125,
+			"size.x": 254.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
-			"text": "Loading scene"
+			"text": "Loading scene for files"
 		},
 		"306": {
 			"completed": false,
@@ -6268,10 +6313,10 @@
 			"completed": false,
 			"has_style_preset": true,
 			"id": 314,
-			"pos.x": 2132.44384765625,
-			"pos.y": 1322.41650390625,
+			"pos.x": 2122.44384765625,
+			"pos.y": 1321.41650390625,
 			"priority_id": 1,
-			"size.x": 293.0,
+			"size.x": 297.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Settings to change UI colors"
@@ -6527,19 +6572,235 @@
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Sometimes canvas position doesn't get loaded properly"
+		},
+		"336": {
+			"completed": false,
+			"has_style_preset": true,
+			"id": 336,
+			"pos.x": 2169.8701171875,
+			"pos.y": 1723.32495117188,
+			"priority_id": 2,
+			"size.x": 248.0,
+			"size.y": 64.0,
+			"style_preset_id": "2025-05-11T11:50:57 22823",
+			"text": "Custom mouse cursors"
+		},
+		"337": {
+			"completed": false,
+			"has_style_preset": true,
+			"id": 337,
+			"pos.x": 1914.41064453125,
+			"pos.y": 1657.21533203125,
+			"priority_id": 2,
+			"size.x": 504.0,
+			"size.y": 64.0,
+			"style_preset_id": "2025-05-11T11:50:57 22823",
+			"text": "Hide RAW color picker, show OKHSL (from script)"
+		},
+		"338": {
+			"completed": false,
+			"has_style_preset": true,
+			"id": 338,
+			"pos.x": 1863.75805664063,
+			"pos.y": 856.791625976563,
+			"priority_id": 0,
+			"size.x": 562.251220703125,
+			"size.y": 64.0,
+			"style_preset_id": "2025-05-11T11:50:57 22823",
+			"text": "Default pointing hand cursor for buttons / checkboxes"
+		},
+		"339": {
+			"completed": true,
+			"has_style_preset": true,
+			"id": 339,
+			"pos.x": 2016.44897460938,
+			"pos.y": 405.76416015625,
+			"priority_id": 4,
+			"size.x": 120.0,
+			"size.y": 80.0,
+			"style_preset_id": "2025-05-11T14:18:44 1336605",
+			"text": ""
+		},
+		"340": {
+			"completed": false,
+			"has_style_preset": true,
+			"id": 340,
+			"pos.x": 1984.67236328125,
+			"pos.y": 362.580352783203,
+			"priority_id": 2,
+			"size.x": 372.184326171875,
+			"size.y": 64.0,
+			"style_preset_id": "2025-05-11T14:18:44 1336605",
+			"text": "Multithreaded save & load images"
+		},
+		"341": {
+			"completed": false,
+			"has_style_preset": true,
+			"id": 341,
+			"pos.x": 3159.70361328125,
+			"pos.y": 1393.49914550781,
+			"priority_id": 2,
+			"size.x": 662.0,
+			"size.y": 64.0,
+			"style_preset_id": "2025-05-11T11:48:44 762479",
+			"text": "Pick default element style in settings drawer - separate per canvas? "
+		},
+		"342": {
+			"completed": false,
+			"has_style_preset": true,
+			"id": 342,
+			"pos.x": 3159.35717773438,
+			"pos.y": 1458.93334960938,
+			"priority_id": 1,
+			"size.x": 477.77734375,
+			"size.y": 64.0,
+			"style_preset_id": "2025-05-11T11:48:44 762479",
+			"text": "Different selection viewer color if editing text"
+		},
+		"343": {
+			"completed": false,
+			"has_style_preset": true,
+			"id": 343,
+			"pos.x": 903.999633789063,
+			"pos.y": 600.06298828125,
+			"priority_id": 3,
+			"size.x": 682.0,
+			"size.y": 64.0,
+			"style_preset_id": "2025-05-11T11:29:11 421463",
+			"text": "Duplicating a file keeps the same drawings folder in use in both files"
+		},
+		"344": {
+			"completed": false,
+			"has_style_preset": true,
+			"id": 344,
+			"pos.x": 313.679290771484,
+			"pos.y": 668.305419921875,
+			"priority_id": 3,
+			"size.x": 875.0,
+			"size.y": 64.0,
+			"style_preset_id": "2025-05-11T11:29:11 421463",
+			"text": "Check if any of the loaded canvas folders are duplicates & assign a new one & save images"
+		},
+		"345": {
+			"completed": false,
+			"has_style_preset": true,
+			"id": 345,
+			"pos.x": 3160.20751953125,
+			"pos.y": 1525.86987304688,
+			"priority_id": 2,
+			"size.x": 153.0,
+			"size.y": 64.0,
+			"style_preset_id": "2025-05-11T11:48:44 762479",
+			"text": "Slim mode"
+		},
+		"346": {
+			"completed": false,
+			"has_style_preset": true,
+			"id": 346,
+			"pos.x": 3368.720703125,
+			"pos.y": 1526.15832519531,
+			"priority_id": 2,
+			"size.x": 624.4658203125,
+			"size.y": 64.0,
+			"style_preset_id": "2025-05-11T11:48:44 762479",
+			"text": "Move UI elements to accomodate window widths ~ [100, 600]"
+		},
+		"347": {
+			"completed": false,
+			"has_style_preset": true,
+			"id": 347,
+			"pos.x": 3369.42309570313,
+			"pos.y": 1592.00366210938,
+			"priority_id": 2,
+			"size.x": 304.7041015625,
+			"size.y": 64.0,
+			"style_preset_id": "2025-05-11T11:48:44 762479",
+			"text": "Hide Element style buttons"
+		},
+		"348": {
+			"completed": false,
+			"has_style_preset": true,
+			"id": 348,
+			"pos.x": 3369.623046875,
+			"pos.y": 1658.0263671875,
+			"priority_id": 2,
+			"size.x": 523.7294921875,
+			"size.y": 64.0,
+			"style_preset_id": "2025-05-11T11:48:44 762479",
+			"text": "Panning camera preview very small, buttom screen"
+		},
+		"349": {
+			"completed": false,
+			"has_style_preset": true,
+			"id": 349,
+			"pos.x": 3368.57592773438,
+			"pos.y": 1724.04626464844,
+			"priority_id": 2,
+			"size.x": 285.0,
+			"size.y": 64.0,
+			"style_preset_id": "2025-05-11T11:48:44 762479",
+			"text": "Status bar short messages"
+		},
+		"350": {
+			"completed": false,
+			"has_style_preset": true,
+			"id": 350,
+			"pos.x": 3369.07592773438,
+			"pos.y": 1790.54626464844,
+			"priority_id": 2,
+			"size.x": 342.0,
+			"size.y": 64.0,
+			"style_preset_id": "2025-05-11T11:48:44 762479",
+			"text": "Don't show zoom bar animation"
+		},
+		"351": {
+			"completed": false,
+			"has_style_preset": true,
+			"id": 351,
+			"pos.x": 3159.59399414063,
+			"pos.y": 1858.46765136719,
+			"priority_id": 1,
+			"size.x": 509.923095703125,
+			"size.y": 64.0,
+			"style_preset_id": "2025-05-11T11:48:44 762479",
+			"text": "Priority tool buttons - tween instead of animation"
+		},
+		"352": {
+			"completed": false,
+			"has_style_preset": true,
+			"id": 352,
+			"pos.x": 3737.1884765625,
+			"pos.y": 1858.27270507813,
+			"priority_id": 1,
+			"size.x": 710.0,
+			"size.y": 64.0,
+			"style_preset_id": "2025-05-11T11:48:44 762479",
+			"text": "Stop hide animation on hover without moving right side / hover buttons"
+		},
+		"353": {
+			"completed": false,
+			"has_style_preset": true,
+			"id": 353,
+			"pos.x": 3159.15454101563,
+			"pos.y": 1923.85693359375,
+			"priority_id": 2,
+			"size.x": 530.5556640625,
+			"size.y": 64.0,
+			"style_preset_id": "2025-05-11T11:48:44 762479",
+			"text": "Disable text resizing element if text becomes smaller"
 		}
 	},
 	"State": {
-		"drawing_folder_path": "plannerplanner 2025-07-03T100205",
-		"position.x": -2753.49731445313,
-		"position.y": -1028.05578613281,
+		"drawing_folder_path": "documentation 2025-06-18T095107",
+		"position.x": 0.0,
+		"position.y": 0.0,
 		"priority_filter_value": 4,
-		"scale.x": 0.880253314971924,
-		"scale.y": 0.880253314971924,
+		"scale.x": 0.28264907002449,
+		"scale.y": 0.28264907002449,
 		"show_completed": false,
 		"show_priorities": true,
-		"show_priority_tool": false,
-		"zoom_level": 0.880253337303531
+		"show_priority_tool": true,
+		"zoom_level": 0.282649081070093
 	},
 	"StylePresets": {
 		"1": {

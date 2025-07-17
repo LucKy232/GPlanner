@@ -13,9 +13,6 @@ class_name CanvasDrawingGroup
 @onready var brush_draw_viewport_container: SubViewportContainer = $BrushDrawViewportContainer
 @onready var eraser_sub_viewport: SubViewport = $EraserSubViewport
 @onready var brush_eraser_texture: TempDrawingAction = $EraserSubViewport/BrushEraserTexture
-#@onready var eraser_sub_viewport: SubViewport = $SubViewportContainer/EraserSubViewport
-#@onready var brush_eraser_texture: TempDrawingAction = $SubViewportContainer/EraserSubViewport/BrushEraserTexture
-
 
 var current_stroke: TempDrawingAction
 var past_drawing_actions: Array[TempDrawingAction]
@@ -73,7 +70,6 @@ func _on_post_render_eraser() -> void:
 	var prev_img: Image = eraser_sub_viewport.get_texture().get_image()
 	var img_tex: ImageTexture = ImageTexture.create_from_image(prev_img);
 	active_brush_shader.set_shader_parameter("prev_img", img_tex)
-	brush_eraser_texture.texture = img_tex
 	current_stroke.texture = img_tex	# Is set to BlendMode.Subtract
 
 
@@ -115,22 +111,22 @@ func has_changes() -> bool:
 	return false
 
 
-func receive_coords(p1: Vector2, p2: Vector2, draw_tool: int) -> void:
+func receive_coords(p1: Vector2, p2: Vector2, draw_tool: int, pressure: float) -> void:
 	var to_set_material: bool = true if current_stroke.type != draw_tool else false
 	
 	if draw_tool == DrawTool.PENCIL:	# Set to DrawTool.BRUSH
 		if to_set_material:
 			position_brush_to_current_stroke()
-			setup_shader(Color.AQUAMARINE)
+			setup_shader(Color(0.2, 0.6, 0.7, 1.0))
 			current_stroke.type = draw_tool
-		current_stroke.draw_brush_line(p1, p2, 1.0)
+		current_stroke.draw_brush_line(p1, p2, pressure)
 	elif draw_tool == DrawTool.ERASER:	# Set to DrawTool.ERASERBRUSH
 		if to_set_material:
 			position_eraser_to_current_stroke()
 			setup_eraser_shader()
 			current_stroke.material = eraser_material.duplicate()
 			current_stroke.type = draw_tool
-		brush_eraser_texture.draw_brush_line(p1, p2, 1.0)
+		brush_eraser_texture.draw_brush_line(p1, p2, pressure)
 	
 	if draw_tool == 97:			# Set to DrawTool.PENCIL
 		if to_set_material:
@@ -151,40 +147,43 @@ func receive_coords(p1: Vector2, p2: Vector2, draw_tool: int) -> void:
 		current_stroke.mask_eraser_pencil_1px(p1, p2)
 
 
-func receive_click(p: Vector2, draw_tool: int) -> void:
-	var to_set_material: bool = true if current_stroke.type != draw_tool else false
-	
-	if draw_tool == DrawTool.PENCIL:	# Set to DrawTool.BRUSH
-		if to_set_material:
-			position_brush_to_current_stroke()
-			setup_shader(Color.AQUAMARINE)
-			current_stroke.type = draw_tool
-		current_stroke.draw_brush_point(p, 1.0)
-	elif draw_tool == DrawTool.ERASER:	# Set to DrawTool.ERASERBRUSH
-		if to_set_material:
-			position_eraser_to_current_stroke()
-			setup_eraser_shader()
-			current_stroke.material = eraser_material.duplicate()
-			current_stroke.type = draw_tool
-		brush_eraser_texture.draw_brush_point(p, 1.0)
-	
-	if draw_tool == 97:			# Set to DrawTool.PENCIL
-		if to_set_material:
-			current_stroke.type = draw_tool
-			current_stroke.material = pencil_material
-		current_stroke.draw_pencil_dot_1px(p, Color.WHITE)
-	elif draw_tool == 98:		# Set to DrawTool.ERASER
-		if to_set_material:
-			current_stroke.type = draw_tool
-			current_stroke.material = eraser_material
-		current_stroke.eraser_pencil_dot_1px(p)
-	elif draw_tool == 99:		# Mask pencil eraser, unused
-		if to_set_material:
-			current_stroke.type = draw_tool
-			current_stroke.material = mask_eraser_material
-		if !current_stroke.is_mask:
-			current_stroke.make_mask()
-		current_stroke.mask_eraser_pencil_dot_1px(p)
+# Called when setting up the material for the current_stroke
+func position_brush_to_current_stroke() -> void:
+	brush_draw_viewport_container.size = current_stroke.size
+	brush_sub_viewport.size = current_stroke.size
+	current_stroke.reparent(brush_sub_viewport)
+	current_stroke.position = Vector2.ZERO
+
+
+func position_eraser_to_current_stroke() -> void:
+	brush_eraser_texture.size = size
+	brush_eraser_texture.position = position
+	brush_eraser_texture.init_image(int(size.x), int(size.y))
+	eraser_sub_viewport.size = current_stroke.size
+	brush_eraser_texture.size = current_stroke.size
+	brush_eraser_texture.position = Vector2.ZERO
+
+
+func setup_shader(c: Color) -> void:
+	current_stroke.material = brush_material.duplicate()
+	current_stroke.set_visibility_layer_bit(2, false)# 	Only layers 1 & 8 active - Only one that the BrushSubViewport can see
+	current_stroke.set_visibility_layer_bit(7, true)
+	active_brush_shader = current_stroke.material
+	active_brush_shader.set_shader_parameter("brush", brush)
+	active_brush_shader.set_shader_parameter("prev_img", blank_img)
+	active_brush_shader.set_shader_parameter("brush_scale", Vector2(0.2, 0.2))
+	active_brush_shader.set_shader_parameter("brush_color", Vector4(c.r, c.g, c.b, c.a))
+	RenderingServer.frame_post_draw.connect(_on_post_render)
+
+
+func setup_eraser_shader() -> void:
+	brush_eraser_texture.material = brush_material.duplicate()
+	active_brush_shader = brush_eraser_texture.material
+	active_brush_shader.set_shader_parameter("brush", brush)
+	active_brush_shader.set_shader_parameter("prev_img", blank_img)
+	active_brush_shader.set_shader_parameter("brush_scale", Vector2(0.5, 0.5))
+	active_brush_shader.set_shader_parameter("brush_color", Vector4(1.0, 1.0, 1.0, 1.0))
+	RenderingServer.frame_post_draw.connect(_on_post_render_eraser)
 
 
 func end_stroke() -> void:
@@ -231,42 +230,6 @@ func end_eraser_brush_stroke() -> void:
 	active_brush_shader.set_shader_parameter("can_draw", false)
 	var prev_img: Image = eraser_sub_viewport.get_texture().get_image()
 	current_stroke.set_final_texture(prev_img)
-	brush_eraser_texture.texture = blank_img.duplicate()
-
-
-# Called when setting up the material for the current_stroke
-func position_brush_to_current_stroke() -> void:
-	brush_draw_viewport_container.size = current_stroke.size
-	current_stroke.reparent(brush_sub_viewport)
-	current_stroke.position = Vector2.ZERO
-
-
-func position_eraser_to_current_stroke() -> void:
-	eraser_sub_viewport.size = current_stroke.size
-	brush_eraser_texture.size = current_stroke.size
-	brush_eraser_texture.position = Vector2.ZERO
-
-
-func setup_shader(c: Color) -> void:
-	current_stroke.material = brush_material.duplicate()
-	current_stroke.set_visibility_layer_bit(2, false)# 	Only layers 1 & 8 active - Only one that the BrushSubViewport can see
-	current_stroke.set_visibility_layer_bit(7, true)
-	active_brush_shader = current_stroke.material
-	active_brush_shader.set_shader_parameter("brush", brush)
-	active_brush_shader.set_shader_parameter("prev_img", blank_img)
-	active_brush_shader.set_shader_parameter("brush_scale", Vector2(0.1, 0.1))
-	active_brush_shader.set_shader_parameter("brush_color", Vector4(c.r, c.g, c.b, c.a))
-	RenderingServer.frame_post_draw.connect(_on_post_render)
-
-
-func setup_eraser_shader() -> void:
-	brush_eraser_texture.material = brush_material.duplicate()
-	active_brush_shader = brush_eraser_texture.material
-	active_brush_shader.set_shader_parameter("brush", brush)
-	active_brush_shader.set_shader_parameter("prev_img", blank_img)
-	active_brush_shader.set_shader_parameter("brush_scale", Vector2(0.1, 0.1))
-	active_brush_shader.set_shader_parameter("brush_color", Vector4(1.0, 1.0, 1.0, 1.0))
-	RenderingServer.frame_post_draw.connect(_on_post_render_eraser)
 
 
 func check_save_request_needed() -> void:
@@ -366,7 +329,6 @@ func update_regions_from_screenshots(screenshots: Dictionary[Vector2i, Image]) -
 	for r in screenshots:
 		if !regions.has(r):
 			add_drawing_region(r)
-		screenshots[r].save_png("user://test%d.png" % Time.get_ticks_msec())
 		regions[r].update_from_image(screenshots[r])
 
 
@@ -436,7 +398,7 @@ func save_all_regions_to_disk() -> void:
 	for r in regions:
 		if regions[r].prepare_image_to_save():
 			regions_to_save.append(r)
-	print("SAVE # %d" % regions_to_save.size())
+	#print("SAVE # %d" % regions_to_save.size())
 	for save_r in regions_to_save:
 		var image_path: String = "user://%s/%02d-%02d.png" % [folder_path, save_r.x, save_r.y]
 		regions[save_r].save_image(image_path)
@@ -446,13 +408,24 @@ func save_all_regions_to_disk() -> void:
 	
 	# If images get fully erased, they don't get saved in place of the old one,
 	# The old image needs to be deleted because it is outdated
+	var to_remove: Array[Vector2i] = []
 	for r in regions:
+		var remove_region: bool = false
 		if regions[r].image.is_invisible() and regions[r].has_changes:
 			#print("DrawingRegion erased ", r)
 			regions[r].is_invisible = true
+			regions[r].has_changes = false
+			regions[r].is_loaded = false
 			regions[r].file_path = ""
+			remove_region = true
 			DirAccess.remove_absolute("user://%s/%02d-%02d.png" % [folder_path, r.x, r.y])
 		regions[r].free_image()
+		if remove_region:
+			to_remove.append(r)
+	
+	for r in to_remove:
+		regions[r].queue_free()
+		regions.erase(r)
 	print("Saved %d images" % saved_num)
 
 

@@ -37,6 +37,12 @@ func free_image() -> void:
 	image = Image.new()
 
 
+# Remove the image from VRAM
+func free_texture() -> void:
+	print("FREE TEX")
+	texture = ImageTexture.new()
+
+
 func set_has_changes(changes: bool, _reason: String = "") -> void:
 	has_changes = changes
 	#print("Drawing region has changes: %s   Reason: %s" % [str(has_changes), _reason])

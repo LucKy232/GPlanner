@@ -21,37 +21,15 @@ func init_image(img_width: int, img_height: int) -> void:
 	texture = ImageTexture.create_from_image(image)
 
 
-func make_mask() -> void:
-	is_mask = true
-	image.fill(Color.WHITE)
-
-
-func draw_brush_point(p: Vector2, pressure: float) -> void:
-	material.set_shader_parameter("zoom", capped_zoom)
-	#material.set_shader_parameter("screen_size", size)
-	material.set_shader_parameter("pressure", pressure)
-	var p_gpu: Vector2 = Vector2(p.x / size.x, p.y / size.y) * capped_zoom
-	material.set_shader_parameter("p1", p_gpu)
-	material.set_shader_parameter("p2", p_gpu)
-	material.set_shader_parameter("screen_ratio", size.x / size.y)
-	material.set_shader_parameter("can_draw", true)
-
-
 func draw_brush_line(p1: Vector2, p2: Vector2, pressure: float) -> void:
-	material.set_shader_parameter("zoom", capped_zoom)
-	#material.set_shader_parameter("screen_size", size)
+	material.set_shader_parameter("scale", scale.x)
+	material.set_shader_parameter("screen_size", size / 1024.0)
 	material.set_shader_parameter("pressure", pressure)
-	var p1_gpu: Vector2 = Vector2(p1.x / size.x, p1.y / size.y) * capped_zoom
-	var p2_gpu: Vector2 = Vector2(p2.x / size.x, p2.y / size.y) * capped_zoom
+	var p1_gpu: Vector2 = Vector2(p1.x / size.x, p1.y / size.y) * capped_zoom	# Converted to UV
+	var p2_gpu: Vector2 = Vector2(p2.x / size.x, p2.y / size.y) * capped_zoom	# Converted to UV
 	material.set_shader_parameter("p1", p1_gpu)
 	material.set_shader_parameter("p2", p2_gpu)
-	material.set_shader_parameter("screen_ratio", size.x / size.y)
 	material.set_shader_parameter("can_draw", true)
-
-
-func set_final_texture(img: Image) -> void:
-	image = img
-	texture = ImageTexture.create_from_image(img)
 
 
 func draw_pencil_1px(p1: Vector2, p2: Vector2, c: Color) -> void:
@@ -62,15 +40,6 @@ func draw_pencil_1px(p1: Vector2, p2: Vector2, c: Color) -> void:
 	for pixel in Geometry2D.bresenham_line(p1 * capped_zoom, p2 * capped_zoom):
 		if (pixel.x > 0 and pixel.x < width) and (pixel.y > 0 and pixel.y < height):
 			image.set_pixel(pixel.x, pixel.y, c)
-	texture = ImageTexture.create_from_image(image)
-
-
-func draw_pencil_dot_1px(p: Vector2, c: Color) -> void:
-	p = p * capped_zoom
-	if width != size.x or height != size.y:
-		init_image(int(size.x), int(size.y))
-	if (p.x > 0 and p.x < width) and (p.y > 0 and p.y < height):
-		image.set_pixel(int(p.x), int(p.y), c)
 	texture = ImageTexture.create_from_image(image)
 
 
@@ -87,31 +56,9 @@ func eraser_pencil_1px(p1: Vector2, p2: Vector2) -> void:
 	texture = ImageTexture.create_from_image(image)
 
 
-func eraser_pencil_dot_1px(p: Vector2) -> void:
-	p = p * capped_zoom
-	if width != size.x or height != size.y:
-		init_image(int(size.x), int(size.y))
-	if (p.x > 0 and p.x < width) and (p.y > 0 and p.y < height):
-		image.set_pixel(int(p.x), int(p.y), Color.WHITE)
-	texture = ImageTexture.create_from_image(image)
-
-
-func mask_eraser_pencil_1px(p1: Vector2, p2: Vector2) -> void:
-	if width != size.x or height != size.y:
-		init_image(int(size.x), int(size.y))
-	for pixel in Geometry2D.bresenham_line(p1 * capped_zoom, p2 * capped_zoom):
-		if (pixel.x > 0 and pixel.x < width) and (pixel.y > 0 and pixel.y < height):
-			image.set_pixel(pixel.x, pixel.y, Color.TRANSPARENT)
-	texture = ImageTexture.create_from_image(image)
-
-
-func mask_eraser_pencil_dot_1px(p: Vector2) -> void:
-	p = p * capped_zoom
-	if width != size.x or height != size.y:
-		init_image(int(size.x), int(size.y))
-	if (p.x > 0 and p.x < width) and (p.y > 0 and p.y < height):
-		image.set_pixel(int(p.x), int(p.y), Color.TRANSPARENT)
-	texture = ImageTexture.create_from_image(image)
+func make_mask() -> void:
+	is_mask = true
+	image.fill(Color.WHITE)
 
 
 func get_drawing_regions_array() -> Array[Vector2i]:
@@ -137,6 +84,11 @@ func get_drawing_regions_array() -> Array[Vector2i]:
 			if img_region.has_area() and !image.get_region(img_region).is_invisible():
 				arr.append(Vector2i(i, j))
 	return arr
+
+
+func set_final_texture(img: Image) -> void:
+	image = img
+	texture = ImageTexture.create_from_image(img)
 
 
 # Returns true if image is 0 pixels and needs to be deleted, and false if >0 pixels

@@ -10,4 +10,5 @@ shader_parameter/p2 = Vector2(0, 0)
 shader_parameter/pressure = 0.0
 shader_parameter/brush_scale = Vector2(0.01, 0.01)
 shader_parameter/brush_color = Vector4(1, 1, 1, 0)
-shader_parameter/screen_ratio = 0.0
+shader_parameter/screen_size = Vector2(0, 0)
+shader_parameter/scale = 0.0
