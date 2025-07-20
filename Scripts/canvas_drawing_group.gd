@@ -50,6 +50,8 @@ signal all_drawing_regions_visible
 enum DrawTool {
 	PENCIL,
 	ERASER,
+	BRUSH,
+	ERASERBRUSH,
 }
 
 
@@ -114,30 +116,29 @@ func has_changes() -> bool:
 func receive_coords(p1: Vector2, p2: Vector2, draw_tool: int, pressure: float) -> void:
 	var to_set_material: bool = true if current_stroke.type != draw_tool else false
 	
-	if draw_tool == DrawTool.PENCIL:	# Set to DrawTool.BRUSH
+	if draw_tool == DrawTool.BRUSH:
 		if to_set_material:
 			position_brush_to_current_stroke()
 			setup_shader(Color(0.2, 0.6, 0.7, 1.0))
 			current_stroke.type = draw_tool
 		current_stroke.draw_brush_line(p1, p2, pressure)
-	elif draw_tool == DrawTool.ERASER:	# Set to DrawTool.ERASERBRUSH
+	elif draw_tool == DrawTool.ERASERBRUSH:
 		if to_set_material:
 			position_eraser_to_current_stroke()
 			setup_eraser_shader()
 			current_stroke.material = eraser_material.duplicate()
 			current_stroke.type = draw_tool
 		brush_eraser_texture.draw_brush_line(p1, p2, pressure)
-	
-	if draw_tool == 97:			# Set to DrawTool.PENCIL
+	elif draw_tool == DrawTool.PENCIL:
 		if to_set_material:
 			current_stroke.type = draw_tool
 			current_stroke.material = pencil_material
-		current_stroke.draw_pencil_1px(p1, p2, Color.WHITE)
-	elif draw_tool == 98:		# Set to DrawTool.ERASER
+		current_stroke.draw_pencil(p1, p2, Color.WHITE, 1)
+	elif draw_tool == DrawTool.ERASER:
 		if to_set_material:
 			current_stroke.type = draw_tool
 			current_stroke.material = eraser_material
-		current_stroke.eraser_pencil_1px(p1, p2)
+		current_stroke.draw_pencil(p1, p2, Color.WHITE, 1)
 	elif draw_tool == 99:		# Mask pencil eraser, unused
 		if to_set_material:
 			current_stroke.type = draw_tool
@@ -171,7 +172,6 @@ func setup_shader(c: Color) -> void:
 	active_brush_shader = current_stroke.material
 	active_brush_shader.set_shader_parameter("brush", brush)
 	active_brush_shader.set_shader_parameter("prev_img", blank_img)
-	active_brush_shader.set_shader_parameter("brush_scale", Vector2(0.2, 0.2))
 	active_brush_shader.set_shader_parameter("brush_color", Vector4(c.r, c.g, c.b, c.a))
 	RenderingServer.frame_post_draw.connect(_on_post_render)
 
@@ -181,7 +181,6 @@ func setup_eraser_shader() -> void:
 	active_brush_shader = brush_eraser_texture.material
 	active_brush_shader.set_shader_parameter("brush", brush)
 	active_brush_shader.set_shader_parameter("prev_img", blank_img)
-	active_brush_shader.set_shader_parameter("brush_scale", Vector2(0.5, 0.5))
 	active_brush_shader.set_shader_parameter("brush_color", Vector4(1.0, 1.0, 1.0, 1.0))
 	RenderingServer.frame_post_draw.connect(_on_post_render_eraser)
 

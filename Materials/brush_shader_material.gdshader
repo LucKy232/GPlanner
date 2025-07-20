@@ -17,14 +17,15 @@ void fragment() {
 	if (!can_draw) {
 		discard;
 	}
-	float press = clamp(pressure, 0.01, 1.0);		// Avoid 0.0 step size & infinite loop
-	vec2 brush_size = (1.0 / brush_scale / press * scale * screen_size);
-	float uv_step = clamp((brush_size.x * brush_size.y) / 50000000.0, 0.0002, 0.01);	// Bigger brushes get bigger steps & less iterations
+	float press = clamp(pressure, 0.1, 1.0);		// Avoid 0.0 step size & infinite loop
+	vec2 brush_size = brush_scale * press / scale / screen_size;
+	float size_min = min(brush_size.x, brush_size.y);
+	float uv_step = clamp(size_min * sqrt(size_min), 0.001, 0.05);	// Bigger brushes get bigger steps & less iterations
 	vec4 prev_sample = texture(prev_img, SCREEN_UV);
 	float dist = distance(p1, p2);
 	for (float i = 0.0; i <= dist; i = i + uv_step) {
 		vec2 p = mix(SCREEN_UV - p1, SCREEN_UV - p2, i / dist);
-		vec4 brush_sample = texture(brush, p * brush_size + vec2(0.5));
+		vec4 brush_sample = texture(brush, p / brush_size + vec2(0.5));
 		if (brush_sample.a > 0.01 && COLOR.a < 0.0001) {
 			COLOR = brush_color;
 		}

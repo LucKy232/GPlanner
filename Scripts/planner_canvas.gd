@@ -632,7 +632,7 @@ func change_priority_filter(value: int) -> void:
 
 
 func _on_gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion:
+	if event is InputEventMouseMotion and event.pressure > 0.0:
 		last_pressure_event = event.pressure
 	if drawing_manager.is_taking_screenshots:
 		return

@@ -12,7 +12,13 @@ var is_finished: bool = false
 var used_rect: Rect2i
 var data_usage_kb: float = 0.0
 var occupied_regions: Array[Vector2i] = []
-
+var pixel_brushes: Dictionary = {
+	0: [[0, 0]],
+	1: [[0, 0], [1, 0], [0, 1]],
+	2: [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1]],
+	3: [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1], [1, 1], [-1, -1], [1, -1], [-1, 1]],
+	4: [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1], [1, 1], [-1, -1], [1, -1], [-1, 1], [2, 0], [-2, 0], [0, 2], [0, -2]],
+}
 
 func init_image(img_width: int, img_height: int) -> void:
 	width = img_width
@@ -22,37 +28,37 @@ func init_image(img_width: int, img_height: int) -> void:
 
 
 func draw_brush_line(p1: Vector2, p2: Vector2, pressure: float) -> void:
+	var brush_scale: float = 20.0
 	material.set_shader_parameter("scale", scale.x)
-	material.set_shader_parameter("screen_size", size / 1024.0)
+	material.set_shader_parameter("screen_size", size)
+	material.set_shader_parameter("brush_scale", Vector2(brush_scale, brush_scale))
 	material.set_shader_parameter("pressure", pressure)
 	var p1_gpu: Vector2 = Vector2(p1.x / size.x, p1.y / size.y) * capped_zoom	# Converted to UV
 	var p2_gpu: Vector2 = Vector2(p2.x / size.x, p2.y / size.y) * capped_zoom	# Converted to UV
 	material.set_shader_parameter("p1", p1_gpu)
 	material.set_shader_parameter("p2", p2_gpu)
 	material.set_shader_parameter("can_draw", true)
+	# Debug brush size
+	#pressure = clampf(pressure, 0.1, 1.0)
+	#var brush_size_uv: Vector2
+	#brush_size_uv.x = brush_scale * pressure / scale.x / size.x
+	#brush_size_uv.y = brush_scale * pressure / scale.x / size.y
+	#var scaled_uv: float = minf(brush_size_uv.x, brush_size_uv.y)
+	#var clamped_uv: float = clampf(scaled_uv * sqrt(scaled_uv), 0.001, 0.05)
+	#print("Brush UV: %0.4f %0.4f Step: %0.8f Clamped: %0.8f" % [brush_size_uv.x, brush_size_uv.y, scaled_uv * sqrt(scaled_uv), clamped_uv])
 
 
-func draw_pencil_1px(p1: Vector2, p2: Vector2, c: Color) -> void:
+func draw_pencil(p1: Vector2, p2: Vector2, c: Color, brush_size: int) -> void:
+	brush_size = clamp(brush_size, 0, pixel_brushes.size() - 1)
 	#print("Drawing (%f %f) (%f %f)" % [p1.x, p1.y, p2.x, p2.y])
 	if width != size.x or height != size.y:
 		init_image(int(size.x), int(size.y))
 	#print("Draw p1 %f %f p2 %f %f" % [p1.x, p1.y, p2.x, p2.y])
 	for pixel in Geometry2D.bresenham_line(p1 * capped_zoom, p2 * capped_zoom):
-		if (pixel.x > 0 and pixel.x < width) and (pixel.y > 0 and pixel.y < height):
-			image.set_pixel(pixel.x, pixel.y, c)
-	texture = ImageTexture.create_from_image(image)
-
-
-func eraser_pencil_1px(p1: Vector2, p2: Vector2) -> void:
-	#print("Drawing (%f %f) (%f %f)" % [p1.x, p1.y, p2.x, p2.y])
-	if width != size.x or height != size.y:
-		#print("reinit")
-		init_image(int(size.x), int(size.y))
-	#print("Draw p1 %f %f p2 %f %f" % [p1.x, p1.y, p2.x, p2.y])
-	for pixel in Geometry2D.bresenham_line(p1 * capped_zoom, p2 * capped_zoom):
-		if (pixel.x > 0 and pixel.x < width) and (pixel.y > 0 and pixel.y < height):
-			image.set_pixel(pixel.x, pixel.y, Color.WHITE)
-			#image.set_pixel(pixel.x, pixel.y, Color.TRANSPARENT)
+		for off in pixel_brushes[brush_size]:
+			var pxl := Vector2i(pixel.x + off[0], pixel.y + off[1])
+			if (pxl.x > 0 and pxl.x < width) and (pxl.y > 0 and pxl.y < height):
+				image.set_pixel(pxl.x, pxl.y, c)
 	texture = ImageTexture.create_from_image(image)
 
 
