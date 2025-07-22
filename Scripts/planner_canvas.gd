@@ -70,8 +70,8 @@ enum Tool {
 	ADD_CONNECTION,
 	REMOVE_CONNECTIONS,
 	MARK_COMPLETED,
-	PENCIL,
-	ERASER,
+	PENCIL,	# TODO remove
+	ERASER,	# TODO remove
 }
 enum Priority {
 	ACTIVE,
@@ -81,8 +81,8 @@ enum Priority {
 	NONE,
 }
 enum DrawTool {
-	PENCIL,
-	ERASER,
+	PENCIL,	# TODO remove and use class DrawingSettings
+	ERASER,	# TODO remove and use class DrawingSettings
 }
 
 

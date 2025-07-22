@@ -1,9 +1,11 @@
 extends Control
 
-@onready var tool_box: ItemList = $MarginContainer/ToolBox
+@onready var tool_box: ItemList = $MarginContainer/ToolArea/PlannerToolBox
+@onready var drawing_tool_box: ItemList = $MarginContainer/ToolArea/DrawingToolBox
+@onready var toggle_mode_button: CheckButton = $MarginContainer/ToolArea/ToggleMode
+
 @onready var settings_drawer: Control = $SettingsDrawer
 @onready var element_settings: ElementSettings = $ElementSettings
-
 @onready var zoom_indicator: VBoxContainer = $MarginContainer/ZoomIndicator
 @onready var pan_indicator_camera: Control = $MarginContainer/PanIndicatorCamera
 @onready var status_bar: Label = $StatusBar
@@ -49,6 +51,7 @@ var show_load_dialog: bool = false
 var close_this_tab: bool = false
 var exiting_app: bool = false
 var need_to_save_images_on_tool_change = false
+var last_window_mode: Window.Mode = Window.Mode.MODE_WINDOWED		## When going to borderless fullscreen, remember the last Window.Mode
 
 
 enum Checkbox {
@@ -64,8 +67,6 @@ enum Tool {
 	ADD_CONNECTION,
 	REMOVE_CONNECTIONS,
 	MARK_COMPLETED,
-	PENCIL,
-	ERASER,
 }
 enum RequestedActionType {
 	NEW_BUTTON,
@@ -112,6 +113,17 @@ func _process(_delta):
 			is_editing_element_text = false
 	else:
 		is_editing_element_text = false
+	if Input.is_action_just_pressed("fullscreen_borderless"):
+		if get_window().mode == Window.Mode.MODE_WINDOWED or get_window().mode == Window.Mode.MODE_MAXIMIZED:
+			last_window_mode = get_window().mode
+			get_window().mode = Window.MODE_FULLSCREEN
+			get_window().borderless = true
+		elif get_window().mode == Window.MODE_FULLSCREEN:
+			get_window().mode = last_window_mode
+			get_window().borderless = false
+	if Input.is_action_just_pressed("exit_fullscreen_borderless") and get_window().mode == Window.MODE_FULLSCREEN:
+		get_window().mode = last_window_mode
+		get_window().borderless = false
 	if Input.is_action_just_pressed("save_file"):	# Can do while editing text because ctrl+s doesn't insert anything
 		_on_save_button_pressed()
 	if Input.is_action_just_pressed("edit_element") and !tool_box.is_selected(Tool.MARK_COMPLETED):
@@ -915,3 +927,17 @@ func _on_drawing_manager_forced_save_started() -> void:
 func _on_drawing_manager_forced_save_ended() -> void:
 	status_bar.update_status("Done capturing images to reduce VRAM usage", Color(0.3, 0.55, 0.3, 0.5))
 	finish_saving_images_unlock_UI()
+
+
+@warning_ignore("unused_parameter")
+func _on_drawing_tool_box_item_selected(index: int) -> void:
+	pass # Replace with function body.
+
+
+func _on_toggle_mode_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		tool_box.visible = false
+		drawing_tool_box.visible = true
+	else:
+		tool_box.visible = true
+		drawing_tool_box.visible = false

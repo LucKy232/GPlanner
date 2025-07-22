@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://bfydfy3iq0rjx"]
+[gd_scene load_steps=37 format=3 uid="uid://bfydfy3iq0rjx"]
 
 [ext_resource type="Script" uid="uid://dj8gdy8d87lam" path="res://Scripts/main.gd" id="1_52fb6"]
 [ext_resource type="StyleBox" uid="uid://wrrl0mk4mdli" path="res://Themes/active_priority_button_stylebox.tres" id="2_mai8y"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://c2apku3xuhhyp" path="res://Scenes/status_bar.tscn" id="5_iacmt"]
 [ext_resource type="StyleBox" uid="uid://dga3kal7lipkl" path="res://Themes/low_priority_button_stylebox.tres" id="5_ioaeq"]
 [ext_resource type="StyleBox" uid="uid://b0l55wn2xggiw" path="res://Themes/none_priority_button_stylebox.tres" id="6_7ewk0"]
+[ext_resource type="Texture2D" uid="uid://bq1whdycd3ffe" path="res://Icons/drawing_mode.svg" id="7_8edxt"]
 [ext_resource type="PackedScene" uid="uid://b1jg4g6wbv0qw" path="res://Scenes/settings_drawer.tscn" id="8_2ebs2"]
 [ext_resource type="Texture2D" uid="uid://dh8rwukkdehkk" path="res://Icons/hand_cursor.svg" id="8_76v2p"]
 [ext_resource type="Texture2D" uid="uid://djq4xvrjpvfp5" path="res://Icons/plus.svg" id="9_7ewk0"]
@@ -27,6 +28,64 @@ MarginContainer/constants/margin_bottom = 38
 MarginContainer/constants/margin_left = 20
 MarginContainer/constants/margin_right = 20
 MarginContainer/constants/margin_top = 20
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8edxt"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5oxhp"]
+content_margin_right = 2.0
+bg_color = Color(0.3, 0.3, 0.3, 0.705882)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.188235, 0.701961, 1, 1)
+border_blend = true
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nt2eh"]
+content_margin_right = 2.0
+bg_color = Color(0.5, 0.5, 0.5, 0.705882)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.188235, 0.701961, 1, 1)
+border_blend = true
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8edxt"]
+content_margin_right = 2.0
+bg_color = Color(0, 0, 0, 0.705882)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.188235, 0.701961, 1, 1)
+border_blend = true
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
+corner_detail = 1
+
+[sub_resource type="Theme" id="Theme_5oxhp"]
+CheckButton/icons/checked = ExtResource("7_8edxt")
+CheckButton/icons/unchecked = ExtResource("7_8edxt")
+CheckButton/styles/focus = SubResource("StyleBoxEmpty_8edxt")
+CheckButton/styles/hover = SubResource("StyleBoxFlat_5oxhp")
+CheckButton/styles/hover_pressed = SubResource("StyleBoxFlat_nt2eh")
+CheckButton/styles/normal = SubResource("StyleBoxFlat_8edxt")
+CheckButton/styles/pressed = SubResource("StyleBoxFlat_8edxt")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5oxhp"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jv6wh"]
 content_margin_bottom = 2.0
@@ -56,7 +115,7 @@ ItemList/constants/outline_size = 0
 ItemList/constants/v_separation = 3
 ItemList/font_sizes/font_size = 1
 ItemList/fonts/font = null
-ItemList/styles/focus = null
+ItemList/styles/focus = SubResource("StyleBoxEmpty_5oxhp")
 ItemList/styles/panel = SubResource("StyleBoxFlat_jv6wh")
 
 [sub_resource type="Theme" id="Theme_2ebs2"]
@@ -95,7 +154,7 @@ script = ExtResource("1_52fb6")
 element_scene = "uid://lufadl7u0ek3"
 connection_scene = "res://Scenes/connection.tscn"
 canvas_scene = "uid://b1do6gcy6peum"
-zoom_limits = Vector2(0.125, 2)
+zoom_limits = Vector2(0.2, 2)
 zoom_speed = 1.05
 priority_colors = Array[Color]([Color(1, 1, 1, 1), Color(1, 0, 0, 1), Color(1, 1, 0, 1), Color(0, 1, 0, 1), Color(0, 0, 0, 0)])
 priority_styleboxes = Array[StyleBoxFlat]([ExtResource("2_mai8y"), ExtResource("3_76v2p"), ExtResource("4_drdnd"), ExtResource("5_ioaeq"), ExtResource("6_7ewk0")])
@@ -114,16 +173,21 @@ grow_vertical = 2
 mouse_filter = 2
 theme = SubResource("Theme_6l7je")
 
-[node name="PanIndicatorCamera" parent="MarginContainer" instance=ExtResource("19_jvnna")]
-custom_minimum_size = Vector2(300, 150)
+[node name="ToolArea" type="HBoxContainer" parent="MarginContainer"]
+z_index = 5
 layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
+size_flags_horizontal = 4
+size_flags_vertical = 0
 
-[node name="ToolBox" type="ItemList" parent="MarginContainer"]
+[node name="ToggleMode" type="CheckButton" parent="MarginContainer/ToolArea"]
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+theme = SubResource("Theme_5oxhp")
+icon_alignment = 1
+
+[node name="PlannerToolBox" type="ItemList" parent="MarginContainer/ToolArea"]
 light_mask = 2
 visibility_layer = 2
-z_index = 5
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
@@ -132,7 +196,7 @@ theme = SubResource("Theme_x6ack")
 allow_search = false
 auto_width = true
 auto_height = true
-item_count = 9
+item_count = 7
 max_columns = 9
 icon_mode = 0
 item_0/text = "Select & Move Elements, Pan & Zoom"
@@ -149,10 +213,35 @@ item_5/text = "Remove All Connections to Element"
 item_5/icon = ExtResource("14_2ebs2")
 item_6/text = "Mark Element As Complete"
 item_6/icon = ExtResource("15_2ebs2")
-item_7/text = "Pencil"
-item_7/icon = ExtResource("8_76v2p")
-item_8/text = "Eraser"
-item_8/icon = ExtResource("8_76v2p")
+
+[node name="DrawingToolBox" type="ItemList" parent="MarginContainer/ToolArea"]
+light_mask = 2
+visibility_layer = 2
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+mouse_filter = 1
+theme = SubResource("Theme_x6ack")
+allow_search = false
+auto_width = true
+auto_height = true
+item_count = 4
+max_columns = 9
+icon_mode = 0
+item_0/text = "Pencil"
+item_0/icon = ExtResource("8_76v2p")
+item_1/text = "Brush"
+item_1/icon = ExtResource("8_76v2p")
+item_2/text = "Eraser (Pencil)"
+item_2/icon = ExtResource("8_76v2p")
+item_3/text = "Eraser (Brush)"
+item_3/icon = ExtResource("8_76v2p")
+
+[node name="PanIndicatorCamera" parent="MarginContainer" instance=ExtResource("19_jvnna")]
+custom_minimum_size = Vector2(300, 150)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
 
 [node name="ZoomIndicator" parent="MarginContainer" instance=ExtResource("3_jv6wh")]
 light_mask = 2
@@ -326,7 +415,9 @@ theme = ExtResource("18_2ebs2")
 ok_button_text = "    Yes    "
 
 [connection signal="resized" from="." to="." method="_on_resized"]
-[connection signal="item_selected" from="MarginContainer/ToolBox" to="." method="_on_tool_box_item_selected"]
+[connection signal="toggled" from="MarginContainer/ToolArea/ToggleMode" to="." method="_on_toggle_mode_toggled"]
+[connection signal="item_selected" from="MarginContainer/ToolArea/PlannerToolBox" to="." method="_on_tool_box_item_selected"]
+[connection signal="item_selected" from="MarginContainer/ToolArea/DrawingToolBox" to="." method="_on_drawing_tool_box_item_selected"]
 [connection signal="pressed" from="MarginContainer/FileButtons/NewButton" to="." method="_on_new_button_pressed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/SaveButton" to="." method="_on_save_button_pressed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/SaveAsButton" to="." method="_on_save_as_button_pressed"]
