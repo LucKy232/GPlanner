@@ -16,7 +16,6 @@ class_name ElementSettings
 @onready var style_buttons: MarginContainer = $VBoxContainer/StyleButtons
 @onready var current_preset_label: Label = $VBoxContainer/CurrentPresetLabel
 
-
 var presets: Dictionary[int, ElementPresetStyle]	## KEY: preset_options selector ID (not preset ID like in planner_canvas.gd)
 var none_preset: ElementPresetStyle
 var max_option_id: int = 1
@@ -200,6 +199,17 @@ func toggle_preset_inputs(toggled_on: bool) -> void:
 	font_size_spin_box.editable = toggled_on
 	font_outline_spin_box.editable = toggled_on
 	border_size_spin_box.editable = toggled_on
+
+
+func toggle_style_presets(toggled_on: bool) -> void:
+	style_buttons.visible = toggled_on
+	current_preset_label.visible = toggled_on
+	if !toggled_on:	# Don't always show
+		settings_panel.visible = false
+
+
+func set_accent_color(c: Color) -> void:
+	settings_panel.theme.get_stylebox("panel", "Panel").border_color = c
 
 
 func _on_add_preset_pressed() -> void:

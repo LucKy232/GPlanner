@@ -4,9 +4,9 @@ extends Control
 @onready var drawing_tool_box: ItemList = $MarginContainer/ToolArea/DrawingToolBox
 @onready var toggle_mode_button: CheckButton = $MarginContainer/ToolArea/ToggleMode
 
-@onready var settings_drawer: Control = $SettingsDrawer
+@onready var settings_drawer: SettingsDrawer = $SettingsDrawer
 @onready var element_settings: ElementSettings = $ElementSettings
-@onready var zoom_indicator: VBoxContainer = $MarginContainer/ZoomIndicator
+@onready var zoom_indicator: ZoomIndicator = $MarginContainer/ZoomIndicator
 @onready var pan_indicator_camera: Control = $MarginContainer/PanIndicatorCamera
 @onready var status_bar: Label = $StatusBar
 @onready var margin_container: MarginContainer = $MarginContainer
@@ -20,14 +20,20 @@ extends Control
 @onready var file_tab_bar: TabBar = $BottomBar/HBoxContainer/FileTabBar
 @onready var drawing_manager: DrawingManager = $DrawingManager
 
-
+@export_category("Scenes")
 @export_file("*.tscn") var element_scene
 @export_file("*.tscn") var connection_scene
 @export_file("*.tscn") var canvas_scene
-@export var zoom_limits: Vector2 = Vector2(0.25, 4.0)
-@export_range(1.01, 1.2, 0.01) var zoom_speed: float = 1.02
+@export_category("Themes")
+@export_color_no_alpha var accent_color_planning
+@export_color_no_alpha var accent_color_drawing
+@export var button_theme: Theme
+@export var popup_dialog_theme: Theme
 @export var priority_colors: Array[Color]
 @export var priority_styleboxes: Array[StyleBoxFlat]
+@export_category("Settings")
+@export var zoom_limits: Vector2 = Vector2(0.2, 2.0)
+@export_range(1.01, 1.2, 0.01) var zoom_speed: float = 1.02
 @export var priority_filter_text: Array[String]
 @export var opened_files_file_name: String
 ## Settings drawer
@@ -52,8 +58,12 @@ var close_this_tab: bool = false
 var exiting_app: bool = false
 var need_to_save_images_on_tool_change = false
 var last_window_mode: Window.Mode = Window.Mode.MODE_WINDOWED		## When going to borderless fullscreen, remember the last Window.Mode
+var app_mode: AppMode = AppMode.PLANNING
 
-
+enum AppMode {
+	PLANNING,
+	DRAWING,
+}
 enum Checkbox {
 	SHOW_PRIORITIES,
 	SHOW_PRIORITY_TOOL,
@@ -68,6 +78,12 @@ enum Tool {
 	REMOVE_CONNECTIONS,
 	MARK_COMPLETED,
 }
+enum DrawingTool {
+	PENCIL,
+	BRUSH,
+	ERASER_PENCIL,
+	ERASER_BRUSH,
+}
 enum RequestedActionType {
 	NEW_BUTTON,
 	LOAD_BUTTON,
@@ -78,6 +94,7 @@ enum RequestedActionType {
 
 func _ready() -> void:
 	#Performance.add_custom_monitor("Request Action Type", func(): return int(canvases[cc].get_requested_save_action()))
+	get_tree().set_auto_accept_quit(false)		# Don't automatically quit
 	var window_size: Vector2 = get_viewport_rect().size
 	pan_indicator_camera.set_world_2d(get_world_2d())
 	pan_indicator_camera.set_window_size(window_size)
@@ -90,7 +107,6 @@ func _ready() -> void:
 	if canvases.size() == 0:
 		_on_add_file_button_pressed()
 	update_zoom_limits(zoom_limits)
-	get_tree().set_auto_accept_quit(false)		# Don't automatically quit
 	new_file_confirmation.add_button("     No     ", true, "no_save")
 	new_file_confirmation.add_cancel_button(" Cancel ")
 	load_file_confirmation.add_button("     No     ", true, "no_save")
@@ -203,6 +219,12 @@ func create_tool_keybinds() -> void:
 	for tool in tool_keybinds:
 		for event in InputMap.action_get_events(tool_keybinds[tool]):
 			tool_box.set_item_text(tool, ("%s (%s)") % [tool_box.get_item_text(tool), event.as_text().split(" ")[0]])
+	
+	toggle_mode_button.tooltip_text = "Change to Drawing Mode"
+	for event in InputMap.action_get_events("switch_app_mode"):
+		toggle_mode_button.tooltip_text = "%s (%s)" % [toggle_mode_button.tooltip_text, event.as_text().split(" ")[0]]
+	toggle_mode_button.shortcut = Shortcut.new()
+	toggle_mode_button.shortcut.events = InputMap.action_get_events("switch_app_mode")
 
 
 func force_update_checkboxes() -> void:
@@ -553,6 +575,26 @@ func tab_from_canvas_id(c_id: int) -> int:
 
 func disable_input() -> bool:
 	return is_editing_element_text or is_editing_preset_name or is_saving_images
+
+
+func change_accent_color(c: Color) -> void:
+	if app_mode == AppMode.PLANNING:
+		tool_box.theme.get_stylebox("panel", "ItemList").border_color = c
+		element_settings.set_accent_color(c)
+	if app_mode == AppMode.DRAWING:
+		drawing_tool_box.theme.get_stylebox("panel", "ItemList").border_color = c
+	settings_drawer.set_accent_color(c)
+	zoom_indicator.set_accent_color(c)
+	button_theme.get_stylebox("focus", "Button").border_color = c
+	button_theme.get_stylebox("hover", "Button").border_color = c
+	button_theme.get_stylebox("hover_pressed", "Button").border_color = c
+	button_theme.get_stylebox("normal", "Button").border_color = c
+	button_theme.get_stylebox("pressed", "Button").border_color = c
+	popup_dialog_theme.get_stylebox("panel", "AcceptDialog").border_color = c
+	popup_dialog_theme.get_stylebox("embedded_border", "AcceptDialog").border_color = c
+	popup_dialog_theme.get_stylebox("embedded_unfocused_border", "AcceptDialog").border_color = c
+	popup_dialog_theme.get_stylebox("embedded_border", "Window").border_color = c
+	popup_dialog_theme.get_stylebox("embedded_unfocused_border", "Window").border_color = c
 
 
 func _on_tool_box_item_selected(index: int) -> void:
@@ -936,8 +978,18 @@ func _on_drawing_tool_box_item_selected(index: int) -> void:
 
 func _on_toggle_mode_toggled(toggled_on: bool) -> void:
 	if toggled_on:
+		app_mode = AppMode.DRAWING
 		tool_box.visible = false
 		drawing_tool_box.visible = true
+		element_settings.toggle_style_presets(false)
+		change_accent_color(accent_color_drawing)
+		toggle_mode_button.tooltip_text = "Change to Planning Mode"
 	else:
+		app_mode = AppMode.PLANNING
 		tool_box.visible = true
 		drawing_tool_box.visible = false
+		element_settings.toggle_style_presets(true)
+		tool_box.select(Tool.SELECT)
+		_on_tool_box_item_selected(Tool.SELECT)
+		change_accent_color(accent_color_planning)
+		toggle_mode_button.tooltip_text = "Change to Drawing Mode"

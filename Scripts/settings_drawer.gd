@@ -1,4 +1,5 @@
 extends Control
+class_name SettingsDrawer
 
 @onready var show_completed: CheckBox = $PanelContainer/HBoxContainer/Background/MarginContainer/Scroll/Settings/ShowCompleted
 @onready var show_priorities: CheckBox = $PanelContainer/HBoxContainer/Background/MarginContainer/Scroll/Settings/ShowPriorities
@@ -7,6 +8,7 @@ extends Control
 @onready var priority_filter: HScrollBar = $PanelContainer/HBoxContainer/Background/MarginContainer/Scroll/Settings/PriorityFilter
 @onready var animation_player: AnimationPlayer = $AnimationPlayer
 @onready var toggle_drawer: Button = $PanelContainer/HBoxContainer/ToggleDrawer
+@onready var background: Panel = $PanelContainer/HBoxContainer/Background
 
 var checkboxes: Array[CheckBox] = []
 
@@ -32,6 +34,15 @@ func get_priority_filter() -> HScrollBar:
 
 func get_priority_filter_label() -> Label:
 	return priority_filter_label
+
+
+func set_accent_color(c: Color) -> void:
+	background.theme.get_stylebox("panel", "Panel").border_color = c
+	priority_filter.theme.get_stylebox("scroll", "HScrollBar").border_color = c
+	toggle_drawer.theme.get_stylebox("disabled", "Button").border_color = c
+	toggle_drawer.theme.get_stylebox("hover", "Button").border_color = c
+	toggle_drawer.theme.get_stylebox("normal", "Button").border_color = c
+	toggle_drawer.theme.get_stylebox("pressed", "Button").border_color = c
 
 
 func _on_toggle_drawer_toggled(toggled_on: bool) -> void:

@@ -12,78 +12,27 @@
 [ext_resource type="Texture2D" uid="uid://bq1whdycd3ffe" path="res://Icons/drawing_mode.svg" id="7_8edxt"]
 [ext_resource type="PackedScene" uid="uid://b1jg4g6wbv0qw" path="res://Scenes/settings_drawer.tscn" id="8_2ebs2"]
 [ext_resource type="Texture2D" uid="uid://dh8rwukkdehkk" path="res://Icons/hand_cursor.svg" id="8_76v2p"]
+[ext_resource type="Texture2D" uid="uid://btvuy2ypmwdmj" path="res://Icons/planning_mode.svg" id="8_nt2eh"]
 [ext_resource type="Texture2D" uid="uid://djq4xvrjpvfp5" path="res://Icons/plus.svg" id="9_7ewk0"]
 [ext_resource type="Texture2D" uid="uid://cjmn8wx7kwelm" path="res://Icons/minus.svg" id="10_lhp3t"]
 [ext_resource type="Texture2D" uid="uid://bcyljs0288jnt" path="res://Icons/settings_menu.svg" id="10_oyb3p"]
 [ext_resource type="Texture2D" uid="uid://l7psu5evarxp" path="res://Icons/add_line.svg" id="13_psl12"]
 [ext_resource type="Texture2D" uid="uid://1jids2awyagv" path="res://Icons/remove_line.svg" id="14_2ebs2"]
 [ext_resource type="Texture2D" uid="uid://dfq5wqtp3gjfd" path="res://Icons/checkbox.svg" id="15_2ebs2"]
+[ext_resource type="Texture2D" uid="uid://ck2luoi8jg6g" path="res://Icons/pencil.svg" id="15_5oxhp"]
 [ext_resource type="PackedScene" uid="uid://cg3drsp3kg5hm" path="res://Scenes/drawing_manager.tscn" id="17_b48ew"]
 [ext_resource type="PackedScene" uid="uid://cwbooma1lih12" path="res://Scenes/element_settings.tscn" id="17_oyb3p"]
+[ext_resource type="Texture2D" uid="uid://dvj0rxvoc7005" path="res://Icons/brush.svg" id="17_xle81"]
 [ext_resource type="Theme" uid="uid://nujp3orsr2ol" path="res://Themes/popup_dialogue_theme.tres" id="18_2ebs2"]
+[ext_resource type="Texture2D" uid="uid://cektvw6goipya" path="res://Icons/pencil_eraser.svg" id="18_s8qe6"]
 [ext_resource type="PackedScene" uid="uid://binp5ftakgned" path="res://Scenes/pan_indicator_camera.tscn" id="19_jvnna"]
+[ext_resource type="Texture2D" uid="uid://dojsm17sk75ju" path="res://Icons/eraser.svg" id="19_yb0ja"]
 
 [sub_resource type="Theme" id="Theme_6l7je"]
 MarginContainer/constants/margin_bottom = 38
 MarginContainer/constants/margin_left = 20
 MarginContainer/constants/margin_right = 20
 MarginContainer/constants/margin_top = 20
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8edxt"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5oxhp"]
-content_margin_right = 2.0
-bg_color = Color(0.3, 0.3, 0.3, 0.705882)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.188235, 0.701961, 1, 1)
-border_blend = true
-corner_radius_top_left = 1
-corner_radius_top_right = 1
-corner_radius_bottom_right = 1
-corner_radius_bottom_left = 1
-corner_detail = 1
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nt2eh"]
-content_margin_right = 2.0
-bg_color = Color(0.5, 0.5, 0.5, 0.705882)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.188235, 0.701961, 1, 1)
-border_blend = true
-corner_radius_top_left = 1
-corner_radius_top_right = 1
-corner_radius_bottom_right = 1
-corner_radius_bottom_left = 1
-corner_detail = 1
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8edxt"]
-content_margin_right = 2.0
-bg_color = Color(0, 0, 0, 0.705882)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.188235, 0.701961, 1, 1)
-border_blend = true
-corner_radius_top_left = 1
-corner_radius_top_right = 1
-corner_radius_bottom_right = 1
-corner_radius_bottom_left = 1
-corner_detail = 1
-
-[sub_resource type="Theme" id="Theme_5oxhp"]
-CheckButton/icons/checked = ExtResource("7_8edxt")
-CheckButton/icons/unchecked = ExtResource("7_8edxt")
-CheckButton/styles/focus = SubResource("StyleBoxEmpty_8edxt")
-CheckButton/styles/hover = SubResource("StyleBoxFlat_5oxhp")
-CheckButton/styles/hover_pressed = SubResource("StyleBoxFlat_nt2eh")
-CheckButton/styles/normal = SubResource("StyleBoxFlat_8edxt")
-CheckButton/styles/pressed = SubResource("StyleBoxFlat_8edxt")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5oxhp"]
 
@@ -154,10 +103,13 @@ script = ExtResource("1_52fb6")
 element_scene = "uid://lufadl7u0ek3"
 connection_scene = "res://Scenes/connection.tscn"
 canvas_scene = "uid://b1do6gcy6peum"
-zoom_limits = Vector2(0.2, 2)
-zoom_speed = 1.05
+accent_color_planning = Color(0.188235, 0.701961, 1, 1)
+accent_color_drawing = Color(1, 0.503624, 0.123206, 1)
+button_theme = ExtResource("4_x6ack")
+popup_dialog_theme = ExtResource("18_2ebs2")
 priority_colors = Array[Color]([Color(1, 1, 1, 1), Color(1, 0, 0, 1), Color(1, 1, 0, 1), Color(0, 1, 0, 1), Color(0, 0, 0, 0)])
 priority_styleboxes = Array[StyleBoxFlat]([ExtResource("2_mai8y"), ExtResource("3_76v2p"), ExtResource("4_drdnd"), ExtResource("5_ioaeq"), ExtResource("6_7ewk0")])
+zoom_speed = 1.05
 priority_filter_text = Array[String](["Only Active", "Active & High", "Medium and higher", "Low and higher", "All"])
 opened_files_file_name = "opened_files_dev.json"
 
@@ -180,9 +132,13 @@ size_flags_horizontal = 4
 size_flags_vertical = 0
 
 [node name="ToggleMode" type="CheckButton" parent="MarginContainer/ToolArea"]
+light_mask = 2
+visibility_layer = 2
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-theme = SubResource("Theme_5oxhp")
+theme = ExtResource("4_x6ack")
+theme_override_icons/checked = ExtResource("7_8edxt")
+theme_override_icons/unchecked = ExtResource("8_nt2eh")
 icon_alignment = 1
 
 [node name="PlannerToolBox" type="ItemList" parent="MarginContainer/ToolArea"]
@@ -229,13 +185,13 @@ item_count = 4
 max_columns = 9
 icon_mode = 0
 item_0/text = "Pencil"
-item_0/icon = ExtResource("8_76v2p")
+item_0/icon = ExtResource("15_5oxhp")
 item_1/text = "Brush"
-item_1/icon = ExtResource("8_76v2p")
+item_1/icon = ExtResource("17_xle81")
 item_2/text = "Eraser (Pencil)"
-item_2/icon = ExtResource("8_76v2p")
+item_2/icon = ExtResource("18_s8qe6")
 item_3/text = "Eraser (Brush)"
-item_3/icon = ExtResource("8_76v2p")
+item_3/icon = ExtResource("19_yb0ja")
 
 [node name="PanIndicatorCamera" parent="MarginContainer" instance=ExtResource("19_jvnna")]
 custom_minimum_size = Vector2(300, 150)

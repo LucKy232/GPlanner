@@ -29,5 +29,9 @@ func show_zoom() -> void:
 		hide_timer.start()
 
 
+func set_accent_color(c: Color) -> void:
+	zoom_progress_bar.theme.get_stylebox("background", "ProgressBar").border_color = c
+
+
 func hide_zoom() -> void:
 	animation_player.play("fade_out_zoom_indicator")

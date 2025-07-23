@@ -1,7 +1,15 @@
-[gd_resource type="Theme" load_steps=3 format=3 uid="uid://dwboubtw2bfss"]
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://dwboubtw2bfss"]
 
-[ext_resource type="Texture2D" uid="uid://b1u633gvonf2b" path="res://Icons/checkbox_checked.svg" id="1_asfmc"]
-[ext_resource type="Texture2D" uid="uid://bncr2tnetoor1" path="res://Icons/checkbox_unchecked.svg" id="2_6fhyk"]
+[ext_resource type="Texture2D" uid="uid://clygcgjl25ftc" path="res://Icons/checkbox_checked_white.svg" id="1_asfmc"]
+[ext_resource type="Texture2D" uid="uid://bvgangnvpd0qc" path="res://Icons/checkbox_unchecked_white.svg" id="2_6fhyk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_asfmc"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6fhyk"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_chei2"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8ijgy"]
 
 [resource]
 CheckBox/colors/font_color = Color(0.875, 0.875, 0.875, 1)
@@ -12,3 +20,7 @@ CheckBox/icons/checked = ExtResource("1_asfmc")
 CheckBox/icons/checked_disabled = null
 CheckBox/icons/unchecked = ExtResource("2_6fhyk")
 CheckBox/icons/unchecked_disabled = null
+CheckBox/styles/focus = SubResource("StyleBoxEmpty_asfmc")
+CheckBox/styles/hover = SubResource("StyleBoxEmpty_6fhyk")
+CheckBox/styles/normal = SubResource("StyleBoxEmpty_chei2")
+CheckBox/styles/pressed = SubResource("StyleBoxEmpty_8ijgy")
