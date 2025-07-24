@@ -58,12 +58,8 @@ var close_this_tab: bool = false
 var exiting_app: bool = false
 var need_to_save_images_on_tool_change = false
 var last_window_mode: Window.Mode = Window.Mode.MODE_WINDOWED		## When going to borderless fullscreen, remember the last Window.Mode
-var app_mode: AppMode = AppMode.PLANNING
 
-enum AppMode {
-	PLANNING,
-	DRAWING,
-}
+
 enum Checkbox {
 	SHOW_PRIORITIES,
 	SHOW_PRIORITY_TOOL,
@@ -219,8 +215,11 @@ func create_tool_keybinds() -> void:
 	for tool in tool_keybinds:
 		for event in InputMap.action_get_events(tool_keybinds[tool]):
 			tool_box.set_item_text(tool, ("%s (%s)") % [tool_box.get_item_text(tool), event.as_text().split(" ")[0]])
-	
-	toggle_mode_button.tooltip_text = "Change to Drawing Mode"
+	set_toggle_mode_button_tooltip("Change to Drawing Mode")
+
+
+func set_toggle_mode_button_tooltip(tooltip: String) -> void:
+	toggle_mode_button.tooltip_text = tooltip
 	for event in InputMap.action_get_events("switch_app_mode"):
 		toggle_mode_button.tooltip_text = "%s (%s)" % [toggle_mode_button.tooltip_text, event.as_text().split(" ")[0]]
 	toggle_mode_button.shortcut = Shortcut.new()
@@ -271,6 +270,12 @@ func switch_main_canvas(id: int) -> void:
 	drawing_manager.change_active_canvas_drawing_group(cc)
 	call_deferred("_on_canvas_changed_zoom")
 	call_deferred("_on_canvas_changed_position")
+	if canvases[cc].app_mode == canvases[cc].AppMode.DRAWING:
+		_on_toggle_mode_toggled(true)
+		toggle_mode_button.set_pressed_no_signal(true)
+	else:
+		_on_toggle_mode_toggled(false)
+		toggle_mode_button.set_pressed_no_signal(false)
 
 
 func set_current_tab_title(title: String, tooltip: String, token: String) -> void:
@@ -381,6 +386,7 @@ func save_file(path: String) -> void:
 		"Elements": canvases[cc].all_elements_to_Json(),
 		"Connections": canvases[cc].all_connection_pairs_to_json(),
 		"DrawingRegions": drawing_manager.drawing_region_paths_to_json(),
+		"DrawingSettings": canvases[cc].drawing_settings.to_json(),
 	}
 	
 	var success: bool = file.store_string(JSON.stringify(save_data, "\t"))
@@ -490,13 +496,18 @@ func load_opened_file_paths(path: String) -> void:
 				if files[f] != "":
 					_on_add_file_button_pressed()	# new_file(), new tab, switch tab -> switch_main_canvas()
 					load_file(files[f], true)
+			
+			# After loading all files, go to the active file that was in use when the last session ended
 			var current = int(data["CurrentID"])
 			if canvases.has(current):
 				if file_tab_bar.current_tab == current:
 					drawing_manager.reload_all_drawing_regions(current)
 				else:
 					file_tab_bar.current_tab = current
-			else:
+				if canvases[current].app_mode == canvases[current].AppMode.DRAWING:
+					_on_toggle_mode_toggled(true)
+					toggle_mode_button.set_pressed_no_signal(true)
+			else:	# Select last tab (if any exist, it will be valid)
 				file_tab_bar.current_tab = file_tab_bar.tab_count - 1
 	else:
 		# Create empty file on first time load
@@ -578,10 +589,12 @@ func disable_input() -> bool:
 
 
 func change_accent_color(c: Color) -> void:
-	if app_mode == AppMode.PLANNING:
+	if !canvases.has(cc):
+		return
+	if canvases[cc].app_mode == canvases[cc].AppMode.PLANNING:
 		tool_box.theme.get_stylebox("panel", "ItemList").border_color = c
 		element_settings.set_accent_color(c)
-	if app_mode == AppMode.DRAWING:
+	if canvases[cc].app_mode == canvases[cc].AppMode.DRAWING:
 		drawing_tool_box.theme.get_stylebox("panel", "ItemList").border_color = c
 	settings_drawer.set_accent_color(c)
 	zoom_indicator.set_accent_color(c)
@@ -973,23 +986,28 @@ func _on_drawing_manager_forced_save_ended() -> void:
 
 @warning_ignore("unused_parameter")
 func _on_drawing_tool_box_item_selected(index: int) -> void:
-	pass # Replace with function body.
+	if !canvases.has(cc):
+		return
+	canvases[cc].drawing_settings.selected_tool = index
 
 
+# true: DRAWING, false: PLANNING
 func _on_toggle_mode_toggled(toggled_on: bool) -> void:
+	if !canvases.has(cc):
+		return
 	if toggled_on:
-		app_mode = AppMode.DRAWING
+		canvases[cc].app_mode = canvases[cc].AppMode.DRAWING
 		tool_box.visible = false
 		drawing_tool_box.visible = true
 		element_settings.toggle_style_presets(false)
 		change_accent_color(accent_color_drawing)
-		toggle_mode_button.tooltip_text = "Change to Planning Mode"
+		set_toggle_mode_button_tooltip("Change to Planning Mode")
 	else:
-		app_mode = AppMode.PLANNING
+		canvases[cc].app_mode = canvases[cc].AppMode.PLANNING
 		tool_box.visible = true
 		drawing_tool_box.visible = false
 		element_settings.toggle_style_presets(true)
 		tool_box.select(Tool.SELECT)
 		_on_tool_box_item_selected(Tool.SELECT)
 		change_accent_color(accent_color_planning)
-		toggle_mode_button.tooltip_text = "Change to Drawing Mode"
+		set_toggle_mode_button_tooltip("Change to Drawing Mode")

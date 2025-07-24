@@ -157,8 +157,8 @@ func move_to_region(region: Vector2i) -> void:
 	force_update_transform()
 
 
-func receive_coords(p1: Vector2, p2: Vector2, draw_tool: int, pressure: float = 1.0) -> void:
-	canvas_groups[current_canvas].receive_coords(p1, p2, draw_tool, pressure)
+func receive_coords(p1: Vector2, p2: Vector2, settings: DrawingSettings, pressure: float = 1.0) -> void:
+	canvas_groups[current_canvas].receive_coords(p1, p2, settings, pressure)
 
 
 func end_stroke() -> void:

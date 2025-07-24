@@ -48,6 +48,8 @@ var zoom_limits: Vector2
 var zoom_speed: float
 var is_user_input: bool = true
 var last_pressure_event: float = 1.0
+var app_mode: AppMode = AppMode.PLANNING
+var drawing_settings: DrawingSettings = DrawingSettings.new()
 
 signal done_adding_elements
 signal changed_zoom
@@ -80,9 +82,9 @@ enum Priority {
 	LOW,
 	NONE,
 }
-enum DrawTool {
-	PENCIL,	# TODO remove and use class DrawingSettings
-	ERASER,	# TODO remove and use class DrawingSettings
+enum AppMode {
+	PLANNING,
+	DRAWING,
 }
 
 
@@ -437,6 +439,7 @@ func canvas_state_to_json() -> Dictionary:
 		"show_priority_tool": checkbox_data[Checkbox.SHOW_PRIORITY_TOOL],
 		"priority_filter_value": priority_filter_value,
 		"drawing_folder_path": drawing_manager.get_folder_path(id),
+		"app_mode": app_mode,
 	}
 
 
@@ -457,6 +460,8 @@ func rebuild_canvas_state(state: Dictionary) -> void:
 		priority_filter_value = int(state["priority_filter_value"])
 	if state.has("drawing_folder_path"):
 		drawing_manager.set_folder_path(id, state["drawing_folder_path"])
+	if state.has("app_mode"):
+		app_mode = int(state["app_mode"]) as AppMode
 	changed_position.emit()
 
 
@@ -655,9 +660,9 @@ func _on_gui_input(event: InputEvent) -> void:
 				drawing_manager.resize_to_window()
 				drawing_manager.update_drawing_position_and_scale(-position, scale)
 				if tool_id == Tool.PENCIL:
-					drawing_manager.receive_coords(last_draw_event_position, last_draw_event_position, DrawTool.PENCIL, last_pressure_event)
+					drawing_manager.receive_coords(last_draw_event_position, last_draw_event_position, drawing_settings, last_pressure_event)
 				if tool_id == Tool.ERASER:
-					drawing_manager.receive_coords(last_draw_event_position, last_draw_event_position, DrawTool.ERASER, last_pressure_event)
+					drawing_manager.receive_coords(last_draw_event_position, last_draw_event_position, drawing_settings, last_pressure_event)
 		elif event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
 			if is_panning:
 				is_panning = false
@@ -680,12 +685,12 @@ func _on_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and is_drawing and tool_id == Tool.PENCIL:
 		drawings_changed()
 		var currrent_draw_event_position: Vector2 = event.position * scale + position
-		drawing_manager.receive_coords(last_draw_event_position, currrent_draw_event_position, DrawTool.PENCIL, last_pressure_event)
+		drawing_manager.receive_coords(last_draw_event_position, currrent_draw_event_position, drawing_settings, last_pressure_event)
 		last_draw_event_position = currrent_draw_event_position
 	if event is InputEventMouseMotion and is_drawing and tool_id == Tool.ERASER:
 		drawings_changed()
 		var currrent_draw_event_position: Vector2 = event.position * scale + position
-		drawing_manager.receive_coords(last_draw_event_position, currrent_draw_event_position, DrawTool.ERASER, last_pressure_event)
+		drawing_manager.receive_coords(last_draw_event_position, currrent_draw_event_position, drawing_settings, last_pressure_event)
 		last_draw_event_position = currrent_draw_event_position
 
 

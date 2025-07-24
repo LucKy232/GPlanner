@@ -113,35 +113,35 @@ func has_changes() -> bool:
 	return false
 
 
-func receive_coords(p1: Vector2, p2: Vector2, draw_tool: int, pressure: float) -> void:
-	var to_set_material: bool = true if current_stroke.type != draw_tool else false
+func receive_coords(p1: Vector2, p2: Vector2, settings: DrawingSettings, pressure: float) -> void:
+	var to_set_material: bool = true if current_stroke.type != settings.selected_tool else false
 	
-	if draw_tool == DrawTool.BRUSH:
+	if settings.selected_tool == settings.DrawingTool.BRUSH:
 		if to_set_material:
 			position_brush_to_current_stroke()
-			setup_shader(Color(0.2, 0.6, 0.7, 1.0))
-			current_stroke.type = draw_tool
+			setup_shader(settings.brush_settings.color)
+			current_stroke.type = settings.selected_tool
 		current_stroke.draw_brush_line(p1, p2, pressure)
-	elif draw_tool == DrawTool.ERASERBRUSH:
+	elif settings.selected_tool == settings.DrawingTool.ERASER_BRUSH:
 		if to_set_material:
 			position_eraser_to_current_stroke()
 			setup_eraser_shader()
 			current_stroke.material = eraser_material.duplicate()
-			current_stroke.type = draw_tool
+			current_stroke.type = settings.selected_tool
 		brush_eraser_texture.draw_brush_line(p1, p2, pressure)
-	elif draw_tool == DrawTool.PENCIL:
+	elif settings.selected_tool == settings.DrawingTool.PENCIL:
 		if to_set_material:
-			current_stroke.type = draw_tool
+			current_stroke.type = settings.selected_tool
 			current_stroke.material = pencil_material
-		current_stroke.draw_pencil(p1, p2, Color.WHITE, 1)
-	elif draw_tool == DrawTool.ERASER:
+		current_stroke.draw_pencil(p1, p2, Color.WHITE, settings.pencil_settings.size)
+	elif settings.selected_tool == settings.DrawingTool.ERASER_PENCIL:
 		if to_set_material:
-			current_stroke.type = draw_tool
+			current_stroke.type = settings.selected_tool
 			current_stroke.material = eraser_material
-		current_stroke.draw_pencil(p1, p2, Color.WHITE, 1)
-	elif draw_tool == 99:		# Mask pencil eraser, unused
+		current_stroke.draw_pencil(p1, p2, Color.WHITE, settings.eraser_pencil_settings.size)
+	elif settings.selected_tool == 99:		# Mask pencil eraser, unused
 		if to_set_material:
-			current_stroke.type = draw_tool
+			current_stroke.type = settings.selected_tool
 			current_stroke.material = mask_eraser_material
 		if !current_stroke.is_mask:
 			current_stroke.make_mask()
