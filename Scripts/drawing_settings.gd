@@ -32,7 +32,7 @@ class PencilSettings:
 
 
 class BrushSettings:
-	var size_limits: Vector2 = Vector2(1.0, 50.0)
+	var size_limits: Vector2 = Vector2(1.0, 200.0)
 	var size: float = 10.0:
 		get:
 			return clampf(size, size_limits.x, size_limits.y)
@@ -73,7 +73,7 @@ class EraserPencilSettings:
 
 
 class EraserBrushSettings:
-	var size_limits: Vector2 = Vector2(1.0, 50.0)
+	var size_limits: Vector2 = Vector2(1.0, 200.0)
 	var size: float = 10.0:
 		get:
 			return clampf(size, size_limits.x, size_limits.y)
@@ -104,7 +104,7 @@ func to_json() -> Dictionary:
 	return dict
 
 
-func reload_from_json(dict: Dictionary) -> void:
+func rebuild_from_json(dict: Dictionary) -> void:
 	selected_tool = dict["SelectedTool"]
 	
 	var pensett: Dictionary = dict["PencilSettings"]

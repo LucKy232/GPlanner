@@ -108,6 +108,7 @@ func new_canvas() -> void:
 	position = -size * 0.5 + get_viewport_rect().size * 0.5	# Start from the center on New File
 	scale = Vector2(1.0, 1.0)
 	priority_filter_value = Priority.NONE
+	drawing_settings = DrawingSettings.new()
 	canvas_changed(true)
 	#print("New canvas id %d" % [id])
 
@@ -636,65 +637,73 @@ func change_priority_filter(value: int) -> void:
 		toggle_connections(i)
 
 
+func toggle_element_label_mouse_inputs(toggled_on: bool) -> void:
+	for e in elements:
+		if toggled_on:
+			elements[e].line_edit.mouse_filter = Control.MOUSE_FILTER_PASS
+			elements[e].mouse_filter = Control.MOUSE_FILTER_PASS
+		else:
+			elements[e].line_edit.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			elements[e].mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+
 func _on_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and event.pressure > 0.0:
 		last_pressure_event = event.pressure
-	if drawing_manager.is_taking_screenshots:
-		return
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
-			if tool_id == Tool.ADD_ELEMENT:
-				add_element_label(event.position)
-				is_adding_elements = true
-			if (tool_id == Tool.SELECT or tool_id == Tool.ELEMENT_STYLE_SETTINGS):
-				if !is_element_just_created:
-					select_element(-1)	# Deselect any
-				else:
-					is_element_just_created = false
-				if !is_panning:
-					is_panning = true
-					drag_start_mouse_pos = event.position
-			if tool_id == Tool.PENCIL or tool_id == Tool.ERASER:
-				is_drawing = true
-				last_draw_event_position = event.position * scale + position
-				drawing_manager.resize_to_window()
-				drawing_manager.update_drawing_position_and_scale(-position, scale)
-				if tool_id == Tool.PENCIL:
-					drawing_manager.receive_coords(last_draw_event_position, last_draw_event_position, drawing_settings, last_pressure_event)
-				if tool_id == Tool.ERASER:
-					drawing_manager.receive_coords(last_draw_event_position, last_draw_event_position, drawing_settings, last_pressure_event)
-		elif event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
-			if is_panning:
-				is_panning = false
-			if is_drawing:
-				is_drawing = false
-				last_draw_event_position = Vector2.ZERO
-				drawing_manager.end_stroke()
-		if event.button_index == MOUSE_BUTTON_WHEEL_UP and (tool_id == Tool.SELECT or tool_id == Tool.ELEMENT_STYLE_SETTINGS):
-			var old_zoom: float = zoom_level
-			zoom_level = clampf(zoom_level * zoom_speed, zoom_limits.x, zoom_limits.y)
-			handle_zoom(old_zoom, get_window().get_mouse_position())
-		if event.button_index == MOUSE_BUTTON_WHEEL_DOWN and (tool_id == Tool.SELECT or tool_id == Tool.ELEMENT_STYLE_SETTINGS):
-			var old_zoom: float = zoom_level
-			zoom_level = clampf(zoom_level * (2.0 - zoom_speed), zoom_limits.x, zoom_limits.y)
-			handle_zoom(old_zoom, get_viewport_rect().size * 0.5)
-	if event is InputEventMouseMotion and is_panning and (tool_id == Tool.SELECT or tool_id == Tool.ELEMENT_STYLE_SETTINGS):
-		var move = (event.position - drag_start_mouse_pos) * scale.x
-		position = pan_limits(position + move)
-		changed_position.emit()
-	if event is InputEventMouseMotion and is_drawing and tool_id == Tool.PENCIL:
-		drawings_changed()
-		var currrent_draw_event_position: Vector2 = event.position * scale + position
-		drawing_manager.receive_coords(last_draw_event_position, currrent_draw_event_position, drawing_settings, last_pressure_event)
-		last_draw_event_position = currrent_draw_event_position
-	if event is InputEventMouseMotion and is_drawing and tool_id == Tool.ERASER:
-		drawings_changed()
-		var currrent_draw_event_position: Vector2 = event.position * scale + position
-		drawing_manager.receive_coords(last_draw_event_position, currrent_draw_event_position, drawing_settings, last_pressure_event)
-		last_draw_event_position = currrent_draw_event_position
+	
+	if app_mode == AppMode.PLANNING:
+		if drawing_manager.is_taking_screenshots:
+			return
+		if event is InputEventMouseButton:
+			if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
+				if tool_id == Tool.ADD_ELEMENT:
+					add_element_label(event.position)
+					is_adding_elements = true
+				if (tool_id == Tool.SELECT or tool_id == Tool.ELEMENT_STYLE_SETTINGS):
+					if !is_element_just_created:
+						select_element(-1)	# Deselect any
+					else:
+						is_element_just_created = false
+					if !is_panning:
+						is_panning = true
+						drag_start_mouse_pos = event.position
+			elif event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
+				if is_panning:
+					is_panning = false
+			if event.button_index == MOUSE_BUTTON_WHEEL_UP and (tool_id == Tool.SELECT or tool_id == Tool.ELEMENT_STYLE_SETTINGS):
+				var old_zoom: float = zoom_level
+				zoom_level = clampf(zoom_level * zoom_speed, zoom_limits.x, zoom_limits.y)
+				handle_zoom(old_zoom, get_window().get_mouse_position())
+			if event.button_index == MOUSE_BUTTON_WHEEL_DOWN and (tool_id == Tool.SELECT or tool_id == Tool.ELEMENT_STYLE_SETTINGS):
+				var old_zoom: float = zoom_level
+				zoom_level = clampf(zoom_level * (2.0 - zoom_speed), zoom_limits.x, zoom_limits.y)
+				handle_zoom(old_zoom, get_viewport_rect().size * 0.5)
+		if event is InputEventMouseMotion and is_panning and (tool_id == Tool.SELECT or tool_id == Tool.ELEMENT_STYLE_SETTINGS):
+			var move = (event.position - drag_start_mouse_pos) * scale.x
+			position = pan_limits(position + move)
+			changed_position.emit()
+	
+	if app_mode == AppMode.DRAWING:
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
+			is_drawing = true
+			last_draw_event_position = event.position * scale + position
+			drawing_manager.resize_to_window()
+			drawing_manager.update_drawing_position_and_scale(-position, scale)
+			drawing_manager.receive_coords(last_draw_event_position, last_draw_event_position, drawing_settings, last_pressure_event)
+		elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_released() and is_drawing:
+			is_drawing = false
+			last_draw_event_position = Vector2.ZERO
+			drawing_manager.end_stroke()
+		if event is InputEventMouseMotion and is_drawing:
+			drawings_changed()
+			var currrent_draw_event_position: Vector2 = event.position * scale + position
+			drawing_manager.receive_coords(last_draw_event_position, currrent_draw_event_position, drawing_settings, last_pressure_event)
+			last_draw_event_position = currrent_draw_event_position
 
 
 func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
+	if app_mode == AppMode.DRAWING:
+		return
 	if drawing_manager.is_taking_screenshots:
 		return
 	if event is InputEventMouseButton:

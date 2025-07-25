@@ -119,33 +119,34 @@ func receive_coords(p1: Vector2, p2: Vector2, settings: DrawingSettings, pressur
 	if settings.selected_tool == settings.DrawingTool.BRUSH:
 		if to_set_material:
 			position_brush_to_current_stroke()
-			setup_shader(settings.brush_settings.color)
+			setup_shader()
 			current_stroke.type = settings.selected_tool
-		current_stroke.draw_brush_line(p1, p2, pressure)
+		if !settings.brush_settings.use_pressure_for_size:
+			pressure = 1.0
+		else:
+			pressure = clampf(pressure, settings.brush_settings.min_pressure, 1.0)
+		current_stroke.draw_brush_line(p1, p2, settings.brush_settings.color, settings.brush_settings.size, pressure)
 	elif settings.selected_tool == settings.DrawingTool.ERASER_BRUSH:
 		if to_set_material:
 			position_eraser_to_current_stroke()
 			setup_eraser_shader()
 			current_stroke.material = eraser_material.duplicate()
 			current_stroke.type = settings.selected_tool
-		brush_eraser_texture.draw_brush_line(p1, p2, pressure)
+		if !settings.eraser_brush_settings.use_pressure_for_size:
+			pressure = 1.0
+		else:
+			pressure = clampf(pressure, settings.eraser_brush_settings.min_pressure, 1.0)
+		brush_eraser_texture.draw_brush_line(p1, p2, Color.WHITE, settings.eraser_brush_settings.size, pressure)
 	elif settings.selected_tool == settings.DrawingTool.PENCIL:
 		if to_set_material:
-			current_stroke.type = settings.selected_tool
 			current_stroke.material = pencil_material
-		current_stroke.draw_pencil(p1, p2, Color.WHITE, settings.pencil_settings.size)
+			current_stroke.type = settings.selected_tool
+		current_stroke.draw_pencil(p1, p2, settings.pencil_settings.color, settings.pencil_settings.size)
 	elif settings.selected_tool == settings.DrawingTool.ERASER_PENCIL:
 		if to_set_material:
-			current_stroke.type = settings.selected_tool
 			current_stroke.material = eraser_material
-		current_stroke.draw_pencil(p1, p2, Color.WHITE, settings.eraser_pencil_settings.size)
-	elif settings.selected_tool == 99:		# Mask pencil eraser, unused
-		if to_set_material:
 			current_stroke.type = settings.selected_tool
-			current_stroke.material = mask_eraser_material
-		if !current_stroke.is_mask:
-			current_stroke.make_mask()
-		current_stroke.mask_eraser_pencil_1px(p1, p2)
+		current_stroke.draw_pencil(p1, p2, Color.WHITE, settings.eraser_pencil_settings.size)
 
 
 # Called when setting up the material for the current_stroke
@@ -165,14 +166,13 @@ func position_eraser_to_current_stroke() -> void:
 	brush_eraser_texture.position = Vector2.ZERO
 
 
-func setup_shader(c: Color) -> void:
+func setup_shader() -> void:
 	current_stroke.material = brush_material.duplicate()
 	current_stroke.set_visibility_layer_bit(2, false)# 	Only layers 1 & 8 active - Only one that the BrushSubViewport can see
 	current_stroke.set_visibility_layer_bit(7, true)
 	active_brush_shader = current_stroke.material
 	active_brush_shader.set_shader_parameter("brush", brush)
 	active_brush_shader.set_shader_parameter("prev_img", blank_img)
-	active_brush_shader.set_shader_parameter("brush_color", Vector4(c.r, c.g, c.b, c.a))
 	RenderingServer.frame_post_draw.connect(_on_post_render)
 
 

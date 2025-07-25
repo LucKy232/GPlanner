@@ -1,0 +1,73 @@
+[gd_scene load_steps=2 format=3 uid="uid://beylfa265iu7e"]
+
+[ext_resource type="Script" uid="uid://bbbggtoioxgv3" path="res://Scripts/drawing_tool_bar.gd" id="1_6c0qi"]
+
+[node name="DrawingToolBar" type="HBoxContainer"]
+light_mask = 2
+visibility_layer = 2
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -686.0
+offset_bottom = -616.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+script = ExtResource("1_6c0qi")
+
+[node name="PencilSizeSpinBox" type="SpinBox" parent="."]
+light_mask = 2
+visibility_layer = 2
+custom_minimum_size = Vector2(90, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+rounded = true
+alignment = 3
+prefix = "Size"
+
+[node name="BrushSizeSpinBox" type="SpinBox" parent="."]
+light_mask = 2
+visibility_layer = 2
+custom_minimum_size = Vector2(90, 32)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+rounded = true
+alignment = 3
+prefix = "Size"
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="."]
+light_mask = 2
+visibility_layer = 2
+custom_minimum_size = Vector2(90, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+edit_alpha = false
+
+[node name="PressureCheckButton" type="CheckButton" parent="."]
+light_mask = 2
+visibility_layer = 2
+custom_minimum_size = Vector2(90, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="MinPressureSpinBox" type="SpinBox" parent="."]
+light_mask = 2
+visibility_layer = 2
+custom_minimum_size = Vector2(90, 32)
+layout_mode = 2
+max_value = 1.0
+step = 0.05
+value = 0.1
+alignment = 3
+prefix = "Min"
+
+[connection signal="value_changed" from="PencilSizeSpinBox" to="." method="_on_pencil_size_spin_box_value_changed"]
+[connection signal="value_changed" from="BrushSizeSpinBox" to="." method="_on_brush_size_spin_box_value_changed"]
+[connection signal="color_changed" from="ColorPickerButton" to="." method="_on_color_picker_button_color_changed"]
+[connection signal="toggled" from="PressureCheckButton" to="." method="_on_pressure_check_button_toggled"]
+[connection signal="value_changed" from="MinPressureSpinBox" to="." method="_on_min_pressure_spin_box_value_changed"]

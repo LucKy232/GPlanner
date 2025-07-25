@@ -27,11 +27,11 @@ func init_image(img_width: int, img_height: int) -> void:
 	texture = ImageTexture.create_from_image(image)
 
 
-func draw_brush_line(p1: Vector2, p2: Vector2, pressure: float) -> void:
-	var brush_scale: float = 20.0
+func draw_brush_line(p1: Vector2, p2: Vector2, c: Color, brush_size: float, pressure: float) -> void:
 	material.set_shader_parameter("scale", scale.x)
 	material.set_shader_parameter("screen_size", size)
-	material.set_shader_parameter("brush_scale", Vector2(brush_scale, brush_scale))
+	material.set_shader_parameter("brush_scale", Vector2(brush_size, brush_size))
+	material.set_shader_parameter("brush_color", Vector4(c.r, c.g, c.b, c.a))
 	material.set_shader_parameter("pressure", pressure)
 	var p1_gpu: Vector2 = Vector2(p1.x / size.x, p1.y / size.y) * capped_zoom	# Converted to UV
 	var p2_gpu: Vector2 = Vector2(p2.x / size.x, p2.y / size.y) * capped_zoom	# Converted to UV
@@ -48,14 +48,14 @@ func draw_brush_line(p1: Vector2, p2: Vector2, pressure: float) -> void:
 	#print("Brush UV: %0.4f %0.4f Step: %0.8f Clamped: %0.8f" % [brush_size_uv.x, brush_size_uv.y, scaled_uv * sqrt(scaled_uv), clamped_uv])
 
 
-func draw_pencil(p1: Vector2, p2: Vector2, c: Color, brush_size: int) -> void:
-	brush_size = clamp(brush_size, 0, pixel_brushes.size() - 1)
-	#print("Drawing (%f %f) (%f %f)" % [p1.x, p1.y, p2.x, p2.y])
+func draw_pencil(p1: Vector2, p2: Vector2, c: Color, pencil_size: int) -> void:
+	pencil_size = clamp(pencil_size, 0, pixel_brushes.size() - 1)
+	
 	if width != size.x or height != size.y:
 		init_image(int(size.x), int(size.y))
-	#print("Draw p1 %f %f p2 %f %f" % [p1.x, p1.y, p2.x, p2.y])
+	
 	for pixel in Geometry2D.bresenham_line(p1 * capped_zoom, p2 * capped_zoom):
-		for off in pixel_brushes[brush_size]:
+		for off in pixel_brushes[pencil_size]:
 			var pxl := Vector2i(pixel.x + off[0], pixel.y + off[1])
 			if (pxl.x > 0 and pxl.x < width) and (pxl.y > 0 and pxl.y < height):
 				image.set_pixel(pxl.x, pxl.y, c)

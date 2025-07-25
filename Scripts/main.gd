@@ -1,8 +1,9 @@
 extends Control
 
-@onready var tool_box: ItemList = $MarginContainer/ToolArea/PlannerToolBox
-@onready var drawing_tool_box: ItemList = $MarginContainer/ToolArea/DrawingToolBox
-@onready var toggle_mode_button: CheckButton = $MarginContainer/ToolArea/ToggleMode
+@onready var toggle_mode_button: CheckButton = $MarginContainer/ToolVBox/ToolArea/ToggleMode
+@onready var tool_box: ItemList = $MarginContainer/ToolVBox/ToolArea/PlannerToolBox
+@onready var drawing_tool_box: ItemList = $MarginContainer/ToolVBox/ToolArea/DrawingToolBox
+@onready var drawing_tool_bar: DrawingToolBar = $MarginContainer/ToolVBox/DrawingToolBar
 
 @onready var settings_drawer: SettingsDrawer = $SettingsDrawer
 @onready var element_settings: ElementSettings = $ElementSettings
@@ -268,6 +269,9 @@ func switch_main_canvas(id: int) -> void:
 	element_settings.erase_everything()
 	element_settings.rebuild_options_and_dictionary_from_canvas(canvases[cc].style_presets)
 	drawing_manager.change_active_canvas_drawing_group(cc)
+	drawing_tool_bar.change_settings(canvases[cc].drawing_settings)
+	drawing_tool_box.select(canvases[cc].drawing_settings.selected_tool)
+	_on_drawing_tool_box_item_selected(canvases[cc].drawing_settings.selected_tool)
 	call_deferred("_on_canvas_changed_zoom")
 	call_deferred("_on_canvas_changed_position")
 	if canvases[cc].app_mode == canvases[cc].AppMode.DRAWING:
@@ -443,6 +447,8 @@ func load_file(path: String, app_startup: bool = false) -> void:
 		canvases[cc].rebuild_elements(elems)
 		canvases[cc].rebuild_connections(conns)
 		drawing_manager.clear_canvas_drawing_group(cc)
+		if data.has("DrawingSettings"):
+			canvases[cc].drawing_settings.rebuild_from_json(data["DrawingSettings"])
 		if data.has("DrawingRegions"):
 			drawing_manager.rebuild_paths_from_json(cc, data["DrawingRegions"])
 			if !app_startup:
@@ -502,6 +508,9 @@ func load_opened_file_paths(path: String) -> void:
 			if canvases.has(current):
 				if file_tab_bar.current_tab == current:
 					drawing_manager.reload_all_drawing_regions(current)
+					drawing_tool_bar.change_tool()
+					drawing_tool_box.select(canvases[current].drawing_settings.selected_tool)
+					_on_drawing_tool_box_item_selected(canvases[current].drawing_settings.selected_tool)
 				else:
 					file_tab_bar.current_tab = current
 				if canvases[current].app_mode == canvases[current].AppMode.DRAWING:
@@ -984,11 +993,11 @@ func _on_drawing_manager_forced_save_ended() -> void:
 	finish_saving_images_unlock_UI()
 
 
-@warning_ignore("unused_parameter")
 func _on_drawing_tool_box_item_selected(index: int) -> void:
 	if !canvases.has(cc):
 		return
-	canvases[cc].drawing_settings.selected_tool = index
+	canvases[cc].drawing_settings.selected_tool = index as DrawingSettings.DrawingTool
+	drawing_tool_bar.change_tool()
 
 
 # true: DRAWING, false: PLANNING
@@ -997,15 +1006,21 @@ func _on_toggle_mode_toggled(toggled_on: bool) -> void:
 		return
 	if toggled_on:
 		canvases[cc].app_mode = canvases[cc].AppMode.DRAWING
+		canvases[cc].toggle_element_label_mouse_inputs(false)
+		canvases[cc].toggle_show_priority_tool(false)
 		tool_box.visible = false
 		drawing_tool_box.visible = true
+		drawing_tool_bar.visible = true
 		element_settings.toggle_style_presets(false)
 		change_accent_color(accent_color_drawing)
 		set_toggle_mode_button_tooltip("Change to Planning Mode")
 	else:
 		canvases[cc].app_mode = canvases[cc].AppMode.PLANNING
+		canvases[cc].toggle_element_label_mouse_inputs(true)
+		canvases[cc].toggle_show_priority_tool(settings_drawer.show_priority_tool.button_pressed)
 		tool_box.visible = true
 		drawing_tool_box.visible = false
+		drawing_tool_bar.visible = false
 		element_settings.toggle_style_presets(true)
 		tool_box.select(Tool.SELECT)
 		_on_tool_box_item_selected(Tool.SELECT)
