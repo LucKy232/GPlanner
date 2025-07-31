@@ -13,22 +13,21 @@ var canvas_scale: float = 1.0
 var indicator_size_ratio: float = 1.0		## Panning Indicator size / Canvas size
 var window_canvas_size_ratio: Vector2 = Vector2(1.0, 1.0) 	## Window size / Canvas size * scale
 
-#func _ready() -> void:
-	#max_hignlight_size = size
-
 
 func set_world_2d(world: World2D) -> void:
 	sub_viewport.world_2d = world
 
 
 func set_canvas_size(s: Vector2) -> void:
+	#print("Set canvas size %f %f This size: %f %f" % [s.x, s.y, size.x, size.y])
 	canvas_size = s
-	indicator_size_ratio = size.x / s.x
+	indicator_size_ratio = size.x / canvas_size.x
 	camera.zoom = Vector2(indicator_size_ratio, indicator_size_ratio)
-	camera.position = s * 0.5
+	camera.position = canvas_size * 0.5
 
 
 func set_window_size(s: Vector2) -> void:
+	#print("Set window size %f %f" % [s.x, s.y])
 	window_size = s
 	window_canvas_size_ratio = window_size / (canvas_size * canvas_scale)
 	highlight_panel.size = size * window_canvas_size_ratio
@@ -44,6 +43,7 @@ func move_camera_and_highlight(c_position: Vector2) -> void:
 
 
 func update_zoom(c_position: Vector2, c_scale: float) -> void:
+	#print("Update zoom: pos %0.3f %0.3f scale %0.3f indicator size ratio: %0.4f" % [c_position.x, c_position.y, c_scale, indicator_size_ratio])
 	canvas_scale = c_scale
 	window_canvas_size_ratio = window_size / (canvas_size * canvas_scale)
 	camera.zoom = Vector2(indicator_size_ratio / c_scale, indicator_size_ratio / c_scale)

@@ -12,9 +12,9 @@ class_name ElementSettings
 @onready var border_size_spin_box: SpinBox = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BorderSizeHBox/BorderSizeSpinBox
 @onready var border_color_picker_button: ColorPickerButton = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BorderColorHBox/BorderColorPickerButton
 @onready var settings_panel: Panel = $VBoxContainer/SettingsPanel
-@onready var name_insert: LineEdit = $NameInsert
-@onready var style_buttons: MarginContainer = $VBoxContainer/StyleButtons
-@onready var current_preset_label: Label = $VBoxContainer/CurrentPresetLabel
+@onready var name_insert: LineEdit = $VBoxContainer/SettingsPanel/NameInsert
+@onready var style_buttons: PresetStyleButtons = $VBoxContainer/StyleButtons
+@onready var current_preset_label: Label = $VBoxContainer/HBoxContainer/CurrentPresetLabel
 
 var presets: Dictionary[int, ElementPresetStyle]	## KEY: preset_options selector ID (not preset ID like in planner_canvas.gd)
 var none_preset: ElementPresetStyle
@@ -71,6 +71,8 @@ func add_preset(p_name: String) -> void:
 func remove_preset(idx: int) -> void:
 	if idx > 0:
 		style_buttons.remove_button(idx)
+		if presets.size() > style_buttons.MAX_BUTTON_COUNT - 1:
+			print("OK add button for preset %s" % presets[style_buttons.MAX_BUTTON_COUNT].name)
 		var removed_id: String = presets[idx].id
 		preset_options.remove_item(idx)
 		rewind_option_button(idx)

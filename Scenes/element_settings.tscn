@@ -23,6 +23,7 @@ border_blend = true
 corner_radius_top_left = 1
 corner_radius_top_right = 1
 corner_detail = 1
+expand_margin_bottom = 5.0
 
 [sub_resource type="Theme" id="Theme_3rqpg"]
 Panel/styles/panel = SubResource("StyleBoxFlat_ju8lp")
@@ -57,7 +58,7 @@ z_index = 5
 layout_mode = 3
 anchors_preset = 0
 offset_right = 300.0
-offset_bottom = 645.0
+offset_bottom = 520.0
 mouse_filter = 2
 script = ExtResource("1_5y8lb")
 default_background_style_box = ExtResource("2_llryx")
@@ -72,15 +73,23 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="CurrentPresetLabel" type="Label" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
+
+[node name="CurrentPresetLabel" type="Label" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 theme = ExtResource("1_3rqpg")
 text = "Current Style: "
 clip_text = true
 text_overrun_behavior = 3
 
+[node name="MarginBlockerControl" type="Control" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(45, 0)
+layout_mode = 2
+
 [node name="StyleButtons" type="MarginContainer" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 228)
+custom_minimum_size = Vector2(0, 120)
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/margin_left = 8
@@ -94,13 +103,29 @@ button_scene = "uid://dvorb6p8oev77"
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
-columns = 6
+columns = 7
 
 [node name="SettingsPanel" type="Panel" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 1
 theme = SubResource("Theme_3rqpg")
+
+[node name="NameInsert" type="LineEdit" parent="VBoxContainer/SettingsPanel"]
+visible = false
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -72.0
+offset_top = -114.5
+offset_right = -3.0
+offset_bottom = -82.5
+grow_horizontal = 0
+grow_vertical = 2
+placeholder_text = "Name..."
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/SettingsPanel"]
 layout_mode = 1
@@ -142,6 +167,7 @@ label_settings = ExtResource("3_uc373")
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+text_overrun_behavior = 3
 selected = 0
 fit_to_longest_item = false
 allow_reselect = true
@@ -307,16 +333,9 @@ layout_mode = 2
 size_flags_horizontal = 10
 icon = SubResource("GradientTexture1D_5ujdp")
 
-[node name="NameInsert" type="LineEdit" parent="."]
-visible = false
-layout_mode = 2
-offset_left = 215.0
-offset_top = 332.0
-offset_right = 283.563
-offset_bottom = 364.0
-placeholder_text = "Name..."
-
 [connection signal="preset_style_button_pressed" from="VBoxContainer/StyleButtons" to="." method="_on_style_buttons_preset_style_button_pressed"]
+[connection signal="editing_toggled" from="VBoxContainer/SettingsPanel/NameInsert" to="." method="_on_name_insert_editing_toggled"]
+[connection signal="text_submitted" from="VBoxContainer/SettingsPanel/NameInsert" to="." method="_on_name_insert_text_submitted"]
 [connection signal="item_selected" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/PresetHBox/PresetOptions" to="." method="_on_preset_options_item_selected"]
 [connection signal="pressed" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/PresetHBox/AddPreset" to="." method="_on_add_preset_pressed"]
 [connection signal="pressed" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/PresetHBox/RemovePreset" to="." method="_on_remove_preset_pressed"]
@@ -327,5 +346,3 @@ placeholder_text = "Name..."
 [connection signal="color_changed" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/OutlineColorHBox/FontOutlineColorPickerButton" to="." method="_on_font_outline_color_picker_button_color_changed"]
 [connection signal="value_changed" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BorderSizeHBox/BorderSizeSpinBox" to="." method="_on_border_size_spin_box_value_changed"]
 [connection signal="color_changed" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BorderColorHBox/BorderColorPickerButton" to="." method="_on_border_color_picker_button_color_changed"]
-[connection signal="editing_toggled" from="NameInsert" to="." method="_on_name_insert_editing_toggled"]
-[connection signal="text_submitted" from="NameInsert" to="." method="_on_name_insert_text_submitted"]

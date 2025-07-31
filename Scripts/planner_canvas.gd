@@ -27,7 +27,7 @@ var checkbox_data: Array[bool]
 var priority_filter_value: int = 0
 var save_state: SaveState
 
-var id: int
+var id: int			## Not consistent between sessions because it isn't saved (no good reason)
 var tool_id: int
 var opened_file_path: String = ""
 var file_name_short: String = ""
@@ -238,6 +238,8 @@ func add_element_label(at_position: Vector2, id_specified: int = -1) -> void:
 		element_id_counter += 1
 	else:
 		elem_id = id_specified
+		if id_specified > element_id_counter:
+			element_id_counter = id_specified + 1
 	new_element.id = elem_id
 	elements[elem_id] = new_element
 	new_element.gui_input.connect(_on_element_label_gui_input.bind(elem_id))
@@ -259,7 +261,7 @@ func add_element_label(at_position: Vector2, id_specified: int = -1) -> void:
 		is_element_just_created = true
 
 
-func add_connection(id_specified: int = -1) -> void:
+func add_connection(id_specified: int = -1, arrow_1_enabled: bool = false, arrow_2_enabled: bool = false) -> void:
 	canvas_changed()
 	if connection_candidate_1 == connection_candidate_2:
 		connection_candidate_1 = -1
@@ -268,14 +270,22 @@ func add_connection(id_specified: int = -1) -> void:
 		return
 	if !elements_to_connection.has(Vector2i(connection_candidate_1, connection_candidate_2)) and !elements_to_connection.has(Vector2i(connection_candidate_2, connection_candidate_1)):
 		#print("ADDING CONNECTION")
-		var new_connection = load(connection_scene).instantiate()
+		#if connection_candidate_1 < connection_candidate_2:
+			#var t: int = connection_candidate_1
+			#connection_candidate_1 = connection_candidate_2
+			#connection_candidate_2 = t
+		var new_connection = load(connection_scene).instantiate() as Connection
 		var conn_id: int
 		if id_specified < 0:
 			conn_id = connection_id_counter
 			connection_id_counter += 1
 		else:
 			conn_id = id_specified
+			if id_specified > connection_id_counter:
+				connection_id_counter = id_specified + 1
 		connections[conn_id] = new_connection
+		new_connection.elem_id1 = connection_candidate_1
+		new_connection.elem_id2 = connection_candidate_2
 		if !connections_p1.has(connection_candidate_1):
 			connections_p1[connection_candidate_1] = PackedInt32Array()
 		if !connections_p2.has(connection_candidate_2):
@@ -289,7 +299,14 @@ func add_connection(id_specified: int = -1) -> void:
 		new_connection.update_p2(elements[connection_candidate_2].position, elements[connection_candidate_2].size)
 		new_connection.update_p1_color(elements[connection_candidate_1].get_bg_color())
 		new_connection.update_p2_color(elements[connection_candidate_2].get_bg_color())
+		if arrow_1_enabled:
+			new_connection._on_arrow_1_toggled(arrow_1_enabled)
+			new_connection.arrow_1.set_pressed_no_signal(arrow_1_enabled)
+		if arrow_2_enabled:
+			new_connection._on_arrow_2_toggled(arrow_2_enabled)
+			new_connection.arrow_2.set_pressed_no_signal(arrow_2_enabled)
 		new_connection.update_positions()
+		new_connection.arrow_changed.connect(_on_connection_arrow_changed)
 	#else:
 		#print("ALREDY EXISTS")
 	connection_candidate_1 = -1
@@ -424,6 +441,8 @@ func all_connection_pairs_to_json() -> Dictionary:
 		var connid = elements_to_connection[pair]
 		entry["id1"] = pair.x
 		entry["id2"] = pair.y
+		entry["arrow_1"] = connections[connid].arrow_1.enabled
+		entry["arrow_2"] = connections[connid].arrow_2.enabled
 		dict[connid] = entry
 	return dict
 
@@ -468,7 +487,6 @@ func rebuild_canvas_state(state: Dictionary) -> void:
 
 func rebuild_elements(json_elems: Dictionary) -> void:
 	is_user_input = false
-	var max_id: int = -1
 	for i in json_elems:
 		if !json_elems[i].is_empty():
 			var elem_id: int = int(json_elems[i]["id"])
@@ -502,24 +520,23 @@ func rebuild_elements(json_elems: Dictionary) -> void:
 				elements[elem_id].change_style_preset(style_presets[style_id])
 			elif json_elems[i].has("individual_style") and !has_style:
 				elements[elem_id].individual_style.rebuild_from_json_dict(json_elems[i]["individual_style"])
-			if elem_id > max_id:
-				max_id = elem_id
 			elements[elem_id].manual_resize = false
-	element_id_counter = max_id + 1
 	is_user_input = true
 
 
 func rebuild_connections(json_conns: Dictionary) -> void:
 	is_user_input = false
-	var max_id: int = -1
 	for i in json_conns:
 		var conn_id = int(i)
 		connection_candidate_1 = int(json_conns[i]["id1"])
 		connection_candidate_2 = int(json_conns[i]["id2"])
-		add_connection(conn_id)
-		if conn_id > max_id:
-			max_id = conn_id
-	connection_id_counter = max_id + 1
+		var arrow_1: bool = false
+		var arrow_2: bool = false
+		if json_conns[i].has("arrow_1") and json_conns[i]["arrow_1"]:
+			arrow_1 = true
+		if json_conns[i].has("arrow_2") and json_conns[i]["arrow_2"]:
+			arrow_2 = true
+		add_connection(conn_id, arrow_1, arrow_2)
 	is_user_input = true
 
 
@@ -645,6 +662,8 @@ func toggle_element_label_mouse_inputs(toggled_on: bool) -> void:
 		else:
 			elements[e].line_edit.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			elements[e].mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for c in connections:
+		connections[c].toggle_arrow_inputs(toggled_on)
 
 
 func _on_gui_input(event: InputEvent) -> void:
@@ -759,7 +778,6 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 			update_connections(elem_id)
 		if is_resizing:
 			elements[elem_id].change_size(original_elem_size + move)
-			#selection_viewer.size = elements[elem_id].size
 			update_connections(elem_id)
 
 
@@ -795,3 +813,7 @@ func _on_element_changed_priority(elem_id: int) -> void:
 	if elements.has(elem_id):
 		var pr_id = elements[elem_id].priority_id
 		elements[elem_id].set_priority_color(priority_colors[pr_id])
+
+
+func _on_connection_arrow_changed() -> void:
+	canvas_changed()

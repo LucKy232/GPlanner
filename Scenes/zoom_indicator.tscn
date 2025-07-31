@@ -245,6 +245,8 @@ _data = {
 }
 
 [node name="ZoomIndicator" type="VBoxContainer"]
+offset_right = 45.0
+offset_bottom = 145.0
 size_flags_horizontal = 8
 size_flags_vertical = 0
 mouse_filter = 2
@@ -258,7 +260,7 @@ label_settings = SubResource("LabelSettings_4qtpc")
 horizontal_alignment = 1
 
 [node name="ZoomProgressBar" type="ProgressBar" parent="."]
-custom_minimum_size = Vector2(10, 150)
+custom_minimum_size = Vector2(8, 90)
 layout_mode = 2
 size_flags_horizontal = 4
 mouse_filter = 2

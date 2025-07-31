@@ -97,8 +97,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
 mouse_filter = 2
 script = ExtResource("1_52fb6")
 element_scene = "uid://lufadl7u0ek3"
@@ -211,12 +209,6 @@ item_3/icon = ExtResource("19_yb0ja")
 layout_mode = 2
 size_flags_horizontal = 4
 
-[node name="PanIndicatorCamera" parent="MarginContainer" instance=ExtResource("19_jvnna")]
-custom_minimum_size = Vector2(300, 150)
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 4
-
 [node name="ZoomIndicator" parent="MarginContainer" instance=ExtResource("3_jv6wh")]
 light_mask = 2
 visibility_layer = 2
@@ -253,6 +245,20 @@ layout_mode = 2
 theme = ExtResource("4_x6ack")
 text = " Load "
 
+[node name="PanIndicatorCamera" parent="MarginContainer" instance=ExtResource("19_jvnna")]
+custom_minimum_size = Vector2(300, 150)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="ElementSettings" parent="MarginContainer" instance=ExtResource("17_oyb3p")]
+light_mask = 2
+visibility_layer = 2
+custom_minimum_size = Vector2(300, 520)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+
 [node name="DrawingManager" parent="." instance=ExtResource("17_b48ew")]
 layout_mode = 1
 
@@ -282,17 +288,6 @@ grow_vertical = 0
 size_flags_horizontal = 10
 size_flags_vertical = 1
 horizontal_alignment = 1
-
-[node name="ElementSettings" parent="." instance=ExtResource("17_oyb3p")]
-light_mask = 2
-visibility_layer = 2
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -300.0
-offset_right = 0.0
-grow_horizontal = 0
 
 [node name="BottomBar" type="ScrollContainer" parent="."]
 light_mask = 2
@@ -396,13 +391,13 @@ ok_button_text = "    Yes    "
 [connection signal="pressed" from="MarginContainer/FileButtons/SaveButton" to="." method="_on_save_button_pressed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/SaveAsButton" to="." method="_on_save_as_button_pressed"]
 [connection signal="pressed" from="MarginContainer/FileButtons/LoadButton" to="." method="_on_load_button_pressed"]
-[connection signal="is_editing_text" from="ElementSettings" to="." method="_on_element_settings_is_editing_text"]
-[connection signal="preset_added" from="ElementSettings" to="." method="_on_element_settings_preset_added"]
-[connection signal="preset_changed" from="ElementSettings" to="." method="_on_element_settings_preset_changed"]
-[connection signal="preset_color_changed" from="ElementSettings" to="." method="_on_element_settings_preset_color_changed"]
-[connection signal="preset_removed" from="ElementSettings" to="." method="_on_element_settings_preset_removed"]
-[connection signal="preset_selected" from="ElementSettings" to="." method="_on_element_settings_preset_selected"]
-[connection signal="stopped_editing_text" from="ElementSettings" to="." method="_on_element_settings_stopped_editing_text"]
+[connection signal="is_editing_text" from="MarginContainer/ElementSettings" to="." method="_on_element_settings_is_editing_text"]
+[connection signal="preset_added" from="MarginContainer/ElementSettings" to="." method="_on_element_settings_preset_added"]
+[connection signal="preset_changed" from="MarginContainer/ElementSettings" to="." method="_on_element_settings_preset_changed"]
+[connection signal="preset_color_changed" from="MarginContainer/ElementSettings" to="." method="_on_element_settings_preset_color_changed"]
+[connection signal="preset_removed" from="MarginContainer/ElementSettings" to="." method="_on_element_settings_preset_removed"]
+[connection signal="preset_selected" from="MarginContainer/ElementSettings" to="." method="_on_element_settings_preset_selected"]
+[connection signal="stopped_editing_text" from="MarginContainer/ElementSettings" to="." method="_on_element_settings_stopped_editing_text"]
 [connection signal="tab_changed" from="BottomBar/HBoxContainer/FileTabBar" to="." method="_on_file_tab_bar_tab_changed"]
 [connection signal="tab_close_pressed" from="BottomBar/HBoxContainer/FileTabBar" to="." method="_on_file_tab_bar_tab_close_pressed"]
 [connection signal="pressed" from="BottomBar/HBoxContainer/AddFileButton" to="." method="_on_add_file_button_pressed"]

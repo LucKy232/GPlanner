@@ -1,6 +1,11 @@
 extends Line2D
 class_name Connection
 
+@onready var arrow_1: ConnectionArrow = $Arrow1
+@onready var arrow_2: ConnectionArrow = $Arrow2
+
+var elem_id1: int = -1
+var elem_id2: int = -1
 var has_p1: bool = false
 var has_p2: bool = false
 var p1: Vector2
@@ -10,7 +15,7 @@ var size_2: Vector2
 var TEST_MARGIN: float = 25.0
 var CONNECTION_MARGIN: float = 10.0
 var SNAP_TO: float = 10.0
-
+signal arrow_changed
 
 func _ready() -> void:
 	gradient = gradient.duplicate()
@@ -29,26 +34,30 @@ func update_p2(pos: Vector2, size: Vector2) -> void:
 
 
 func update_p1_color(color: Color) -> void:
-	gradient.colors[0] = color
-	gradient.colors[0].a = 1.0
+	var c: Color = Color(color.r, color.g, color.b, 1.0)
+	gradient.colors[0] = c
+	arrow_1.color = c
+	arrow_1.queue_redraw()
 
 
 func update_p2_color(color: Color) -> void:
-	gradient.colors[1] = color
-	gradient.colors[1].a = 1.0
+	var c: Color = Color(color.r, color.g, color.b, 1.0)
+	gradient.colors[1] = c
+	arrow_2.color = c
+	arrow_2.queue_redraw()
 
 
-# Assigning points[0] to p1 corresponding side, points[3] to p2 corresponding side & points[0] & points[1] as intermediaries
+# Assigning points[0] to p1 corresponding side, points[3] to p2 corresponding side and points[1] & points[2] as intermediaries
 func update_positions() -> void:
 	if !(has_p1 and has_p2):
 		return
 	
 	var p1_on_top: bool = true if p1.y < p2.y else false
 	var p1_on_left: bool = true if p1.x < p2.x else false
-	var p1_left: bool = p1_left_inside(p1.x, size_1.x, p2.x, size_2.x, TEST_MARGIN)
-	var p1_right: bool = p1_right_inside(p1.x, size_1.x, p2.x, size_2.x, TEST_MARGIN)
-	var p2_left: bool = p2_left_inside(p1.x, size_1.x, p2.x, size_2.x, TEST_MARGIN)
-	var p2_right: bool = p2_right_inside(p1.x, size_1.x, p2.x, size_2.x, TEST_MARGIN)
+	var p1_left: bool = p1_left_inside_p2(p1.x, size_1.x, p2.x, size_2.x, TEST_MARGIN)
+	var p1_right: bool = p1_right_inside_p2(p1.x, size_1.x, p2.x, size_2.x, TEST_MARGIN)
+	var p2_left: bool = p2_left_inside_p1(p1.x, size_1.x, p2.x, size_2.x, TEST_MARGIN)
+	var p2_right: bool = p2_right_inside_p1(p1.x, size_1.x, p2.x, size_2.x, TEST_MARGIN)
 	
 	if p1_left and p1_right and p2_left and p2_right:			# Top-Bottom = Full overlap
 		points[0] = middle_of_bottom(p1, size_1) if p1_on_top else middle_of_top(p1, size_1)
@@ -111,6 +120,26 @@ func update_positions() -> void:
 			else:
 				points[1] = Vector2(points[3].x, points[0].y)
 				points[2] = Vector2(points[3].x, points[0].y)
+	
+	var rot_1: Vector3 = find_rotation(points[0] - points[1])
+	var rot_2: Vector3 = find_rotation(points[3] - points[2])
+	arrow_1.rotation_degrees = rot_1.x
+	arrow_2.rotation_degrees = rot_2.x
+	arrow_1.position = points[0] - arrow_1.size * 0.5 - Vector2(CONNECTION_MARGIN - 5.0, 0.0) * rot_1.y - Vector2(0.0, CONNECTION_MARGIN - 5.0) * rot_1.z
+	arrow_2.position = points[3] - arrow_2.size * 0.5 - Vector2(CONNECTION_MARGIN - 5.0, 0.0) * rot_2.y - Vector2(0.0, CONNECTION_MARGIN - 5.0) * rot_2.z
+
+
+## X: Rotation in degrees needed, Y: multiplier for the x margin, Z: multiplier for the y margin
+func find_rotation(v2: Vector2) -> Vector3:
+	if v2.x > 0.0:
+		return Vector3(0.0, 1.0, 0.0)
+	elif v2.x < 0.0:
+		return Vector3(180.0, -1.0, 0.0)
+	if v2.y > 0.0:
+		return Vector3(90, 0.0, 1.0)
+	if v2.y < 0.0:
+		return Vector3(270.0, 0.0, -1.0)
+	return Vector3(0.0, 0.0, 0.0)
 
 
 func middle_of_bottom(pos: Vector2, size: Vector2) -> Vector2:
@@ -129,26 +158,47 @@ func right_side(pos: Vector2, size: Vector2) -> Vector2:
 	return Vector2(pos.x + size.x + CONNECTION_MARGIN, pos.y + size.y * 0.5)
 
 
-func p1_left_inside(p1x: float, _s1: float, p2x: float, s2: float, margin: float) -> bool:
+func p1_left_inside_p2(p1x: float, _s1: float, p2x: float, s2: float, margin: float) -> bool:
 	return p1x < (p2x + s2 + margin) and p1x > (p2x - margin)
 
 
-func p1_right_inside(p1x: float, s1: float, p2x: float, s2: float, margin: float) -> bool:
+func p1_right_inside_p2(p1x: float, s1: float, p2x: float, s2: float, margin: float) -> bool:
 	return (p1x + s1) < (p2x + s2 + margin) and (p1x + s1) > (p2x - margin)
 
 
-func p2_left_inside(p1x: float, s1: float, p2x: float, _s2: float, margin: float) -> bool:
+func p2_left_inside_p1(p1x: float, s1: float, p2x: float, _s2: float, margin: float) -> bool:
 	return p2x < (p1x + s1 + margin) and p2x > (p1x - margin)
 
 
-func p2_right_inside(p1x: float, s1: float, p2x: float, s2: float, margin: float) -> bool:
+func p2_right_inside_p1(p1x: float, s1: float, p2x: float, s2: float, margin: float) -> bool:
 	return (p2x + s2) < (p1x + s1 + margin) and (p2x + s2) > (p1x - margin)
 
 
 func segment_overlap(p1x: float, s1: float, p2x: float, s2: float, margin: float) -> bool:
-	var p1_left: bool = p1_left_inside(p1x, s1, p2x, s2, margin)
-	var p1_right: bool = p1_right_inside(p1x, s1, p2x, s2, margin)
-	var p2_left: bool = p2_left_inside(p1x, s1, p2x, s2, margin)
-	var p2_right: bool = p2_right_inside(p1x, s1, p2x, s2, margin)
+	var p1_left: bool = p1_left_inside_p2(p1x, s1, p2x, s2, margin)
+	var p1_right: bool = p1_right_inside_p2(p1x, s1, p2x, s2, margin)
+	var p2_left: bool = p2_left_inside_p1(p1x, s1, p2x, s2, margin)
+	var p2_right: bool = p2_right_inside_p1(p1x, s1, p2x, s2, margin)
 	#print("P1 left: %s    P1 right: %s    P2 left: %s    P2 right: %s    P1R == P2L: %s    P1L == P2R: %s" % [str(p1_left), str(p1_right), str(p2_left), str(p2_right), str(p1_right==p2_left), str(p1_left==p2_right)])
 	return p1_left or p1_right or p2_left or p2_right
+
+
+func toggle_arrow_inputs(toggled_on: bool) -> void:
+	if toggled_on:
+		arrow_1.mouse_filter = Control.MOUSE_FILTER_PASS
+		arrow_2.mouse_filter = Control.MOUSE_FILTER_PASS
+	else:
+		arrow_1.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		arrow_2.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+
+func _on_arrow_1_toggled(toggled_on: bool) -> void:
+	arrow_1.enabled = toggled_on
+	arrow_1.queue_redraw()
+	arrow_changed.emit()
+
+
+func _on_arrow_2_toggled(toggled_on: bool) -> void:
+	arrow_2.enabled = toggled_on
+	arrow_2.queue_redraw()
+	arrow_changed.emit()

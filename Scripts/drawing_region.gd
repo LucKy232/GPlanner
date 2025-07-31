@@ -39,7 +39,6 @@ func free_image() -> void:
 
 # Remove the image from VRAM
 func free_texture() -> void:
-	print("FREE TEX")
 	texture = ImageTexture.new()
 
 

@@ -207,7 +207,6 @@ func get_folder_path(canvas_id: int) -> String:
 func has_folder_path(canvas_id: int) -> bool:
 	if !canvas_groups.has(canvas_id):
 		return false
-	#print("Canvas drawing group has folder path: %s PATH: %s" % [str(!canvas_groups[canvas_id].folder_path == ""), canvas_groups[canvas_id].folder_path])
 	return !canvas_groups[canvas_id].folder_path == ""
 
 
@@ -241,6 +240,8 @@ func clear_canvas_drawing_group(canvas_id: int) -> void:
 
 
 func change_active_canvas_drawing_group(canvas_id: int) -> void:
+	if current_canvas == canvas_id:
+		return
 	if canvas_groups.has(current_canvas):
 		canvas_groups[current_canvas].unload_all_drawing_regions_with_path()
 		canvas_groups[current_canvas].visible = false

@@ -6,9 +6,11 @@ extends Control
 @onready var drawing_tool_bar: DrawingToolBar = $MarginContainer/ToolVBox/DrawingToolBar
 
 @onready var settings_drawer: SettingsDrawer = $SettingsDrawer
-@onready var element_settings: ElementSettings = $ElementSettings
+#@onready var element_settings: ElementSettings = $ElementSettings
+@onready var element_settings: ElementSettings = $MarginContainer/ElementSettings
+
 @onready var zoom_indicator: ZoomIndicator = $MarginContainer/ZoomIndicator
-@onready var pan_indicator_camera: Control = $MarginContainer/PanIndicatorCamera
+@onready var pan_indicator_camera: PanIndicatorCamera = $MarginContainer/PanIndicatorCamera
 @onready var status_bar: Label = $StatusBar
 @onready var margin_container: MarginContainer = $MarginContainer
 @onready var file_dialog_save: FileDialog = $FileDialogSave
@@ -126,6 +128,12 @@ func _process(_delta):
 			is_editing_element_text = false
 	else:
 		is_editing_element_text = false
+	if Input.is_action_just_pressed("test_minus"):
+		pan_indicator_camera.update_zoom(canvases[cc].position, canvases[cc].scale.x)
+	if Input.is_action_just_pressed("test_plus"):
+		pan_indicator_camera.set_window_size(get_viewport_rect().size)
+	if Input.is_action_just_pressed("test_mult"):
+		pan_indicator_camera.set_canvas_size(canvases[cc].size)
 	if Input.is_action_just_pressed("fullscreen_borderless"):
 		if get_window().mode == Window.Mode.MODE_WINDOWED or get_window().mode == Window.Mode.MODE_MAXIMIZED:
 			last_window_mode = get_window().mode
@@ -450,6 +458,7 @@ func load_file(path: String, app_startup: bool = false) -> void:
 		if data.has("DrawingSettings"):
 			canvases[cc].drawing_settings.rebuild_from_json(data["DrawingSettings"])
 		if data.has("DrawingRegions"):
+			#print("Load drawing %d %s" % [cc, "at app startup" if app_startup else ""])
 			drawing_manager.rebuild_paths_from_json(cc, data["DrawingRegions"])
 			if !app_startup:
 				drawing_manager.reload_all_drawing_regions(cc)
@@ -475,7 +484,9 @@ func save_opened_file_paths_and_quit(path: String) -> void:
 			opened_files[c_id] = canvases[c_id].opened_file_path
 			print("Saving canvas %d file location: %s" % [c_id, canvases[c_id].opened_file_path])
 	save_data["OpenedFiles"] = opened_files
-	save_data["CurrentID"] = cc
+	# Canvas IDs will change at startup, aren't consistent between sessions because they aren't saved
+	# Tabs will be in the range [0 ~ tabs-1] and so will canvas IDs corresponding 1:1 with tabs (until a tab gets closed, but tab_to_canvas dictionary will be accurate)
+	save_data["CurrentID"] = file_tab_bar.current_tab
 	
 	file.store_string(JSON.stringify(save_data, "\t"))
 	file.close()
@@ -517,6 +528,7 @@ func load_opened_file_paths(path: String) -> void:
 					_on_toggle_mode_toggled(true)
 					toggle_mode_button.set_pressed_no_signal(true)
 			else:	# Select last tab (if any exist, it will be valid)
+				printerr("Tab indicated at startup doesn't exist / have a planner canvas file corresponding to it.")
 				file_tab_bar.current_tab = file_tab_bar.tab_count - 1
 	else:
 		# Create empty file on first time load

@@ -1,10 +1,30 @@
-[gd_scene load_steps=3 format=3 uid="uid://c4jirlcfvnhoj"]
+[gd_scene load_steps=10 format=3 uid="uid://c4jirlcfvnhoj"]
 
 [ext_resource type="Script" uid="uid://5tyaibbe0tuu" path="res://Scripts/connection.gd" id="1_w0fw0"]
+[ext_resource type="Script" uid="uid://b80k62h1g0od2" path="res://Scripts/connection_arrow.gd" id="2_612rt"]
 
 [sub_resource type="Gradient" id="Gradient_w0fw0"]
 interpolation_mode = 2
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_612rt"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7ri33"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_04irf"]
+bg_color = Color(1, 1, 1, 0.196078)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_e0w0v"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_qjhek"]
+
+[sub_resource type="Theme" id="Theme_daqqj"]
+Button/styles/disabled = SubResource("StyleBoxEmpty_612rt")
+Button/styles/focus = SubResource("StyleBoxEmpty_7ri33")
+Button/styles/hover = SubResource("StyleBoxFlat_04irf")
+Button/styles/hover_pressed = SubResource("StyleBoxFlat_04irf")
+Button/styles/normal = SubResource("StyleBoxEmpty_e0w0v")
+Button/styles/pressed = SubResource("StyleBoxEmpty_qjhek")
 
 [node name="ConnectionLine" type="Line2D"]
 light_mask = 8
@@ -18,3 +38,42 @@ end_cap_mode = 2
 round_precision = 2
 antialiased = true
 script = ExtResource("1_w0fw0")
+
+[node name="Arrow1" type="Button" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_right = 20.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(10, 12.5)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 1
+theme = SubResource("Theme_daqqj")
+toggle_mode = true
+script = ExtResource("2_612rt")
+
+[node name="Arrow2" type="Button" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_right = 20.0
+offset_bottom = 25.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(10, 12.5)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+mouse_filter = 1
+theme = SubResource("Theme_daqqj")
+toggle_mode = true
+script = ExtResource("2_612rt")
+
+[connection signal="toggled" from="Arrow1" to="." method="_on_arrow_1_toggled"]
+[connection signal="toggled" from="Arrow2" to="." method="_on_arrow_2_toggled"]
