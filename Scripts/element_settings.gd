@@ -72,7 +72,8 @@ func remove_preset(idx: int) -> void:
 	if idx > 0:
 		style_buttons.remove_button(idx)
 		if presets.size() > style_buttons.MAX_BUTTON_COUNT - 1:
-			print("OK add button for preset %s" % presets[style_buttons.MAX_BUTTON_COUNT].name)
+			style_buttons.add_button(str(style_buttons.MAX_BUTTON_COUNT - 1), presets[style_buttons.MAX_BUTTON_COUNT].name)
+			style_buttons.set_button_theme(style_buttons.MAX_BUTTON_COUNT - 1, presets[style_buttons.MAX_BUTTON_COUNT])
 		var removed_id: String = presets[idx].id
 		preset_options.remove_item(idx)
 		rewind_option_button(idx)

@@ -109,7 +109,6 @@ func focus_button(idx: int) -> void:
 
 func set_button_theme(idx: int, preset: ElementPresetStyle) -> void:
 	if idx >= MAX_BUTTON_COUNT or !buttons.has(idx):
-		printt(buttons.size(), idx, MAX_BUTTON_COUNT)
 		return
 	change_button_font_size(idx, preset.font_size)
 	change_button_font_outline_size(idx, preset.outline_size)
@@ -121,7 +120,6 @@ func set_button_theme(idx: int, preset: ElementPresetStyle) -> void:
 
 func change_button_font_size(idx: int, s: int) -> void:
 	if idx >= MAX_BUTTON_COUNT or !buttons.has(idx):
-		printt(buttons.size(), idx, MAX_BUTTON_COUNT)
 		return
 	var fsize: int = clampi(int(s * 0.7), 6, 18)
 	buttons[idx].theme.set_font_size("font_size", "Button", fsize)
@@ -129,35 +127,30 @@ func change_button_font_size(idx: int, s: int) -> void:
 
 func change_button_font_outline_size(idx: int, s: int) -> void:
 	if idx >= MAX_BUTTON_COUNT or !buttons.has(idx):
-		printt(buttons.size(), idx, MAX_BUTTON_COUNT)
 		return
 	buttons[idx].theme.set_constant("outline_size", "Button", s)
 
 
 func change_button_font_color(idx: int, color: Color) -> void:
 	if idx >= MAX_BUTTON_COUNT or !buttons.has(idx):
-		printt(buttons.size(), idx, MAX_BUTTON_COUNT)
 		return
 	buttons[idx].theme.set_color("font_color", "Button", color)
 
 
 func change_button_font_outline_color(idx: int, color: Color) -> void:
 	if idx >= MAX_BUTTON_COUNT or !buttons.has(idx):
-		printt(buttons.size(), idx, MAX_BUTTON_COUNT)
 		return
 	buttons[idx].theme.set_color("font_outline_color", "Button", color)
 
 
 func change_button_border_color(idx: int, color: Color) -> void:
 	if idx >= MAX_BUTTON_COUNT or !buttons.has(idx):
-		printt(buttons.size(), idx, MAX_BUTTON_COUNT)
 		return
 	buttons[idx].theme.get_stylebox("normal", "Button").border_color = Color(color.r, color.g, color.b, 1.0)
 
 
 func change_button_background_color(idx: int, color: Color) -> void:
 	if idx >= MAX_BUTTON_COUNT or !buttons.has(idx):
-		printt(buttons.size(), idx, MAX_BUTTON_COUNT)
 		return
 	buttons[idx].theme.get_stylebox("normal", "Button").bg_color = color
 	buttons[idx].theme.get_stylebox("pressed", "Button").bg_color = color * 1.2
@@ -166,5 +159,4 @@ func change_button_background_color(idx: int, color: Color) -> void:
 
 
 func _on_button_pressed(idx: int) -> void:
-	#print("Pressed %d" % idx)
 	preset_style_button_pressed.emit(idx)
