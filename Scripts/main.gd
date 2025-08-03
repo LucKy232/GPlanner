@@ -46,6 +46,7 @@ var show_priority_tool: CheckBox
 var priority_filter: HScrollBar
 var priority_filter_label: Label
 
+var draw_tool_keybinds: Dictionary[int, String] = {}
 var tool_keybinds: Dictionary[int, String] = {}
 var is_editing_element_text: bool = false
 var is_editing_preset_name: bool = false
@@ -77,12 +78,6 @@ enum Tool {
 	REMOVE_CONNECTIONS,
 	MARK_COMPLETED,
 }
-enum DrawingTool {
-	PENCIL,
-	BRUSH,
-	ERASER_PENCIL,
-	ERASER_BRUSH,
-}
 enum RequestedActionType {
 	NEW_BUTTON,
 	LOAD_BUTTON,
@@ -102,6 +97,7 @@ func _ready() -> void:
 	for i in priority_styleboxes.size():
 		priority_styleboxes[i].bg_color = priority_colors[i]
 	create_tool_keybinds()
+	create_drawing_tool_keybinds()
 	load_opened_file_paths(opened_files_file_name)
 	if canvases.size() == 0:
 		_on_add_file_button_pressed()
@@ -128,23 +124,10 @@ func _process(_delta):
 			is_editing_element_text = false
 	else:
 		is_editing_element_text = false
-	if Input.is_action_just_pressed("test_minus"):
-		pan_indicator_camera.update_zoom(canvases[cc].position, canvases[cc].scale.x)
-	if Input.is_action_just_pressed("test_plus"):
-		pan_indicator_camera.set_window_size(get_viewport_rect().size)
-	if Input.is_action_just_pressed("test_mult"):
-		pan_indicator_camera.set_canvas_size(canvases[cc].size)
 	if Input.is_action_just_pressed("fullscreen_borderless"):
-		if get_window().mode == Window.Mode.MODE_WINDOWED or get_window().mode == Window.Mode.MODE_MAXIMIZED:
-			last_window_mode = get_window().mode
-			get_window().mode = Window.MODE_FULLSCREEN
-			get_window().borderless = true
-		elif get_window().mode == Window.MODE_FULLSCREEN:
-			get_window().mode = last_window_mode
-			get_window().borderless = false
+		toggle_borderless_window()
 	if Input.is_action_just_pressed("exit_fullscreen_borderless") and get_window().mode == Window.MODE_FULLSCREEN:
-		get_window().mode = last_window_mode
-		get_window().borderless = false
+		toggle_borderless_window()
 	if Input.is_action_just_pressed("save_file"):	# Can do while editing text because ctrl+s doesn't insert anything
 		_on_save_button_pressed()
 	if Input.is_action_just_pressed("edit_element") and !tool_box.is_selected(Tool.MARK_COMPLETED):
@@ -156,6 +139,21 @@ func _process(_delta):
 	if Input.is_action_just_pressed("redo") and !disable_input():
 		if drawing_manager.redo_drawing_action():
 			canvases[cc].drawings_changed()	# A bit redundant since it already has changes if there's something that you can undo / redo
+	
+	if canvases[cc].app_mode == canvases[cc].AppMode.DRAWING:
+		if Input.is_action_just_pressed(draw_tool_keybinds[DrawingSettings.DrawingTool.PENCIL]):
+			drawing_tool_box.select(DrawingSettings.DrawingTool.PENCIL)
+			_on_drawing_tool_box_item_selected(DrawingSettings.DrawingTool.PENCIL)
+		if Input.is_action_just_pressed(draw_tool_keybinds[DrawingSettings.DrawingTool.BRUSH]):
+			drawing_tool_box.select(DrawingSettings.DrawingTool.BRUSH)
+			_on_drawing_tool_box_item_selected(DrawingSettings.DrawingTool.BRUSH)
+		if Input.is_action_just_pressed(draw_tool_keybinds[DrawingSettings.DrawingTool.ERASER_PENCIL]):
+			drawing_tool_box.select(DrawingSettings.DrawingTool.ERASER_PENCIL)
+			_on_drawing_tool_box_item_selected(DrawingSettings.DrawingTool.ERASER_PENCIL)
+		if Input.is_action_just_pressed(draw_tool_keybinds[DrawingSettings.DrawingTool.ERASER_BRUSH]):
+			drawing_tool_box.select(DrawingSettings.DrawingTool.ERASER_BRUSH)
+			_on_drawing_tool_box_item_selected(DrawingSettings.DrawingTool.ERASER_BRUSH)
+	
 	if Input.is_action_just_pressed(tool_keybinds[Tool.SELECT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
 		tool_box.select(Tool.SELECT)
 		_on_tool_box_item_selected(Tool.SELECT)
@@ -188,6 +186,16 @@ func _notification(what):
 		exiting_app = true
 		confirmation_tab_save(0)
 		#get_tree().quit() # Default behavior
+
+
+func toggle_borderless_window() -> void:
+	if get_window().mode == Window.Mode.MODE_WINDOWED or get_window().mode == Window.Mode.MODE_MAXIMIZED:
+		last_window_mode = get_window().mode
+		get_window().mode = Window.MODE_FULLSCREEN
+		get_window().borderless = true
+	elif get_window().mode == Window.MODE_FULLSCREEN:
+		get_window().mode = last_window_mode
+		get_window().borderless = false
 
 
 func get_settings_drawer_object_references() -> void:
@@ -224,6 +232,17 @@ func create_tool_keybinds() -> void:
 	for tool in tool_keybinds:
 		for event in InputMap.action_get_events(tool_keybinds[tool]):
 			tool_box.set_item_text(tool, ("%s (%s)") % [tool_box.get_item_text(tool), event.as_text().split(" ")[0]])
+
+
+func create_drawing_tool_keybinds() -> void:
+	draw_tool_keybinds[DrawingSettings.DrawingTool.PENCIL] = "pencil"
+	draw_tool_keybinds[DrawingSettings.DrawingTool.BRUSH] = "brush"
+	draw_tool_keybinds[DrawingSettings.DrawingTool.ERASER_PENCIL] = "eraser_pencil"
+	draw_tool_keybinds[DrawingSettings.DrawingTool.ERASER_BRUSH] = "eraser_brush"
+	
+	for tool in draw_tool_keybinds:
+		for event in InputMap.action_get_events(draw_tool_keybinds[tool]):
+			drawing_tool_box.set_item_text(tool, ("%s (%s)") % [drawing_tool_box.get_item_text(tool), event.as_text().split(" ")[0]])
 	set_toggle_mode_button_tooltip("Change to Drawing Mode")
 
 
@@ -1008,8 +1027,10 @@ func _on_drawing_manager_forced_save_ended() -> void:
 func _on_drawing_tool_box_item_selected(index: int) -> void:
 	if !canvases.has(cc):
 		return
-	canvases[cc].drawing_settings.selected_tool = index as DrawingSettings.DrawingTool
-	drawing_tool_bar.change_tool()
+	if canvases[cc].drawing_settings.selected_tool != index:
+		#drawing_manager.end_stroke() # Would be good, but buggy positioning of brush actions
+		canvases[cc].drawing_settings.selected_tool = index as DrawingSettings.DrawingTool
+		drawing_tool_bar.change_tool()
 
 
 # true: DRAWING, false: PLANNING

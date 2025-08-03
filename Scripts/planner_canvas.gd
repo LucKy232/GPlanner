@@ -759,7 +759,10 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 				elements[elem_id].toggle_completed()
 				toggle_element_and_connections(elem_id, checkbox_data[Checkbox.SHOW_COMPLETED])
 		elif event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
-			elements[elem_id].set_default_cursor_shape(Control.CURSOR_POINTING_HAND)
+			if elements.has(elem_id):	# Rare bug? elem_id doesn't exist in elements
+				elements[elem_id].set_default_cursor_shape(Control.CURSOR_POINTING_HAND)
+			else:
+				printerr("Element doesn't exist at release mouse click")
 			if tool_id == Tool.REMOVE_ELEMENT:
 				canvas_changed()
 				deselect_element()

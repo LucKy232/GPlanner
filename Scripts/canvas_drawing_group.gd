@@ -47,13 +47,6 @@ signal saving_images_to_disk
 ## Emitted when all regions are visible, used when screenshotting images changes to ensure all are loaded
 signal all_drawing_regions_visible
 
-enum DrawTool {
-	PENCIL,
-	ERASER,
-	BRUSH,
-	ERASERBRUSH,
-}
-
 
 func _process(_delta: float) -> void:
 	if image_load_tasks.size() > 0:
@@ -336,9 +329,9 @@ func update_regions_from_screenshots(screenshots: Dictionary[Vector2i, Image]) -
 		#var region_v2i: Vector2i = Vector2i(key.x, key.y)
 		#if !regions.has(region_v2i):
 			#add_drawing_region(region_v2i)
-		#if draw_tool == DrawTool.PENCIL:
+		#if draw_tool == DrawingSettings.DrawingTool.PENCIL:
 			# regions[region_v2i].blit_at(Vector2i(key.z, key.w), dict[key])
-		#if draw_tool == DrawTool.ERASER:
+		#if draw_tool == DrawingSettings.DrawingTool.ERASER:
 			# regions[region_v2i].mask_at(Vector2i(key.z, key.w), dict[key])
 
 

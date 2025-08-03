@@ -84,6 +84,9 @@ func remove_preset(idx: int) -> void:
 
 
 func change_preset(idx: int) -> void:
+	if !presets.has(idx) and idx != 0:
+		printerr("Style preset index not found: %d" % idx)
+		return
 	preset_options.select(idx)
 	_on_preset_options_item_selected(idx)
 	style_buttons.focus_button(idx)
