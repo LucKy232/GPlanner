@@ -124,9 +124,9 @@ func _process(_delta):
 			is_editing_element_text = false
 	else:
 		is_editing_element_text = false
-	if Input.is_action_just_pressed("fullscreen_borderless"):
+	if Input.is_action_just_pressed("fullscreen_borderless") and !is_saving_images:
 		toggle_borderless_window()
-	if Input.is_action_just_pressed("exit_fullscreen_borderless") and get_window().mode == Window.MODE_FULLSCREEN:
+	if Input.is_action_just_pressed("exit_fullscreen_borderless") and get_window().mode == Window.MODE_FULLSCREEN and !is_saving_images:
 		toggle_borderless_window()
 	if Input.is_action_just_pressed("save_file"):	# Can do while editing text because ctrl+s doesn't insert anything
 		_on_save_button_pressed()
@@ -1024,13 +1024,11 @@ func _on_drawing_manager_forced_save_ended() -> void:
 	finish_saving_images_unlock_UI()
 
 
-func _on_drawing_tool_box_item_selected(index: int) -> void:
+func _on_drawing_tool_box_item_selected(index: DrawingSettings.DrawingTool) -> void:
 	if !canvases.has(cc):
 		return
-	if canvases[cc].drawing_settings.selected_tool != index:
-		#drawing_manager.end_stroke() # Would be good, but buggy positioning of brush actions
-		canvases[cc].drawing_settings.selected_tool = index as DrawingSettings.DrawingTool
-		drawing_tool_bar.change_tool()
+	canvases[cc].drawing_settings.selected_tool = index as DrawingSettings.DrawingTool
+	drawing_tool_bar.change_tool()
 
 
 # true: DRAWING, false: PLANNING
@@ -1044,6 +1042,7 @@ func _on_toggle_mode_toggled(toggled_on: bool) -> void:
 		tool_box.visible = false
 		drawing_tool_box.visible = true
 		drawing_tool_bar.visible = true
+		drawing_tool_bar.inputs_enabled = true
 		element_settings.toggle_style_presets(false)
 		change_accent_color(accent_color_drawing)
 		set_toggle_mode_button_tooltip("Change to Planning Mode")
@@ -1054,6 +1053,7 @@ func _on_toggle_mode_toggled(toggled_on: bool) -> void:
 		tool_box.visible = true
 		drawing_tool_box.visible = false
 		drawing_tool_bar.visible = false
+		drawing_tool_bar.inputs_enabled = false
 		element_settings.toggle_style_presets(true)
 		tool_box.select(Tool.SELECT)
 		_on_tool_box_item_selected(Tool.SELECT)

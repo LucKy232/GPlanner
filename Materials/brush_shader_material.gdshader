@@ -17,7 +17,7 @@ void fragment() {
 	if (!can_draw) {
 		discard;
 	}
-	float press = clamp(pressure, 0.1, 1.0);		// Avoid 0.0 step size & infinite loop
+	float press = clamp(pressure, 0.001, 1.0);		// Avoid 0.0 step size & infinite loop
 	vec2 brush_size = brush_scale * press / scale / screen_size;
 	float size_min = min(brush_size.x, brush_size.y);
 	float uv_step = clamp(size_min * sqrt(size_min), 0.001, 0.05);	// Bigger brushes get bigger steps & less iterations

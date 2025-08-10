@@ -12,6 +12,7 @@ enum DrawingTool {
 	ERASER_BRUSH,
 }
 
+
 class PencilSettings:
 	var size_limits: Vector2i = Vector2i(0, 4)		## Inclusive
 	var size: int = 0:
@@ -32,19 +33,20 @@ class PencilSettings:
 
 
 class BrushSettings:
-	var size_limits: Vector2 = Vector2(1.0, 200.0)
+	var size_limits: Vector2 = Vector2(1.4, 200.0)
 	var size: float = 10.0:
 		get:
 			return clampf(size, size_limits.x, size_limits.y)
 		set(value):
 			size = clampf(value, size_limits.x, size_limits.y)
+			min_pressure = clampf(1.0 / size, 0.001, 1.0)
 	var color: Color = Color.WHITE
-	var use_pressure_for_size: bool = true
-	var min_pressure: float = 0.1:
+	var pressure: float = 1.0:
 		get:
-			return clampf(min_pressure, 0.1, 1.0)
+			return clampf(pressure, 0.001, 1.0)
 		set(value):
-			min_pressure = clampf(value, 0.1, 1.0)
+			pressure = clampf(value, 0.001, 1.0)
+	var min_pressure: float = 0.1
 	
 	func to_json() -> Dictionary:
 		var dict: Dictionary = {}
@@ -53,8 +55,7 @@ class BrushSettings:
 		dict["color.g"] = color.g
 		dict["color.b"] = color.b
 		dict["color.a"] = color.a
-		dict["use_pressure"] = use_pressure_for_size
-		dict["min_pressure"] = min_pressure
+		dict["pressure"] = pressure
 		return dict
 
 
@@ -73,24 +74,24 @@ class EraserPencilSettings:
 
 
 class EraserBrushSettings:
-	var size_limits: Vector2 = Vector2(1.0, 200.0)
+	var size_limits: Vector2 = Vector2(1.4, 400.0)
 	var size: float = 10.0:
 		get:
 			return clampf(size, size_limits.x, size_limits.y)
 		set(value):
 			size = clampf(value, size_limits.x, size_limits.y)
-	var use_pressure_for_size: bool = true
-	var min_pressure: float = 0.1:
+			min_pressure = clampf(1.0 / size, 0.001, 1.0)
+	var pressure: float = 0.1:
 		get:
-			return clampf(min_pressure, 0.1, 1.0)
+			return clampf(pressure, 0.001, 1.0)
 		set(value):
-			min_pressure = clampf(value, 0.1, 1.0)
+			pressure = clampf(value, 0.001, 1.0)
+	var min_pressure: float = 0.1
 	
 	func to_json() -> Dictionary:
 		var dict: Dictionary = {}
 		dict["size"] = size
-		dict["use_pressure"] = use_pressure_for_size
-		dict["min_pressure"] = min_pressure
+		dict["pressure"] = pressure
 		return dict
 
 
@@ -117,10 +118,10 @@ func rebuild_from_json(dict: Dictionary) -> void:
 	var brushsett: Dictionary = dict["BrushSettings"]
 	brush_settings.size = float(brushsett["size"])
 	brush_settings.color = Color(brushsett["color.r"], brushsett["color.g"], brushsett["color.b"], brushsett["color.a"])
-	brush_settings.use_pressure_for_size = bool(brushsett["use_pressure"])
-	brush_settings.min_pressure = float(brushsett["min_pressure"])
+	if brushsett.has("pressure"):
+		brush_settings.pressure = float(brushsett["pressure"])
 	
 	var eraserbrushsett: Dictionary = dict["EraserBrushSettings"]
 	eraser_brush_settings.size = float(eraserbrushsett["size"])
-	eraser_brush_settings.use_pressure_for_size = bool(eraserbrushsett["use_pressure"])
-	eraser_brush_settings.min_pressure = float(eraserbrushsett["min_pressure"])
+	if eraserbrushsett.has("pressure"):
+		eraser_brush_settings.pressure = float(eraserbrushsett["pressure"])

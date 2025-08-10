@@ -114,10 +114,11 @@ func receive_coords(p1: Vector2, p2: Vector2, settings: DrawingSettings, pressur
 			position_brush_to_current_stroke()
 			setup_shader()
 			current_stroke.type = settings.selected_tool
-		if !settings.brush_settings.use_pressure_for_size:
-			pressure = 1.0
-		else:
-			pressure = clampf(pressure, settings.brush_settings.min_pressure, 1.0)
+		var pressure_lower_limit: float = (1.0 - settings.brush_settings.pressure)
+		# Normalized in range [(1.0-setting); 1.0]
+		pressure = clampf(pressure * settings.brush_settings.pressure + pressure_lower_limit, pressure_lower_limit, 1.0)
+		# Limited to min_pressure, but using the whole range of input [0.0; 1.0] mapped to [MIN; 1.0]
+		pressure = clampf(pressure * (1.0 - settings.brush_settings.min_pressure) + settings.brush_settings.min_pressure, settings.brush_settings.min_pressure, 1.0)
 		current_stroke.draw_brush_line(p1, p2, settings.brush_settings.color, settings.brush_settings.size, pressure)
 	elif settings.selected_tool == settings.DrawingTool.ERASER_BRUSH:
 		if to_set_material:
@@ -125,10 +126,9 @@ func receive_coords(p1: Vector2, p2: Vector2, settings: DrawingSettings, pressur
 			setup_eraser_shader()
 			current_stroke.material = eraser_material.duplicate()
 			current_stroke.type = settings.selected_tool
-		if !settings.eraser_brush_settings.use_pressure_for_size:
-			pressure = 1.0
-		else:
-			pressure = clampf(pressure, settings.eraser_brush_settings.min_pressure, 1.0)
+		var pressure_lower_limit: float = (1.0 - settings.eraser_brush_settings.pressure)
+		pressure = clampf(pressure * settings.eraser_brush_settings.pressure + pressure_lower_limit, pressure_lower_limit, 1.0)
+		pressure = clampf(pressure * (1.0 - settings.eraser_brush_settings.min_pressure) + settings.eraser_brush_settings.min_pressure, settings.eraser_brush_settings.min_pressure, 1.0)
 		brush_eraser_texture.draw_brush_line(p1, p2, Color.WHITE, settings.eraser_brush_settings.size, pressure)
 	elif settings.selected_tool == settings.DrawingTool.PENCIL:
 		if to_set_material:

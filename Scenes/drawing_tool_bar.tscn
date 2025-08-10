@@ -16,13 +16,25 @@ size_flags_horizontal = 0
 size_flags_vertical = 4
 script = ExtResource("1_6c0qi")
 
+[node name="ColorPickerButton" type="ColorPickerButton" parent="."]
+light_mask = 2
+visibility_layer = 2
+custom_minimum_size = Vector2(90, 32)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+edit_alpha = false
+
 [node name="PencilSizeSpinBox" type="SpinBox" parent="."]
 light_mask = 2
 visibility_layer = 2
 custom_minimum_size = Vector2(90, 32)
 layout_mode = 2
 size_flags_horizontal = 4
-size_flags_vertical = 4
+size_flags_vertical = 0
+min_value = 1.0
+max_value = 4.0
+value = 1.0
 rounded = true
 alignment = 3
 prefix = "Size"
@@ -34,40 +46,26 @@ custom_minimum_size = Vector2(90, 32)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
+min_value = 1.0
+value = 1.0
 rounded = true
 alignment = 3
 prefix = "Size"
 
-[node name="ColorPickerButton" type="ColorPickerButton" parent="."]
+[node name="PressureSpinBox" type="SpinBox" parent="."]
 light_mask = 2
 visibility_layer = 2
-custom_minimum_size = Vector2(90, 32)
+custom_minimum_size = Vector2(87, 32)
 layout_mode = 2
-size_flags_horizontal = 4
 size_flags_vertical = 0
-edit_alpha = false
-
-[node name="PressureCheckButton" type="CheckButton" parent="."]
-light_mask = 2
-visibility_layer = 2
-custom_minimum_size = Vector2(90, 32)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-
-[node name="MinPressureSpinBox" type="SpinBox" parent="."]
-light_mask = 2
-visibility_layer = 2
-custom_minimum_size = Vector2(90, 32)
-layout_mode = 2
-max_value = 1.0
-step = 0.05
-value = 0.1
+step = 5.0
+value = 100.0
+rounded = true
 alignment = 3
-prefix = "Min"
+prefix = "P"
+suffix = "%"
 
+[connection signal="color_changed" from="ColorPickerButton" to="." method="_on_color_picker_button_color_changed"]
 [connection signal="value_changed" from="PencilSizeSpinBox" to="." method="_on_pencil_size_spin_box_value_changed"]
 [connection signal="value_changed" from="BrushSizeSpinBox" to="." method="_on_brush_size_spin_box_value_changed"]
-[connection signal="color_changed" from="ColorPickerButton" to="." method="_on_color_picker_button_color_changed"]
-[connection signal="toggled" from="PressureCheckButton" to="." method="_on_pressure_check_button_toggled"]
-[connection signal="value_changed" from="MinPressureSpinBox" to="." method="_on_min_pressure_spin_box_value_changed"]
+[connection signal="value_changed" from="PressureSpinBox" to="." method="_on_pressure_spin_box_value_changed"]

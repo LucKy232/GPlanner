@@ -39,7 +39,7 @@ func draw_brush_line(p1: Vector2, p2: Vector2, c: Color, brush_size: float, pres
 	material.set_shader_parameter("p2", p2_gpu)
 	material.set_shader_parameter("can_draw", true)
 	# Debug brush size
-	#pressure = clampf(pressure, 0.1, 1.0)
+	#pressure = clampf(pressure, 0.001, 1.0)
 	#var brush_size_uv: Vector2
 	#brush_size_uv.x = brush_scale * pressure / scale.x / size.x
 	#brush_size_uv.y = brush_scale * pressure / scale.x / size.y
