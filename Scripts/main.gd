@@ -4,11 +4,8 @@ extends Control
 @onready var tool_box: ItemList = $MarginContainer/ToolVBox/ToolArea/PlannerToolBox
 @onready var drawing_tool_box: ItemList = $MarginContainer/ToolVBox/ToolArea/DrawingToolBox
 @onready var drawing_tool_bar: DrawingToolBar = $MarginContainer/ToolVBox/DrawingToolBar
-
 @onready var settings_drawer: SettingsDrawer = $SettingsDrawer
-#@onready var element_settings: ElementSettings = $ElementSettings
 @onready var element_settings: ElementSettings = $MarginContainer/ElementSettings
-
 @onready var zoom_indicator: ZoomIndicator = $MarginContainer/ZoomIndicator
 @onready var pan_indicator_camera: PanIndicatorCamera = $MarginContainer/PanIndicatorCamera
 @onready var status_bar: Label = $StatusBar
@@ -22,6 +19,7 @@ extends Control
 @onready var bottom_bar: ScrollContainer = $BottomBar
 @onready var file_tab_bar: TabBar = $BottomBar/HBoxContainer/FileTabBar
 @onready var drawing_manager: DrawingManager = $DrawingManager
+@onready var input_repeat_timer: Timer = $InputRepeatTimer
 
 @export_category("Scenes")
 @export_file("*.tscn") var element_scene
@@ -61,6 +59,7 @@ var show_load_dialog: bool = false
 var close_this_tab: bool = false
 var exiting_app: bool = false
 var need_to_save_images_on_tool_change = false
+var first_input_repeat: bool = true
 var last_window_mode: Window.Mode = Window.Mode.MODE_WINDOWED		## When going to borderless fullscreen, remember the last Window.Mode
 
 
@@ -133,12 +132,18 @@ func _process(_delta):
 	if Input.is_action_just_pressed("edit_element") and !tool_box.is_selected(Tool.MARK_COMPLETED):
 		if selected_element_exists() and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
 			get_selected_element().line_edit.edit()
-	if Input.is_action_just_pressed("undo") and !disable_input():
-		if drawing_manager.undo_drawing_action():
+	if Input.is_action_pressed("undo", true) and !disable_input() and (input_repeat_timer.is_stopped() or first_input_repeat):
+		if drawing_manager.undo_drawing_action():	# Check + action
+			input_repeat_timer.start(0.5 if first_input_repeat else 0.1)
+			first_input_repeat = false
 			canvases[cc].drawings_changed()	# A bit redundant since it already has changes if there's something that you can undo / redo
-	if Input.is_action_just_pressed("redo") and !disable_input():
-		if drawing_manager.redo_drawing_action():
+	if Input.is_action_pressed("redo", true) and !disable_input() and (input_repeat_timer.is_stopped() or first_input_repeat):
+		if drawing_manager.redo_drawing_action():	# Check + action
+			input_repeat_timer.start(0.5 if first_input_repeat else 0.1)
+			first_input_repeat = false
 			canvases[cc].drawings_changed()	# A bit redundant since it already has changes if there's something that you can undo / redo
+	if Input.is_action_just_released("undo") or Input.is_action_just_released("redo"):
+		first_input_repeat = true
 	
 	if canvases[cc].app_mode == canvases[cc].AppMode.DRAWING:
 		if Input.is_action_just_pressed(draw_tool_keybinds[DrawingSettings.DrawingTool.PENCIL]):

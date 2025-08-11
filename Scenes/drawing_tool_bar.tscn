@@ -1,6 +1,35 @@
-[gd_scene load_steps=2 format=3 uid="uid://beylfa265iu7e"]
+[gd_scene load_steps=8 format=3 uid="uid://beylfa265iu7e"]
 
 [ext_resource type="Script" uid="uid://bbbggtoioxgv3" path="res://Scripts/drawing_tool_bar.gd" id="1_6c0qi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6c0qi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p1xrh"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l2mxm"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fywfu"]
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 3
+border_width_bottom = 2
+border_color = Color(0.760784, 0.537255, 1, 1)
+border_blend = true
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
+corner_detail = 1
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ds173"]
+
+[sub_resource type="Theme" id="Theme_ec0y3"]
+ColorPickerButton/styles/disabled = SubResource("StyleBoxEmpty_6c0qi")
+ColorPickerButton/styles/focus = SubResource("StyleBoxEmpty_p1xrh")
+ColorPickerButton/styles/hover = SubResource("StyleBoxEmpty_l2mxm")
+ColorPickerButton/styles/normal = SubResource("StyleBoxFlat_fywfu")
+ColorPickerButton/styles/pressed = SubResource("StyleBoxEmpty_ds173")
 
 [node name="DrawingToolBar" type="HBoxContainer"]
 light_mask = 2
@@ -19,10 +48,11 @@ script = ExtResource("1_6c0qi")
 [node name="ColorPickerButton" type="ColorPickerButton" parent="."]
 light_mask = 2
 visibility_layer = 2
-custom_minimum_size = Vector2(90, 32)
+custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
+theme = SubResource("Theme_ec0y3")
 edit_alpha = false
 
 [node name="PencilSizeSpinBox" type="SpinBox" parent="."]
@@ -65,7 +95,12 @@ alignment = 3
 prefix = "P"
 suffix = "%"
 
+[node name="InputRepeatTimer" type="Timer" parent="."]
+wait_time = 0.4
+one_shot = true
+
 [connection signal="color_changed" from="ColorPickerButton" to="." method="_on_color_picker_button_color_changed"]
 [connection signal="value_changed" from="PencilSizeSpinBox" to="." method="_on_pencil_size_spin_box_value_changed"]
 [connection signal="value_changed" from="BrushSizeSpinBox" to="." method="_on_brush_size_spin_box_value_changed"]
 [connection signal="value_changed" from="PressureSpinBox" to="." method="_on_pressure_spin_box_value_changed"]
+[connection signal="timeout" from="InputRepeatTimer" to="." method="_on_input_repeat_timer_timeout"]

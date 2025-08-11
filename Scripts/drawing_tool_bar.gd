@@ -6,10 +6,17 @@ class_name DrawingToolBar
 @onready var brush_size_spin_box: SpinBox = $BrushSizeSpinBox
 @onready var color_picker_button: ColorPickerButton = $ColorPickerButton
 @onready var pressure_spin_box: SpinBox = $PressureSpinBox
+@onready var input_repeat_timer: Timer = $InputRepeatTimer
 
 var settings: DrawingSettings = DrawingSettings.new()
 var inputs_enabled: bool = false
 var keybinds: Dictionary[SettingKeybind, String] = {}
+var input_repeat_time: float = 0.1
+var input_multiplier: float = 1.0
+var input_repeats: int = 0
+# TODO
+# After 2 - 4 repeats and input not released
+# Either shorten timer with multiplier or increase value with multiplier
 
 enum SettingKeybind {
 	PENCIL_SIZE_INCREASE,
@@ -28,24 +35,33 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	if inputs_enabled:
-		if Input.is_action_just_pressed("increase_tool_size") and !Input.is_key_pressed(KEY_CTRL):
+		if Input.is_action_pressed("increase_tool_size", true) and input_repeat_timer.is_stopped():
+			input_repeat_timer.start(input_repeat_time * input_multiplier)
 			if pencil_size_spin_box.visible == true:
 				pencil_size_spin_box.value += pencil_size_spin_box.step
 			if brush_size_spin_box.visible == true:
 				brush_size_spin_box.value += brush_size_spin_box.step
-		if Input.is_action_just_pressed("decrease_tool_size") and !Input.is_key_pressed(KEY_CTRL):
+		if Input.is_action_pressed("decrease_tool_size", true) and input_repeat_timer.is_stopped():
+			input_repeat_timer.start(input_repeat_time * input_multiplier)
 			if pencil_size_spin_box.visible == true:
 				pencil_size_spin_box.value -= pencil_size_spin_box.step
 			if brush_size_spin_box.visible == true:
 				brush_size_spin_box.value -= brush_size_spin_box.step
 		if Input.is_action_just_pressed("show_color_picker"):
 			color_picker_button.get_popup().show()
-		if Input.is_action_just_pressed("increase_pressure"):
+		if Input.is_action_pressed("increase_pressure", true) and input_repeat_timer.is_stopped():
+			input_repeat_timer.start(input_repeat_time * 2.0 * input_multiplier)
 			if pressure_spin_box.visible == true:
 				pressure_spin_box.value += pressure_spin_box.step
-		if  Input.is_action_just_pressed("decrease_pressure"):
+		if Input.is_action_pressed("decrease_pressure", true) and input_repeat_timer.is_stopped():
+			input_repeat_timer.start(input_repeat_time * 2.0 * input_multiplier)
 			if pressure_spin_box.visible == true:
 				pressure_spin_box.value -= pressure_spin_box.step
+		
+		for bind in keybinds:
+			if Input.is_action_just_released(keybinds[bind], true):
+				input_multiplier = 1.0
+				input_repeats = 0
 
 
 func init_tooltips() -> void:
@@ -167,3 +183,9 @@ func _on_pressure_spin_box_value_changed(value: float) -> void:
 		settings.brush_settings.pressure = value / 100.0
 	elif settings.selected_tool == settings.DrawingTool.ERASER_BRUSH:
 		settings.eraser_brush_settings.pressure = value / 100.0
+
+
+func _on_input_repeat_timer_timeout() -> void:
+	input_repeats += 1
+	if input_repeats > 5:
+		input_multiplier = 0.4

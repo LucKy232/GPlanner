@@ -382,6 +382,9 @@ popup_window = true
 theme = ExtResource("18_2ebs2")
 ok_button_text = "    Yes    "
 
+[node name="InputRepeatTimer" type="Timer" parent="."]
+one_shot = true
+
 [connection signal="resized" from="." to="." method="_on_resized"]
 [connection signal="toggled" from="MarginContainer/ToolVBox/ToolArea/ToggleMode" to="." method="_on_toggle_mode_toggled"]
 [connection signal="item_selected" from="MarginContainer/ToolVBox/ToolArea/PlannerToolBox" to="." method="_on_tool_box_item_selected"]
