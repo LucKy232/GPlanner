@@ -25,7 +25,7 @@ var pencil_material: CanvasItemMaterial			## CanvasItemMaterial.BLEND_MODE_MIX s
 var eraser_material: CanvasItemMaterial			## CanvasItemMaterial.BLEND_MODE_SUB set up in init()
 var mask_eraser_material: CanvasItemMaterial	## CanvasItemMaterial.BLEND_MODE_MUL set up in init()
 
-var MAX_PAST_ACTIONS: int = 40	## Actions available to undo.
+var MAX_PAST_ACTIONS: int = 100	## Actions available to undo.
 var FORCE_SAVE_REQUEST_KB_LIMIT: float = 512000.0	## When the force_save_request signal will be triggered, (used_temp_data_kb + used_overflow_data_kb is measured currently). A message will be sent using StatusBar via force_save_message signal at 75% of this value.
 var temp_drawing_action_scene	## Scene to instantiate for a single drawing stroke / action.
 var drawing_region_scene		## Scene to instantiate for a final image (1024x1024) that will get saved to disk.
@@ -166,7 +166,8 @@ func setup_shader() -> void:
 	active_brush_shader = current_stroke.material
 	active_brush_shader.set_shader_parameter("brush", brush)
 	active_brush_shader.set_shader_parameter("prev_img", blank_img)
-	RenderingServer.frame_post_draw.connect(_on_post_render)
+	if !RenderingServer.frame_post_draw.is_connected(_on_post_render):
+		RenderingServer.frame_post_draw.connect(_on_post_render)
 
 
 func setup_eraser_shader() -> void:
@@ -175,7 +176,8 @@ func setup_eraser_shader() -> void:
 	active_brush_shader.set_shader_parameter("brush", brush)
 	active_brush_shader.set_shader_parameter("prev_img", blank_img)
 	active_brush_shader.set_shader_parameter("brush_color", Vector4(1.0, 1.0, 1.0, 1.0))
-	RenderingServer.frame_post_draw.connect(_on_post_render_eraser)
+	if !RenderingServer.frame_post_draw.is_connected(_on_post_render_eraser):
+		RenderingServer.frame_post_draw.connect(_on_post_render_eraser)
 
 
 func end_stroke() -> void:

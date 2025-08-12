@@ -1,35 +1,66 @@
 [gd_scene load_steps=8 format=3 uid="uid://beylfa265iu7e"]
 
 [ext_resource type="Script" uid="uid://bbbggtoioxgv3" path="res://Scripts/drawing_tool_bar.gd" id="1_6c0qi"]
+[ext_resource type="Theme" uid="uid://bljmv4ancdfh8" path="res://Themes/spin_box_theme.tres" id="2_p1xrh"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6c0qi"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l2mxm"]
+bg_color = Color(0.143918, 0.143918, 0.143918, 1)
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.660971, 0.660971, 0.660971, 1)
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p1xrh"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_l2mxm"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6c0qi"]
+bg_color = Color(0.789285, 0.789285, 0.789285, 1)
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.660971, 0.660971, 0.660971, 1)
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fywfu"]
 draw_center = false
 border_width_left = 2
 border_width_top = 2
-border_width_right = 3
+border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.760784, 0.537255, 1, 1)
+border_color = Color(0.778445, 0.778445, 0.778445, 1)
 border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+corner_detail = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p1xrh"]
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.660971, 0.660971, 0.660971, 1)
 corner_radius_top_left = 1
 corner_radius_top_right = 1
 corner_radius_bottom_right = 1
 corner_radius_bottom_left = 1
-corner_detail = 1
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ds173"]
 
 [sub_resource type="Theme" id="Theme_ec0y3"]
-ColorPickerButton/styles/disabled = SubResource("StyleBoxEmpty_6c0qi")
-ColorPickerButton/styles/focus = SubResource("StyleBoxEmpty_p1xrh")
-ColorPickerButton/styles/hover = SubResource("StyleBoxEmpty_l2mxm")
+ColorPickerButton/styles/disabled = SubResource("StyleBoxFlat_l2mxm")
+ColorPickerButton/styles/focus = SubResource("StyleBoxFlat_6c0qi")
+ColorPickerButton/styles/hover = SubResource("StyleBoxFlat_6c0qi")
 ColorPickerButton/styles/normal = SubResource("StyleBoxFlat_fywfu")
-ColorPickerButton/styles/pressed = SubResource("StyleBoxEmpty_ds173")
+ColorPickerButton/styles/pressed = SubResource("StyleBoxFlat_p1xrh")
 
 [node name="DrawingToolBar" type="HBoxContainer"]
 light_mask = 2
@@ -58,10 +89,11 @@ edit_alpha = false
 [node name="PencilSizeSpinBox" type="SpinBox" parent="."]
 light_mask = 2
 visibility_layer = 2
-custom_minimum_size = Vector2(90, 32)
+custom_minimum_size = Vector2(95, 32)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
+theme = ExtResource("2_p1xrh")
 min_value = 1.0
 max_value = 4.0
 value = 1.0
@@ -72,10 +104,11 @@ prefix = "Size"
 [node name="BrushSizeSpinBox" type="SpinBox" parent="."]
 light_mask = 2
 visibility_layer = 2
-custom_minimum_size = Vector2(90, 32)
+custom_minimum_size = Vector2(95, 32)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
+theme = ExtResource("2_p1xrh")
 min_value = 1.0
 value = 1.0
 rounded = true
@@ -85,9 +118,10 @@ prefix = "Size"
 [node name="PressureSpinBox" type="SpinBox" parent="."]
 light_mask = 2
 visibility_layer = 2
-custom_minimum_size = Vector2(87, 32)
+custom_minimum_size = Vector2(100, 32)
 layout_mode = 2
 size_flags_vertical = 0
+theme = ExtResource("2_p1xrh")
 step = 5.0
 value = 100.0
 rounded = true

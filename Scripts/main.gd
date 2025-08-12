@@ -1052,6 +1052,7 @@ func _on_toggle_mode_toggled(toggled_on: bool) -> void:
 		change_accent_color(accent_color_drawing)
 		set_toggle_mode_button_tooltip("Change to Planning Mode")
 	else:
+		drawing_manager.end_stroke()
 		canvases[cc].app_mode = canvases[cc].AppMode.PLANNING
 		canvases[cc].toggle_element_label_mouse_inputs(true)
 		canvases[cc].toggle_show_priority_tool(settings_drawer.show_priority_tool.button_pressed)

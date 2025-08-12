@@ -2,6 +2,7 @@ extends Panel
 @export_category("Grid Lines")
 @export var toggle_grid_lines: bool = true
 @export var line_spacing_px: int = 40	## Including the line_width
+@export_range(0, 20, 1) var line_margin_num: int = 2
 @export_color_no_alpha var line_color
 
 @export_category("Background")
@@ -26,9 +27,10 @@ func _ready() -> void:
 func _draw() -> void:
 	if toggle_grid_lines:
 		for x in precalculated_x:
-			draw_line(Vector2(x, 0.0), Vector2(x, size.y), line_color, -1.0)
+			draw_line(Vector2(x, line_margin_num * line_spacing_px), Vector2(x, size.y - line_margin_num * line_spacing_px), line_color, -1.0)
 		for y in precalculated_y:
-			draw_line(Vector2(0.0, y), Vector2(size.x, y), line_color, -1.0)
+			draw_line(Vector2(line_margin_num * line_spacing_px, y), Vector2(size.x - line_margin_num * line_spacing_px, y), line_color, -1.0)
+	
 	if toggle_drawing_region_limits:
 		for x in (size.x / 1024.0):
 			var c: Color = Color(drawing_region_limits_color.r, drawing_region_limits_color.g, drawing_region_limits_color.b, drawing_region_limits_color_alpha)
@@ -41,10 +43,14 @@ func _draw() -> void:
 func calculate_line_positions() -> void:
 	precalculated_x.clear()
 	precalculated_y.clear()
+	var last_x: int = int(size.x / line_spacing_px) - line_margin_num
+	var last_y: int = int(size.y / line_spacing_px) - line_margin_num
 	for i in (size.x / line_spacing_px):
-		precalculated_x.append(i * line_spacing_px)
+		if i >= line_margin_num and i <= last_x:
+			precalculated_x.append(i * line_spacing_px)
 	for j in (size.y / line_spacing_px):
-		precalculated_y.append(j * line_spacing_px)
+		if j >= line_margin_num and j <= last_y:
+			precalculated_y.append(j * line_spacing_px)
 
 
 #func redraw() -> void:

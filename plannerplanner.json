@@ -1436,7 +1436,9 @@
 		}
 	},
 	"DrawingRegions": {
-		"00-00": "user://plannerplanner 2025-07-03T100205/00-00.png"
+		"00-00": "user://plannerplanner 2025-07-03T100205/00-00.png",
+		"00-01": "user://plannerplanner 2025-07-03T100205/00-01.png",
+		"01-01": "user://plannerplanner 2025-07-03T100205/01-01.png"
 	},
 	"DrawingSettings": {
 		"BrushSettings": {
@@ -1445,23 +1447,23 @@
 			"color.g": 0.05859375,
 			"color.r": 1.0,
 			"pressure": 1.0,
-			"size": 20.0
+			"size": 100.0
 		},
 		"EraserBrushSettings": {
 			"pressure": 0.001,
-			"size": 20.0
+			"size": 60.0
 		},
 		"EraserPencilSettings": {
 			"size": 4
 		},
 		"PencilSettings": {
 			"color.a": 1.0,
-			"color.b": 0.094024658203125,
-			"color.g": 0.92578125,
-			"color.r": 0.665857315063477,
-			"size": 1
+			"color.b": 0.0,
+			"color.g": 0.0,
+			"color.r": 1.0,
+			"size": 4
 		},
-		"SelectedTool": 3
+		"SelectedTool": 1
 	},
 	"Elements": {
 		"0": {
@@ -7278,17 +7280,17 @@
 		}
 	},
 	"State": {
-		"app_mode": 1,
+		"app_mode": 0,
 		"drawing_folder_path": "plannerplanner 2025-07-03T100205",
 		"position.x": 0.0,
-		"position.y": -760.846496582031,
+		"position.y": 0.0,
 		"priority_filter_value": 4,
-		"scale.x": 1.0,
-		"scale.y": 1.0,
+		"scale.x": 0.704049825668335,
+		"scale.y": 0.704049825668335,
 		"show_completed": false,
 		"show_priorities": true,
 		"show_priority_tool": false,
-		"zoom_level": 1.00685611664209
+		"zoom_level": 0.704049825831172
 	},
 	"StylePresets": {
 		"1": {

@@ -64,6 +64,10 @@ func _process(_delta: float) -> void:
 				input_repeats = 0
 
 
+func set_accent_color(_color: Color) -> void:
+	pass
+
+
 func init_tooltips() -> void:
 	var dict: Dictionary[String, String] = {
 		"PencilSize" : "Pencil Size Presets [0 - 4]",
