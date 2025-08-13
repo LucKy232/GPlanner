@@ -1,7 +1,9 @@
-[gd_resource type="Theme" load_steps=6 format=3 uid="uid://nujp3orsr2ol"]
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://nujp3orsr2ol"]
+
+[ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_dird1"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l5lmn"]
-bg_color = Color(0.385493, 0.385493, 0.385492, 1)
+bg_color = Color(0.273142, 0.273142, 0.273142, 1)
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -28,9 +30,9 @@ corner_radius_bottom_left = 2
 corner_detail = 1
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p2u2m"]
-content_margin_left = 10.0
-content_margin_top = 4.0
-content_margin_right = 10.0
+content_margin_left = 15.0
+content_margin_top = 10.0
+content_margin_right = 15.0
 content_margin_bottom = 10.0
 draw_center = false
 border_width_left = 1
@@ -61,20 +63,50 @@ border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
 border_color = Color(0.188235, 0.701961, 1, 1)
+corner_detail = 1
 
 [resource]
+AcceptDialog/font_sizes/title_font_size = 18
+AcceptDialog/fonts/title_font = ExtResource("1_dird1")
 AcceptDialog/styles/embedded_border = SubResource("StyleBoxFlat_l5lmn")
 AcceptDialog/styles/embedded_unfocused_border = SubResource("StyleBoxFlat_hrmln")
 AcceptDialog/styles/panel = SubResource("StyleBoxFlat_p2u2m")
+Button/font_sizes/font_size = 16
+Button/fonts/font = ExtResource("1_dird1")
 HBoxContainer/constants/separation = 4
+Label/constants/outline_size = 3
+Label/font_sizes/font_size = 16
+Label/fonts/font = ExtResource("1_dird1")
+LineEdit/font_sizes/font_size = 16
+LineEdit/fonts/font = ExtResource("1_dird1")
+OptionButton/font_sizes/font_size = 16
+OptionButton/fonts/font = ExtResource("1_dird1")
+PopupMenu/font_sizes/font_size = 16
+PopupMenu/font_sizes/title_font_size = 16
+PopupMenu/fonts/font = ExtResource("1_dird1")
+PopupMenu/fonts/font_separator = ExtResource("1_dird1")
+PopupMenu/fonts/title_font = ExtResource("1_dird1")
+Tree/colors/custom_button_font_highlight = Color(0.95, 0.95, 0.95, 1)
+Tree/colors/drop_position_color = Color(1, 1, 1, 1)
+Tree/colors/font_color = Color(0.887993, 0.887993, 0.887993, 1)
+Tree/colors/font_disabled_color = Color(0.875, 0.875, 0.875, 0.5)
+Tree/constants/button_margin = 4
+Tree/constants/children_hl_line_width = 1
+Tree/constants/draw_guides = 1
+Tree/constants/draw_relationship_lines = 0
+Tree/constants/h_separation = 4
+Tree/font_sizes/font_size = 16
+Tree/font_sizes/title_button_font_size = 16
+Tree/fonts/font = ExtResource("1_dird1")
+Tree/fonts/title_button_font = ExtResource("1_dird1")
 Window/colors/title_color = Color(1, 1, 1, 1)
 Window/colors/title_outline_modulate = Color(0, 0, 0, 1)
-Window/constants/close_h_offset = 22
+Window/constants/close_h_offset = 21
 Window/constants/close_v_offset = 22
 Window/constants/resize_margin = 3
-Window/constants/title_height = 30
-Window/constants/title_outline_size = 2
+Window/constants/title_height = 25
+Window/constants/title_outline_size = 3
 Window/font_sizes/title_font_size = 16
-Window/fonts/title_font = null
+Window/fonts/title_font = ExtResource("1_dird1")
 Window/styles/embedded_border = SubResource("StyleBoxFlat_sy4x5")
 Window/styles/embedded_unfocused_border = SubResource("StyleBoxFlat_pjncq")

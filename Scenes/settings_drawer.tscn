@@ -1,9 +1,10 @@
-[gd_scene load_steps=20 format=3 uid="uid://b1jg4g6wbv0qw"]
+[gd_scene load_steps=21 format=3 uid="uid://b1jg4g6wbv0qw"]
 
 [ext_resource type="Script" uid="uid://bwfn3gbxfptq0" path="res://Scripts/settings_drawer.gd" id="1_8m3lo"]
 [ext_resource type="StyleBox" uid="uid://di483ahmdks4u" path="res://Themes/toggle_drawer_button.tres" id="1_gpt4e"]
 [ext_resource type="Theme" uid="uid://dwboubtw2bfss" path="res://Themes/checkbox_theme.tres" id="2_7xck0"]
 [ext_resource type="Texture2D" uid="uid://kc71g6knpg0f" path="res://Icons/drawer_open.svg" id="3_2cnwg"]
+[ext_resource type="Theme" uid="uid://bfxmorphywksx" path="res://Themes/label_theme.tres" id="3_7h3a6"]
 [ext_resource type="StyleBox" uid="uid://dbhyjknms0hnr" path="res://Themes/toggle_drawer_button_pressed.tres" id="5_5fwcl"]
 [ext_resource type="Texture2D" uid="uid://cuhago8f7mb4k" path="res://Icons/drawer_close.svg" id="5_fh5r5"]
 
@@ -289,8 +290,7 @@ text = "Show priority tool popup"
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_constants/outline_size = 2
+theme = ExtResource("3_7h3a6")
 text = "Priority: ALL"
 horizontal_alignment = 1
 

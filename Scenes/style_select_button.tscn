@@ -1,4 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://dvorb6p8oev77"]
+[gd_scene load_steps=7 format=3 uid="uid://dvorb6p8oev77"]
+
+[ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_okek2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sg6nn"]
 bg_color = Color(0.27, 0.27, 0.27, 0.705882)
@@ -55,8 +57,9 @@ corner_detail = 1
 [sub_resource type="Theme" id="Theme_sg6nn"]
 Button/colors/font_color = Color(0.875, 0.875, 0.875, 1)
 Button/colors/font_outline_color = Color(0, 0, 0, 1)
-Button/constants/outline_size = 0
+Button/constants/outline_size = 3
 Button/font_sizes/font_size = 16
+Button/fonts/font = ExtResource("1_okek2")
 Button/styles/focus = SubResource("StyleBoxFlat_sg6nn")
 Button/styles/hover = SubResource("StyleBoxFlat_okek2")
 Button/styles/normal = SubResource("StyleBoxFlat_ovk8g")

@@ -1,7 +1,6 @@
-[gd_resource type="Theme" load_steps=2 format=3 uid="uid://bbwxuag5f8w7g"]
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://bfxmorphywksx"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_23rvj"]
-draw_center = false
+[ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_yx32m"]
 
 [resource]
 Label/colors/font_color = Color(1, 1, 1, 1)
@@ -9,4 +8,4 @@ Label/colors/font_outline_color = Color(0, 0, 0, 1)
 Label/colors/font_shadow_color = Color(0, 0, 0, 0)
 Label/constants/outline_size = 2
 Label/font_sizes/font_size = 16
-Label/styles/normal = SubResource("StyleBoxFlat_23rvj")
+Label/fonts/font = ExtResource("1_yx32m")

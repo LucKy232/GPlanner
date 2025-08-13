@@ -1,8 +1,0 @@
-[gd_resource type="Theme" load_steps=2 format=3 uid="uid://bqn3xw34vaklx"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_c0eok"]
-content_margin_top = 2.0
-content_margin_bottom = 2.0
-
-[resource]
-Label/styles/normal = SubResource("StyleBoxEmpty_c0eok")

@@ -1,0 +1,11 @@
+[gd_resource type="SystemFont" load_steps=2 format=3 uid="uid://celycldjtwytq"]
+
+[sub_resource type="SystemFont" id="SystemFont_qy3m5"]
+font_names = PackedStringArray("Sans-Serif")
+font_weight = 550
+
+[resource]
+fallbacks = Array[Font]([SubResource("SystemFont_qy3m5")])
+font_names = PackedStringArray("Tahoma", "Verdana", "Arial")
+font_weight = 550
+multichannel_signed_distance_field = true

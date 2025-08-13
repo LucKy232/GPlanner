@@ -1,8 +1,8 @@
 [gd_resource type="Theme" load_steps=4 format=3 uid="uid://dao6v8vx8h5ip"]
 
 [sub_resource type="SystemFont" id="SystemFont_0qxw5"]
-font_names = PackedStringArray("Noto Sans Lao")
-font_weight = 600
+font_names = PackedStringArray("Noto Sans Lao", "Tahoma")
+font_weight = 550
 multichannel_signed_distance_field = true
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ielnv"]

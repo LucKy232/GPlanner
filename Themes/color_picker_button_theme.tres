@@ -1,0 +1,52 @@
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://baxthgpikfcos"]
+
+[ext_resource type="SystemFont" uid="uid://celycldjtwytq" path="res://Themes/tooltip_font.tres" id="1_nd36o"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l2mxm"]
+bg_color = Color(0.143918, 0.143918, 0.143918, 1)
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.660971, 0.660971, 0.660971, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6c0qi"]
+bg_color = Color(0.789285, 0.789285, 0.789285, 1)
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.660971, 0.660971, 0.660971, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fywfu"]
+draw_center = false
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.778445, 0.778445, 0.778445, 1)
+border_blend = true
+corner_detail = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p1xrh"]
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.660971, 0.660971, 0.660971, 1)
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
+
+[resource]
+ColorPickerButton/styles/disabled = SubResource("StyleBoxFlat_l2mxm")
+ColorPickerButton/styles/focus = SubResource("StyleBoxFlat_6c0qi")
+ColorPickerButton/styles/hover = SubResource("StyleBoxFlat_6c0qi")
+ColorPickerButton/styles/normal = SubResource("StyleBoxFlat_fywfu")
+ColorPickerButton/styles/pressed = SubResource("StyleBoxFlat_p1xrh")
+TooltipLabel/font_sizes/font_size = 16
+TooltipLabel/fonts/font = ExtResource("1_nd36o")

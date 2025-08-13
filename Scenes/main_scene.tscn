@@ -23,7 +23,7 @@
 [ext_resource type="PackedScene" uid="uid://cg3drsp3kg5hm" path="res://Scenes/drawing_manager.tscn" id="17_b48ew"]
 [ext_resource type="PackedScene" uid="uid://cwbooma1lih12" path="res://Scenes/element_settings.tscn" id="17_oyb3p"]
 [ext_resource type="Texture2D" uid="uid://dvj0rxvoc7005" path="res://Icons/brush.svg" id="17_xle81"]
-[ext_resource type="Theme" uid="uid://nujp3orsr2ol" path="res://Themes/popup_dialogue_theme.tres" id="18_2ebs2"]
+[ext_resource type="Theme" uid="uid://nujp3orsr2ol" path="res://Themes/popup_dialog_theme.tres" id="18_2ebs2"]
 [ext_resource type="Texture2D" uid="uid://cektvw6goipya" path="res://Icons/pencil_eraser.svg" id="18_s8qe6"]
 [ext_resource type="PackedScene" uid="uid://binp5ftakgned" path="res://Scenes/pan_indicator_camera.tscn" id="19_jvnna"]
 [ext_resource type="Texture2D" uid="uid://dojsm17sk75ju" path="res://Icons/eraser.svg" id="19_yb0ja"]
@@ -253,7 +253,6 @@ size_flags_vertical = 4
 [node name="ElementSettings" parent="MarginContainer" instance=ExtResource("17_oyb3p")]
 light_mask = 2
 visibility_layer = 2
-custom_minimum_size = Vector2(300, 520)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
@@ -347,7 +346,7 @@ filters = PackedStringArray("*.json")
 [node name="NewFileConfirmation" type="AcceptDialog" parent="."]
 title = "Save current file?"
 initial_position = 2
-size = Vector2i(303, 100)
+size = Vector2i(315, 100)
 unresizable = true
 popup_window = true
 theme = ExtResource("18_2ebs2")
@@ -376,7 +375,7 @@ ok_button_text = "    Yes    "
 auto_translate_mode = 1
 title = "Save file?"
 initial_position = 2
-size = Vector2i(303, 100)
+size = Vector2i(300, 100)
 unresizable = true
 popup_window = true
 theme = ExtResource("18_2ebs2")

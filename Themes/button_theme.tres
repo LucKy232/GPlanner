@@ -1,6 +1,9 @@
-[gd_resource type="Theme" load_steps=6 format=3 uid="uid://y7w4cfil7ay0"]
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://y7w4cfil7ay0"]
+
+[ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_oxmtg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oxmtg"]
+content_margin_top = 4.0
 bg_color = Color(0, 0, 0, 0.705882)
 border_width_left = 2
 border_width_top = 2
@@ -15,6 +18,7 @@ corner_radius_bottom_left = 2
 corner_detail = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ewvkp"]
+content_margin_top = 4.0
 bg_color = Color(0.2, 0.2, 0.2, 0.705882)
 border_width_left = 2
 border_width_top = 2
@@ -29,6 +33,7 @@ corner_radius_bottom_left = 2
 corner_detail = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p5kd2"]
+content_margin_top = 4.0
 border_width_left = 2
 border_width_top = 2
 border_width_right = 2
@@ -42,6 +47,7 @@ corner_radius_bottom_left = 2
 corner_detail = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_14kg4"]
+content_margin_top = 4.0
 bg_color = Color(0, 0, 0, 0.705882)
 border_width_left = 2
 border_width_top = 2
@@ -56,6 +62,7 @@ corner_radius_bottom_left = 2
 corner_detail = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sphjs"]
+content_margin_top = 4.0
 bg_color = Color(0.2, 0.2, 0.2, 0.705882)
 border_width_left = 2
 border_width_top = 2
@@ -71,6 +78,7 @@ corner_detail = 2
 
 [resource]
 Button/colors/font_color = Color(1, 1, 1, 1)
+Button/fonts/font = ExtResource("1_oxmtg")
 Button/styles/focus = SubResource("StyleBoxFlat_oxmtg")
 Button/styles/hover = SubResource("StyleBoxFlat_ewvkp")
 Button/styles/hover_pressed = SubResource("StyleBoxFlat_p5kd2")

@@ -1,66 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://beylfa265iu7e"]
+[gd_scene load_steps=4 format=3 uid="uid://beylfa265iu7e"]
 
 [ext_resource type="Script" uid="uid://bbbggtoioxgv3" path="res://Scripts/drawing_tool_bar.gd" id="1_6c0qi"]
+[ext_resource type="Theme" uid="uid://baxthgpikfcos" path="res://Themes/color_picker_button_theme.tres" id="2_l2mxm"]
 [ext_resource type="Theme" uid="uid://bljmv4ancdfh8" path="res://Themes/spin_box_theme.tres" id="2_p1xrh"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l2mxm"]
-bg_color = Color(0.143918, 0.143918, 0.143918, 1)
-draw_center = false
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.660971, 0.660971, 0.660971, 1)
-corner_radius_top_left = 1
-corner_radius_top_right = 1
-corner_radius_bottom_right = 1
-corner_radius_bottom_left = 1
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6c0qi"]
-bg_color = Color(0.789285, 0.789285, 0.789285, 1)
-draw_center = false
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.660971, 0.660971, 0.660971, 1)
-corner_radius_top_left = 1
-corner_radius_top_right = 1
-corner_radius_bottom_right = 1
-corner_radius_bottom_left = 1
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fywfu"]
-draw_center = false
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.778445, 0.778445, 0.778445, 1)
-border_blend = true
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-corner_detail = 2
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p1xrh"]
-draw_center = false
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.660971, 0.660971, 0.660971, 1)
-corner_radius_top_left = 1
-corner_radius_top_right = 1
-corner_radius_bottom_right = 1
-corner_radius_bottom_left = 1
-
-[sub_resource type="Theme" id="Theme_ec0y3"]
-ColorPickerButton/styles/disabled = SubResource("StyleBoxFlat_l2mxm")
-ColorPickerButton/styles/focus = SubResource("StyleBoxFlat_6c0qi")
-ColorPickerButton/styles/hover = SubResource("StyleBoxFlat_6c0qi")
-ColorPickerButton/styles/normal = SubResource("StyleBoxFlat_fywfu")
-ColorPickerButton/styles/pressed = SubResource("StyleBoxFlat_p1xrh")
 
 [node name="DrawingToolBar" type="HBoxContainer"]
 light_mask = 2
@@ -83,7 +25,7 @@ custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
-theme = SubResource("Theme_ec0y3")
+theme = ExtResource("2_l2mxm")
 edit_alpha = false
 
 [node name="PencilSizeSpinBox" type="SpinBox" parent="."]

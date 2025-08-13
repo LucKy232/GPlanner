@@ -1,5 +1,6 @@
-[gd_resource type="Theme" load_steps=7 format=3 uid="uid://dwboubtw2bfss"]
+[gd_resource type="Theme" load_steps=8 format=3 uid="uid://dwboubtw2bfss"]
 
+[ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_6fhyk"]
 [ext_resource type="Texture2D" uid="uid://clygcgjl25ftc" path="res://Icons/checkbox_checked_white.svg" id="1_asfmc"]
 [ext_resource type="Texture2D" uid="uid://bvgangnvpd0qc" path="res://Icons/checkbox_unchecked_white.svg" id="2_6fhyk"]
 
@@ -15,7 +16,9 @@
 CheckBox/colors/font_color = Color(0.875, 0.875, 0.875, 1)
 CheckBox/colors/font_outline_color = Color(0, 0, 0, 1)
 CheckBox/colors/font_pressed_color = Color(1, 1, 1, 1)
-CheckBox/constants/outline_size = 2
+CheckBox/constants/outline_size = 3
+CheckBox/font_sizes/font_size = 16
+CheckBox/fonts/font = ExtResource("1_6fhyk")
 CheckBox/icons/checked = ExtResource("1_asfmc")
 CheckBox/icons/checked_disabled = null
 CheckBox/icons/unchecked = ExtResource("2_6fhyk")

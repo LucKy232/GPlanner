@@ -1,0 +1,18 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://bhx07jq36cjrb"]
+
+[ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_s0ewg"]
+
+[resource]
+OptionButton/constants/outline_size = 3
+OptionButton/font_sizes/font_size = 16
+OptionButton/fonts/font = ExtResource("1_s0ewg")
+PopupMenu/colors/font_color = Color(0.875, 0.875, 0.875, 1)
+PopupMenu/colors/font_disabled_color = Color(0.4, 0.4, 0.4, 0.8)
+PopupMenu/colors/font_outline_color = Color(0, 0, 0, 1)
+PopupMenu/constants/outline_size = 3
+PopupMenu/font_sizes/font_separator_size = 16
+PopupMenu/font_sizes/font_size = 16
+PopupMenu/font_sizes/title_font_size = 16
+PopupMenu/fonts/font = ExtResource("1_s0ewg")
+PopupMenu/fonts/font_separator = null
+PopupMenu/fonts/title_font = null

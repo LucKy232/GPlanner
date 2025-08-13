@@ -1,11 +1,11 @@
-[gd_resource type="Theme" load_steps=12 format=3 uid="uid://bljmv4ancdfh8"]
+[gd_resource type="Theme" load_steps=13 format=3 uid="uid://bljmv4ancdfh8"]
 
-[sub_resource type="SystemFont" id="SystemFont_6c0qi"]
-font_names = PackedStringArray("Tahoma")
-font_weight = 575
+[ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_mlukl"]
+[ext_resource type="SystemFont" uid="uid://celycldjtwytq" path="res://Themes/tooltip_font.tres" id="2_rw845"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1y0ju"]
 content_margin_left = 5.0
+content_margin_top = 4.0
 content_margin_right = 5.0
 bg_color = Color(0.180722, 0.180722, 0.180722, 0.705882)
 border_width_left = 2
@@ -22,6 +22,7 @@ corner_detail = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_40sl0"]
 content_margin_left = 5.0
+content_margin_top = 4.0
 content_margin_right = 5.0
 bg_color = Color(0, 0, 0, 0.705882)
 border_width_left = 2
@@ -126,7 +127,7 @@ corner_detail = 2
 
 [resource]
 LineEdit/font_sizes/font_size = 16
-LineEdit/fonts/font = SubResource("SystemFont_6c0qi")
+LineEdit/fonts/font = ExtResource("1_mlukl")
 LineEdit/styles/focus = SubResource("StyleBoxFlat_1y0ju")
 LineEdit/styles/normal = SubResource("StyleBoxFlat_40sl0")
 LineEdit/styles/read_only = SubResource("StyleBoxEmpty_15jqi")
@@ -138,3 +139,5 @@ SpinBox/styles/field_and_buttons_separator = SubResource("StyleBoxEmpty_khfey")
 SpinBox/styles/up_background = SubResource("StyleBoxFlat_ofwdi")
 SpinBox/styles/up_background_hovered = SubResource("StyleBoxFlat_ea0tm")
 SpinBox/styles/up_background_pressed = SubResource("StyleBoxFlat_ydvar")
+TooltipLabel/font_sizes/font_size = 16
+TooltipLabel/fonts/font = ExtResource("2_rw845")

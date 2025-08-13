@@ -1,6 +1,5 @@
-[gd_scene load_steps=22 format=3 uid="uid://cwbooma1lih12"]
+[gd_scene load_steps=17 format=3 uid="uid://cwbooma1lih12"]
 
-[ext_resource type="Theme" uid="uid://bbwxuag5f8w7g" path="res://Themes/settings_title_label.tres" id="1_3rqpg"]
 [ext_resource type="Script" uid="uid://jbprsvf8b31y" path="res://Scripts/element_settings.gd" id="1_5y8lb"]
 [ext_resource type="StyleBox" uid="uid://cdui0dgu3vdrr" path="res://Themes/element_background_style_box.tres" id="2_llryx"]
 [ext_resource type="PackedScene" uid="uid://brbbmqwm6hpj4" path="res://Scenes/div.tscn" id="2_qtb5q"]
@@ -8,9 +7,13 @@
 [ext_resource type="LabelSettings" uid="uid://bdej1kps06ib8" path="res://Themes/element_settings_label_settings.tres" id="3_uc373"]
 [ext_resource type="Texture2D" uid="uid://bomg2pg3t5h4u" path="res://Icons/plus_small.svg" id="4_1og04"]
 [ext_resource type="Script" uid="uid://b55xehho2e04x" path="res://Scripts/preset_style_buttons.gd" id="4_qg77d"]
+[ext_resource type="Theme" uid="uid://bfxmorphywksx" path="res://Themes/label_theme.tres" id="4_vcnja"]
 [ext_resource type="Texture2D" uid="uid://dxu6xn75t1xmv" path="res://Icons/minus_small.svg" id="5_0h7gu"]
-[ext_resource type="Theme" uid="uid://d3ww4lksynj53" path="res://Themes/element_settings_spin_box_theme.tres" id="6_0h7gu"]
-[ext_resource type="Theme" uid="uid://bqn3xw34vaklx" path="res://Themes/option_label_theme.tres" id="7_q0hxm"]
+[ext_resource type="Theme" uid="uid://d1k3bgtyiymgq" path="res://Themes/line_edit_ui_theme.tres" id="6_4tqpb"]
+[ext_resource type="StyleBox" uid="uid://bmpbaolapvao" path="res://Themes/menu_spacing_style.tres" id="6_nvup7"]
+[ext_resource type="Theme" uid="uid://bhx07jq36cjrb" path="res://Themes/option_button_theme.tres" id="8_vcnja"]
+[ext_resource type="Theme" uid="uid://baxthgpikfcos" path="res://Themes/color_picker_button_theme.tres" id="12_r7vyq"]
+[ext_resource type="Theme" uid="uid://cjbq8yvomvgbp" path="res://Themes/spin_box_elem_settings_theme.tres" id="13_nvup7"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ju8lp"]
 bg_color = Color(0.3, 0.3, 0.3, 0.862745)
@@ -28,37 +31,13 @@ expand_margin_bottom = 5.0
 [sub_resource type="Theme" id="Theme_3rqpg"]
 Panel/styles/panel = SubResource("StyleBoxFlat_ju8lp")
 
-[sub_resource type="Gradient" id="Gradient_1og04"]
-offsets = PackedFloat32Array(0, 0.301136)
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_0h7gu"]
-gradient = SubResource("Gradient_1og04")
-width = 72
-
-[sub_resource type="Gradient" id="Gradient_0h7gu"]
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_5y8lb"]
-gradient = SubResource("Gradient_0h7gu")
-width = 72
-
-[sub_resource type="Gradient" id="Gradient_5ujdp"]
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_llryx"]
-gradient = SubResource("Gradient_5ujdp")
-width = 72
-
-[sub_resource type="Gradient" id="Gradient_5y8lb"]
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_5ujdp"]
-gradient = SubResource("Gradient_5y8lb")
-width = 72
-
 [node name="ElementSettings" type="Control"]
 z_index = 5
+custom_minimum_size = Vector2(300, 490)
 layout_mode = 3
 anchors_preset = 0
 offset_right = 300.0
-offset_bottom = 520.0
+offset_bottom = 485.0
 mouse_filter = 2
 script = ExtResource("1_5y8lb")
 default_background_style_box = ExtResource("2_llryx")
@@ -79,7 +58,7 @@ layout_mode = 2
 [node name="CurrentPresetLabel" type="Label" parent="VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme = ExtResource("1_3rqpg")
+theme = ExtResource("4_vcnja")
 text = "Current Style: "
 clip_text = true
 text_overrun_behavior = 3
@@ -111,22 +90,6 @@ size_flags_vertical = 3
 mouse_filter = 1
 theme = SubResource("Theme_3rqpg")
 
-[node name="NameInsert" type="LineEdit" parent="VBoxContainer/SettingsPanel"]
-visible = false
-layout_mode = 1
-anchors_preset = 6
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-offset_left = -72.0
-offset_top = -114.5
-offset_right = -3.0
-offset_bottom = -82.5
-grow_horizontal = 0
-grow_vertical = 2
-placeholder_text = "Name..."
-
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/SettingsPanel"]
 layout_mode = 1
 anchors_preset = 15
@@ -145,7 +108,8 @@ theme_override_constants/separation = 1
 
 [node name="ElementSettingsTitleLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("1_3rqpg")
+theme = ExtResource("4_vcnja")
+theme_override_styles/normal = ExtResource("6_nvup7")
 text = "Element Settings"
 horizontal_alignment = 1
 
@@ -159,7 +123,7 @@ theme_override_constants/separation = 6
 
 [node name="Label" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/PresetHBox"]
 layout_mode = 2
-theme = ExtResource("7_q0hxm")
+theme = ExtResource("4_vcnja")
 text = "Preset"
 label_settings = ExtResource("3_uc373")
 
@@ -167,6 +131,7 @@ label_settings = ExtResource("3_uc373")
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+theme = ExtResource("8_vcnja")
 text_overrun_behavior = 3
 selected = 0
 fit_to_longest_item = false
@@ -191,7 +156,8 @@ icon_alignment = 1
 
 [node name="BackgroundTitleLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("1_3rqpg")
+theme = ExtResource("4_vcnja")
+theme_override_styles/normal = ExtResource("6_nvup7")
 text = "Background"
 horizontal_alignment = 1
 
@@ -203,18 +169,20 @@ layout_mode = 2
 
 [node name="BackgroundColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BackgroundColorHBox"]
 layout_mode = 2
-theme = ExtResource("7_q0hxm")
+theme = ExtResource("4_vcnja")
 text = "Background Color"
 label_settings = ExtResource("3_uc373")
 
 [node name="BackgroundColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BackgroundColorHBox"]
+custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
 size_flags_horizontal = 10
-icon = SubResource("GradientTexture1D_0h7gu")
+theme = ExtResource("12_r7vyq")
 
 [node name="FontTitleLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("1_3rqpg")
+theme = ExtResource("4_vcnja")
+theme_override_styles/normal = ExtResource("6_nvup7")
 text = "Font"
 horizontal_alignment = 1
 
@@ -226,7 +194,7 @@ layout_mode = 2
 
 [node name="FontSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/FontSizeHBox"]
 layout_mode = 2
-theme = ExtResource("7_q0hxm")
+theme = ExtResource("4_vcnja")
 text = "Font Size"
 label_settings = ExtResource("3_uc373")
 
@@ -234,7 +202,7 @@ label_settings = ExtResource("3_uc373")
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 4
-theme = ExtResource("6_0h7gu")
+theme = ExtResource("13_nvup7")
 min_value = 1.0
 max_value = 255.0
 value = 1.0
@@ -247,21 +215,22 @@ layout_mode = 2
 
 [node name="FontColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/FontColorHBox"]
 layout_mode = 2
-theme = ExtResource("7_q0hxm")
+theme = ExtResource("4_vcnja")
 text = "Font Color"
 label_settings = ExtResource("3_uc373")
 
 [node name="FontColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/FontColorHBox"]
+custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
 size_flags_horizontal = 10
-icon = SubResource("GradientTexture1D_5y8lb")
+theme = ExtResource("12_r7vyq")
 
 [node name="FontOutlineHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 
 [node name="FontOutlineSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/FontOutlineHBox"]
 layout_mode = 2
-theme = ExtResource("7_q0hxm")
+theme = ExtResource("4_vcnja")
 text = "Outline Size"
 label_settings = ExtResource("3_uc373")
 
@@ -269,7 +238,7 @@ label_settings = ExtResource("3_uc373")
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 4
-theme = ExtResource("6_0h7gu")
+theme = ExtResource("13_nvup7")
 max_value = 255.0
 value = 1.0
 rounded = true
@@ -281,18 +250,20 @@ layout_mode = 2
 
 [node name="FontOutlineColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/OutlineColorHBox"]
 layout_mode = 2
-theme = ExtResource("7_q0hxm")
+theme = ExtResource("4_vcnja")
 text = "Outline Color"
 label_settings = ExtResource("3_uc373")
 
 [node name="FontOutlineColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/OutlineColorHBox"]
+custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
 size_flags_horizontal = 10
-icon = SubResource("GradientTexture1D_llryx")
+theme = ExtResource("12_r7vyq")
 
 [node name="BorderTitleLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("1_3rqpg")
+theme = ExtResource("4_vcnja")
+theme_override_styles/normal = ExtResource("6_nvup7")
 text = "Border"
 horizontal_alignment = 1
 
@@ -304,15 +275,14 @@ layout_mode = 2
 
 [node name="BorderSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BorderSizeHBox"]
 layout_mode = 2
-theme = ExtResource("7_q0hxm")
+theme = ExtResource("4_vcnja")
 text = "Border Size"
 label_settings = ExtResource("3_uc373")
 
 [node name="BorderSizeSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BorderSizeHBox"]
 layout_mode = 2
 size_flags_horizontal = 10
-size_flags_vertical = 4
-theme = ExtResource("6_0h7gu")
+theme = ExtResource("13_nvup7")
 max_value = 255.0
 value = 1.0
 rounded = true
@@ -324,18 +294,35 @@ layout_mode = 2
 
 [node name="BorderColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BorderColorHBox"]
 layout_mode = 2
-theme = ExtResource("7_q0hxm")
+theme = ExtResource("4_vcnja")
 text = "Border Color"
 label_settings = ExtResource("3_uc373")
 
 [node name="BorderColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BorderColorHBox"]
+custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
 size_flags_horizontal = 10
-icon = SubResource("GradientTexture1D_5ujdp")
+theme = ExtResource("12_r7vyq")
+
+[node name="NameInsert" type="LineEdit" parent="VBoxContainer/SettingsPanel"]
+visible = false
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -90.0
+offset_top = -99.0
+offset_right = -5.0
+offset_bottom = -73.0
+grow_horizontal = 0
+grow_vertical = 2
+theme = ExtResource("6_4tqpb")
+theme_override_font_sizes/font_size = 14
+placeholder_text = "Name..."
 
 [connection signal="preset_style_button_pressed" from="VBoxContainer/StyleButtons" to="." method="_on_style_buttons_preset_style_button_pressed"]
-[connection signal="editing_toggled" from="VBoxContainer/SettingsPanel/NameInsert" to="." method="_on_name_insert_editing_toggled"]
-[connection signal="text_submitted" from="VBoxContainer/SettingsPanel/NameInsert" to="." method="_on_name_insert_text_submitted"]
 [connection signal="item_selected" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/PresetHBox/PresetOptions" to="." method="_on_preset_options_item_selected"]
 [connection signal="pressed" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/PresetHBox/AddPreset" to="." method="_on_add_preset_pressed"]
 [connection signal="pressed" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/PresetHBox/RemovePreset" to="." method="_on_remove_preset_pressed"]
@@ -346,3 +333,5 @@ icon = SubResource("GradientTexture1D_5ujdp")
 [connection signal="color_changed" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/OutlineColorHBox/FontOutlineColorPickerButton" to="." method="_on_font_outline_color_picker_button_color_changed"]
 [connection signal="value_changed" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BorderSizeHBox/BorderSizeSpinBox" to="." method="_on_border_size_spin_box_value_changed"]
 [connection signal="color_changed" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BorderColorHBox/BorderColorPickerButton" to="." method="_on_border_color_picker_button_color_changed"]
+[connection signal="editing_toggled" from="VBoxContainer/SettingsPanel/NameInsert" to="." method="_on_name_insert_editing_toggled"]
+[connection signal="text_submitted" from="VBoxContainer/SettingsPanel/NameInsert" to="." method="_on_name_insert_text_submitted"]

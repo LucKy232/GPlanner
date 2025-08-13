@@ -1905,7 +1905,7 @@
 			"pos.x": 1707.0,
 			"pos.y": 758.999938964844,
 			"priority_id": 4,
-			"size.x": 288.0,
+			"size.x": 289.0,
 			"size.y": 73.5609741210938,
 			"style_preset_id": "none",
 			"text": "Hide all complete checkbox"
@@ -1940,7 +1940,7 @@
 			"pos.x": 2193.927734375,
 			"pos.y": 1128.11694335938,
 			"priority_id": 2,
-			"size.x": 318.0,
+			"size.x": 319.0,
 			"size.y": 75.0,
 			"style_preset_id": "none",
 			"text": "Connection style improvement"
@@ -2153,7 +2153,7 @@
 			"pos.x": 2268.68115234375,
 			"pos.y": 940.47021484375,
 			"priority_id": 0,
-			"size.x": 161.0,
+			"size.x": 162.0,
 			"size.y": 95.0,
 			"style_preset_id": "none",
 			"text": "Priority Select"
@@ -2293,7 +2293,7 @@
 			"pos.x": 4407.21630859375,
 			"pos.y": 1722.375,
 			"priority_id": 4,
-			"size.x": 265.0,
+			"size.x": 266.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Set a label with file name"
@@ -2446,7 +2446,7 @@
 			"pos.x": 3530.392578125,
 			"pos.y": 1149.74267578125,
 			"priority_id": 0,
-			"size.x": 428.0,
+			"size.x": 429.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Deselect LineEdit if element is not selected"
@@ -2730,7 +2730,7 @@
 			"pos.x": 3239.72485351563,
 			"pos.y": 1285.744140625,
 			"priority_id": 4,
-			"size.x": 396.0,
+			"size.x": 397.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Save canvas data in file: Location, Scale"
@@ -3095,7 +3095,7 @@
 			"pos.x": 2806.5205078125,
 			"pos.y": 1511.43176269531,
 			"priority_id": 4,
-			"size.x": 165.935791015625,
+			"size.x": 166.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Load succesful"
@@ -3178,7 +3178,7 @@
 			"pos.x": 3071.03393554688,
 			"pos.y": 1027.62292480469,
 			"priority_id": 0,
-			"size.x": 324.0,
+			"size.x": 325.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Unite Select + Pan&Zoom tools"
@@ -3401,7 +3401,7 @@
 			"pos.x": 2356.318359375,
 			"pos.y": 1038.39038085938,
 			"priority_id": 0,
-			"size.x": 185.0,
+			"size.x": 186.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Save / Load data"
@@ -3436,7 +3436,7 @@
 			"pos.x": 1374.43017578125,
 			"pos.y": 756.932861328125,
 			"priority_id": 4,
-			"size.x": 241.0,
+			"size.x": 242.0,
 			"size.y": 73.3602294921875,
 			"style_preset_id": "none",
 			"text": "Hide their connections"
@@ -3541,7 +3541,7 @@
 			"pos.x": 1469.49743652344,
 			"pos.y": 584.86328125,
 			"priority_id": 4,
-			"size.x": 318.0,
+			"size.x": 319.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Hide when marked if checkbox"
@@ -3880,7 +3880,7 @@
 			"pos.x": 1737.86059570313,
 			"pos.y": 1122.32836914063,
 			"priority_id": 0,
-			"size.x": 411.0,
+			"size.x": 412.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Disable tool when checkbox / completed"
@@ -4055,7 +4055,7 @@
 			"pos.x": 3182.79931640625,
 			"pos.y": 1220.00573730469,
 			"priority_id": 0,
-			"size.x": 388.0,
+			"size.x": 389.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Select newly created element text-box"
@@ -4419,7 +4419,7 @@
 			"pos.x": 2771.36669921875,
 			"pos.y": 1253.09887695313,
 			"priority_id": 2,
-			"size.x": 243.0,
+			"size.x": 244.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Better selection viewer"
@@ -4454,7 +4454,7 @@
 			"pos.x": 3224.88623046875,
 			"pos.y": 1235.5048828125,
 			"priority_id": 0,
-			"size.x": 409.0,
+			"size.x": 410.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Remove connections by clicking LineEdit"
@@ -4489,7 +4489,7 @@
 			"pos.x": 2868.08129882813,
 			"pos.y": 1145.98876953125,
 			"priority_id": 0,
-			"size.x": 144.0,
+			"size.x": 145.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Canvas class"
@@ -4748,7 +4748,7 @@
 			"pos.x": 1606.81909179688,
 			"pos.y": 625.356811523438,
 			"priority_id": 0,
-			"size.x": 186.0,
+			"size.x": 187.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "With file opened"
@@ -4818,7 +4818,7 @@
 			"pos.x": 4607.005859375,
 			"pos.y": 1519.29931640625,
 			"priority_id": 0,
-			"size.x": 572.0,
+			"size.x": 573.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Save/Load current selected file path / consistent canvas id"
@@ -5040,7 +5040,7 @@
 			"pos.x": 2048.25415039063,
 			"pos.y": 1710.0986328125,
 			"priority_id": 0,
-			"size.x": 405.0,
+			"size.x": 406.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Start left / right based on other element"
@@ -5075,7 +5075,7 @@
 			"pos.x": 2300.06811523438,
 			"pos.y": 1555.11853027344,
 			"priority_id": 0,
-			"size.x": 172.0,
+			"size.x": 173.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Curved corners"
@@ -5180,7 +5180,7 @@
 			"pos.x": 4474.69482421875,
 			"pos.y": 1877.859375,
 			"priority_id": 4,
-			"size.x": 276.0,
+			"size.x": 277.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "canvas: has_changed: bool"
@@ -5285,7 +5285,7 @@
 			"pos.x": 4463.7255859375,
 			"pos.y": 1785.650390625,
 			"priority_id": 0,
-			"size.x": 112.0,
+			"size.x": 119.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Close Tab"
@@ -5403,7 +5403,7 @@
 			"pos.x": 4275.63720703125,
 			"pos.y": 1697.69750976563,
 			"priority_id": 0,
-			"size.x": 163.0,
+			"size.x": 164.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Popup per tab"
@@ -5604,7 +5604,7 @@
 			"pos.x": 4949.8203125,
 			"pos.y": 1315.35021972656,
 			"priority_id": 0,
-			"size.x": 242.0,
+			"size.x": 243.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Popup drawer left side"
@@ -6649,7 +6649,7 @@
 			"pos.x": 1274.47033691406,
 			"pos.y": 270.70458984375,
 			"priority_id": 2,
-			"size.x": 316.0,
+			"size.x": 317.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "selecting tool with ctrl pressed"
@@ -6949,7 +6949,7 @@
 			"pos.x": 1103.18115234375,
 			"pos.y": 537.269897460938,
 			"priority_id": 0,
-			"size.x": 487.0,
+			"size.x": 488.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Pan indicator outside of its window (sometimes) "
@@ -7282,15 +7282,15 @@
 	"State": {
 		"app_mode": 0,
 		"drawing_folder_path": "plannerplanner 2025-07-03T100205",
-		"position.x": 0.0,
-		"position.y": 0.0,
+		"position.x": -534.455444335938,
+		"position.y": -26.0000076293945,
 		"priority_filter_value": 4,
-		"scale.x": 0.704049825668335,
-		"scale.y": 0.704049825668335,
+		"scale.x": 0.352020978927612,
+		"scale.y": 0.352020978927612,
 		"show_completed": false,
 		"show_priorities": true,
 		"show_priority_tool": false,
-		"zoom_level": 0.704049825831172
+		"zoom_level": 0.352020991724845
 	},
 	"StylePresets": {
 		"1": {
