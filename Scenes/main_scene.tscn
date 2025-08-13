@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://bfydfy3iq0rjx"]
+[gd_scene load_steps=41 format=3 uid="uid://bfydfy3iq0rjx"]
 
 [ext_resource type="Script" uid="uid://dj8gdy8d87lam" path="res://Scripts/main.gd" id="1_52fb6"]
 [ext_resource type="StyleBox" uid="uid://wrrl0mk4mdli" path="res://Themes/active_priority_button_stylebox.tres" id="2_mai8y"]
@@ -16,6 +16,7 @@
 [ext_resource type="Texture2D" uid="uid://djq4xvrjpvfp5" path="res://Icons/plus.svg" id="9_7ewk0"]
 [ext_resource type="Texture2D" uid="uid://cjmn8wx7kwelm" path="res://Icons/minus.svg" id="10_lhp3t"]
 [ext_resource type="Texture2D" uid="uid://bcyljs0288jnt" path="res://Icons/settings_menu.svg" id="10_oyb3p"]
+[ext_resource type="SystemFont" uid="uid://celycldjtwytq" path="res://Themes/tooltip_font.tres" id="11_yb0ja"]
 [ext_resource type="Texture2D" uid="uid://l7psu5evarxp" path="res://Icons/add_line.svg" id="13_psl12"]
 [ext_resource type="Texture2D" uid="uid://1jids2awyagv" path="res://Icons/remove_line.svg" id="14_2ebs2"]
 [ext_resource type="Texture2D" uid="uid://dfq5wqtp3gjfd" path="res://Icons/checkbox.svg" id="15_2ebs2"]
@@ -28,6 +29,7 @@
 [ext_resource type="PackedScene" uid="uid://binp5ftakgned" path="res://Scenes/pan_indicator_camera.tscn" id="19_jvnna"]
 [ext_resource type="Texture2D" uid="uid://dojsm17sk75ju" path="res://Icons/eraser.svg" id="19_yb0ja"]
 [ext_resource type="PackedScene" uid="uid://beylfa265iu7e" path="res://Scenes/drawing_tool_bar.tscn" id="22_s8qe6"]
+[ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="30_15kh8"]
 
 [sub_resource type="Theme" id="Theme_6l7je"]
 MarginContainer/constants/margin_bottom = 38
@@ -67,9 +69,17 @@ ItemList/font_sizes/font_size = 1
 ItemList/fonts/font = null
 ItemList/styles/focus = SubResource("StyleBoxEmpty_5oxhp")
 ItemList/styles/panel = SubResource("StyleBoxFlat_jv6wh")
+TooltipLabel/font_sizes/font_size = 16
+TooltipLabel/fonts/font = ExtResource("11_yb0ja")
 
 [sub_resource type="Theme" id="Theme_2ebs2"]
 HBoxContainer/constants/separation = 0
+
+[sub_resource type="Theme" id="Theme_viu5a"]
+TabBar/font_sizes/font_size = 16
+TabBar/fonts/font = ExtResource("30_15kh8")
+TooltipLabel/font_sizes/font_size = 16
+TooltipLabel/fonts/font = ExtResource("11_yb0ja")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jvnna"]
 border_width_top = 2
@@ -87,6 +97,8 @@ border_width_top = 2
 Button/styles/hover = SubResource("StyleBoxFlat_jvnna")
 Button/styles/normal = SubResource("StyleBoxFlat_oyb3p")
 Button/styles/pressed = SubResource("StyleBoxFlat_2ebs2")
+TooltipLabel/font_sizes/font_size = 16
+TooltipLabel/fonts/font = ExtResource("11_yb0ja")
 
 [node name="MainScene" type="Control"]
 light_mask = 3
@@ -153,7 +165,6 @@ shortcut_in_tooltip = false
 icon_alignment = 1
 
 [node name="PlannerToolBox" type="ItemList" parent="MarginContainer/ToolVBox/ToolArea"]
-visible = false
 light_mask = 2
 visibility_layer = 2
 layout_mode = 2
@@ -313,6 +324,7 @@ theme = SubResource("Theme_2ebs2")
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_force_pass_scroll_events = false
+theme = SubResource("Theme_viu5a")
 clip_tabs = false
 tab_close_display_policy = 1
 max_tab_width = 300

@@ -1,8 +1,9 @@
-[gd_resource type="Theme" load_steps=8 format=3 uid="uid://dwboubtw2bfss"]
+[gd_resource type="Theme" load_steps=9 format=3 uid="uid://dwboubtw2bfss"]
 
 [ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_6fhyk"]
 [ext_resource type="Texture2D" uid="uid://clygcgjl25ftc" path="res://Icons/checkbox_checked_white.svg" id="1_asfmc"]
 [ext_resource type="Texture2D" uid="uid://bvgangnvpd0qc" path="res://Icons/checkbox_unchecked_white.svg" id="2_6fhyk"]
+[ext_resource type="SystemFont" uid="uid://celycldjtwytq" path="res://Themes/tooltip_font.tres" id="4_chei2"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_asfmc"]
 
@@ -27,3 +28,5 @@ CheckBox/styles/focus = SubResource("StyleBoxEmpty_asfmc")
 CheckBox/styles/hover = SubResource("StyleBoxEmpty_6fhyk")
 CheckBox/styles/normal = SubResource("StyleBoxEmpty_chei2")
 CheckBox/styles/pressed = SubResource("StyleBoxEmpty_8ijgy")
+TooltipLabel/font_sizes/font_size = 16
+TooltipLabel/fonts/font = ExtResource("4_chei2")

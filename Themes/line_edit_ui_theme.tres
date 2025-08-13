@@ -1,6 +1,7 @@
-[gd_resource type="Theme" load_steps=4 format=3 uid="uid://d1k3bgtyiymgq"]
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://d1k3bgtyiymgq"]
 
 [ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_7rthm"]
+[ext_resource type="SystemFont" uid="uid://celycldjtwytq" path="res://Themes/tooltip_font.tres" id="2_4envq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_77bhv"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -37,3 +38,5 @@ LineEdit/fonts/font = ExtResource("1_7rthm")
 LineEdit/styles/focus = SubResource("StyleBoxFlat_77bhv")
 LineEdit/styles/normal = SubResource("StyleBoxFlat_7rthm")
 LineEdit/styles/read_only = null
+TooltipLabel/font_sizes/font_size = 16
+TooltipLabel/fonts/font = ExtResource("2_4envq")

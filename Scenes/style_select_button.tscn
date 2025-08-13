@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://dvorb6p8oev77"]
+[gd_scene load_steps=8 format=3 uid="uid://dvorb6p8oev77"]
 
 [ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_okek2"]
+[ext_resource type="SystemFont" uid="uid://celycldjtwytq" path="res://Themes/tooltip_font.tres" id="2_ovk8g"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sg6nn"]
 bg_color = Color(0.27, 0.27, 0.27, 0.705882)
@@ -64,6 +65,8 @@ Button/styles/focus = SubResource("StyleBoxFlat_sg6nn")
 Button/styles/hover = SubResource("StyleBoxFlat_okek2")
 Button/styles/normal = SubResource("StyleBoxFlat_ovk8g")
 Button/styles/pressed = SubResource("StyleBoxFlat_d0t5f")
+TooltipLabel/font_sizes/font_size = 16
+TooltipLabel/fonts/font = ExtResource("2_ovk8g")
 
 [node name="StyleSelectButton" type="Button"]
 custom_minimum_size = Vector2(32, 32)

@@ -1,6 +1,7 @@
-[gd_resource type="Theme" load_steps=7 format=3 uid="uid://nujp3orsr2ol"]
+[gd_resource type="Theme" load_steps=8 format=3 uid="uid://nujp3orsr2ol"]
 
 [ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_dird1"]
+[ext_resource type="SystemFont" uid="uid://celycldjtwytq" path="res://Themes/tooltip_font.tres" id="2_xob6v"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l5lmn"]
 bg_color = Color(0.273142, 0.273142, 0.273142, 1)
@@ -86,6 +87,8 @@ PopupMenu/font_sizes/title_font_size = 16
 PopupMenu/fonts/font = ExtResource("1_dird1")
 PopupMenu/fonts/font_separator = ExtResource("1_dird1")
 PopupMenu/fonts/title_font = ExtResource("1_dird1")
+TooltipLabel/font_sizes/font_size = 16
+TooltipLabel/fonts/font = ExtResource("2_xob6v")
 Tree/colors/custom_button_font_highlight = Color(0.95, 0.95, 0.95, 1)
 Tree/colors/drop_position_color = Color(1, 1, 1, 1)
 Tree/colors/font_color = Color(0.887993, 0.887993, 0.887993, 1)

@@ -1,6 +1,7 @@
-[gd_resource type="Theme" load_steps=7 format=3 uid="uid://y7w4cfil7ay0"]
+[gd_resource type="Theme" load_steps=8 format=3 uid="uid://y7w4cfil7ay0"]
 
 [ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_oxmtg"]
+[ext_resource type="SystemFont" uid="uid://celycldjtwytq" path="res://Themes/tooltip_font.tres" id="2_sphjs"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oxmtg"]
 content_margin_top = 4.0
@@ -84,3 +85,5 @@ Button/styles/hover = SubResource("StyleBoxFlat_ewvkp")
 Button/styles/hover_pressed = SubResource("StyleBoxFlat_p5kd2")
 Button/styles/normal = SubResource("StyleBoxFlat_14kg4")
 Button/styles/pressed = SubResource("StyleBoxFlat_sphjs")
+TooltipLabel/font_sizes/font_size = 16
+TooltipLabel/fonts/font = ExtResource("2_sphjs")

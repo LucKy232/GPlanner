@@ -146,16 +146,16 @@ func _process(_delta):
 		first_input_repeat = true
 	
 	if canvases[cc].app_mode == canvases[cc].AppMode.DRAWING:
-		if Input.is_action_just_pressed(draw_tool_keybinds[DrawingSettings.DrawingTool.PENCIL]):
+		if Input.is_action_just_pressed(draw_tool_keybinds[DrawingSettings.DrawingTool.PENCIL], true):
 			drawing_tool_box.select(DrawingSettings.DrawingTool.PENCIL)
 			_on_drawing_tool_box_item_selected(DrawingSettings.DrawingTool.PENCIL)
-		if Input.is_action_just_pressed(draw_tool_keybinds[DrawingSettings.DrawingTool.BRUSH]):
+		if Input.is_action_just_pressed(draw_tool_keybinds[DrawingSettings.DrawingTool.BRUSH], true):
 			drawing_tool_box.select(DrawingSettings.DrawingTool.BRUSH)
 			_on_drawing_tool_box_item_selected(DrawingSettings.DrawingTool.BRUSH)
-		if Input.is_action_just_pressed(draw_tool_keybinds[DrawingSettings.DrawingTool.ERASER_PENCIL]):
+		if Input.is_action_just_pressed(draw_tool_keybinds[DrawingSettings.DrawingTool.ERASER_PENCIL], true):
 			drawing_tool_box.select(DrawingSettings.DrawingTool.ERASER_PENCIL)
 			_on_drawing_tool_box_item_selected(DrawingSettings.DrawingTool.ERASER_PENCIL)
-		if Input.is_action_just_pressed(draw_tool_keybinds[DrawingSettings.DrawingTool.ERASER_BRUSH]):
+		if Input.is_action_just_pressed(draw_tool_keybinds[DrawingSettings.DrawingTool.ERASER_BRUSH], true):
 			drawing_tool_box.select(DrawingSettings.DrawingTool.ERASER_BRUSH)
 			_on_drawing_tool_box_item_selected(DrawingSettings.DrawingTool.ERASER_BRUSH)
 	
