@@ -3,6 +3,9 @@ class_name ElementSettings
 
 @export var default_background_style_box: StyleBoxFlat
 @export var default_line_edit_theme: Theme
+@export var color_picker_theme: Theme
+@export var color_picker_panel_theme: Theme
+@export var div_theme: Theme
 @onready var preset_options: OptionButton = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/PresetHBox/PresetOptions
 @onready var background_color_picker_button: ColorPickerButton = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BackgroundColorHBox/BackgroundColorPickerButton
 @onready var font_size_spin_box: SpinBox = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/FontSizeHBox/FontSizeSpinBox
@@ -31,6 +34,11 @@ signal stopped_editing_text
 
 
 func _ready() -> void:
+	customize_color_picker(background_color_picker_button)
+	customize_color_picker(font_color_picker_button)
+	customize_color_picker(font_outline_color_picker_button)
+	customize_color_picker(border_color_picker_button)
+	
 	style_buttons.preset_style_button_pressed.connect(change_preset)
 	style_buttons.add_button("0", "No Preset")
 	reset_none_preset()
@@ -44,12 +52,24 @@ func _ready() -> void:
 		border_color_picker_button.color = none_preset.border_color
 
 
+func _process(_delta: float) -> void:
+	if Input.is_action_just_pressed("test_mult"):
+		test_style_stuff(get_color_picker_background_panel(background_color_picker_button))
+		test_style_stuff(get_color_picker_background_panel(font_color_picker_button))
+		test_style_stuff(get_color_picker_background_panel(font_outline_color_picker_button))
+		test_style_stuff(get_color_picker_background_panel(border_color_picker_button))
+		#print(get_color_picker_background_panel(background_color_picker_button))
+		#print(get_color_picker_background_panel(font_color_picker_button))
+		#print(get_color_picker_background_panel(font_outline_color_picker_button))
+		#print(get_color_picker_background_panel(border_color_picker_button))
+
+
+func test_style_stuff(panel: Panel) -> void:
+	print("Has OW: ", panel.has_theme_stylebox_override("panel"))
+
+
 func toggle_visible(toggled_on: bool):
 	settings_panel.visible = toggled_on
-	#if toggled_on:
-		#settings_panel.mouse_filter = Control.MOUSE_FILTER_STOP
-	#else:
-		#settings_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
 func is_panel_visible() -> bool:
@@ -216,6 +236,40 @@ func toggle_style_presets(toggled_on: bool) -> void:
 
 func set_accent_color(c: Color) -> void:
 	settings_panel.theme.get_stylebox("panel", "Panel").border_color = c
+	div_theme.get_stylebox("panel", "Panel").color = Color(c.r, c.g, c.b, 0.7)
+
+
+func get_color_picker_background_panel(button: ColorPickerButton) -> Panel:
+	if button.get_popup().get_child(0, true) is Panel:
+		return button.get_popup().get_child(0, true)
+	elif button.get_popup().get_child(1, true) is Panel:
+		return button.get_popup().get_child(1, true)
+	return Panel.new()
+
+
+func customize_color_picker(button: ColorPickerButton) -> void:
+	var picker: ColorPicker = button.get_picker()
+	var popup: PopupPanel = button.get_popup()
+	var panel: Panel = get_color_picker_background_panel(button)
+	
+	picker.theme = color_picker_theme
+	panel.theme = color_picker_panel_theme
+	picker.scale = Vector2(0.835, 0.835)
+	panel.scale = Vector2(0.835, 0.835)
+	panel.visibility_changed.connect(remove_theme_override.bind(panel))
+	popup.about_to_popup.connect(move_color_picker_popup.bind(popup))
+
+
+func move_color_picker_popup(popup: PopupPanel) -> void:
+	popup.position = Vector2i(int(global_position.x - popup.size.x * 0.835 - 10.0), 62) + Vector2i(0, 0)
+
+
+# Theme doesn't show because override is present. Doesn't work earlier (ColorPickerButton adds the override?)
+# Also gets reset when changing AppMode (?), so can't disconnect
+func remove_theme_override(panel: Panel) -> void:
+	if panel.is_visible_in_tree() and panel.has_theme_stylebox_override("panel"):
+		panel.remove_theme_stylebox_override("panel")
+		#panel.visibility_changed.disconnect(remove_theme_override)
 
 
 func _on_add_preset_pressed() -> void:

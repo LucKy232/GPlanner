@@ -2,6 +2,8 @@ extends HBoxContainer
 class_name DrawingToolBar
 ## Changes the DrawingSettings resource shared between this and the currenly selected PlannerCanvas
 
+@export var color_picker_theme: Theme
+@export var color_picker_panel_theme: Theme
 @onready var pencil_size_spin_box: SpinBox = $PencilSizeSpinBox
 @onready var brush_size_spin_box: SpinBox = $BrushSizeSpinBox
 @onready var color_picker_button: ColorPickerButton = $ColorPickerButton
@@ -14,9 +16,6 @@ var keybinds: Dictionary[SettingKeybind, String] = {}
 var input_repeat_time: float = 0.1
 var input_multiplier: float = 1.0
 var input_repeats: int = 0
-# TODO
-# After 2 - 4 repeats and input not released
-# Either shorten timer with multiplier or increase value with multiplier
 
 enum SettingKeybind {
 	PENCIL_SIZE_INCREASE,
@@ -31,6 +30,7 @@ enum SettingKeybind {
 func _ready() -> void:
 	init_tooltips()
 	create_keybinds()
+	customize_color_picker(color_picker_button)
 
 
 func _process(_delta: float) -> void:
@@ -62,10 +62,6 @@ func _process(_delta: float) -> void:
 			if Input.is_action_just_released(keybinds[bind], true):
 				input_multiplier = 1.0
 				input_repeats = 0
-
-
-func set_accent_color(_color: Color) -> void:
-	pass
 
 
 func init_tooltips() -> void:
@@ -159,6 +155,51 @@ func change_settings(sett: DrawingSettings) -> void:
 	pencil_size_spin_box.max_value = settings.pencil_settings.size_limits.y
 	brush_size_spin_box.min_value = settings.brush_settings.size_limits.x
 	brush_size_spin_box.max_value = settings.brush_settings.size_limits.y
+
+
+func set_accent_color(color: Color) -> void:
+	color_picker_panel_theme.get_stylebox("panel", "Panel").border_color = color
+	var sb_theme: Theme = pencil_size_spin_box.theme
+	sb_theme.get_stylebox("focus", "LineEdit").border_color = color.lightened(0.4)
+	sb_theme.get_stylebox("normal", "LineEdit").border_color = color
+	sb_theme.get_stylebox("down_background", "SpinBox").border_color = color
+	sb_theme.get_stylebox("down_background_hovered", "SpinBox").border_color = color
+	sb_theme.get_stylebox("down_background_pressed", "SpinBox").border_color = color
+	sb_theme.get_stylebox("up_background", "SpinBox").border_color = color
+	sb_theme.get_stylebox("up_background_hovered", "SpinBox").border_color = color
+	sb_theme.get_stylebox("up_background_pressed", "SpinBox").border_color = color
+
+
+func get_color_picker_background_panel(button: ColorPickerButton) -> Panel:
+	if button.get_popup().get_child(0, true) is Panel:
+		return button.get_popup().get_child(0, true)
+	elif button.get_popup().get_child(1, true) is Panel:
+		return button.get_popup().get_child(1, true)
+	return Panel.new()
+
+
+func customize_color_picker(button: ColorPickerButton) -> void:
+	var picker: ColorPicker = button.get_picker()
+	var popup: PopupPanel = button.get_popup()
+	var panel: Panel = get_color_picker_background_panel(button)
+	picker.theme = color_picker_theme
+	picker.scale = Vector2(0.835, 0.835)
+	panel.theme = color_picker_panel_theme
+	panel.scale = Vector2(0.835, 0.835)
+	panel.visibility_changed.connect(remove_theme_override.bind(panel))
+	popup.about_to_popup.connect(move_color_picker_popup.bind(popup))
+
+
+func move_color_picker_popup(popup: PopupPanel) -> void:
+	popup.position = Vector2i(int(global_position.x + size.x) + 40, 20)
+
+
+# Theme doesn't show because override is present. Doesn't work earlier (ColorPickerButton adds the override?)
+# Also gets reset when changing AppMode (?), so can't disconnect
+func remove_theme_override(panel: Panel) -> void:
+	if panel.is_visible_in_tree() and panel.has_theme_stylebox_override("panel"):
+		panel.remove_theme_stylebox_override("panel")
+		#panel.visibility_changed.disconnect(remove_theme_override)
 
 
 func _on_pencil_size_spin_box_value_changed(value: float) -> void:

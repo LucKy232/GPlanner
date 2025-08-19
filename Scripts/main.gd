@@ -641,6 +641,7 @@ func change_accent_color(c: Color) -> void:
 		element_settings.set_accent_color(c)
 	if canvases[cc].app_mode == canvases[cc].AppMode.DRAWING:
 		drawing_tool_box.theme.get_stylebox("panel", "ItemList").border_color = c
+		drawing_tool_bar.set_accent_color(c)
 	settings_drawer.set_accent_color(c)
 	zoom_indicator.set_accent_color(c)
 	button_theme.get_stylebox("focus", "Button").border_color = c
