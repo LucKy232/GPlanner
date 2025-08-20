@@ -1436,9 +1436,38 @@
 		}
 	},
 	"DrawingRegions": {
-		"00-00": "user://plannerplanner 2025-07-03T100205/00-00.png",
-		"00-01": "user://plannerplanner 2025-07-03T100205/00-01.png",
-		"01-01": "user://plannerplanner 2025-07-03T100205/01-01.png"
+		"05-04": "user://plannerplanner 2025-07-03T100205/05-04.png",
+		"06-04": "user://plannerplanner 2025-07-03T100205/06-04.png",
+		"07-03": "user://plannerplanner 2025-07-03T100205/07-03.png",
+		"07-04": "user://plannerplanner 2025-07-03T100205/07-04.png",
+		"08-02": "user://plannerplanner 2025-07-03T100205/08-02.png",
+		"08-03": "user://plannerplanner 2025-07-03T100205/08-03.png",
+		"08-04": "user://plannerplanner 2025-07-03T100205/08-04.png",
+		"09-01": "user://plannerplanner 2025-07-03T100205/09-01.png",
+		"09-02": "user://plannerplanner 2025-07-03T100205/09-02.png",
+		"09-03": "user://plannerplanner 2025-07-03T100205/09-03.png",
+		"09-04": "user://plannerplanner 2025-07-03T100205/09-04.png",
+		"09-05": "user://plannerplanner 2025-07-03T100205/09-05.png",
+		"10-01": "user://plannerplanner 2025-07-03T100205/10-01.png",
+		"10-02": "user://plannerplanner 2025-07-03T100205/10-02.png",
+		"10-03": "user://plannerplanner 2025-07-03T100205/10-03.png",
+		"10-04": "user://plannerplanner 2025-07-03T100205/10-04.png",
+		"10-05": "user://plannerplanner 2025-07-03T100205/10-05.png",
+		"11-01": "user://plannerplanner 2025-07-03T100205/11-01.png",
+		"11-02": "user://plannerplanner 2025-07-03T100205/11-02.png",
+		"11-03": "user://plannerplanner 2025-07-03T100205/11-03.png",
+		"11-04": "user://plannerplanner 2025-07-03T100205/11-04.png",
+		"11-05": "user://plannerplanner 2025-07-03T100205/11-05.png",
+		"12-02": "user://plannerplanner 2025-07-03T100205/12-02.png",
+		"12-03": "user://plannerplanner 2025-07-03T100205/12-03.png",
+		"12-04": "user://plannerplanner 2025-07-03T100205/12-04.png",
+		"12-05": "user://plannerplanner 2025-07-03T100205/12-05.png",
+		"13-02": "user://plannerplanner 2025-07-03T100205/13-02.png",
+		"13-03": "user://plannerplanner 2025-07-03T100205/13-03.png",
+		"13-04": "user://plannerplanner 2025-07-03T100205/13-04.png",
+		"13-05": "user://plannerplanner 2025-07-03T100205/13-05.png",
+		"14-03": "user://plannerplanner 2025-07-03T100205/14-03.png",
+		"14-04": "user://plannerplanner 2025-07-03T100205/14-04.png"
 	},
 	"DrawingSettings": {
 		"BrushSettings": {
@@ -1451,7 +1480,7 @@
 		},
 		"EraserBrushSettings": {
 			"pressure": 0.001,
-			"size": 60.0
+			"size": 62.0
 		},
 		"EraserPencilSettings": {
 			"size": 4
@@ -1633,8 +1662,8 @@
 				"outline_color.r": 0.0,
 				"outline_size": 0
 			},
-			"pos.x": 2577.287109375,
-			"pos.y": 1197.10278320313,
+			"pos.x": 2577.14794921875,
+			"pos.y": 1165.2412109375,
 			"priority_id": 4,
 			"size.x": 183.27392578125,
 			"size.y": 117.269287109375,
@@ -7280,9 +7309,9 @@
 		}
 	},
 	"State": {
-		"app_mode": 0,
+		"app_mode": 1,
 		"drawing_folder_path": "plannerplanner 2025-07-03T100205",
-		"position.x": -1435.99987792969,
+		"position.x": -73.9127197265625,
 		"position.y": 0.0,
 		"priority_filter_value": 4,
 		"scale.x": 0.200000002980232,
@@ -7318,9 +7347,9 @@
 		},
 		"2": {
 			"background_color.a": 1.0,
-			"background_color.b": 0.6302170753479,
-			"background_color.g": 0.639182984828949,
-			"background_color.r": 0.00000038504600752276,
+			"background_color.b": 0.721568644046783,
+			"background_color.g": 0.462745100259781,
+			"background_color.r": 0.580392181873322,
 			"border_color.a": 1.0,
 			"border_color.b": 0.0,
 			"border_color.g": 0.0,

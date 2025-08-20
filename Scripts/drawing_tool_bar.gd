@@ -17,6 +17,8 @@ var input_repeat_time: float = 0.1
 var input_multiplier: float = 1.0
 var input_repeats: int = 0
 
+signal color_picker_toggled
+
 enum SettingKeybind {
 	PENCIL_SIZE_INCREASE,
 	PENCIL_SIZE_DECREASE,
@@ -234,3 +236,7 @@ func _on_input_repeat_timer_timeout() -> void:
 	input_repeats += 1
 	if input_repeats > 5:
 		input_multiplier = 0.4
+
+
+func _on_color_picker_button_toggled(toggled_on: bool) -> void:
+	color_picker_toggled.emit(toggled_on)

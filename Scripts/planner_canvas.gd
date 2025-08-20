@@ -40,6 +40,7 @@ var is_panning: bool = false
 var is_adding_elements: bool = false
 var is_element_just_created: bool = false
 var is_drawing: bool = false
+var is_color_picker_visible = false
 var drag_start_mouse_pos: Vector2
 var original_elem_size: Vector2
 var last_draw_event_position: Vector2 = Vector2.ZERO
@@ -667,43 +668,51 @@ func toggle_element_label_mouse_inputs(toggled_on: bool) -> void:
 
 
 func _on_gui_input(event: InputEvent) -> void:
+	if drawing_manager.is_taking_screenshots:
+		return
 	if event is InputEventMouseMotion and event.pressure > 0.0:
 		last_pressure_event = event.pressure
 	
-	if app_mode == AppMode.PLANNING:
-		if drawing_manager.is_taking_screenshots:
-			return
-		if event is InputEventMouseButton:
-			if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
-				if tool_id == Tool.ADD_ELEMENT:
-					add_element_label(event.position)
-					is_adding_elements = true
-				if (tool_id == Tool.SELECT or tool_id == Tool.ELEMENT_STYLE_SETTINGS):
-					if !is_element_just_created:
-						select_element(-1)	# Deselect any
-					else:
-						is_element_just_created = false
-					if !is_panning:
-						is_panning = true
-						drag_start_mouse_pos = event.position
-			elif event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
-				if is_panning:
-					is_panning = false
-			if event.button_index == MOUSE_BUTTON_WHEEL_UP and (tool_id == Tool.SELECT or tool_id == Tool.ELEMENT_STYLE_SETTINGS):
-				var old_zoom: float = zoom_level
-				zoom_level = clampf(zoom_level * zoom_speed, zoom_limits.x, zoom_limits.y)
-				handle_zoom(old_zoom, get_window().get_mouse_position())
-			if event.button_index == MOUSE_BUTTON_WHEEL_DOWN and (tool_id == Tool.SELECT or tool_id == Tool.ELEMENT_STYLE_SETTINGS):
-				var old_zoom: float = zoom_level
-				zoom_level = clampf(zoom_level * (2.0 - zoom_speed), zoom_limits.x, zoom_limits.y)
-				handle_zoom(old_zoom, get_viewport_rect().size * 0.5)
-		if event is InputEventMouseMotion and is_panning and (tool_id == Tool.SELECT or tool_id == Tool.ELEMENT_STYLE_SETTINGS):
-			var move = (event.position - drag_start_mouse_pos) * scale.x
-			position = pan_limits(position + move)
-			changed_position.emit()
+	# Begin pan
+	if event.is_action("pan") and event.is_pressed() and !is_drawing:
+		if !is_element_just_created:
+			select_element(-1)	# Deselect any
+		else:
+			is_element_just_created = false
+		if !is_panning:
+			is_panning = true
+			set_default_cursor_shape(Control.CURSOR_DRAG)
+			drag_start_mouse_pos = event.position
+	
+	# End pan
+	if event.is_action("pan") and event.is_released():
+		if is_panning:
+			is_panning = false
+			set_default_cursor_shape(Control.CURSOR_ARROW)
+	
+	# Panning action
+	if event is InputEventMouseMotion and is_panning:
+		var move = (event.position - drag_start_mouse_pos) * scale.x
+		position = pan_limits(position + move)
+		changed_position.emit()
+	
+	if event.is_action("zoom_in") and !is_drawing:
+		var old_zoom: float = zoom_level
+		zoom_level = clampf(zoom_level * zoom_speed, zoom_limits.x, zoom_limits.y)
+		handle_zoom(old_zoom, get_window().get_mouse_position())
+	
+	if event.is_action("zoom_out") and !is_drawing:
+		var old_zoom: float = zoom_level
+		zoom_level = clampf(zoom_level * (2.0 - zoom_speed), zoom_limits.x, zoom_limits.y)
+		handle_zoom(old_zoom, get_viewport_rect().size * 0.5)
+	
+	if app_mode == AppMode.PLANNING and event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed() and tool_id == Tool.ADD_ELEMENT:
+			add_element_label(event.position)
+			is_adding_elements = true
 	
 	if app_mode == AppMode.DRAWING:
-		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed() and !is_color_picker_visible:
 			is_drawing = true
 			last_draw_event_position = event.position * scale + position
 			drawing_manager.resize_to_window()

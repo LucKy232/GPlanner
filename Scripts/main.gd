@@ -112,6 +112,7 @@ func _ready() -> void:
 	drawing_manager.requested_status_message.connect(_on_drawing_manager_status_message)
 	drawing_manager.forced_save_started.connect(_on_drawing_manager_forced_save_started)
 	drawing_manager.forced_save_ended.connect(_on_drawing_manager_forced_save_ended)
+	drawing_tool_bar.color_picker_toggled.connect(_on_drawing_tool_bar_color_picker_toggled)
 	#drawing_manager.requested_save_on_tool_change.connect(_on_drawing_manager_requested_save_on_tool_change)
 
 
@@ -1066,3 +1067,8 @@ func _on_toggle_mode_toggled(toggled_on: bool) -> void:
 		_on_tool_box_item_selected(Tool.SELECT)
 		change_accent_color(accent_color_planning)
 		set_toggle_mode_button_tooltip("Change to Drawing Mode")
+
+
+func _on_drawing_tool_bar_color_picker_toggled(toggled_on) -> void:
+	if canvases.has(cc):
+		canvases[cc].is_color_picker_visible = toggled_on

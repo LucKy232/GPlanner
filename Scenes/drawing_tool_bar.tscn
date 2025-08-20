@@ -94,6 +94,7 @@ wait_time = 0.4
 one_shot = true
 
 [connection signal="color_changed" from="ColorPickerButton" to="." method="_on_color_picker_button_color_changed"]
+[connection signal="toggled" from="ColorPickerButton" to="." method="_on_color_picker_button_toggled"]
 [connection signal="value_changed" from="PencilSizeSpinBox" to="." method="_on_pencil_size_spin_box_value_changed"]
 [connection signal="value_changed" from="BrushSizeSpinBox" to="." method="_on_brush_size_spin_box_value_changed"]
 [connection signal="value_changed" from="PressureSpinBox" to="." method="_on_pressure_spin_box_value_changed"]
