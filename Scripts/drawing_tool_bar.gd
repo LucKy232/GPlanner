@@ -18,6 +18,7 @@ var input_multiplier: float = 1.0
 var input_repeats: int = 0
 
 signal color_picker_toggled
+signal brush_size_changed
 
 enum SettingKeybind {
 	PENCIL_SIZE_INCREASE,
@@ -216,6 +217,7 @@ func _on_brush_size_spin_box_value_changed(value: float) -> void:
 		settings.brush_settings.size = value
 	elif settings.selected_tool == settings.DrawingTool.ERASER_BRUSH:
 		settings.eraser_brush_settings.size = value
+	brush_size_changed.emit()
 
 
 func _on_color_picker_button_color_changed(color: Color) -> void:

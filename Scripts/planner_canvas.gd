@@ -73,8 +73,6 @@ enum Tool {
 	ADD_CONNECTION,
 	REMOVE_CONNECTIONS,
 	MARK_COMPLETED,
-	PENCIL,	# TODO remove
-	ERASER,	# TODO remove
 }
 enum Priority {
 	ACTIVE,

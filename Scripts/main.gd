@@ -37,6 +37,8 @@ extends Control
 @export_range(1.01, 1.2, 0.01) var zoom_speed: float = 1.02
 @export var priority_filter_text: Array[String]
 @export var opened_files_file_name: String
+@export var pencil_cursor: Texture2D
+@export var eraser_pencil_cursor: Texture2D
 ## Settings drawer
 var show_completed: CheckBox
 var show_priorities: CheckBox
@@ -113,6 +115,7 @@ func _ready() -> void:
 	drawing_manager.forced_save_started.connect(_on_drawing_manager_forced_save_started)
 	drawing_manager.forced_save_ended.connect(_on_drawing_manager_forced_save_ended)
 	drawing_tool_bar.color_picker_toggled.connect(_on_drawing_tool_bar_color_picker_toggled)
+	drawing_tool_bar.brush_size_changed.connect(change_drawing_tool_cursor)
 	#drawing_manager.requested_save_on_tool_change.connect(_on_drawing_manager_requested_save_on_tool_change)
 
 
@@ -160,27 +163,29 @@ func _process(_delta):
 			drawing_tool_box.select(DrawingSettings.DrawingTool.ERASER_BRUSH)
 			_on_drawing_tool_box_item_selected(DrawingSettings.DrawingTool.ERASER_BRUSH)
 	
-	if Input.is_action_just_pressed(tool_keybinds[Tool.SELECT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
-		tool_box.select(Tool.SELECT)
-		_on_tool_box_item_selected(Tool.SELECT)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.ADD_ELEMENT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
-		tool_box.select(Tool.ADD_ELEMENT)
-		_on_tool_box_item_selected(Tool.ADD_ELEMENT)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.REMOVE_ELEMENT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
-		tool_box.select(Tool.REMOVE_ELEMENT)
-		_on_tool_box_item_selected(Tool.REMOVE_ELEMENT)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.ELEMENT_STYLE_SETTINGS]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
-		tool_box.select(Tool.ELEMENT_STYLE_SETTINGS)
-		_on_tool_box_item_selected(Tool.ELEMENT_STYLE_SETTINGS)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.ADD_CONNECTION]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
-		tool_box.select(Tool.ADD_CONNECTION)
-		_on_tool_box_item_selected(Tool.ADD_CONNECTION)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.REMOVE_CONNECTIONS]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
-		tool_box.select(Tool.REMOVE_CONNECTIONS)
-		_on_tool_box_item_selected(Tool.REMOVE_CONNECTIONS)
-	if Input.is_action_just_pressed(tool_keybinds[Tool.MARK_COMPLETED]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
-		tool_box.select(Tool.MARK_COMPLETED)
-		_on_tool_box_item_selected(Tool.MARK_COMPLETED)
+	if canvases[cc].app_mode == canvases[cc].AppMode.PLANNING:
+		if Input.is_action_just_pressed(tool_keybinds[Tool.SELECT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+			tool_box.select(Tool.SELECT)
+			_on_tool_box_item_selected(Tool.SELECT)
+		if Input.is_action_just_pressed(tool_keybinds[Tool.ADD_ELEMENT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+			tool_box.select(Tool.ADD_ELEMENT)
+			_on_tool_box_item_selected(Tool.ADD_ELEMENT)
+		if Input.is_action_just_pressed(tool_keybinds[Tool.REMOVE_ELEMENT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+			tool_box.select(Tool.REMOVE_ELEMENT)
+			_on_tool_box_item_selected(Tool.REMOVE_ELEMENT)
+		if Input.is_action_just_pressed(tool_keybinds[Tool.ELEMENT_STYLE_SETTINGS]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+			tool_box.select(Tool.ELEMENT_STYLE_SETTINGS)
+			_on_tool_box_item_selected(Tool.ELEMENT_STYLE_SETTINGS)
+		if Input.is_action_just_pressed(tool_keybinds[Tool.ADD_CONNECTION]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+			tool_box.select(Tool.ADD_CONNECTION)
+			_on_tool_box_item_selected(Tool.ADD_CONNECTION)
+		if Input.is_action_just_pressed(tool_keybinds[Tool.REMOVE_CONNECTIONS]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+			tool_box.select(Tool.REMOVE_CONNECTIONS)
+			_on_tool_box_item_selected(Tool.REMOVE_CONNECTIONS)
+		if Input.is_action_just_pressed(tool_keybinds[Tool.MARK_COMPLETED]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+			tool_box.select(Tool.MARK_COMPLETED)
+			_on_tool_box_item_selected(Tool.MARK_COMPLETED)
+	
 	if update_checkboxes and canvases.has(cc):
 		force_update_checkboxes()
 
@@ -634,6 +639,40 @@ func disable_input() -> bool:
 	return is_editing_element_text or is_editing_preset_name or is_saving_images
 
 
+# NOTE Cursor size limit 256x256, on web 128x128
+# Could switch to a software cursor beyond that
+func change_drawing_tool_cursor() -> void:
+	if !canvases.has(cc):
+		return
+	var tool: DrawingSettings.DrawingTool = drawing_tool_bar.settings.selected_tool as DrawingSettings.DrawingTool
+
+	if canvases[cc].app_mode == canvases[cc].AppMode.PLANNING:
+		Input.set_custom_mouse_cursor(null, Input.CURSOR_ARROW)
+	else:
+		if tool == DrawingSettings.DrawingTool.PENCIL:
+			Input.set_custom_mouse_cursor(pencil_cursor, Input.CURSOR_ARROW, Vector2(2.0, 26.0))
+		if tool == DrawingSettings.DrawingTool.ERASER_PENCIL:
+			Input.set_custom_mouse_cursor(eraser_pencil_cursor, Input.CURSOR_ARROW, Vector2(4.5, 26.0))
+		if tool == DrawingSettings.DrawingTool.BRUSH:
+			var img = Image.new()
+			var b_size: float = canvases[cc].drawing_settings.brush_settings.size * canvases[cc].scale.x
+			b_size = clampf(b_size, 4.0, 255.0)
+			img.load_svg_from_string(get_circle_svg(b_size, ceilf(b_size / 16.0), canvases[cc].drawing_settings.brush_settings.color, 0.5))
+			Input.set_custom_mouse_cursor(img, Input.CURSOR_ARROW, img.get_size() * 0.5)
+		if tool == DrawingSettings.DrawingTool.ERASER_BRUSH:
+			var img = Image.new()
+			var b_size: float = canvases[cc].drawing_settings.eraser_brush_settings.size * canvases[cc].scale.x
+			b_size = clampf(b_size, 4.0, 255.0)
+			img.load_svg_from_string(get_circle_svg(b_size, ceilf(b_size / 16.0), Color(1.0, 1.0, 1.0), 0.5))
+			Input.set_custom_mouse_cursor(img, Input.CURSOR_ARROW, img.get_size() * 0.5)
+
+
+func get_circle_svg(img_size: float, stroke_width: float, color: Color, traqnsparency: float) -> String:
+	return "<svg width=%d height=%d><circle r=%0.2f cx=%0.2f cy=%0.2f fill=none stroke=#%s stroke-width=%0.2f stroke-opacity=%0.2f/></svg>" % [
+		int(img_size), int(img_size), (img_size * 0.5 - stroke_width * 0.5), (img_size * 0.5), (img_size * 0.5), color.to_html(false), stroke_width, traqnsparency
+	]
+
+
 func change_accent_color(c: Color) -> void:
 	if !canvases.has(cc):
 		return
@@ -828,6 +867,8 @@ func _on_canvas_changed_zoom() -> void:
 	zoom_indicator.update_zoom(canvases[cc].scale.x)
 	pan_indicator_camera.update_zoom(canvases[cc].position, canvases[cc].scale.x)
 	drawing_manager.scale = canvases[cc].scale
+	if canvases[cc].app_mode == canvases[cc].AppMode.DRAWING:
+		change_drawing_tool_cursor()
 
 
 func _on_canvas_changed_position() -> void:
@@ -1036,6 +1077,7 @@ func _on_drawing_tool_box_item_selected(index: DrawingSettings.DrawingTool) -> v
 		return
 	canvases[cc].drawing_settings.selected_tool = index as DrawingSettings.DrawingTool
 	drawing_tool_bar.change_tool()
+	change_drawing_tool_cursor()
 
 
 # true: DRAWING, false: PLANNING
@@ -1067,6 +1109,7 @@ func _on_toggle_mode_toggled(toggled_on: bool) -> void:
 		_on_tool_box_item_selected(Tool.SELECT)
 		change_accent_color(accent_color_planning)
 		set_toggle_mode_button_tooltip("Change to Drawing Mode")
+	change_drawing_tool_cursor()
 
 
 func _on_drawing_tool_bar_color_picker_toggled(toggled_on) -> void:

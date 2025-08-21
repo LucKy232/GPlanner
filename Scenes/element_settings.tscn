@@ -121,6 +121,7 @@ label_settings = ExtResource("3_uc373")
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_default_cursor_shape = 2
 theme = ExtResource("8_vcnja")
 text_overrun_behavior = 3
 selected = 0
@@ -133,6 +134,7 @@ popup/item_0/id = 0
 [node name="AddPreset" type="Button" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/PresetHBox"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+mouse_default_cursor_shape = 2
 icon = ExtResource("4_1og04")
 text_overrun_behavior = 1
 icon_alignment = 1
@@ -140,6 +142,7 @@ icon_alignment = 1
 [node name="RemovePreset" type="Button" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/PresetHBox"]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
+mouse_default_cursor_shape = 2
 icon = ExtResource("5_0h7gu")
 text_overrun_behavior = 1
 icon_alignment = 1
@@ -167,6 +170,7 @@ label_settings = ExtResource("3_uc373")
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
 size_flags_horizontal = 10
+mouse_default_cursor_shape = 2
 theme = ExtResource("12_r7vyq")
 
 [node name="FontTitleLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer"]
@@ -192,6 +196,7 @@ label_settings = ExtResource("3_uc373")
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 4
+mouse_default_cursor_shape = 2
 theme = ExtResource("13_nvup7")
 min_value = 1.0
 max_value = 255.0
@@ -213,6 +218,7 @@ label_settings = ExtResource("3_uc373")
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
 size_flags_horizontal = 10
+mouse_default_cursor_shape = 2
 theme = ExtResource("12_r7vyq")
 
 [node name="FontOutlineHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer"]
@@ -228,6 +234,7 @@ label_settings = ExtResource("3_uc373")
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 4
+mouse_default_cursor_shape = 2
 theme = ExtResource("13_nvup7")
 max_value = 255.0
 value = 1.0
@@ -248,6 +255,7 @@ label_settings = ExtResource("3_uc373")
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
 size_flags_horizontal = 10
+mouse_default_cursor_shape = 2
 theme = ExtResource("12_r7vyq")
 
 [node name="BorderTitleLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer"]
@@ -272,6 +280,7 @@ label_settings = ExtResource("3_uc373")
 [node name="BorderSizeSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BorderSizeHBox"]
 layout_mode = 2
 size_flags_horizontal = 10
+mouse_default_cursor_shape = 2
 theme = ExtResource("13_nvup7")
 max_value = 255.0
 value = 1.0
@@ -292,6 +301,7 @@ label_settings = ExtResource("3_uc373")
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
 size_flags_horizontal = 10
+mouse_default_cursor_shape = 2
 theme = ExtResource("12_r7vyq")
 
 [node name="NameInsert" type="LineEdit" parent="VBoxContainer/SettingsPanel"]

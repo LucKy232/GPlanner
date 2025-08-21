@@ -1,6 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://cg3drsp3kg5hm"]
+[gd_scene load_steps=9 format=3 uid="uid://cg3drsp3kg5hm"]
 
 [ext_resource type="Script" uid="uid://bl6j87vh8ghmf" path="res://Scripts/drawing_manager.gd" id="1_5m78p"]
+[ext_resource type="Texture2D" uid="uid://ck2luoi8jg6g" path="res://Icons/pencil.svg" id="2_6e8qd"]
+[ext_resource type="Texture2D" uid="uid://cektvw6goipya" path="res://Icons/pencil_eraser.svg" id="3_02leu"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_5m78p"]
 
@@ -32,6 +34,8 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_5m78p")
+pencil_cursor = ExtResource("2_6e8qd")
+eraser_pencil_cursor = ExtResource("3_02leu")
 canvas_drawing_group_scene = "uid://ciqbw443fikno"
 temp_drawing_action_scene = "uid://cpu02i5li1jfy"
 drawing_region_scene = "uid://cco3y5ld1vdkm"

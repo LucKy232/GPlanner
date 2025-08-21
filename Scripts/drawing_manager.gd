@@ -6,6 +6,8 @@ class_name DrawingManager
 @onready var greyout_panel: Panel = $Curtain/GreyoutPanel
 @onready var screenshot_progress_label: Label = $Curtain/MarginContainer/VBoxContainer/ScreenshotProgressLabel
 
+@export var pencil_cursor: CompressedTexture2D
+@export var eraser_pencil_cursor: CompressedTexture2D
 @export_file("*.tscn") var canvas_drawing_group_scene
 @export_file("*.tscn") var temp_drawing_action_scene
 @export_file("*.tscn") var drawing_region_scene
@@ -49,6 +51,7 @@ func _process(_delta: float) -> void:
 		save_thread_running = false
 		save_thread.wait_to_finish()
 		finished_saving.emit()
+
 
 
 func canvas_drawing_group_has_changes(id: int) -> bool:
