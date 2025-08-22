@@ -50,3 +50,9 @@ func _on_toggle_drawer_toggled(toggled_on: bool) -> void:
 		animation_player.play("toggle_settings_drawer_on")
 	elif !toggled_on and !animation_player.is_playing():
 		animation_player.play("toggle_settings_drawer_off")
+
+
+func _on_show_priorities_toggled(toggled_on: bool) -> void:
+	show_priority_tool.visible = toggled_on
+	priority_filter_label.visible = toggled_on
+	priority_filter.visible = toggled_on

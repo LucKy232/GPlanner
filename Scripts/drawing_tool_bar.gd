@@ -19,6 +19,7 @@ var input_repeats: int = 0
 
 signal color_picker_toggled
 signal brush_size_changed
+signal brush_color_changed
 
 enum SettingKeybind {
 	PENCIL_SIZE_INCREASE,
@@ -225,6 +226,7 @@ func _on_color_picker_button_color_changed(color: Color) -> void:
 		settings.pencil_settings.color = color
 	elif settings.selected_tool == settings.DrawingTool.BRUSH:
 		settings.brush_settings.color = color
+		brush_color_changed.emit()
 
 
 func _on_pressure_spin_box_value_changed(value: float) -> void:

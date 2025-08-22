@@ -52,22 +52,6 @@ func _ready() -> void:
 		border_color_picker_button.color = none_preset.border_color
 
 
-func _process(_delta: float) -> void:
-	if Input.is_action_just_pressed("test_mult"):
-		test_style_stuff(get_color_picker_background_panel(background_color_picker_button))
-		test_style_stuff(get_color_picker_background_panel(font_color_picker_button))
-		test_style_stuff(get_color_picker_background_panel(font_outline_color_picker_button))
-		test_style_stuff(get_color_picker_background_panel(border_color_picker_button))
-		#print(get_color_picker_background_panel(background_color_picker_button))
-		#print(get_color_picker_background_panel(font_color_picker_button))
-		#print(get_color_picker_background_panel(font_outline_color_picker_button))
-		#print(get_color_picker_background_panel(border_color_picker_button))
-
-
-func test_style_stuff(panel: Panel) -> void:
-	print("Has OW: ", panel.has_theme_stylebox_override("panel"))
-
-
 func toggle_visible(toggled_on: bool):
 	settings_panel.visible = toggled_on
 

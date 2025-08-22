@@ -20,6 +20,7 @@ extends Control
 @onready var file_tab_bar: TabBar = $BottomBar/HBoxContainer/FileTabBar
 @onready var drawing_manager: DrawingManager = $DrawingManager
 @onready var input_repeat_timer: Timer = $InputRepeatTimer
+@onready var cursor_big_brush: TextureRect = $CursorBigBrush
 
 @export_category("Scenes")
 @export_file("*.tscn") var element_scene
@@ -62,6 +63,7 @@ var close_this_tab: bool = false
 var exiting_app: bool = false
 var need_to_save_images_on_tool_change = false
 var first_input_repeat: bool = true
+var using_cursor_image: bool = false
 var last_window_mode: Window.Mode = Window.Mode.MODE_WINDOWED		## When going to borderless fullscreen, remember the last Window.Mode
 
 
@@ -116,7 +118,7 @@ func _ready() -> void:
 	drawing_manager.forced_save_ended.connect(_on_drawing_manager_forced_save_ended)
 	drawing_tool_bar.color_picker_toggled.connect(_on_drawing_tool_bar_color_picker_toggled)
 	drawing_tool_bar.brush_size_changed.connect(change_drawing_tool_cursor)
-	#drawing_manager.requested_save_on_tool_change.connect(_on_drawing_manager_requested_save_on_tool_change)
+	drawing_tool_bar.brush_color_changed.connect(change_drawing_tool_cursor)
 
 
 func _process(_delta):
@@ -127,6 +129,8 @@ func _process(_delta):
 			is_editing_element_text = false
 	else:
 		is_editing_element_text = false
+	if use_mouse_cursor_big_brush():
+		cursor_big_brush.position = get_viewport().get_mouse_position() - cursor_big_brush.size * 0.5
 	if Input.is_action_just_pressed("fullscreen_borderless") and !is_saving_images:
 		toggle_borderless_window()
 	if Input.is_action_just_pressed("exit_fullscreen_borderless") and get_window().mode == Window.MODE_FULLSCREEN and !is_saving_images:
@@ -266,6 +270,7 @@ func set_toggle_mode_button_tooltip(tooltip: String) -> void:
 
 
 func force_update_checkboxes() -> void:
+	printt("Before", cc, canvases[cc].checkbox_data)
 	if !show_completed.is_pressed() and !canvases[cc].checkbox_data[Checkbox.SHOW_COMPLETED]:
 		_on_show_completed_toggled(false)
 	if !show_priorities.is_pressed() and !canvases[cc].checkbox_data[Checkbox.SHOW_PRIORITIES]:
@@ -276,6 +281,7 @@ func force_update_checkboxes() -> void:
 	show_priorities.set_pressed(canvases[cc].checkbox_data[Checkbox.SHOW_PRIORITIES])
 	show_priority_tool.set_pressed(canvases[cc].checkbox_data[Checkbox.SHOW_PRIORITY_TOOL])
 	update_checkboxes = false
+	printt("After", cc, canvases[cc].checkbox_data)
 
 
 func update_zoom_limits(limits: Vector2) -> void:
@@ -639,37 +645,87 @@ func disable_input() -> bool:
 	return is_editing_element_text or is_editing_preset_name or is_saving_images
 
 
-# NOTE Cursor size limit 256x256, on web 128x128
-# Could switch to a software cursor beyond that
+# NOTE Cursor size limit 256x256, on web 128x128; Switching to a TextureRect based cursor beyond that
 func change_drawing_tool_cursor() -> void:
 	if !canvases.has(cc):
 		return
 	var tool: DrawingSettings.DrawingTool = drawing_tool_bar.settings.selected_tool as DrawingSettings.DrawingTool
-
+	
 	if canvases[cc].app_mode == canvases[cc].AppMode.PLANNING:
 		Input.set_custom_mouse_cursor(null, Input.CURSOR_ARROW)
+		using_cursor_image = false
 	else:
 		if tool == DrawingSettings.DrawingTool.PENCIL:
 			Input.set_custom_mouse_cursor(pencil_cursor, Input.CURSOR_ARROW, Vector2(2.0, 26.0))
+			using_cursor_image = false
 		if tool == DrawingSettings.DrawingTool.ERASER_PENCIL:
 			Input.set_custom_mouse_cursor(eraser_pencil_cursor, Input.CURSOR_ARROW, Vector2(4.5, 26.0))
+			using_cursor_image = false
 		if tool == DrawingSettings.DrawingTool.BRUSH:
 			var img = Image.new()
 			var b_size: float = canvases[cc].drawing_settings.brush_settings.size * canvases[cc].scale.x
-			b_size = clampf(b_size, 4.0, 255.0)
-			img.load_svg_from_string(get_circle_svg(b_size, ceilf(b_size / 16.0), canvases[cc].drawing_settings.brush_settings.color, 0.5))
-			Input.set_custom_mouse_cursor(img, Input.CURSOR_ARROW, img.get_size() * 0.5)
+			if b_size > 127.0:
+				using_cursor_image = true
+				img.load_svg_from_string(get_2circle_svg(b_size, ceilf(b_size / 40.0 + 1.0), canvases[cc].drawing_settings.brush_settings.color, 0.5))
+				cursor_big_brush.texture = ImageTexture.create_from_image(img)
+				cursor_big_brush.size = Vector2(b_size, b_size)
+			else:
+				using_cursor_image = false
+				b_size = clampf(b_size, 4.0, 127.0)
+				img.load_svg_from_string(get_circle_svg(b_size, ceilf(b_size / 40.0 + 1.0), canvases[cc].drawing_settings.brush_settings.color, 0.5))
+				Input.set_custom_mouse_cursor(img, Input.CURSOR_ARROW, img.get_size() * 0.5)
 		if tool == DrawingSettings.DrawingTool.ERASER_BRUSH:
 			var img = Image.new()
 			var b_size: float = canvases[cc].drawing_settings.eraser_brush_settings.size * canvases[cc].scale.x
-			b_size = clampf(b_size, 4.0, 255.0)
-			img.load_svg_from_string(get_circle_svg(b_size, ceilf(b_size / 16.0), Color(1.0, 1.0, 1.0), 0.5))
-			Input.set_custom_mouse_cursor(img, Input.CURSOR_ARROW, img.get_size() * 0.5)
+			if b_size > 127.0:
+				using_cursor_image = true
+				img.load_svg_from_string(get_2circle_svg(b_size, ceilf(b_size / 40.0 + 1.0), Color(1.0, 1.0, 1.0), 0.5))
+				cursor_big_brush.texture = ImageTexture.create_from_image(img)
+				cursor_big_brush.size = Vector2(b_size, b_size)
+			else:
+				using_cursor_image = false
+				b_size = clampf(b_size, 4.0, 127.0)
+				img.load_svg_from_string(get_circle_svg(b_size, ceilf(b_size / 40.0 + 1.0), Color(1.0, 1.0, 1.0), 0.5))
+				Input.set_custom_mouse_cursor(img, Input.CURSOR_ARROW, img.get_size() * 0.5)
+	use_mouse_cursor_big_brush()
 
 
-func get_circle_svg(img_size: float, stroke_width: float, color: Color, traqnsparency: float) -> String:
-	return "<svg width=%d height=%d><circle r=%0.2f cx=%0.2f cy=%0.2f fill=none stroke=#%s stroke-width=%0.2f stroke-opacity=%0.2f/></svg>" % [
-		int(img_size), int(img_size), (img_size * 0.5 - stroke_width * 0.5), (img_size * 0.5), (img_size * 0.5), color.to_html(false), stroke_width, traqnsparency
+# Toggles between replacing CursorArrow with TextureRect and default CursorArrow and returns true or false if TextureRect position needs to be updated
+func use_mouse_cursor_big_brush() -> bool:
+	if using_cursor_image and Input.get_current_cursor_shape() == Input.CURSOR_ARROW:
+		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
+			cursor_big_brush.visible = true
+			Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+		return true
+	else:
+		if Input.mouse_mode != Input.MOUSE_MODE_VISIBLE:
+			cursor_big_brush.visible = false
+			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		return false
+
+
+func get_circle_svg(img_size: float, stroke_width: float, color: Color, transparency: float) -> String:
+	return "<svg width=%d height=%d>
+			<circle r=%0.2f cx=%0.2f cy=%0.2f fill=none stroke=#%s stroke-width=%0.2f stroke-opacity=%0.2f/>
+			</svg>" % [
+		int(img_size), int(img_size), 
+		(img_size * 0.5 - stroke_width * 0.5), (img_size * 0.5), (img_size * 0.5), color.to_html(false), stroke_width, transparency
+	]
+
+
+func get_2circle_svg(img_size: float, stroke_width: float, color: Color, transparency: float) -> String:
+	var original_color: Color = color
+	if color.v > 0.5:
+		color = color.darkened(0.25)
+	else:
+		color = color.lightened(0.25)
+	return "<svg width=%d height=%d>
+	<circle r=%0.2f cx=%0.2f cy=%0.2f fill=none stroke=#%s stroke-width=%0.2f stroke-opacity=%0.2f/>
+	<circle r=%0.2f cx=%0.2f cy=%0.2f fill=none stroke=#%s stroke-width=%0.2f stroke-opacity=%0.2f/>
+	</svg>" % [
+		int(img_size), int(img_size), 
+		(img_size * 0.5 - stroke_width * 0.75), (img_size * 0.5), (img_size * 0.5), original_color.to_html(false), stroke_width * 0.5, transparency,
+		(img_size * 0.5 - stroke_width * 0.25), (img_size * 0.5), (img_size * 0.5), color.to_html(false), stroke_width * 0.5, transparency
 	]
 
 
@@ -843,7 +899,6 @@ func _on_show_completed_toggled(toggled_on: bool) -> void:
 
 func _on_show_priorities_toggled(toggled_on: bool) -> void:
 	canvases[cc].toggle_show_priorities(toggled_on)
-	#filter_settings.visible = toggled_on
 
 
 func _on_priority_filter_value_changed(value: float) -> void:

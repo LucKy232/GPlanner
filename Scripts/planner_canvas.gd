@@ -625,6 +625,7 @@ func handle_zoom(old_zoom: float, target: Vector2) -> void:
 
 func toggle_show_completed(toggled_on: bool) -> void:
 	checkbox_data[Checkbox.SHOW_COMPLETED] = toggled_on
+	printt("Show completed: ", id, checkbox_data[Checkbox.SHOW_COMPLETED])
 	for i in elements:
 		if elements[i].completed:
 			toggle_element_and_connections(i, toggled_on)
@@ -632,12 +633,14 @@ func toggle_show_completed(toggled_on: bool) -> void:
 
 func toggle_show_priorities(toggled_on: bool) -> void:
 	checkbox_data[Checkbox.SHOW_PRIORITIES] = toggled_on
+	printt("Show priorities: ", id, checkbox_data[Checkbox.SHOW_PRIORITIES])
 	for i in elements:
 		elements[i].set_priority_visible(toggled_on)
 
 
 func toggle_show_priority_tool(toggled_on: bool) -> void:
 	checkbox_data[Checkbox.SHOW_PRIORITY_TOOL] = toggled_on
+	printt("Show priority tool: ", id, checkbox_data[Checkbox.SHOW_PRIORITY_TOOL])
 	for i in elements:
 		elements[i].priority_tool_enabled = toggled_on
 
