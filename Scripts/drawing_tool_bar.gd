@@ -111,7 +111,7 @@ func create_keybinds() -> void:
 
 
 func change_tool() -> void:
-	if settings.selected_tool == settings.DrawingTool.PENCIL:
+	if settings.selected_tool == Enums.DrawingTool.PENCIL:
 		pencil_size_spin_box.visible = true
 		brush_size_spin_box.visible = false
 		color_picker_button.visible = true
@@ -121,7 +121,7 @@ func change_tool() -> void:
 		pencil_size_spin_box.max_value = settings.pencil_settings.size_limits.y
 		pencil_size_spin_box.value = settings.pencil_settings.size
 		color_picker_button.color = settings.pencil_settings.color
-	elif settings.selected_tool == settings.DrawingTool.BRUSH:
+	elif settings.selected_tool == Enums.DrawingTool.BRUSH:
 		pencil_size_spin_box.visible = false
 		brush_size_spin_box.visible = true
 		color_picker_button.visible = true
@@ -132,7 +132,7 @@ func change_tool() -> void:
 		brush_size_spin_box.value = settings.brush_settings.size
 		color_picker_button.color = settings.brush_settings.color
 		pressure_spin_box.value = settings.brush_settings.pressure * 100.0
-	elif settings.selected_tool == settings.DrawingTool.ERASER_PENCIL:
+	elif settings.selected_tool == Enums.DrawingTool.ERASER_PENCIL:
 		pencil_size_spin_box.visible = true
 		brush_size_spin_box.visible = false
 		color_picker_button.visible = false
@@ -141,7 +141,7 @@ func change_tool() -> void:
 		pencil_size_spin_box.min_value = settings.eraser_pencil_settings.size_limits.x
 		pencil_size_spin_box.max_value = settings.eraser_pencil_settings.size_limits.y
 		pencil_size_spin_box.value = settings.eraser_pencil_settings.size
-	elif settings.selected_tool == settings.DrawingTool.ERASER_BRUSH:
+	elif settings.selected_tool == Enums.DrawingTool.ERASER_BRUSH:
 		pencil_size_spin_box.visible = false
 		brush_size_spin_box.visible = true
 		color_picker_button.visible = false
@@ -207,32 +207,32 @@ func remove_theme_override(panel: Panel) -> void:
 
 
 func _on_pencil_size_spin_box_value_changed(value: float) -> void:
-	if settings.selected_tool == settings.DrawingTool.PENCIL:
+	if settings.selected_tool == Enums.DrawingTool.PENCIL:
 		settings.pencil_settings.size = int(value)
-	elif settings.selected_tool == settings.DrawingTool.ERASER_PENCIL:
+	elif settings.selected_tool == Enums.DrawingTool.ERASER_PENCIL:
 		settings.eraser_pencil_settings.size = int(value)
 
 
 func _on_brush_size_spin_box_value_changed(value: float) -> void:
-	if settings.selected_tool == settings.DrawingTool.BRUSH:
+	if settings.selected_tool == Enums.DrawingTool.BRUSH:
 		settings.brush_settings.size = value
-	elif settings.selected_tool == settings.DrawingTool.ERASER_BRUSH:
+	elif settings.selected_tool == Enums.DrawingTool.ERASER_BRUSH:
 		settings.eraser_brush_settings.size = value
 	brush_size_changed.emit()
 
 
 func _on_color_picker_button_color_changed(color: Color) -> void:
-	if settings.selected_tool == settings.DrawingTool.PENCIL:
+	if settings.selected_tool == Enums.DrawingTool.PENCIL:
 		settings.pencil_settings.color = color
-	elif settings.selected_tool == settings.DrawingTool.BRUSH:
+	elif settings.selected_tool == Enums.DrawingTool.BRUSH:
 		settings.brush_settings.color = color
 		brush_color_changed.emit()
 
 
 func _on_pressure_spin_box_value_changed(value: float) -> void:
-	if settings.selected_tool == settings.DrawingTool.BRUSH:
+	if settings.selected_tool == Enums.DrawingTool.BRUSH:
 		settings.brush_settings.pressure = value / 100.0
-	elif settings.selected_tool == settings.DrawingTool.ERASER_BRUSH:
+	elif settings.selected_tool == Enums.DrawingTool.ERASER_BRUSH:
 		settings.eraser_brush_settings.pressure = value / 100.0
 
 

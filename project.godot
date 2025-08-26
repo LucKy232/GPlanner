@@ -253,6 +253,7 @@ pen_tablet/driver.windows="auto"
 2d_render/layer_2="UI"
 2d_render/layer_3="Drawing"
 2d_render/layer_4="Canvas"
+2d_render/layer_5="CanvasBackground"
 2d_render/layer_8="TempBrushDrawing"
 
 [rendering]

@@ -839,14 +839,12 @@
 			"color.b": 0.208450019359589,
 			"color.g": 0.330000013113022,
 			"color.r": 0.115500010550022,
-			"min_pressure": 0.15,
-			"size": 30.0,
-			"use_pressure": true
+			"pressure": 1.0,
+			"size": 30.0
 		},
 		"EraserBrushSettings": {
-			"min_pressure": 0.1,
-			"size": 50.0,
-			"use_pressure": false
+			"pressure": 0.1,
+			"size": 50.0
 		},
 		"EraserPencilSettings": {
 			"size": 4
@@ -2562,7 +2560,7 @@
 			"pos.x": 6055.72021484375,
 			"pos.y": 4749.208984375,
 			"priority_id": 4,
-			"size.x": 502.0,
+			"size.x": 238.87158203125,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Files with changes, with file path, without drawing"
@@ -2693,7 +2691,7 @@
 			"pos.x": 7432.42724609375,
 			"pos.y": 4769.3212890625,
 			"priority_id": 4,
-			"size.x": 137.0,
+			"size.x": 64.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T21:21:30 1480013",
 			"text": "has changes "
@@ -2753,7 +2751,7 @@
 			"pos.x": 7299.611328125,
 			"pos.y": 5017.45263671875,
 			"priority_id": 4,
-			"size.x": 426.0,
+			"size.x": 249.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T21:21:30 1480013",
 			"text": "Finish saving drawings, execute queued action "
@@ -2984,27 +2982,27 @@
 			"completed": false,
 			"has_style_preset": true,
 			"id": 156,
-			"pos.x": 12126.8759765625,
-			"pos.y": 4786.76513671875,
-			"priority_id": 4,
-			"size.x": 271.0,
+			"pos.x": 12127.244140625,
+			"pos.y": 4787.76220703125,
+			"priority_id": 1,
+			"size.x": 94.7412109375,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-24T11:24:36 225720",
-			"text": "Add arrow to connection"
+			"text": "test"
 		}
 	},
 	"State": {
 		"app_mode": 0,
 		"drawing_folder_path": "documentation 2025-06-18T095107",
-		"position.x": -2988.79125976563,
-		"position.y": -1315.28210449219,
+		"position.x": -3753.72192382813,
+		"position.y": -2940.44384765625,
 		"priority_filter_value": 4,
-		"scale.x": 0.31932008266449,
-		"scale.y": 0.31932008266449,
+		"scale.x": 0.690033793449402,
+		"scale.y": 0.690033793449402,
 		"show_completed": false,
 		"show_priorities": true,
 		"show_priority_tool": false,
-		"zoom_level": 0.319320078751018
+		"zoom_level": 0.690033803452026
 	},
 	"StylePresets": {
 		"1": {

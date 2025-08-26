@@ -7278,17 +7278,17 @@
 		}
 	},
 	"State": {
-		"app_mode": 1,
+		"app_mode": 0,
 		"drawing_folder_path": "plannerplanner 2025-07-03T100205",
-		"position.x": -2055.17553710938,
-		"position.y": -2646.259765625,
-		"priority_filter_value": 4,
-		"scale.x": 1.0,
-		"scale.y": 1.0,
-		"show_completed": false,
+		"position.x": -343.350646972656,
+		"position.y": 0.0,
+		"priority_filter_value": 1,
+		"scale.x": 0.270885080099106,
+		"scale.y": 0.270885080099106,
+		"show_completed": true,
 		"show_priorities": true,
-		"show_priority_tool": false,
-		"zoom_level": 0.95601279453956
+		"show_priority_tool": true,
+		"zoom_level": 0.270885079066026
 	},
 	"StylePresets": {
 		"1": {

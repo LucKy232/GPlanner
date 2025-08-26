@@ -51,8 +51,8 @@ mouse_filter = 1
 script = ExtResource("1_jhfc7")
 
 [node name="Background" type="Panel" parent="."]
-light_mask = 8
-visibility_layer = 8
+light_mask = 16
+visibility_layer = 16
 z_index = -5
 texture_filter = 3
 layout_mode = 1

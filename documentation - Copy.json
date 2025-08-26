@@ -1,552 +1,849 @@
 {
 	"Connections": {
 		"0": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 1,
 			"id2": 0
 		},
 		"1": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 1,
 			"id2": 2
 		},
 		"2": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 1,
 			"id2": 4
 		},
 		"3": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 1,
 			"id2": 5
 		},
 		"4": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 1,
 			"id2": 3
 		},
 		"5": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 1,
 			"id2": 8
 		},
 		"6": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 1,
 			"id2": 6
 		},
 		"7": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 1,
 			"id2": 7
 		},
 		"8": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 7,
 			"id2": 9
 		},
 		"9": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 7,
 			"id2": 10
 		},
 		"10": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 7,
 			"id2": 11
 		},
 		"11": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 12,
 			"id2": 13
 		},
 		"13": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 14,
 			"id2": 16
 		},
 		"14": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 14,
 			"id2": 17
 		},
 		"16": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 15,
 			"id2": 14
 		},
 		"17": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 18,
 			"id2": 21
 		},
 		"18": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 18,
 			"id2": 22
 		},
 		"19": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 18,
 			"id2": 19
 		},
 		"20": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 18,
 			"id2": 20
 		},
 		"21": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 24,
 			"id2": 25
 		},
 		"22": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 24,
 			"id2": 26
 		},
 		"23": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 24,
 			"id2": 30
 		},
 		"24": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 31,
 			"id2": 24
 		},
 		"25": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 32,
 			"id2": 24
 		},
 		"26": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 27,
 			"id2": 24
 		},
 		"27": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 28,
 			"id2": 24
 		},
 		"28": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 29,
 			"id2": 24
 		},
 		"29": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 34,
 			"id2": 35
 		},
 		"30": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 35,
 			"id2": 37
 		},
 		"31": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 38,
 			"id2": 35
 		},
 		"32": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 38,
 			"id2": 39
 		},
 		"33": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 34,
 			"id2": 39
 		},
 		"34": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 37,
 			"id2": 42
 		},
 		"35": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 37,
 			"id2": 43
 		},
 		"36": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 39,
 			"id2": 43
 		},
 		"37": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 42,
 			"id2": 44
 		},
 		"38": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 42,
 			"id2": 45
 		},
 		"39": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 44,
 			"id2": 48
 		},
 		"40": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 45,
 			"id2": 48
 		},
 		"41": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 45,
 			"id2": 39
 		},
 		"42": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 42,
 			"id2": 49
 		},
 		"43": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 50,
 			"id2": 7
 		},
 		"44": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 51,
 			"id2": 52
 		},
 		"45": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 51,
 			"id2": 53
 		},
 		"46": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 51,
 			"id2": 54
 		},
 		"47": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 51,
 			"id2": 55
 		},
 		"48": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 51,
 			"id2": 56
 		},
 		"49": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 57,
 			"id2": 51
 		},
 		"50": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 58,
 			"id2": 51
 		},
 		"51": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 51,
 			"id2": 59
 		},
 		"52": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 51,
 			"id2": 60
 		},
 		"53": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 51,
 			"id2": 61
 		},
 		"54": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 62,
 			"id2": 51
 		},
 		"55": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 63,
 			"id2": 51
 		},
 		"56": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 64,
 			"id2": 51
 		},
 		"57": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 64,
 			"id2": 65
 		},
 		"58": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 51,
 			"id2": 66
 		},
 		"59": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 67,
 			"id2": 24
 		},
 		"60": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 68,
 			"id2": 69
 		},
 		"61": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 68,
 			"id2": 70
 		},
 		"62": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 71,
 			"id2": 68
 		},
 		"63": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 69,
 			"id2": 72
 		},
 		"64": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 70,
 			"id2": 72
 		},
 		"65": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 71,
 			"id2": 72
 		},
 		"66": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 73,
 			"id2": 1
 		},
 		"67": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 74,
 			"id2": 7
 		},
 		"68": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 75,
 			"id2": 7
 		},
 		"69": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 76,
 			"id2": 83
 		},
 		"70": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 76,
 			"id2": 82
 		},
 		"71": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 76,
 			"id2": 77
 		},
 		"72": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 76,
 			"id2": 78
 		},
 		"73": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 76,
 			"id2": 81
 		},
 		"74": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 82,
 			"id2": 79
 		},
 		"75": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 81,
 			"id2": 79
 		},
 		"76": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 77,
 			"id2": 79
 		},
 		"77": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 78,
 			"id2": 79
 		},
 		"78": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 84,
 			"id2": 85
 		},
 		"79": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 84,
 			"id2": 88
 		},
 		"80": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 87,
 			"id2": 84
 		},
 		"81": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 86,
 			"id2": 84
 		},
 		"83": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 86,
 			"id2": 90
 		},
 		"84": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 86,
 			"id2": 91
 		},
 		"85": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 91,
 			"id2": 93
 		},
 		"86": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 87,
 			"id2": 92
 		},
 		"88": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 84,
 			"id2": 95
 		},
 		"89": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 96,
 			"id2": 84
 		},
 		"90": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 97,
 			"id2": 98
 		},
 		"92": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 103,
 			"id2": 102
 		},
 		"93": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 98,
 			"id2": 103
 		},
 		"94": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 104,
 			"id2": 103
 		},
 		"95": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 98,
 			"id2": 107
 		},
 		"96": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 107,
 			"id2": 110
 		},
 		"97": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 98,
 			"id2": 108
 		},
 		"98": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 108,
 			"id2": 111
 		},
 		"99": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 111,
 			"id2": 98
 		},
 		"102": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 110,
 			"id2": 117
 		},
 		"103": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 118,
 			"id2": 117
 		},
 		"104": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 118,
 			"id2": 111
 		},
 		"105": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 110,
 			"id2": 112
 		},
 		"106": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 110,
 			"id2": 114
 		},
 		"107": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 112,
 			"id2": 122
 		},
 		"108": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 112,
 			"id2": 123
 		},
 		"111": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 124,
 			"id2": 125
 		},
 		"113": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 128,
 			"id2": 124
 		},
 		"114": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 127,
 			"id2": 124
 		},
 		"115": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 131,
 			"id2": 124
 		},
 		"119": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 131,
 			"id2": 135
 		},
 		"128": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 142,
 			"id2": 125
 		},
 		"129": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 142,
 			"id2": 128
 		},
 		"130": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 142,
 			"id2": 127
 		},
 		"131": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 142,
 			"id2": 131
 		},
 		"132": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 132,
 			"id2": 142
 		},
 		"134": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 133,
 			"id2": 142
 		},
 		"135": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 134,
 			"id2": 142
 		},
 		"136": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 132,
 			"id2": 136
 		},
 		"137": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 132,
 			"id2": 137
 		},
 		"138": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 137,
 			"id2": 143
 		},
 		"139": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 139,
 			"id2": 137
 		},
 		"140": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 136,
 			"id2": 144
 		},
 		"141": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 139,
 			"id2": 144
 		},
 		"143": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 126,
 			"id2": 124
 		},
 		"144": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 126,
 			"id2": 132
 		},
 		"145": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 145,
 			"id2": 133
 		},
 		"146": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 144,
 			"id2": 146
 		},
 		"149": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 147,
 			"id2": 146
 		},
 		"150": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 147,
 			"id2": 131
 		},
 		"152": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 150,
 			"id2": 129
 		},
 		"153": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 150,
 			"id2": 130
 		},
 		"154": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 150,
 			"id2": 149
 		},
 		"155": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 124,
 			"id2": 150
 		},
 		"156": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 152,
 			"id2": 150
 		},
 		"157": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 151,
 			"id2": 150
 		},
 		"158": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 150,
 			"id2": 153
 		},
 		"159": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 154,
 			"id2": 150
 		},
 		"160": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 150,
 			"id2": 135
 		},
 		"161": {
+			"arrow_1": false,
+			"arrow_2": false,
 			"id1": 133,
 			"id2": 155
 		}
 	},
 	"DrawingRegions": {
 
+	},
+	"DrawingSettings": {
+		"BrushSettings": {
+			"color.a": 1.0,
+			"color.b": 0.208450019359589,
+			"color.g": 0.330000013113022,
+			"color.r": 0.115500010550022,
+			"pressure": 1.0,
+			"size": 30.0
+		},
+		"EraserBrushSettings": {
+			"pressure": 0.1,
+			"size": 50.0
+		},
+		"EraserPencilSettings": {
+			"size": 4
+		},
+		"PencilSettings": {
+			"color.a": 1.0,
+			"color.b": 0.99609375,
+			"color.g": 0.99609375,
+			"color.r": 0.99609375,
+			"size": 2
+		},
+		"SelectedTool": 3
 	},
 	"Elements": {
 		"0": {
@@ -2667,9 +2964,45 @@
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-24T11:24:36 225720",
 			"text": "canvas.ignore_save()"
+		},
+		"156": {
+			"completed": false,
+			"has_style_preset": false,
+			"id": 156,
+			"individual_style": {
+				"background_color.a": 1.0,
+				"background_color.b": 0.600000023841858,
+				"background_color.g": 0.550000011920929,
+				"background_color.r": 0.0,
+				"border_color.a": 1.0,
+				"border_color.b": 0.0,
+				"border_color.g": 0.0,
+				"border_color.r": 0.0,
+				"border_size": 1,
+				"font_color.a": 1.0,
+				"font_color.b": 1.0,
+				"font_color.g": 1.0,
+				"font_color.r": 1.0,
+				"font_size": 20,
+				"id": "individual",
+				"name": "",
+				"outline_color.a": 1.0,
+				"outline_color.b": 0.0,
+				"outline_color.g": 0.0,
+				"outline_color.r": 0.0,
+				"outline_size": 8
+			},
+			"pos.x": 11376.0,
+			"pos.y": 7160.0,
+			"priority_id": 4,
+			"size.x": 120.0,
+			"size.y": 80.0,
+			"style_preset_id": "none",
+			"text": ""
 		}
 	},
 	"State": {
+		"app_mode": 0,
 		"drawing_folder_path": "documentation 2025-06-18T095107",
 		"position.x": -872.0,
 		"position.y": -470.0,

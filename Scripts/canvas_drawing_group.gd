@@ -109,7 +109,7 @@ func has_changes() -> bool:
 func receive_coords(p1: Vector2, p2: Vector2, settings: DrawingSettings, pressure: float) -> void:
 	var to_set_material: bool = true if current_stroke.type != settings.selected_tool else false
 	
-	if settings.selected_tool == settings.DrawingTool.BRUSH:
+	if settings.selected_tool == Enums.DrawingTool.BRUSH:
 		if to_set_material:
 			position_brush_to_current_stroke()
 			setup_shader()
@@ -120,7 +120,7 @@ func receive_coords(p1: Vector2, p2: Vector2, settings: DrawingSettings, pressur
 		# Limited to min_pressure, but using the whole range of input [0.0; 1.0] mapped to [MIN; 1.0]
 		pressure = clampf(pressure * (1.0 - settings.brush_settings.min_pressure) + settings.brush_settings.min_pressure, settings.brush_settings.min_pressure, 1.0)
 		current_stroke.draw_brush_line(p1, p2, settings.brush_settings.color, settings.brush_settings.size, pressure)
-	elif settings.selected_tool == settings.DrawingTool.ERASER_BRUSH:
+	elif settings.selected_tool == Enums.DrawingTool.ERASER_BRUSH:
 		if to_set_material:
 			position_eraser_to_current_stroke()
 			setup_eraser_shader()
@@ -130,12 +130,12 @@ func receive_coords(p1: Vector2, p2: Vector2, settings: DrawingSettings, pressur
 		pressure = clampf(pressure * settings.eraser_brush_settings.pressure + pressure_lower_limit, pressure_lower_limit, 1.0)
 		pressure = clampf(pressure * (1.0 - settings.eraser_brush_settings.min_pressure) + settings.eraser_brush_settings.min_pressure, settings.eraser_brush_settings.min_pressure, 1.0)
 		brush_eraser_texture.draw_brush_line(p1, p2, Color.WHITE, settings.eraser_brush_settings.size, pressure)
-	elif settings.selected_tool == settings.DrawingTool.PENCIL:
+	elif settings.selected_tool == Enums.DrawingTool.PENCIL:
 		if to_set_material:
 			current_stroke.material = pencil_material
 			current_stroke.type = settings.selected_tool
 		current_stroke.draw_pencil(p1, p2, settings.pencil_settings.color, settings.pencil_settings.size)
-	elif settings.selected_tool == settings.DrawingTool.ERASER_PENCIL:
+	elif settings.selected_tool == Enums.DrawingTool.ERASER_PENCIL:
 		if to_set_material:
 			current_stroke.material = eraser_material
 			current_stroke.type = settings.selected_tool
@@ -331,9 +331,9 @@ func update_regions_from_screenshots(screenshots: Dictionary[Vector2i, Image]) -
 		#var region_v2i: Vector2i = Vector2i(key.x, key.y)
 		#if !regions.has(region_v2i):
 			#add_drawing_region(region_v2i)
-		#if draw_tool == DrawingSettings.DrawingTool.PENCIL:
+		#if draw_tool == Enums.DrawingTool.PENCIL:
 			# regions[region_v2i].blit_at(Vector2i(key.z, key.w), dict[key])
-		#if draw_tool == DrawingSettings.DrawingTool.ERASER:
+		#if draw_tool == Enums.DrawingTool.ERASER:
 			# regions[region_v2i].mask_at(Vector2i(key.z, key.w), dict[key])
 
 

@@ -10,30 +10,14 @@ class_name SettingsDrawer
 @onready var toggle_drawer: Button = $PanelContainer/HBoxContainer/ToggleDrawer
 @onready var background: Panel = $PanelContainer/HBoxContainer/Background
 
-var checkboxes: Array[CheckBox] = []
+@export var priority_filter_text: Array[String]
 
-enum Checkbox {
-	SHOW_PRIORITIES,
-	SHOW_PRIORITY_TOOL,
-	SHOW_COMPLETED,
-}
+var checkboxes: Array[CheckBox] = []
 
 func _ready() -> void:
 	toggle_drawer.set_pressed_no_signal(false)
 	_on_toggle_drawer_toggled(false)
 	checkboxes = [show_priorities, show_priority_tool, show_completed]
-
-
-func get_checkbox_object(id: int) -> CheckBox:
-	return checkboxes[id]
-
-
-func get_priority_filter() -> HScrollBar:
-	return priority_filter
-
-
-func get_priority_filter_label() -> Label:
-	return priority_filter_label
 
 
 func set_accent_color(c: Color) -> void:
@@ -43,6 +27,19 @@ func set_accent_color(c: Color) -> void:
 	toggle_drawer.theme.get_stylebox("hover", "Button").border_color = c
 	toggle_drawer.theme.get_stylebox("normal", "Button").border_color = c
 	toggle_drawer.theme.get_stylebox("pressed", "Button").border_color = c
+
+
+# If the values are the same, the signal doesn't get sent
+# Set the visual value and emit signal manually
+func update_data(settings: SettingsStates) -> void:
+	show_completed.set_pressed_no_signal(settings.checkbox_data[Enums.Checkbox.SHOW_COMPLETED])
+	show_completed.toggled.emit.call_deferred(settings.checkbox_data[Enums.Checkbox.SHOW_COMPLETED])
+	show_priorities.set_pressed_no_signal(settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITIES])
+	show_priorities.toggled.emit.call_deferred(settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITIES])
+	show_priority_tool.set_pressed_no_signal(settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL])
+	show_priority_tool.toggled.emit.call_deferred(settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL])
+	priority_filter.set_value_no_signal(settings.priority_filter_value)
+	priority_filter.value_changed.emit.call_deferred(settings.priority_filter_value)
 
 
 func _on_toggle_drawer_toggled(toggled_on: bool) -> void:
@@ -56,3 +53,7 @@ func _on_show_priorities_toggled(toggled_on: bool) -> void:
 	show_priority_tool.visible = toggled_on
 	priority_filter_label.visible = toggled_on
 	priority_filter.visible = toggled_on
+
+
+func _on_priority_filter_value_changed(value: float) -> void:
+	priority_filter_label.text = ("Priority: %s" % priority_filter_text[int(value)])

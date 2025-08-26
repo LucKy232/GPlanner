@@ -7,8 +7,8 @@ class_name PlannerCanvas
 @onready var connection_indicator: Panel = $ConnectionIndicator
 @onready var background: Panel = $Background
 
-var element_scene
-var connection_scene
+var element_scene		## Passed by main.gd to be instantiated here
+var connection_scene	## Passed by main.gd to be instantiated here
 var priority_colors: Array[Color]
 var elements: Dictionary[int, ElementLabel]
 var connections: Dictionary[int, Connection]
@@ -18,77 +18,47 @@ var elements_to_connection: Dictionary[Vector2i, int]	## ELEMENT ID Vector2i(ID1
 var style_presets: Dictionary[String, ElementPresetStyle]	## PRESET ID key (not option_selector like in element_setting.gd)
 var drawing_manager: DrawingManager
 
-var CHECKBOX_NUMBER: int = 3
-var element_id_counter: int = 0
-var connection_id_counter: int = 0
-var connection_candidate_1: int = -1
-var connection_candidate_2: int = -1
-var checkbox_data: Array[bool]
-var priority_filter_value: int = 0
-var save_state: SaveState
-
 var id: int			## Not consistent between sessions because it isn't saved (no good reason)
-var tool_id: int
+var tool_id: Enums.Tool
 var opened_file_path: String = ""
 var file_name_short: String = ""
 var selected_element: int = -1
 var selected_preset_style: String = "none"
-
+var element_id_counter: int = 0
+var connection_id_counter: int = 0
+var connection_candidate_1: int = -1
+var connection_candidate_2: int = -1
 var is_dragging: bool = false
 var is_resizing: bool = false
 var is_panning: bool = false
 var is_adding_elements: bool = false
-var is_element_just_created: bool = false
+var is_element_just_created: bool = false	## Cuts down on calling deselect_element() when creating an ElementLabel by not registering the click that created the element as a deselect
 var is_drawing: bool = false
 var is_color_picker_visible = false
+var is_user_input: bool = true
 var drag_start_mouse_pos: Vector2
 var original_elem_size: Vector2
 var last_draw_event_position: Vector2 = Vector2.ZERO
 var zoom_level: float = 1.0
 var zoom_limits: Vector2
 var zoom_speed: float
-var is_user_input: bool = true
 var last_pressure_event: float = 1.0
-var app_mode: AppMode = AppMode.PLANNING
+
+var save_state: SaveState
+var settings: SettingsStates
 var drawing_settings: DrawingSettings = DrawingSettings.new()
 
 signal done_adding_elements
 signal changed_zoom
 signal changed_position
 signal has_changed
-#signal selected_style_changed
 signal has_selected_element
 signal has_deselected_element
-
-enum Checkbox {
-	SHOW_PRIORITIES,
-	SHOW_PRIORITY_TOOL,
-	SHOW_COMPLETED,
-}
-enum Tool {
-	SELECT,
-	ADD_ELEMENT,
-	REMOVE_ELEMENT,
-	ELEMENT_STYLE_SETTINGS,
-	ADD_CONNECTION,
-	REMOVE_CONNECTIONS,
-	MARK_COMPLETED,
-}
-enum Priority {
-	ACTIVE,
-	HIGH,
-	MEDIUM,
-	LOW,
-	NONE,
-}
-enum AppMode {
-	PLANNING,
-	DRAWING,
-}
 
 
 func _init() -> void:
 	save_state = SaveState.new()
+	settings = SettingsStates.new()
 
 
 func _process(_delta: float) -> void:
@@ -98,22 +68,19 @@ func _process(_delta: float) -> void:
 
 
 func new_canvas() -> void:
-	checkbox_data.resize(CHECKBOX_NUMBER)
-	for i in CHECKBOX_NUMBER:
-		checkbox_data[i] = false
 	deselect_element()
 	opened_file_path = ""
 	file_name_short = "New File"
 	position = -size * 0.5 + get_viewport_rect().size * 0.5	# Start from the center on New File
 	scale = Vector2(1.0, 1.0)
-	priority_filter_value = Priority.NONE
+	settings.priority_filter_value = Enums.Priority.NONE
 	drawing_settings = DrawingSettings.new()
 	canvas_changed(true)
 	#print("New canvas id %d" % [id])
 
 
 func canvas_changed(reset: bool = false) -> void:
-	if !is_user_input:
+	if !is_user_input or !save_state.is_loaded:
 		return
 	if reset:
 		# NOTE Needs to change the state before emitting, but also check old value, so order of operations is correct here
@@ -131,7 +98,7 @@ func canvas_changed(reset: bool = false) -> void:
 
 
 func drawings_changed(reset: bool = false) -> void:
-	if !is_user_input:
+	if !is_user_input or !save_state.is_loaded:
 		return
 	if reset:
 		# NOTE Needs to change the state before emitting, but also check old value, so order of operations is correct here
@@ -248,10 +215,10 @@ func add_element_label(at_position: Vector2, id_specified: int = -1) -> void:
 	add_child(new_element)
 	new_element.name = "ElementLabel"
 	new_element.position = at_position
-	new_element.priority_id = Priority.NONE
-	new_element.priority_tool_enabled = checkbox_data[Checkbox.SHOW_PRIORITY_TOOL]
-	new_element.set_priority_color(priority_colors[Priority.NONE])
-	new_element.set_priority_visible(checkbox_data[Checkbox.SHOW_PRIORITIES])
+	new_element.priority_id = Enums.Priority.NONE
+	new_element.priority_tool_enabled = settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL]
+	new_element.set_priority_color(priority_colors[Enums.Priority.NONE])
+	new_element.set_priority_visible(settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITIES])
 	new_element.z_index = 1
 	if style_presets.has(selected_preset_style):
 		new_element.change_style_preset(style_presets[selected_preset_style])
@@ -353,7 +320,6 @@ func remove_connections(elem_id: int) -> void:
 
 func select_element(elem_id: int) -> void:
 	if elem_id == selected_element:
-		#print("Same ID")
 		return
 	if elements.has(selected_element):	# Deselect previous element
 		#print("Deselect previous")
@@ -365,7 +331,6 @@ func select_element(elem_id: int) -> void:
 		else:
 			elements[selected_element].z_index = elements[selected_element].active_z_index
 	if elements.has(elem_id):
-		#print("Select elem_id")
 		selected_element = elem_id
 		selection_viewer.visible = true
 		selection_viewer.size = elements[elem_id].size
@@ -374,7 +339,6 @@ func select_element(elem_id: int) -> void:
 		change_selected_preset_style(elements[selected_element].style_preset_id)
 		has_selected_element.emit()
 	else:	# Deselect element if elem_id invalid
-		#print("ID invalid")
 		deselect_element()
 
 
@@ -390,19 +354,14 @@ func reset_adding_connection() -> void:
 	connection_indicator.visible = false
 
 
-# NOTE called when select_element() changes the selected element
-# from main.gd called on switch_main_canvas() with "none"
-# from main.gd _on_element_settings_preset_selected() passes the selected preset from the style settings panel
+# Called from select_element(), which also emits a signal after this telling main.gd to handle the style change
+# From main.gd:switch_main_canvas() with "none"
+# From main.gd:_on_element_settings_preset_selected() passes the selected preset from the style settings panel
 func change_selected_preset_style(style_id: String) -> void:
-	if style_id == "none":
+	if style_id == "none" or !style_presets.has(style_id):
 		selected_preset_style = "none"
-		#selected_style_changed.emit()
 	elif selected_preset_style != style_id:
-		if style_presets.has(style_id):
-			selected_preset_style = style_id
-		else:
-			selected_preset_style = "none"
-		#selected_style_changed.emit()
+		selected_preset_style = style_id
 
 
 func update_connections(elem_id: int) -> void:
@@ -453,12 +412,12 @@ func canvas_state_to_json() -> Dictionary:
 		"scale.x": scale.x,
 		"scale.y": scale.y,
 		"zoom_level": zoom_level,
-		"show_completed": checkbox_data[Checkbox.SHOW_COMPLETED],
-		"show_priorities": checkbox_data[Checkbox.SHOW_PRIORITIES],
-		"show_priority_tool": checkbox_data[Checkbox.SHOW_PRIORITY_TOOL],
-		"priority_filter_value": priority_filter_value,
+		"show_completed": settings.checkbox_data[Enums.Checkbox.SHOW_COMPLETED],
+		"show_priorities": settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITIES],
+		"show_priority_tool": settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL],
+		"priority_filter_value": settings.priority_filter_value,
 		"drawing_folder_path": drawing_manager.get_folder_path(id),
-		"app_mode": app_mode,
+		"app_mode": settings.app_mode,
 	}
 
 
@@ -470,17 +429,17 @@ func rebuild_canvas_state(state: Dictionary) -> void:
 	if state.has("zoom_level"):
 		zoom_level = state["zoom_level"]
 	if state.has("show_completed"):
-		checkbox_data[Checkbox.SHOW_COMPLETED] = bool(state["show_completed"])
+		settings.checkbox_data[Enums.Checkbox.SHOW_COMPLETED] = bool(state["show_completed"])
 	if state.has("show_priorities"):
-		checkbox_data[Checkbox.SHOW_PRIORITIES] = bool(state["show_priorities"])
+		settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITIES] = bool(state["show_priorities"])
 	if state.has("show_priority_tool"):
-		checkbox_data[Checkbox.SHOW_PRIORITY_TOOL] = bool(state["show_priority_tool"])
+		settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL] = bool(state["show_priority_tool"])
 	if state.has("priority_filter_value"):
-		priority_filter_value = int(state["priority_filter_value"])
+		settings.priority_filter_value = int(state["priority_filter_value"])
 	if state.has("drawing_folder_path"):
 		drawing_manager.set_folder_path(id, state["drawing_folder_path"])
 	if state.has("app_mode"):
-		app_mode = int(state["app_mode"]) as AppMode
+		settings.app_mode = int(state["app_mode"]) as Enums.AppMode
 	changed_position.emit()
 
 
@@ -494,7 +453,7 @@ func rebuild_elements(json_elems: Dictionary) -> void:
 			var style_id: String = "none"
 			var completed: bool = false
 			var has_style: bool = false
-			var priority_id: int = Priority.NONE
+			var priority_id: int = Enums.Priority.NONE
 			if json_elems[i].has("completed"):		# Field only exists at version 0.1.3 or above
 				completed = bool(json_elems[i]["completed"])
 			if json_elems[i].has("priority_id"):
@@ -511,6 +470,7 @@ func rebuild_elements(json_elems: Dictionary) -> void:
 			if json_elems[i].has("bgcolor.r"):	# Backwards compatibility
 				var c: Color = Color(json_elems[i]["bgcolor.r"], json_elems[i]["bgcolor.g"], json_elems[i]["bgcolor.b"], json_elems[i]["bgcolor.a"])
 				elements[elem_id].set_bg_color(c)
+			elements[elem_id].manual_resize = false
 			elements[elem_id].line_edit.text = json_elems[i]["text"]
 			if completed:
 				elements[elem_id].toggle_completed()
@@ -519,7 +479,6 @@ func rebuild_elements(json_elems: Dictionary) -> void:
 				elements[elem_id].change_style_preset(style_presets[style_id])
 			elif json_elems[i].has("individual_style") and !has_style:
 				elements[elem_id].individual_style.rebuild_from_json_dict(json_elems[i]["individual_style"])
-			elements[elem_id].manual_resize = false
 	is_user_input = true
 
 
@@ -545,7 +504,6 @@ func erase_everything() -> void:
 	file_name_short = "New File"
 	selection_viewer.visible = false
 	deselect_element()
-	has_deselected_element.emit()
 	zoom_level = 1.0
 	connections_p1 = {}
 	connections_p2 = {}
@@ -624,31 +582,31 @@ func handle_zoom(old_zoom: float, target: Vector2) -> void:
 
 
 func toggle_show_completed(toggled_on: bool) -> void:
-	checkbox_data[Checkbox.SHOW_COMPLETED] = toggled_on
-	printt("Show completed: ", id, checkbox_data[Checkbox.SHOW_COMPLETED])
+	settings.checkbox_data[Enums.Checkbox.SHOW_COMPLETED] = toggled_on
 	for i in elements:
-		if elements[i].completed:
-			toggle_element_and_connections(i, toggled_on)
+		if elements[i].completed and elements[i].priority_id <= settings.priority_filter_value:
+			toggle_element(i, toggled_on)
+	for i in elements:
+		toggle_connections(i)
 
 
 func toggle_show_priorities(toggled_on: bool) -> void:
-	checkbox_data[Checkbox.SHOW_PRIORITIES] = toggled_on
-	printt("Show priorities: ", id, checkbox_data[Checkbox.SHOW_PRIORITIES])
+	settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITIES] = toggled_on
 	for i in elements:
 		elements[i].set_priority_visible(toggled_on)
 
 
-func toggle_show_priority_tool(toggled_on: bool) -> void:
-	checkbox_data[Checkbox.SHOW_PRIORITY_TOOL] = toggled_on
-	printt("Show priority tool: ", id, checkbox_data[Checkbox.SHOW_PRIORITY_TOOL])
+func toggle_show_priority_tool(toggled_on: bool, update_state: bool = true) -> void:
+	if update_state:
+		settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL] = toggled_on
 	for i in elements:
 		elements[i].priority_tool_enabled = toggled_on
 
 
 func change_priority_filter(value: int) -> void:
-	priority_filter_value = value
+	settings.priority_filter_value = value
 	for i in elements:
-		if elements[i].priority_id > value or (elements[i].completed and !checkbox_data[Checkbox.SHOW_COMPLETED]):
+		if elements[i].priority_id > value or (elements[i].completed and !settings.checkbox_data[Enums.Checkbox.SHOW_COMPLETED]):
 			toggle_element(i, false)
 		else:
 			toggle_element(i, true)
@@ -674,10 +632,17 @@ func _on_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and event.pressure > 0.0:
 		last_pressure_event = event.pressure
 	
+	# Deselect any element on left click on background
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
+		if !is_element_just_created:	# Don't deselect if this event is the one that created an element
+			select_element(-1)
+		else:
+			is_element_just_created = false
+	
 	# Begin pan
 	if event.is_action("pan") and event.is_pressed() and !is_drawing:
-		if !is_element_just_created:
-			select_element(-1)	# Deselect any
+		if !is_element_just_created:	# Don't deselect if this event is the one that created an element
+			select_element(-1)
 		else:
 			is_element_just_created = false
 		if !is_panning:
@@ -707,12 +672,12 @@ func _on_gui_input(event: InputEvent) -> void:
 		zoom_level = clampf(zoom_level * (2.0 - zoom_speed), zoom_limits.x, zoom_limits.y)
 		handle_zoom(old_zoom, get_viewport_rect().size * 0.5)
 	
-	if app_mode == AppMode.PLANNING and event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed() and tool_id == Tool.ADD_ELEMENT:
+	if settings.app_mode == Enums.AppMode.PLANNING and event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed() and tool_id == Enums.Tool.ADD_ELEMENT:
 			add_element_label(event.position)
 			is_adding_elements = true
 	
-	if app_mode == AppMode.DRAWING:
+	if settings.app_mode == Enums.AppMode.DRAWING:
 		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed() and !is_color_picker_visible:
 			is_drawing = true
 			last_draw_event_position = event.position * scale + position
@@ -731,13 +696,13 @@ func _on_gui_input(event: InputEvent) -> void:
 
 
 func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
-	if app_mode == AppMode.DRAWING:
+	if settings.app_mode == Enums.AppMode.DRAWING:
 		return
 	if drawing_manager.is_taking_screenshots:
 		return
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
-			if tool_id == Tool.ADD_CONNECTION:
+			if tool_id == Enums.Tool.ADD_CONNECTION:
 				if connection_candidate_1 == -1:
 					connection_candidate_1 = elem_id
 					select_element(elem_id)
@@ -747,9 +712,9 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 				else:
 					connection_candidate_2 = elem_id
 					add_connection()
-			if tool_id == Tool.REMOVE_CONNECTIONS:
+			if tool_id == Enums.Tool.REMOVE_CONNECTIONS:
 				remove_connections(elem_id)
-			if (tool_id == Tool.SELECT or tool_id == Tool.ELEMENT_STYLE_SETTINGS):
+			if (tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS):
 				select_element(elem_id)
 				if event.position.distance_to(elements[elem_id].size) < 12.0:
 					is_resizing = true
@@ -762,18 +727,18 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 					is_panning = false
 					elements[elem_id].set_default_cursor_shape(Control.CURSOR_DRAG)
 					drag_start_mouse_pos = event.position
-			if tool_id == Tool.ELEMENT_STYLE_SETTINGS:
+			if tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS:
 				select_element(elem_id)
-			if tool_id == Tool.MARK_COMPLETED:
+			if tool_id == Enums.Tool.MARK_COMPLETED:
 				canvas_changed()
 				elements[elem_id].toggle_completed()
-				toggle_element_and_connections(elem_id, checkbox_data[Checkbox.SHOW_COMPLETED])
+				toggle_element_and_connections(elem_id, settings.checkbox_data[Enums.Checkbox.SHOW_COMPLETED])
 		elif event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
 			if elements.has(elem_id):	# Rare bug? elem_id doesn't exist in elements
 				elements[elem_id].set_default_cursor_shape(Control.CURSOR_POINTING_HAND)
 			else:
 				printerr("Element doesn't exist at release mouse click")
-			if tool_id == Tool.REMOVE_ELEMENT:
+			if tool_id == Enums.Tool.REMOVE_ELEMENT:
 				canvas_changed()
 				deselect_element()
 				remove_connections(elem_id)
@@ -783,7 +748,7 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 				is_dragging = false
 			if is_resizing:
 				is_resizing = false
-	if event is InputEventMouseMotion and (tool_id == Tool.SELECT or tool_id == Tool.ELEMENT_STYLE_SETTINGS):
+	if event is InputEventMouseMotion and (tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS):
 		var move = event.position - drag_start_mouse_pos
 		if is_dragging:
 			elements[elem_id].position += move
@@ -792,16 +757,17 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 		if is_resizing:
 			elements[elem_id].change_size(original_elem_size + move)
 			update_connections(elem_id)
+			canvas_changed()
 
 
 func _on_element_text_box_active(elem_id: int) -> void:
 	if elements.has(elem_id):
 		select_element(elem_id)
-		if tool_id == Tool.MARK_COMPLETED:
+		if tool_id == Enums.Tool.MARK_COMPLETED:
 			canvas_changed()
 			elements[elem_id].toggle_completed()
-			toggle_element_and_connections(elem_id, checkbox_data[Checkbox.SHOW_COMPLETED])
-		if tool_id == Tool.ADD_CONNECTION:
+			toggle_element_and_connections(elem_id, settings.checkbox_data[Enums.Checkbox.SHOW_COMPLETED])
+		if tool_id == Enums.Tool.ADD_CONNECTION:
 			if connection_candidate_1 == -1:
 				connection_candidate_1 = elem_id
 				select_element(elem_id)
@@ -811,12 +777,11 @@ func _on_element_text_box_active(elem_id: int) -> void:
 			else:
 				connection_candidate_2 = elem_id
 				add_connection()
-		if tool_id == Tool.REMOVE_CONNECTIONS:
+		if tool_id == Enums.Tool.REMOVE_CONNECTIONS:
 			remove_connections(elem_id)
 
 
 func _on_element_label_resized(elem_id: int) -> void:
-	canvas_changed()
 	if selected_element == elem_id:
 		selection_viewer.size = elements[elem_id].size
 

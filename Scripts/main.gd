@@ -36,23 +36,15 @@ extends Control
 @export_category("Settings")
 @export var zoom_limits: Vector2 = Vector2(0.2, 2.0)
 @export_range(1.01, 1.2, 0.01) var zoom_speed: float = 1.02
-@export var priority_filter_text: Array[String]
 @export var opened_files_file_name: String
 @export var pencil_cursor: Texture2D
 @export var eraser_pencil_cursor: Texture2D
-## Settings drawer
-var show_completed: CheckBox
-var show_priorities: CheckBox
-var show_priority_tool: CheckBox
-var priority_filter: HScrollBar
-var priority_filter_label: Label
 
 var draw_tool_keybinds: Dictionary[int, String] = {}
 var tool_keybinds: Dictionary[int, String] = {}
 var is_editing_element_text: bool = false
 var is_editing_preset_name: bool = false
 var is_saving_images: bool = false
-var update_checkboxes: bool = false
 var app_version: String = ""
 var canvases: Dictionary[int, PlannerCanvas]
 var tab_to_canvas: Dictionary[int, int]
@@ -67,28 +59,6 @@ var using_cursor_image: bool = false
 var last_window_mode: Window.Mode = Window.Mode.MODE_WINDOWED		## When going to borderless fullscreen, remember the last Window.Mode
 
 
-enum Checkbox {
-	SHOW_PRIORITIES,
-	SHOW_PRIORITY_TOOL,
-	SHOW_COMPLETED,
-}
-enum Tool {
-	SELECT,
-	ADD_ELEMENT,
-	REMOVE_ELEMENT,
-	ELEMENT_STYLE_SETTINGS,
-	ADD_CONNECTION,
-	REMOVE_CONNECTIONS,
-	MARK_COMPLETED,
-}
-enum RequestedActionType {
-	NEW_BUTTON,
-	LOAD_BUTTON,
-	CLOSE_TAB_BUTTON,
-	CONFIRMATION_TAB,
-}
-
-
 func _ready() -> void:
 	#Performance.add_custom_monitor("Request Action Type", func(): return int(canvases[cc].get_requested_save_action()))
 	get_tree().set_auto_accept_quit(false)		# Don't automatically quit
@@ -96,7 +66,6 @@ func _ready() -> void:
 	pan_indicator_camera.set_world_2d(get_world_2d())
 	pan_indicator_camera.set_window_size(window_size)
 	app_version = ProjectSettings.get_setting("application/config/version")
-	get_settings_drawer_object_references()
 	for i in priority_styleboxes.size():
 		priority_styleboxes[i].bg_color = priority_colors[i]
 	create_tool_keybinds()
@@ -105,6 +74,7 @@ func _ready() -> void:
 	if canvases.size() == 0:
 		_on_add_file_button_pressed()
 	update_zoom_limits(zoom_limits)
+	connect_signals()
 	new_file_confirmation.add_button("     No     ", true, "no_save")
 	new_file_confirmation.add_cancel_button(" Cancel ")
 	load_file_confirmation.add_button("     No     ", true, "no_save")
@@ -113,12 +83,6 @@ func _ready() -> void:
 	close_tab_confirmation.add_cancel_button(" Cancel ")
 	exit_tab_confirmation.add_button("     No     ", true, "no_save")
 	exit_tab_confirmation.add_cancel_button(" Cancel ")
-	drawing_manager.requested_status_message.connect(_on_drawing_manager_status_message)
-	drawing_manager.forced_save_started.connect(_on_drawing_manager_forced_save_started)
-	drawing_manager.forced_save_ended.connect(_on_drawing_manager_forced_save_ended)
-	drawing_tool_bar.color_picker_toggled.connect(_on_drawing_tool_bar_color_picker_toggled)
-	drawing_tool_bar.brush_size_changed.connect(change_drawing_tool_cursor)
-	drawing_tool_bar.brush_color_changed.connect(change_drawing_tool_cursor)
 
 
 func _process(_delta):
@@ -137,7 +101,7 @@ func _process(_delta):
 		toggle_borderless_window()
 	if Input.is_action_just_pressed("save_file"):	# Can do while editing text because ctrl+s doesn't insert anything
 		_on_save_button_pressed()
-	if Input.is_action_just_pressed("edit_element") and !tool_box.is_selected(Tool.MARK_COMPLETED):
+	if Input.is_action_just_pressed("edit_element") and !tool_box.is_selected(Enums.Tool.MARK_COMPLETED):
 		if selected_element_exists() and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
 			get_selected_element().line_edit.edit()
 	if Input.is_action_pressed("undo", true) and !disable_input() and (input_repeat_timer.is_stopped() or first_input_repeat):
@@ -153,45 +117,42 @@ func _process(_delta):
 	if Input.is_action_just_released("undo") or Input.is_action_just_released("redo"):
 		first_input_repeat = true
 	
-	if canvases[cc].app_mode == canvases[cc].AppMode.DRAWING:
-		if Input.is_action_just_pressed(draw_tool_keybinds[DrawingSettings.DrawingTool.PENCIL], true):
-			drawing_tool_box.select(DrawingSettings.DrawingTool.PENCIL)
-			_on_drawing_tool_box_item_selected(DrawingSettings.DrawingTool.PENCIL)
-		if Input.is_action_just_pressed(draw_tool_keybinds[DrawingSettings.DrawingTool.BRUSH], true):
-			drawing_tool_box.select(DrawingSettings.DrawingTool.BRUSH)
-			_on_drawing_tool_box_item_selected(DrawingSettings.DrawingTool.BRUSH)
-		if Input.is_action_just_pressed(draw_tool_keybinds[DrawingSettings.DrawingTool.ERASER_PENCIL], true):
-			drawing_tool_box.select(DrawingSettings.DrawingTool.ERASER_PENCIL)
-			_on_drawing_tool_box_item_selected(DrawingSettings.DrawingTool.ERASER_PENCIL)
-		if Input.is_action_just_pressed(draw_tool_keybinds[DrawingSettings.DrawingTool.ERASER_BRUSH], true):
-			drawing_tool_box.select(DrawingSettings.DrawingTool.ERASER_BRUSH)
-			_on_drawing_tool_box_item_selected(DrawingSettings.DrawingTool.ERASER_BRUSH)
+	if canvases[cc].settings.app_mode == Enums.AppMode.DRAWING:
+		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.PENCIL], true):
+			drawing_tool_box.select(Enums.DrawingTool.PENCIL)
+			_on_drawing_tool_box_item_selected(Enums.DrawingTool.PENCIL)
+		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.BRUSH], true):
+			drawing_tool_box.select(Enums.DrawingTool.BRUSH)
+			_on_drawing_tool_box_item_selected(Enums.DrawingTool.BRUSH)
+		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.ERASER_PENCIL], true):
+			drawing_tool_box.select(Enums.DrawingTool.ERASER_PENCIL)
+			_on_drawing_tool_box_item_selected(Enums.DrawingTool.ERASER_PENCIL)
+		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.ERASER_BRUSH], true):
+			drawing_tool_box.select(Enums.DrawingTool.ERASER_BRUSH)
+			_on_drawing_tool_box_item_selected(Enums.DrawingTool.ERASER_BRUSH)
 	
-	if canvases[cc].app_mode == canvases[cc].AppMode.PLANNING:
-		if Input.is_action_just_pressed(tool_keybinds[Tool.SELECT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
-			tool_box.select(Tool.SELECT)
-			_on_tool_box_item_selected(Tool.SELECT)
-		if Input.is_action_just_pressed(tool_keybinds[Tool.ADD_ELEMENT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
-			tool_box.select(Tool.ADD_ELEMENT)
-			_on_tool_box_item_selected(Tool.ADD_ELEMENT)
-		if Input.is_action_just_pressed(tool_keybinds[Tool.REMOVE_ELEMENT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
-			tool_box.select(Tool.REMOVE_ELEMENT)
-			_on_tool_box_item_selected(Tool.REMOVE_ELEMENT)
-		if Input.is_action_just_pressed(tool_keybinds[Tool.ELEMENT_STYLE_SETTINGS]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
-			tool_box.select(Tool.ELEMENT_STYLE_SETTINGS)
-			_on_tool_box_item_selected(Tool.ELEMENT_STYLE_SETTINGS)
-		if Input.is_action_just_pressed(tool_keybinds[Tool.ADD_CONNECTION]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
-			tool_box.select(Tool.ADD_CONNECTION)
-			_on_tool_box_item_selected(Tool.ADD_CONNECTION)
-		if Input.is_action_just_pressed(tool_keybinds[Tool.REMOVE_CONNECTIONS]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
-			tool_box.select(Tool.REMOVE_CONNECTIONS)
-			_on_tool_box_item_selected(Tool.REMOVE_CONNECTIONS)
-		if Input.is_action_just_pressed(tool_keybinds[Tool.MARK_COMPLETED]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
-			tool_box.select(Tool.MARK_COMPLETED)
-			_on_tool_box_item_selected(Tool.MARK_COMPLETED)
-	
-	if update_checkboxes and canvases.has(cc):
-		force_update_checkboxes()
+	if canvases[cc].settings.app_mode == Enums.AppMode.PLANNING:
+		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.SELECT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+			tool_box.select(Enums.Tool.SELECT)
+			_on_tool_box_item_selected(Enums.Tool.SELECT)
+		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.ADD_ELEMENT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+			tool_box.select(Enums.Tool.ADD_ELEMENT)
+			_on_tool_box_item_selected(Enums.Tool.ADD_ELEMENT)
+		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.REMOVE_ELEMENT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+			tool_box.select(Enums.Tool.REMOVE_ELEMENT)
+			_on_tool_box_item_selected(Enums.Tool.REMOVE_ELEMENT)
+		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.ELEMENT_STYLE_SETTINGS]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+			tool_box.select(Enums.Tool.ELEMENT_STYLE_SETTINGS)
+			_on_tool_box_item_selected(Enums.Tool.ELEMENT_STYLE_SETTINGS)
+		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.ADD_CONNECTION]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+			tool_box.select(Enums.Tool.ADD_CONNECTION)
+			_on_tool_box_item_selected(Enums.Tool.ADD_CONNECTION)
+		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.REMOVE_CONNECTIONS]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+			tool_box.select(Enums.Tool.REMOVE_CONNECTIONS)
+			_on_tool_box_item_selected(Enums.Tool.REMOVE_CONNECTIONS)
+		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.MARK_COMPLETED]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+			tool_box.select(Enums.Tool.MARK_COMPLETED)
+			_on_tool_box_item_selected(Enums.Tool.MARK_COMPLETED)
 
 
 func _notification(what):
@@ -203,57 +164,39 @@ func _notification(what):
 		#get_tree().quit() # Default behavior
 
 
-func toggle_borderless_window() -> void:
-	if get_window().mode == Window.Mode.MODE_WINDOWED or get_window().mode == Window.Mode.MODE_MAXIMIZED:
-		last_window_mode = get_window().mode
-		get_window().mode = Window.MODE_FULLSCREEN
-		get_window().borderless = true
-	elif get_window().mode == Window.MODE_FULLSCREEN:
-		get_window().mode = last_window_mode
-		get_window().borderless = false
-
-
-func get_settings_drawer_object_references() -> void:
-	show_completed = settings_drawer.get_checkbox_object(Checkbox.SHOW_COMPLETED)
-	show_priorities = settings_drawer.get_checkbox_object(Checkbox.SHOW_PRIORITIES)
-	show_priority_tool = settings_drawer.get_checkbox_object(Checkbox.SHOW_PRIORITY_TOOL)
-	priority_filter = settings_drawer.get_priority_filter()
-	priority_filter_label = settings_drawer.get_priority_filter_label()
-	show_completed.toggled.connect(_on_show_completed_toggled)
-	show_priorities.toggled.connect(_on_show_priorities_toggled)
-	show_priority_tool.toggled.connect(_on_show_priority_tool_toggled)
-	priority_filter.value_changed.connect(_on_priority_filter_value_changed)
-
-
-func get_selected_element() -> ElementLabel:
-	if canvases.has(cc) and canvases[cc].elements.has(canvases[cc].selected_element):
-		return canvases[cc].elements[canvases[cc].selected_element]
-	else:
-		return null
-
-
-func selected_element_exists() -> bool:
-	return canvases.has(cc) and canvases[cc].elements.has(canvases[cc].selected_element)
+func connect_signals() -> void:
+	settings_drawer.show_completed.toggled.connect(_on_show_completed_toggled)
+	settings_drawer.show_priorities.toggled.connect(_on_show_priorities_toggled)
+	settings_drawer.show_priority_tool.toggled.connect(_on_show_priority_tool_toggled)
+	settings_drawer.priority_filter.value_changed.connect(_on_priority_filter_value_changed)
+	
+	drawing_manager.requested_status_message.connect(_on_drawing_manager_status_message)
+	drawing_manager.forced_save_started.connect(_on_drawing_manager_forced_save_started)
+	drawing_manager.forced_save_ended.connect(_on_drawing_manager_forced_save_ended)
+	
+	drawing_tool_bar.color_picker_toggled.connect(_on_drawing_tool_bar_color_picker_toggled)
+	drawing_tool_bar.brush_size_changed.connect(change_drawing_tool_cursor)
+	drawing_tool_bar.brush_color_changed.connect(change_drawing_tool_cursor)
 
 
 func create_tool_keybinds() -> void:
-	tool_keybinds[Tool.SELECT] = "select_element"
-	tool_keybinds[Tool.ADD_ELEMENT] = "add_element"
-	tool_keybinds[Tool.REMOVE_ELEMENT] = "remove_element"
-	tool_keybinds[Tool.ELEMENT_STYLE_SETTINGS] = "element_style_settings"
-	tool_keybinds[Tool.ADD_CONNECTION] = "add_connection"
-	tool_keybinds[Tool.REMOVE_CONNECTIONS] = "remove_connections"
-	tool_keybinds[Tool.MARK_COMPLETED] = "mark_completed"
+	tool_keybinds[Enums.Tool.SELECT] = "select_element"
+	tool_keybinds[Enums.Tool.ADD_ELEMENT] = "add_element"
+	tool_keybinds[Enums.Tool.REMOVE_ELEMENT] = "remove_element"
+	tool_keybinds[Enums.Tool.ELEMENT_STYLE_SETTINGS] = "element_style_settings"
+	tool_keybinds[Enums.Tool.ADD_CONNECTION] = "add_connection"
+	tool_keybinds[Enums.Tool.REMOVE_CONNECTIONS] = "remove_connections"
+	tool_keybinds[Enums.Tool.MARK_COMPLETED] = "mark_completed"
 	for tool in tool_keybinds:
 		for event in InputMap.action_get_events(tool_keybinds[tool]):
 			tool_box.set_item_text(tool, ("%s (%s)") % [tool_box.get_item_text(tool), event.as_text().split(" ")[0]])
 
 
 func create_drawing_tool_keybinds() -> void:
-	draw_tool_keybinds[DrawingSettings.DrawingTool.PENCIL] = "pencil"
-	draw_tool_keybinds[DrawingSettings.DrawingTool.BRUSH] = "brush"
-	draw_tool_keybinds[DrawingSettings.DrawingTool.ERASER_PENCIL] = "eraser_pencil"
-	draw_tool_keybinds[DrawingSettings.DrawingTool.ERASER_BRUSH] = "eraser_brush"
+	draw_tool_keybinds[Enums.DrawingTool.PENCIL] = "pencil"
+	draw_tool_keybinds[Enums.DrawingTool.BRUSH] = "brush"
+	draw_tool_keybinds[Enums.DrawingTool.ERASER_PENCIL] = "eraser_pencil"
+	draw_tool_keybinds[Enums.DrawingTool.ERASER_BRUSH] = "eraser_brush"
 	
 	for tool in draw_tool_keybinds:
 		for event in InputMap.action_get_events(draw_tool_keybinds[tool]):
@@ -269,43 +212,43 @@ func set_toggle_mode_button_tooltip(tooltip: String) -> void:
 	toggle_mode_button.shortcut.events = InputMap.action_get_events("switch_app_mode")
 
 
-func force_update_checkboxes() -> void:
-	printt("Before", cc, canvases[cc].checkbox_data)
-	if !show_completed.is_pressed() and !canvases[cc].checkbox_data[Checkbox.SHOW_COMPLETED]:
-		_on_show_completed_toggled(false)
-	if !show_priorities.is_pressed() and !canvases[cc].checkbox_data[Checkbox.SHOW_PRIORITIES]:
-		_on_show_priorities_toggled(false)
-	if !show_priority_tool.is_pressed() and !canvases[cc].checkbox_data[Checkbox.SHOW_PRIORITY_TOOL]:
-		_on_show_priority_tool_toggled(false)
-	show_completed.set_pressed(canvases[cc].checkbox_data[Checkbox.SHOW_COMPLETED])
-	show_priorities.set_pressed(canvases[cc].checkbox_data[Checkbox.SHOW_PRIORITIES])
-	show_priority_tool.set_pressed(canvases[cc].checkbox_data[Checkbox.SHOW_PRIORITY_TOOL])
-	update_checkboxes = false
-	printt("After", cc, canvases[cc].checkbox_data)
-
-
 func update_zoom_limits(limits: Vector2) -> void:
 	zoom_indicator.zoom_progress_bar.min_value = limits.x
 	zoom_indicator.zoom_progress_bar.max_value = limits.y
 
 
+func toggle_borderless_window() -> void:
+	if get_window().mode == Window.Mode.MODE_WINDOWED or get_window().mode == Window.Mode.MODE_MAXIMIZED:
+		last_window_mode = get_window().mode
+		get_window().mode = Window.MODE_FULLSCREEN
+		get_window().borderless = true
+	elif get_window().mode == Window.MODE_FULLSCREEN:
+		get_window().mode = last_window_mode
+		get_window().borderless = false
+
+
+func get_selected_element() -> ElementLabel:
+	if canvases.has(cc) and canvases[cc].elements.has(canvases[cc].selected_element):
+		return canvases[cc].elements[canvases[cc].selected_element]
+	else:
+		return null
+
+
+func selected_element_exists() -> bool:
+	return canvases.has(cc) and canvases[cc].elements.has(canvases[cc].selected_element)
+
+
 func switch_main_canvas(id: int) -> void:
-	#print("Switch to %d" % [id])
 	if is_saving_images:
 		return
 	if cc == id:
 		return
 	if canvases.has(cc):	# Disable old canvas visibility
 		canvases[cc].visible = false
-		#print("%d off" % [cc])
 	if canvases.has(id):
 		canvases[id].visible = true
-		#print("%d on" % [id])
 	cc = id
 	pan_indicator_camera.set_canvas_size(canvases[cc].size)
-	priority_filter.value = canvases[cc].priority_filter_value
-	_on_priority_filter_value_changed(canvases[cc].priority_filter_value)
-	update_checkboxes = true
 	if file_tab_bar.tab_count == 0:
 		file_tab_bar.add_tab("")
 	set_tab_name_and_title_from_canvas(cc)
@@ -318,7 +261,9 @@ func switch_main_canvas(id: int) -> void:
 	_on_drawing_tool_box_item_selected(canvases[cc].drawing_settings.selected_tool)
 	call_deferred("_on_canvas_changed_zoom")
 	call_deferred("_on_canvas_changed_position")
-	if canvases[cc].app_mode == canvases[cc].AppMode.DRAWING:
+	if canvases[cc].save_state.is_loaded:
+		settings_drawer.update_data(canvases[cc].settings)
+	if canvases[cc].settings.app_mode == Enums.AppMode.DRAWING:
 		_on_toggle_mode_toggled(true)
 		toggle_mode_button.set_pressed_no_signal(true)
 	else:
@@ -342,7 +287,7 @@ func set_tab_name_and_title_from_canvas(c_id: int) -> void:
 
 
 func new_file(add_canvas: bool) -> int:
-	var new_canvas
+	var new_canvas: PlannerCanvas
 	if add_canvas:
 		new_canvas = load(canvas_scene).instantiate()
 		add_child(new_canvas)
@@ -357,7 +302,6 @@ func new_file(add_canvas: bool) -> int:
 		new_canvas.changed_zoom.connect(_on_canvas_changed_zoom)
 		new_canvas.changed_position.connect(_on_canvas_changed_position)
 		new_canvas.has_changed.connect(_on_canvas_has_changed.bind(new_canvas.id))
-		#new_canvas.selected_style_changed.connect(_on_canvas_selected_style_changed)
 		new_canvas.has_selected_element.connect(_on_canvas_has_selected_element)
 		new_canvas.has_deselected_element.connect(_on_canvas_has_deselected_element)
 		new_canvas.element_scene = element_scene
@@ -378,9 +322,10 @@ func new_file(add_canvas: bool) -> int:
 	#DisplayServer.window_set_title("GPlanner %s: New File" % [app_version])
 	get_tree().root.title = ("GPlanner %s: New File" % [app_version])
 	status_bar.update_status("New File")
-	tool_box.select(Tool.SELECT)
-	_on_tool_box_item_selected(Tool.SELECT)
-	update_checkboxes = true
+	tool_box.select(Enums.Tool.SELECT)
+	if canvases[new_canvas.id].save_state.is_loaded:
+		settings_drawer.update_data(canvases[new_canvas.id].settings)
+	_on_tool_box_item_selected(Enums.Tool.SELECT)
 	_on_canvas_changed_position()
 	_on_canvas_changed_zoom()
 	return new_canvas.id
@@ -405,8 +350,8 @@ func prepare_to_save_images_lock_UI() -> void:
 	get_window().unresizable = true
 	# Maybe not necessary, the drawing tool can't input on canvas with the curtain up
 	# and doesn't interfere with the image saving afterwards
-	#tool_box.select(Tool.SELECT)
-	#_on_tool_box_item_selected(Tool.SELECT)
+	#tool_box.select(Enums.Tool.SELECT)
+	#_on_tool_box_item_selected(Enums.Tool.SELECT)
 
 
 func finish_saving_images_unlock_UI() -> void:
@@ -473,36 +418,36 @@ func load_file(path: String, app_startup: bool = false) -> void:
 		status_bar.update_status("Can't load file / Can't parse JSON string: %s" % path, Color(0.55, 0.3, 0.3, 0.5))
 		printerr("Can't parse JSON string @ main.gd:load_file()")
 		return
-	else:
-		var elems = data["Elements"]
-		var conns = data["Connections"]
-		var presets
+	
+	var elems = data["Elements"]
+	var conns = data["Connections"]
+	var presets
+	if data.has("StylePresets"):
+		presets = data["StylePresets"]
+	if data.has("State"):
+		var state = data["State"]
+		canvases[cc].opened_file_path = path
+		canvases[cc].file_name_short = path.get_file().get_slice(".", 0)	# For tab name or referring to the file in general
+		canvases[cc].rebuild_canvas_state(state)
 		if data.has("StylePresets"):
-			presets = data["StylePresets"]
-		if data.has("State"):
-			var state = data["State"]
-			canvases[cc].opened_file_path = path
-			canvases[cc].file_name_short = path.get_file().get_slice(".", 0)
-			canvases[cc].rebuild_canvas_state(state)
-			if data.has("StylePresets"):
-				element_settings.erase_everything()
-				element_settings.rebuild_options_and_dictionary_from_json(presets)
-				canvases[cc].update_all_style_presets(element_settings.presets)
-		canvases[cc].rebuild_elements(elems)
-		canvases[cc].rebuild_connections(conns)
-		drawing_manager.clear_canvas_drawing_group(cc)
-		if data.has("DrawingSettings"):
-			canvases[cc].drawing_settings.rebuild_from_json(data["DrawingSettings"])
-		if data.has("DrawingRegions"):
-			#print("Load drawing %d %s" % [cc, "at app startup" if app_startup else ""])
-			drawing_manager.rebuild_paths_from_json(cc, data["DrawingRegions"])
-			if !app_startup:
-				drawing_manager.reload_all_drawing_regions(cc)
-			
-		_on_priority_filter_value_changed(canvases[cc].priority_filter_value)
+			element_settings.erase_everything()
+			element_settings.rebuild_options_and_dictionary_from_json(presets)
+			canvases[cc].update_all_style_presets(element_settings.presets)
+	canvases[cc].rebuild_elements(elems)
+	canvases[cc].rebuild_connections(conns)
+	drawing_manager.clear_canvas_drawing_group(cc)
+	if data.has("DrawingSettings"):
+		canvases[cc].drawing_settings.rebuild_from_json(data["DrawingSettings"])
+	if data.has("DrawingRegions"):
+		#print("Load drawing %d %s" % [cc, "at app startup" if app_startup else ""])
+		drawing_manager.rebuild_paths_from_json(cc, data["DrawingRegions"])
+		if !app_startup:
+			drawing_manager.reload_all_drawing_regions(cc)
 	
 	status_bar.update_status("File loaded: %s" % path, Color(0.3, 0.55, 0.3, 0.5))
 	canvases[cc].canvas_changed(true)
+	canvases[cc].save_state.is_loaded = true
+	settings_drawer.update_data(canvases[cc].settings)
 	set_tab_name_and_title_from_canvas(cc)
 	_on_canvas_changed_position()
 	_on_canvas_changed_zoom()
@@ -560,7 +505,7 @@ func load_opened_file_paths(path: String) -> void:
 					_on_drawing_tool_box_item_selected(canvases[current].drawing_settings.selected_tool)
 				else:
 					file_tab_bar.current_tab = current
-				if canvases[current].app_mode == canvases[current].AppMode.DRAWING:
+				if canvases[current].settings.app_mode == Enums.AppMode.DRAWING:
 					_on_toggle_mode_toggled(true)
 					toggle_mode_button.set_pressed_no_signal(true)
 			else:	# Select last tab (if any exist, it will be valid)
@@ -594,8 +539,8 @@ func close_tab(tab: int) -> void:
 
 # Increments the tab from 0 to tab_count, checking if the file in the tab has changes 
 # And showing a dialog box "exit_tab_confirmation" to confirm the save
-# exit_tab_confirmation dialog also calls confirmation_tab_save(current_tab + 1) after
-# either on file save / no save or after saving images + file (as the canvas.save_state.set_requested_action() to be executed later, because saving images is asynchronous)
+# exit_tab_confirmation dialog or _on_drawing_manager_finished_saving also calls confirmation_tab_save(current_tab + 1) after
+# either on file save / no save or after saving images + file (as the canvas.save_state.set_requested_action() to be executed later in execute_file_action(), because saving images is asynchronous)
 func confirmation_tab_save(tab: int) -> void:
 	if is_saving_images:
 		return
@@ -615,18 +560,18 @@ func confirmation_tab_save(tab: int) -> void:
 		confirmation_tab_save(tab + 1)
 
 
-func execute_file_action(act: RequestedActionType) -> void:
+func execute_file_action(act: Enums.RequestedActionType) -> void:
 	match act:
-		RequestedActionType.NEW_BUTTON:
+		Enums.RequestedActionType.NEW_BUTTON:
 			canvases[cc].reset_save_state()
 			_on_new_button_pressed()
-		RequestedActionType.LOAD_BUTTON:
+		Enums.RequestedActionType.LOAD_BUTTON:
 			_on_load_button_pressed()
-		RequestedActionType.CLOSE_TAB_BUTTON:
+		Enums.RequestedActionType.CLOSE_TAB_BUTTON:
 			var tab: int = tab_from_canvas_id(cc)
 			if tab >= 0:
 				_on_file_tab_bar_tab_close_pressed(tab)
-		RequestedActionType.CONFIRMATION_TAB:
+		Enums.RequestedActionType.CONFIRMATION_TAB:
 			var tab: int = tab_from_canvas_id(cc)
 			if tab >= 0:
 				confirmation_tab_save(tab)
@@ -645,23 +590,23 @@ func disable_input() -> bool:
 	return is_editing_element_text or is_editing_preset_name or is_saving_images
 
 
-# NOTE Cursor size limit 256x256, on web 128x128; Switching to a TextureRect based cursor beyond that
+# Cursor size limit 256x256, on web 128x128; Switching to a TextureRect based cursor beyond that
 func change_drawing_tool_cursor() -> void:
 	if !canvases.has(cc):
 		return
-	var tool: DrawingSettings.DrawingTool = drawing_tool_bar.settings.selected_tool as DrawingSettings.DrawingTool
+	var tool: Enums.DrawingTool = drawing_tool_bar.settings.selected_tool as Enums.DrawingTool
 	
-	if canvases[cc].app_mode == canvases[cc].AppMode.PLANNING:
+	if canvases[cc].settings.app_mode == Enums.AppMode.PLANNING:
 		Input.set_custom_mouse_cursor(null, Input.CURSOR_ARROW)
 		using_cursor_image = false
 	else:
-		if tool == DrawingSettings.DrawingTool.PENCIL:
+		if tool == Enums.DrawingTool.PENCIL:
 			Input.set_custom_mouse_cursor(pencil_cursor, Input.CURSOR_ARROW, Vector2(2.0, 26.0))
 			using_cursor_image = false
-		if tool == DrawingSettings.DrawingTool.ERASER_PENCIL:
+		if tool == Enums.DrawingTool.ERASER_PENCIL:
 			Input.set_custom_mouse_cursor(eraser_pencil_cursor, Input.CURSOR_ARROW, Vector2(4.5, 26.0))
 			using_cursor_image = false
-		if tool == DrawingSettings.DrawingTool.BRUSH:
+		if tool == Enums.DrawingTool.BRUSH:
 			var img = Image.new()
 			var b_size: float = canvases[cc].drawing_settings.brush_settings.size * canvases[cc].scale.x
 			if b_size > 127.0:
@@ -674,7 +619,7 @@ func change_drawing_tool_cursor() -> void:
 				b_size = clampf(b_size, 4.0, 127.0)
 				img.load_svg_from_string(get_circle_svg(b_size, ceilf(b_size / 40.0 + 1.0), canvases[cc].drawing_settings.brush_settings.color, 0.5))
 				Input.set_custom_mouse_cursor(img, Input.CURSOR_ARROW, img.get_size() * 0.5)
-		if tool == DrawingSettings.DrawingTool.ERASER_BRUSH:
+		if tool == Enums.DrawingTool.ERASER_BRUSH:
 			var img = Image.new()
 			var b_size: float = canvases[cc].drawing_settings.eraser_brush_settings.size * canvases[cc].scale.x
 			if b_size > 127.0:
@@ -732,10 +677,10 @@ func get_2circle_svg(img_size: float, stroke_width: float, color: Color, transpa
 func change_accent_color(c: Color) -> void:
 	if !canvases.has(cc):
 		return
-	if canvases[cc].app_mode == canvases[cc].AppMode.PLANNING:
+	if canvases[cc].settings.app_mode == Enums.AppMode.PLANNING:
 		tool_box.theme.get_stylebox("panel", "ItemList").border_color = c
 		element_settings.set_accent_color(c)
-	if canvases[cc].app_mode == canvases[cc].AppMode.DRAWING:
+	if canvases[cc].settings.app_mode == Enums.AppMode.DRAWING:
 		drawing_tool_box.theme.get_stylebox("panel", "ItemList").border_color = c
 		drawing_tool_bar.set_accent_color(c)
 	settings_drawer.set_accent_color(c)
@@ -752,14 +697,14 @@ func change_accent_color(c: Color) -> void:
 	popup_dialog_theme.get_stylebox("embedded_unfocused_border", "Window").border_color = c
 
 
-func _on_tool_box_item_selected(index: int) -> void:
+func _on_tool_box_item_selected(index: Enums.Tool) -> void:
 	if canvases.has(cc):
 		canvases[cc].tool_id = index
-		if index != Tool.ADD_CONNECTION:
+		if index != Enums.Tool.ADD_CONNECTION:
 			canvases[cc].reset_adding_connection()
-	if index == Tool.ELEMENT_STYLE_SETTINGS:
+	if index == Enums.Tool.ELEMENT_STYLE_SETTINGS:
 		element_settings.toggle_visible(true)
-	elif index != Tool.ELEMENT_STYLE_SETTINGS and element_settings.is_panel_visible():
+	elif index != Enums.Tool.ELEMENT_STYLE_SETTINGS and element_settings.is_panel_visible():
 		element_settings.toggle_visible(false)
 
 
@@ -778,7 +723,7 @@ func _on_new_button_pressed() -> void:
 
 
 func _on_new_file_confirmation_confirmed() -> void:
-	canvases[cc].set_requested_save_action(RequestedActionType.NEW_BUTTON)
+	canvases[cc].set_requested_save_action(Enums.RequestedActionType.NEW_BUTTON)
 	_on_save_button_pressed()
 
 
@@ -798,12 +743,12 @@ func _on_save_button_pressed() -> void:
 	elif !canvases[cc].is_ready_for_action():
 		if close_this_tab:
 			close_this_tab = false
-			canvases[cc].set_requested_save_action(RequestedActionType.CLOSE_TAB_BUTTON)
+			canvases[cc].set_requested_save_action(Enums.RequestedActionType.CLOSE_TAB_BUTTON)
 		if exiting_app:
-			canvases[cc].set_requested_save_action(RequestedActionType.CONFIRMATION_TAB)
+			canvases[cc].set_requested_save_action(Enums.RequestedActionType.CONFIRMATION_TAB)
 		save_images()
 	else:
-		var new_file_requested: bool = true if canvases[cc].get_requested_save_action() == RequestedActionType.NEW_BUTTON else false
+		var new_file_requested: bool = true if canvases[cc].get_requested_save_action() == Enums.RequestedActionType.NEW_BUTTON else false
 		save_file(canvases[cc].opened_file_path)
 		if show_load_dialog:
 			file_dialog_save.visible = false
@@ -830,12 +775,12 @@ func _on_file_dialog_save_file_selected(path: String) -> void:
 		canvases[cc].set_file_names(path)
 		if close_this_tab:
 			close_this_tab = false
-			canvases[cc].set_requested_save_action(RequestedActionType.CLOSE_TAB_BUTTON)
+			canvases[cc].set_requested_save_action(Enums.RequestedActionType.CLOSE_TAB_BUTTON)
 		if exiting_app:
-			canvases[cc].set_requested_save_action(RequestedActionType.CONFIRMATION_TAB)
+			canvases[cc].set_requested_save_action(Enums.RequestedActionType.CONFIRMATION_TAB)
 		save_images()
 	else:
-		var new_file_requested: bool = true if canvases[cc].get_requested_save_action() == RequestedActionType.NEW_BUTTON else false
+		var new_file_requested: bool = true if canvases[cc].get_requested_save_action() == Enums.RequestedActionType.NEW_BUTTON else false
 		save_file(path)
 		if show_load_dialog:
 			file_dialog_save.visible = false
@@ -868,7 +813,7 @@ func _on_load_button_pressed() -> void:
 
 
 func _on_load_file_confirmation_confirmed() -> void:
-	canvases[cc].set_requested_save_action(RequestedActionType.LOAD_BUTTON)
+	canvases[cc].set_requested_save_action(Enums.RequestedActionType.LOAD_BUTTON)
 	if canvases[cc].opened_file_path == "":
 		file_dialog_save.visible = true
 		# Delay showing load file dialog until after closing save file dialog: _on_file_dialog_save_file_selected()
@@ -902,9 +847,7 @@ func _on_show_priorities_toggled(toggled_on: bool) -> void:
 
 
 func _on_priority_filter_value_changed(value: float) -> void:
-	var filter = int(value)
-	canvases[cc].change_priority_filter(filter)
-	priority_filter_label.text = ("Priority: %s" % priority_filter_text[filter])
+	canvases[cc].change_priority_filter(int(value))
 
 
 func _on_show_priority_tool_toggled(toggled_on: bool) -> void:
@@ -912,8 +855,8 @@ func _on_show_priority_tool_toggled(toggled_on: bool) -> void:
 
 
 func _on_canvas_done_adding_elements() -> void:
-	tool_box.select(Tool.SELECT)
-	_on_tool_box_item_selected(Tool.SELECT)
+	tool_box.select(Enums.Tool.SELECT)
+	_on_tool_box_item_selected(Enums.Tool.SELECT)
 
 
 func _on_canvas_changed_zoom() -> void:
@@ -922,7 +865,7 @@ func _on_canvas_changed_zoom() -> void:
 	zoom_indicator.update_zoom(canvases[cc].scale.x)
 	pan_indicator_camera.update_zoom(canvases[cc].position, canvases[cc].scale.x)
 	drawing_manager.scale = canvases[cc].scale
-	if canvases[cc].app_mode == canvases[cc].AppMode.DRAWING:
+	if canvases[cc].settings.app_mode == Enums.AppMode.DRAWING:
 		change_drawing_tool_cursor()
 
 
@@ -1053,16 +996,6 @@ func _on_element_settings_preset_selected() -> void:
 			element_settings.toggle_none_preset_inputs(false)
 
 
-#func _on_canvas_selected_style_changed() -> void:
-	#if !canvases.has(cc):
-		#return
-	#if canvases[cc].selected_preset_style == "none":
-		#var selected_element: ElementLabel = get_selected_element()
-		#if selected_element != null:
-			#element_settings.none_preset = selected_element.individual_style
-	#element_settings.select_by_style_preset_id(canvases[cc].selected_preset_style)
-
-
 func _on_canvas_has_selected_element() -> void:
 	#print("Selected element %d" % get_selected_element().id)
 	if !canvases.has(cc):
@@ -1078,7 +1011,6 @@ func _on_canvas_has_selected_element() -> void:
 
 func _on_canvas_has_deselected_element() -> void:
 	element_settings.toggle_none_preset_inputs(false)
-	#print("Deselected element")
 
 
 func _on_element_settings_is_editing_text() -> void:
@@ -1127,10 +1059,10 @@ func _on_drawing_manager_forced_save_ended() -> void:
 	finish_saving_images_unlock_UI()
 
 
-func _on_drawing_tool_box_item_selected(index: DrawingSettings.DrawingTool) -> void:
+func _on_drawing_tool_box_item_selected(index: Enums.DrawingTool) -> void:
 	if !canvases.has(cc):
 		return
-	canvases[cc].drawing_settings.selected_tool = index as DrawingSettings.DrawingTool
+	canvases[cc].drawing_settings.selected_tool = index as Enums.DrawingTool
 	drawing_tool_bar.change_tool()
 	change_drawing_tool_cursor()
 
@@ -1140,9 +1072,9 @@ func _on_toggle_mode_toggled(toggled_on: bool) -> void:
 	if !canvases.has(cc):
 		return
 	if toggled_on:
-		canvases[cc].app_mode = canvases[cc].AppMode.DRAWING
+		canvases[cc].settings.app_mode = Enums.AppMode.DRAWING
 		canvases[cc].toggle_element_label_mouse_inputs(false)
-		canvases[cc].toggle_show_priority_tool(false)
+		canvases[cc].toggle_show_priority_tool(false, false)	# Hide priority tool popup while drawing
 		tool_box.visible = false
 		drawing_tool_box.visible = true
 		drawing_tool_bar.visible = true
@@ -1152,16 +1084,17 @@ func _on_toggle_mode_toggled(toggled_on: bool) -> void:
 		set_toggle_mode_button_tooltip("Change to Planning Mode")
 	else:
 		drawing_manager.end_stroke()
-		canvases[cc].app_mode = canvases[cc].AppMode.PLANNING
+		canvases[cc].settings.app_mode = Enums.AppMode.PLANNING
 		canvases[cc].toggle_element_label_mouse_inputs(true)
-		canvases[cc].toggle_show_priority_tool(settings_drawer.show_priority_tool.button_pressed)
+		# Restore priority tool popup enabled state
+		canvases[cc].toggle_show_priority_tool(canvases[cc].settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL], false)
 		tool_box.visible = true
 		drawing_tool_box.visible = false
 		drawing_tool_bar.visible = false
 		drawing_tool_bar.inputs_enabled = false
 		element_settings.toggle_style_presets(true)
-		tool_box.select(Tool.SELECT)
-		_on_tool_box_item_selected(Tool.SELECT)
+		tool_box.select(Enums.Tool.SELECT)
+		_on_tool_box_item_selected(Enums.Tool.SELECT)
 		change_accent_color(accent_color_planning)
 		set_toggle_mode_button_tooltip("Change to Drawing Mode")
 	change_drawing_tool_cursor()

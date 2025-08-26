@@ -1,16 +1,9 @@
 class_name DrawingSettings
-var selected_tool: DrawingTool = DrawingTool.PENCIL
+var selected_tool: Enums.DrawingTool = Enums.DrawingTool.PENCIL
 var pencil_settings: PencilSettings = PencilSettings.new()
 var brush_settings: BrushSettings = BrushSettings.new()
 var eraser_pencil_settings: EraserPencilSettings = EraserPencilSettings.new()
 var eraser_brush_settings: EraserBrushSettings = EraserBrushSettings.new()
-
-enum DrawingTool {
-	PENCIL,
-	BRUSH,
-	ERASER_PENCIL,
-	ERASER_BRUSH,
-}
 
 
 class PencilSettings:

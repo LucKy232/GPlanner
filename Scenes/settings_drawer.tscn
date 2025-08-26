@@ -325,4 +325,5 @@ libraries = {
 speed_scale = 1.25
 
 [connection signal="toggled" from="PanelContainer/HBoxContainer/Background/MarginContainer/Scroll/Settings/ShowPriorities" to="." method="_on_show_priorities_toggled"]
+[connection signal="value_changed" from="PanelContainer/HBoxContainer/Background/MarginContainer/Scroll/Settings/PriorityFilter" to="." method="_on_priority_filter_value_changed"]
 [connection signal="toggled" from="PanelContainer/HBoxContainer/ToggleDrawer" to="." method="_on_toggle_drawer_toggled"]
