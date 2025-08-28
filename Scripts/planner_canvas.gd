@@ -69,6 +69,7 @@ func _process(_delta: float) -> void:
 
 func new_canvas() -> void:
 	deselect_element()
+	get_viewport().size_changed.connect(_on_viewport_size_changed)
 	opened_file_path = ""
 	file_name_short = "New File"
 	position = -size * 0.5 + get_viewport_rect().size * 0.5	# Start from the center on New File
@@ -795,3 +796,8 @@ func _on_element_changed_priority(elem_id: int) -> void:
 
 func _on_connection_arrow_changed() -> void:
 	canvas_changed()
+
+
+func _on_viewport_size_changed() -> void:
+	position = pan_limits(position)
+	changed_position.emit()

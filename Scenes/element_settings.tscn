@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://cwbooma1lih12"]
+[gd_scene load_steps=19 format=3 uid="uid://cwbooma1lih12"]
 
 [ext_resource type="Script" uid="uid://jbprsvf8b31y" path="res://Scripts/element_settings.gd" id="1_5y8lb"]
 [ext_resource type="StyleBox" uid="uid://cdui0dgu3vdrr" path="res://Themes/element_background_style_box.tres" id="2_llryx"]
@@ -17,6 +17,7 @@
 [ext_resource type="Theme" uid="uid://bhx07jq36cjrb" path="res://Themes/option_button_theme.tres" id="8_vcnja"]
 [ext_resource type="Theme" uid="uid://baxthgpikfcos" path="res://Themes/color_picker_button_theme.tres" id="12_r7vyq"]
 [ext_resource type="Theme" uid="uid://cjbq8yvomvgbp" path="res://Themes/spin_box_elem_settings_theme.tres" id="13_nvup7"]
+[ext_resource type="Theme" uid="uid://c2dbtkfh88hkp" path="res://Themes/settings_category_toggle_button_theme.tres" id="15_rhtjl"]
 
 [node name="ElementSettings" type="Control"]
 z_index = 5
@@ -147,12 +148,12 @@ icon = ExtResource("5_0h7gu")
 text_overrun_behavior = 1
 icon_alignment = 1
 
-[node name="BackgroundTitleLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer"]
+[node name="BackgroundCategoryButton" type="Button" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("4_vcnja")
-theme_override_styles/normal = ExtResource("6_nvup7")
+theme = ExtResource("15_rhtjl")
+toggle_mode = true
+button_pressed = true
 text = "Background"
-horizontal_alignment = 1
 
 [node name="div2" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer" instance=ExtResource("2_qtb5q")]
 layout_mode = 2
@@ -173,12 +174,13 @@ size_flags_horizontal = 10
 mouse_default_cursor_shape = 2
 theme = ExtResource("12_r7vyq")
 
-[node name="FontTitleLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer"]
+[node name="FontCategoryButton" type="Button" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("4_vcnja")
+theme = ExtResource("15_rhtjl")
 theme_override_styles/normal = ExtResource("6_nvup7")
+toggle_mode = true
+button_pressed = true
 text = "Font"
-horizontal_alignment = 1
 
 [node name="div3" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer" instance=ExtResource("2_qtb5q")]
 layout_mode = 2
@@ -258,12 +260,13 @@ size_flags_horizontal = 10
 mouse_default_cursor_shape = 2
 theme = ExtResource("12_r7vyq")
 
-[node name="BorderTitleLabel" type="Label" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer"]
+[node name="BorderCategoryButton" type="Button" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
-theme = ExtResource("4_vcnja")
+theme = ExtResource("15_rhtjl")
 theme_override_styles/normal = ExtResource("6_nvup7")
+toggle_mode = true
+button_pressed = true
 text = "Border"
-horizontal_alignment = 1
 
 [node name="div4" parent="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer" instance=ExtResource("2_qtb5q")]
 layout_mode = 2
@@ -326,11 +329,14 @@ placeholder_text = "Name..."
 [connection signal="item_selected" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/PresetHBox/PresetOptions" to="." method="_on_preset_options_item_selected"]
 [connection signal="pressed" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/PresetHBox/AddPreset" to="." method="_on_add_preset_pressed"]
 [connection signal="pressed" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/PresetHBox/RemovePreset" to="." method="_on_remove_preset_pressed"]
+[connection signal="toggled" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BackgroundCategoryButton" to="." method="_on_background_category_button_toggled"]
 [connection signal="color_changed" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BackgroundColorHBox/BackgroundColorPickerButton" to="." method="_on_background_color_picker_button_color_changed"]
+[connection signal="toggled" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/FontCategoryButton" to="." method="_on_font_category_button_toggled"]
 [connection signal="value_changed" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/FontSizeHBox/FontSizeSpinBox" to="." method="_on_font_size_spin_box_value_changed"]
 [connection signal="color_changed" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/FontColorHBox/FontColorPickerButton" to="." method="_on_font_color_picker_button_color_changed"]
 [connection signal="value_changed" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/FontOutlineHBox/FontOutlineSpinBox" to="." method="_on_font_outline_spin_box_value_changed"]
 [connection signal="color_changed" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/OutlineColorHBox/FontOutlineColorPickerButton" to="." method="_on_font_outline_color_picker_button_color_changed"]
+[connection signal="toggled" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BorderCategoryButton" to="." method="_on_border_category_button_toggled"]
 [connection signal="value_changed" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BorderSizeHBox/BorderSizeSpinBox" to="." method="_on_border_size_spin_box_value_changed"]
 [connection signal="color_changed" from="VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BorderColorHBox/BorderColorPickerButton" to="." method="_on_border_color_picker_button_color_changed"]
 [connection signal="editing_toggled" from="VBoxContainer/SettingsPanel/NameInsert" to="." method="_on_name_insert_editing_toggled"]

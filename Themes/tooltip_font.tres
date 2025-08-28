@@ -9,3 +9,4 @@ fallbacks = Array[Font]([SubResource("SystemFont_qy3m5")])
 font_names = PackedStringArray("Tahoma", "Verdana", "Arial")
 font_weight = 550
 multichannel_signed_distance_field = true
+msdf_size = 96

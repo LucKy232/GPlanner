@@ -1462,7 +1462,7 @@
 		},
 		"EraserBrushSettings": {
 			"pressure": 0.1,
-			"size": 10.0
+			"size": 100.0
 		},
 		"EraserPencilSettings": {
 			"size": 0
@@ -1474,7 +1474,7 @@
 			"color.r": 1.0,
 			"size": 0
 		},
-		"SelectedTool": 0
+		"SelectedTool": 3
 	},
 	"Elements": {
 		"0": {
@@ -7305,15 +7305,15 @@
 	"State": {
 		"app_mode": 0,
 		"drawing_folder_path": "plannerplanner 2025-07-03T100205",
-		"position.x": -378.137115478516,
+		"position.x": -37.5783996582031,
 		"position.y": 0.0,
 		"priority_filter_value": 2,
-		"scale.x": 0.270028084516525,
-		"scale.y": 0.270028084516525,
+		"scale.x": 0.200000002980232,
+		"scale.y": 0.200000002980232,
 		"show_completed": false,
 		"show_priorities": true,
 		"show_priority_tool": false,
-		"zoom_level": 0.270028094409141
+		"zoom_level": 0.200000002980232
 	},
 	"StylePresets": {
 		"1": {

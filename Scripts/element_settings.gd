@@ -18,6 +18,14 @@ class_name ElementSettings
 @onready var name_insert: LineEdit = $VBoxContainer/SettingsPanel/NameInsert
 @onready var style_buttons: PresetStyleButtons = $VBoxContainer/StyleButtons
 @onready var current_preset_label: Label = $VBoxContainer/HBoxContainer/CurrentPresetLabel
+# For visibility toggle
+@onready var background_color_h_box: HBoxContainer = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BackgroundColorHBox
+@onready var font_size_h_box: HBoxContainer = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/FontSizeHBox
+@onready var font_color_h_box: HBoxContainer = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/FontColorHBox
+@onready var font_outline_h_box: HBoxContainer = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/FontOutlineHBox
+@onready var outline_color_h_box: HBoxContainer = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/OutlineColorHBox
+@onready var border_size_h_box: HBoxContainer = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BorderSizeHBox
+@onready var border_color_h_box: HBoxContainer = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BorderColorHBox
 
 var presets: Dictionary[int, ElementPresetStyle]	## KEY: preset_options selector ID (not preset ID like in planner_canvas.gd)
 var none_preset: ElementPresetStyle
@@ -391,3 +399,19 @@ func _on_name_insert_editing_toggled(toggled_on: bool) -> void:
 
 func _on_style_buttons_preset_style_button_pressed(idx: int) -> void:
 	change_preset(idx)
+
+
+func _on_background_category_button_toggled(toggled_on: bool) -> void:
+	background_color_h_box.visible = toggled_on
+
+
+func _on_font_category_button_toggled(toggled_on: bool) -> void:
+	font_size_h_box.visible = toggled_on
+	font_color_h_box.visible = toggled_on
+	font_outline_h_box.visible = toggled_on
+	outline_color_h_box.visible = toggled_on
+
+
+func _on_border_category_button_toggled(toggled_on: bool) -> void:
+	border_size_h_box.visible = toggled_on
+	border_color_h_box.visible = toggled_on
