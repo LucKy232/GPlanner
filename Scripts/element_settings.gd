@@ -1,36 +1,42 @@
 extends Control
 class_name ElementSettings
 
+@export_range(150.0, 800.0, 5.0) var max_height: float = 335.0
 @export var default_background_style_box: StyleBoxFlat
 @export var default_line_edit_theme: Theme
 @export var color_picker_theme: Theme
 @export var color_picker_panel_theme: Theme
 @export var div_theme: Theme
-@onready var preset_options: OptionButton = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/PresetHBox/PresetOptions
-@onready var background_color_picker_button: ColorPickerButton = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BackgroundColorHBox/BackgroundColorPickerButton
-@onready var font_size_spin_box: SpinBox = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/FontSizeHBox/FontSizeSpinBox
-@onready var font_color_picker_button: ColorPickerButton = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/FontColorHBox/FontColorPickerButton
-@onready var font_outline_spin_box: SpinBox = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/FontOutlineHBox/FontOutlineSpinBox
-@onready var font_outline_color_picker_button: ColorPickerButton = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/OutlineColorHBox/FontOutlineColorPickerButton
-@onready var border_size_spin_box: SpinBox = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BorderSizeHBox/BorderSizeSpinBox
-@onready var border_color_picker_button: ColorPickerButton = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BorderColorHBox/BorderColorPickerButton
-@onready var settings_panel: Panel = $VBoxContainer/SettingsPanel
-@onready var name_insert: LineEdit = $VBoxContainer/SettingsPanel/NameInsert
+
+@onready var preset_options: OptionButton = %PresetOptions
+@onready var background_color_picker_button: ColorPickerButton = %BackgroundColorPickerButton
+@onready var font_size_spin_box: SpinBox = %FontSizeSpinBox
+@onready var font_color_picker_button: ColorPickerButton = %FontColorPickerButton
+@onready var font_outline_spin_box: SpinBox = %FontOutlineSpinBox
+@onready var font_outline_color_picker_button: ColorPickerButton = %FontOutlineColorPickerButton
+@onready var border_size_spin_box: SpinBox = %BorderSizeSpinBox
+@onready var border_color_picker_button: ColorPickerButton = %BorderColorPickerButton
+@onready var name_insert: LineEdit = %NameInsert
+@onready var scroll_container: ScrollContainer = %ScrollContainer
+@onready var v_box_container: VBoxContainer = %VBoxContainer
+
+@onready var settings_panel: PanelContainer = $VBoxContainer/SettingsPanel
 @onready var style_buttons: PresetStyleButtons = $VBoxContainer/StyleButtons
 @onready var current_preset_label: Label = $VBoxContainer/HBoxContainer/CurrentPresetLabel
 # For visibility toggle
-@onready var background_color_h_box: HBoxContainer = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BackgroundColorHBox
-@onready var font_size_h_box: HBoxContainer = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/FontSizeHBox
-@onready var font_color_h_box: HBoxContainer = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/FontColorHBox
-@onready var font_outline_h_box: HBoxContainer = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/FontOutlineHBox
-@onready var outline_color_h_box: HBoxContainer = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/OutlineColorHBox
-@onready var border_size_h_box: HBoxContainer = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BorderSizeHBox
-@onready var border_color_h_box: HBoxContainer = $VBoxContainer/SettingsPanel/MarginContainer/VBoxContainer/BorderColorHBox
+@onready var background_color_h_box: HBoxContainer = %BackgroundColorHBox
+@onready var font_size_h_box: HBoxContainer = %FontSizeHBox
+@onready var font_color_h_box: HBoxContainer = %FontColorHBox
+@onready var font_outline_h_box: HBoxContainer = %FontOutlineHBox
+@onready var outline_color_h_box: HBoxContainer = %OutlineColorHBox
+@onready var border_size_h_box: HBoxContainer = %BorderSizeHBox
+@onready var border_color_h_box: HBoxContainer = %BorderColorHBox
 
 var presets: Dictionary[int, ElementPresetStyle]	## KEY: preset_options selector ID (not preset ID like in planner_canvas.gd)
 var none_preset: ElementPresetStyle
 var max_option_id: int = 1
 var is_user_input: bool = true
+var resize_scroll_container: bool = false
 
 signal preset_added
 signal preset_changed
@@ -227,7 +233,7 @@ func toggle_style_presets(toggled_on: bool) -> void:
 
 
 func set_accent_color(c: Color) -> void:
-	settings_panel.theme.get_stylebox("panel", "Panel").border_color = c
+	settings_panel.theme.get_stylebox("panel", "PanelContainer").border_color = c
 	div_theme.get_stylebox("panel", "Panel").color = Color(c.r, c.g, c.b, 0.7)
 
 
@@ -403,6 +409,7 @@ func _on_style_buttons_preset_style_button_pressed(idx: int) -> void:
 
 func _on_background_category_button_toggled(toggled_on: bool) -> void:
 	background_color_h_box.visible = toggled_on
+	resize_scroll_container = true
 
 
 func _on_font_category_button_toggled(toggled_on: bool) -> void:
@@ -410,8 +417,18 @@ func _on_font_category_button_toggled(toggled_on: bool) -> void:
 	font_color_h_box.visible = toggled_on
 	font_outline_h_box.visible = toggled_on
 	outline_color_h_box.visible = toggled_on
+	resize_scroll_container = true
 
 
 func _on_border_category_button_toggled(toggled_on: bool) -> void:
 	border_size_h_box.visible = toggled_on
 	border_color_h_box.visible = toggled_on
+	resize_scroll_container = true
+
+
+# Need to change other container sizes after the size change occured
+func _on_v_box_container_resized() -> void:
+	if v_box_container:
+		scroll_container.size.y = clampf(v_box_container.size.y + 20.0, 0.0, max_height)
+		settings_panel.size.y = clampf(v_box_container.size.y + 20.0 + 4.0, 0.0, max_height + 4.0)
+		resize_scroll_container = false

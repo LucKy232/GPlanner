@@ -65,6 +65,10 @@ func _process(_delta: float) -> void:
 	if !Input.is_key_pressed(KEY_CTRL) and is_adding_elements:
 		is_adding_elements = false
 		done_adding_elements.emit()
+	if Input.is_action_just_pressed("draw_straight"):
+		drawing_settings.toggle_draw_straight(true)
+	if Input.is_action_just_released("draw_straight"):
+		drawing_settings.toggle_draw_straight(false)
 
 
 func new_canvas() -> void:
@@ -679,21 +683,30 @@ func _on_gui_input(event: InputEvent) -> void:
 			is_adding_elements = true
 	
 	if settings.app_mode == Enums.AppMode.DRAWING:
+		# Start drawing
 		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed() and !is_color_picker_visible:
 			is_drawing = true
 			last_draw_event_position = event.position * scale + position
 			drawing_manager.resize_to_window()
 			drawing_manager.update_drawing_position_and_scale(-position, scale)
 			drawing_manager.receive_coords(last_draw_event_position, last_draw_event_position, drawing_settings, last_pressure_event)
+		# End drawing
 		elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_released() and is_drawing:
 			is_drawing = false
 			last_draw_event_position = Vector2.ZERO
+			if drawing_settings.drawing_straight:
+				drawing_settings.direction = drawing_settings.Direction.NONE
 			drawing_manager.end_stroke()
+		# Continue drawing
 		if event is InputEventMouseMotion and is_drawing:
-			drawings_changed()
 			var currrent_draw_event_position: Vector2 = event.position * scale + position
+			if drawing_settings.drawing_straight:
+				if drawing_settings.direction == drawing_settings.Direction.NONE:
+					drawing_settings.find_direction(last_draw_event_position, currrent_draw_event_position)
+				currrent_draw_event_position = drawing_settings.get_next_straight_point(currrent_draw_event_position)
 			drawing_manager.receive_coords(last_draw_event_position, currrent_draw_event_position, drawing_settings, last_pressure_event)
 			last_draw_event_position = currrent_draw_event_position
+			drawings_changed()
 
 
 func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:

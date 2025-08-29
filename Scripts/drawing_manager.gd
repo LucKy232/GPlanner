@@ -177,7 +177,8 @@ func redo_drawing_action() -> bool:
 
 
 func resize_to_window() -> void:
-	canvas_groups[current_canvas].resize(get_viewport_rect().size)
+	if canvas_groups.has(current_canvas):		# False at startup
+		canvas_groups[current_canvas].resize(get_viewport_rect().size)
 
 
 func drawing_region_paths_to_json() -> Dictionary:

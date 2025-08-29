@@ -453,6 +453,7 @@ func load_file(path: String, app_startup: bool = false) -> void:
 	_on_canvas_changed_zoom()
 
 
+# NOTE Also saves window state, will eventually save more global settings (independent of files) and get renamed
 func save_opened_file_paths_and_quit(path: String) -> void:
 	var file = FileAccess.open("user://" + path, FileAccess.WRITE)
 	var save_data: Dictionary
@@ -468,6 +469,7 @@ func save_opened_file_paths_and_quit(path: String) -> void:
 	# Canvas IDs will change at startup, aren't consistent between sessions because they aren't saved
 	# Tabs will be in the range [0 ~ tabs-1] and so will canvas IDs corresponding 1:1 with tabs (until a tab gets closed, but tab_to_canvas dictionary will be accurate)
 	save_data["CurrentID"] = file_tab_bar.current_tab
+	save_data["WindowState"] = get_window_state_json()
 	
 	file.store_string(JSON.stringify(save_data, "\t"))
 	file.close()
@@ -490,6 +492,8 @@ func load_opened_file_paths(path: String) -> void:
 			return
 		else:
 			var files = data["OpenedFiles"]
+			if data.has("WindowState"):
+				restore_window_state(data["WindowState"])
 			for f in files:
 				if files[f] != "":
 					_on_add_file_button_pressed()	# new_file(), new tab, switch tab -> switch_main_canvas()
@@ -517,6 +521,37 @@ func load_opened_file_paths(path: String) -> void:
 		var save_data: Dictionary = { 0: "" }
 		file.store_string(JSON.stringify(save_data, "\t"))
 		file.close()
+
+
+func get_window_state_json() -> Dictionary:
+	var dict: Dictionary
+	var win_position: Vector2i = DisplayServer.window_get_position()
+	var win_size: Vector2i = DisplayServer.window_get_size()
+	dict["current_screen"] = DisplayServer.window_get_current_screen()
+	dict["window_position_x"] = win_position.x
+	dict["window_position_y"] = win_position.y
+	dict["window_size_x"] = win_size.x
+	dict["window_size_y"] = win_size.y
+	dict["window_mode"] = get_window().mode
+	return dict
+
+
+func restore_window_state(dict: Dictionary) -> void:
+	var screen: int = dict["current_screen"]
+	var win: Window = get_window()
+	var win_mode: Window.Mode = dict["window_mode"] as Window.Mode
+	
+	DisplayServer.window_set_current_screen(screen)
+	if win_mode == Window.MODE_MAXIMIZED:
+		win.mode = Window.MODE_MAXIMIZED
+	elif win_mode == Window.MODE_FULLSCREEN:
+		win.mode = Window.MODE_FULLSCREEN
+	elif win_mode == Window.MODE_WINDOWED:
+		var win_position: Vector2i = Vector2i(dict["window_position_x"], dict["window_position_y"])
+		var win_size: Vector2i = Vector2i(dict["window_size_x"], dict["window_size_y"])
+		win.mode = Window.MODE_WINDOWED
+		win.position = win_position
+		win.size = win_size
 
 
 func close_tab(tab: int) -> void:

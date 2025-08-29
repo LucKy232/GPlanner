@@ -854,9 +854,9 @@
 			"color.b": 0.99609375,
 			"color.g": 0.99609375,
 			"color.r": 0.99609375,
-			"size": 2
+			"size": 0
 		},
-		"SelectedTool": 3
+		"SelectedTool": 0
 	},
 	"Elements": {
 		"0": {
@@ -2560,7 +2560,7 @@
 			"pos.x": 6055.72021484375,
 			"pos.y": 4749.208984375,
 			"priority_id": 4,
-			"size.x": 238.87158203125,
+			"size.x": 502.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Files with changes, with file path, without drawing"
@@ -2691,7 +2691,7 @@
 			"pos.x": 7432.42724609375,
 			"pos.y": 4769.3212890625,
 			"priority_id": 4,
-			"size.x": 64.0,
+			"size.x": 137.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T21:21:30 1480013",
 			"text": "has changes "
@@ -2751,7 +2751,7 @@
 			"pos.x": 7299.611328125,
 			"pos.y": 5017.45263671875,
 			"priority_id": 4,
-			"size.x": 249.0,
+			"size.x": 426.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T21:21:30 1480013",
 			"text": "Finish saving drawings, execute queued action "
@@ -2994,15 +2994,15 @@
 	"State": {
 		"app_mode": 0,
 		"drawing_folder_path": "documentation 2025-06-18T095107",
-		"position.x": -3753.72192382813,
-		"position.y": -2940.44384765625,
+		"position.x": -2604.88159179688,
+		"position.y": -1575.2197265625,
 		"priority_filter_value": 4,
-		"scale.x": 0.690033793449402,
-		"scale.y": 0.690033793449402,
+		"scale.x": 0.314560115337372,
+		"scale.y": 0.314560115337372,
 		"show_completed": false,
 		"show_priorities": true,
 		"show_priority_tool": false,
-		"zoom_level": 0.690033803452026
+		"zoom_level": 0.314560114226526
 	},
 	"StylePresets": {
 		"1": {
