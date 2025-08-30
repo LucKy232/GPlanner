@@ -384,12 +384,13 @@ func save_file(path: String) -> void:
 	
 	var success: bool = file.store_string(JSON.stringify(save_data, "\t"))
 	if success:
+		#status_bar.call_deferred("update_status", str("File saved to path: %s" % path), Color(0.3, 0.55, 0.3, 0.5))
 		status_bar.update_status("File saved to path: %s" % path, Color(0.3, 0.55, 0.3, 0.5))
 		#DisplayServer.window_set_title("GPlanner %s: %s" % [app_version, path])
 		get_tree().root.title = ("GPlanner %s: %s" % [app_version, path])
 		# If drawing in the time between saving the images and saving the file
 		if !drawing_manager.canvas_drawing_group_has_changes(cc):
-			canvases[cc].reset_save_state()
+			canvases[cc].reset_save_state(true)
 		set_tab_name_and_title_from_canvas(cc)
 		print("Saved %s" % path)
 	else:
@@ -598,7 +599,7 @@ func confirmation_tab_save(tab: int) -> void:
 func execute_file_action(act: Enums.RequestedActionType) -> void:
 	match act:
 		Enums.RequestedActionType.NEW_BUTTON:
-			canvases[cc].reset_save_state()
+			canvases[cc].reset_save_state(true)
 			_on_new_button_pressed()
 		Enums.RequestedActionType.LOAD_BUTTON:
 			_on_load_button_pressed()

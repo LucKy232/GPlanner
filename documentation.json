@@ -830,8 +830,12 @@
 		}
 	},
 	"DrawingRegions": {
+		"09-05": "user://documentation 2025-06-18T095107/09-05.png",
+		"09-06": "user://documentation 2025-06-18T095107/09-06.png",
 		"10-05": "user://documentation 2025-06-18T095107/10-05.png",
-		"10-06": "user://documentation 2025-06-18T095107/10-06.png"
+		"10-06": "user://documentation 2025-06-18T095107/10-06.png",
+		"11-05": "user://documentation 2025-06-18T095107/11-05.png",
+		"11-06": "user://documentation 2025-06-18T095107/11-06.png"
 	},
 	"DrawingSettings": {
 		"BrushSettings": {
@@ -2992,10 +2996,10 @@
 		}
 	},
 	"State": {
-		"app_mode": 0,
+		"app_mode": 1,
 		"drawing_folder_path": "documentation 2025-06-18T095107",
-		"position.x": -2604.88159179688,
-		"position.y": -1575.2197265625,
+		"position.x": -2922.88134765625,
+		"position.y": -1541.21984863281,
 		"priority_filter_value": 4,
 		"scale.x": 0.314560115337372,
 		"scale.y": 0.314560115337372,

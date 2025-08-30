@@ -157,10 +157,12 @@ func get_file_name_short() -> String:
 		return file_name_short
 
 
-func reset_save_state() -> void:
+func reset_save_state(is_already_loaded: bool = false) -> void:
 	canvas_changed(true)
 	drawings_changed(true)
 	save_state = SaveState.new()
+	if is_already_loaded:
+		save_state.is_loaded = true
 
 
 func update_all_style_presets(dict: Dictionary[int, ElementPresetStyle]) -> void:
@@ -685,6 +687,7 @@ func _on_gui_input(event: InputEvent) -> void:
 	if settings.app_mode == Enums.AppMode.DRAWING:
 		# Start drawing
 		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed() and !is_color_picker_visible:
+			drawings_changed()
 			is_drawing = true
 			last_draw_event_position = event.position * scale + position
 			drawing_manager.resize_to_window()
@@ -706,7 +709,6 @@ func _on_gui_input(event: InputEvent) -> void:
 				currrent_draw_event_position = drawing_settings.get_next_straight_point(currrent_draw_event_position)
 			drawing_manager.receive_coords(last_draw_event_position, currrent_draw_event_position, drawing_settings, last_pressure_event)
 			last_draw_event_position = currrent_draw_event_position
-			drawings_changed()
 
 
 func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:

@@ -36,6 +36,7 @@ var used_overflow_data_kb: float = 0.0	## Counts the image sizes of past_actions
 var image_load_tasks: Dictionary[int, Vector2i]			## Used to check if the task is finished to then render the texture (can only be done on main thread).
 var regions_being_loaded: Dictionary[Vector2i, bool]	## Bool not used, just searching the hash map to not cycle trough all regions or use array search.
 var active_brush_shader: ShaderMaterial					## The material of the current_stroke
+var complete_json_image_data: Dictionary
 
 ## Emits when 75% of FORCE_SAVE_REQUEST_KB_LIMIT is reached to inform the user that they should save.
 signal force_save_message
@@ -375,12 +376,12 @@ func update_drawing_position_and_scale(pos: Vector2, scl: Vector2) -> void:
 	brush_draw_viewport_container.position = pos * Vector2(new_scale_x, new_scale_y)
 
 
-func drawing_region_paths_to_json() -> Dictionary:
-	var dict: Dictionary = {}
-	for r in regions:
-		if !regions[r].is_invisible:
-			dict["%02d-%02d"%[r.x, r.y]] = "user://%s/%02d-%02d.png" % [folder_path, r.x, r.y]
-	return dict
+#func drawing_region_paths_to_json() -> Dictionary:
+	#var dict: Dictionary = {}
+	#for r in regions:
+		#if !regions[r].is_invisible:
+			#dict["%02d-%02d"%[r.x, r.y]] = "user://%s/%02d-%02d.png" % [folder_path, r.x, r.y]
+	#return dict
 
 
 func save_all_regions_to_disk() -> void:
@@ -392,7 +393,6 @@ func save_all_regions_to_disk() -> void:
 	for r in regions:
 		if regions[r].prepare_image_to_save():
 			regions_to_save.append(r)
-	#print("SAVE # %d" % regions_to_save.size())
 	for save_r in regions_to_save:
 		var image_path: String = "user://%s/%02d-%02d.png" % [folder_path, save_r.x, save_r.y]
 		regions[save_r].save_image(image_path)
@@ -420,7 +420,48 @@ func save_all_regions_to_disk() -> void:
 	for r in to_remove:
 		regions[r].queue_free()
 		regions.erase(r)
-	print("Saved %d images" % saved_num)
+
+
+func save_all_images_to_json() -> void:
+	#var timer: Stopwatch = Stopwatch.new("Saving .json in: ")
+	var dict: Dictionary
+	var regions_to_save: Array[Vector2i]
+	
+	#call_deferred("emit_signal", "saving_images_to_disk", "Preparing to save image data")
+	saving_images_to_disk.emit("Preparing to save image data")
+	for r in regions:
+		# Has changes, not invisible
+		if regions[r].prepare_image_to_save():
+			regions_to_save.append(r)
+		# if old data exists but doesn't have changes also write it
+		elif regions[r].serialized_data != "":
+			dict["%02d-%02d"%[r.x, r.y]] = regions[r].serialized_data
+	
+	var saved_num: int = 0
+	for r in regions_to_save:
+		var imgdata: PackedByteArray = regions[r].image.save_png_to_buffer()
+		dict["%02d-%02d"%[r.x, r.y]] = Marshalls.raw_to_base64(imgdata)
+		saved_num += 1
+		saving_images_to_disk.emit(str("Saving images to disk: %d / %d" % [saved_num, regions_to_save.size()]))
+		print(saved_num)	# TODO this happens all at the same time
+		#call_deferred("emit_signal", "saving_images_to_disk", "Saving images to disk: %d / %d" % [saved_num, regions_to_save.size()])
+	
+	# If images get fully erased, they don't get saved in place of the old one,
+	# The old image needs to be deleted because it is outdated
+	var to_remove: Array[Vector2i] = []
+	for r in regions:
+		var remove_region: bool = false
+		if regions[r].image.is_invisible() and regions[r].has_changes:
+			regions[r].is_invisible = true
+			regions[r].has_changes = false
+			regions[r].is_loaded = false
+			regions[r].file_path = ""
+			remove_region = true
+		regions[r].free_image()
+		if remove_region:
+			to_remove.append(r)
+	complete_json_image_data = dict
+	#timer.stop()
 
 
 func unload_all_drawing_regions_with_path() -> void:
@@ -440,6 +481,15 @@ func reload_all_drawing_regions_from_path() -> bool:
 	return true
 
 
+func rebuild_images_from_json(dict: Dictionary) -> void:
+	for key in dict:
+		var reg_v2i: Vector2i = Vector2i(int(key.get_slice("-", 0)), int(key.get_slice("-", 1)))
+		var image_data: String = dict[key]
+		add_drawing_region(reg_v2i)
+		regions[reg_v2i].serialized_data = image_data
+		regions[reg_v2i].load_from_data()
+
+
 func rebuild_file_paths_from_json(dict: Dictionary) -> void:
 	for key in dict:
 		var reg_v2i: Vector2i = Vector2i(int(key.get_slice("-", 0)), int(key.get_slice("-", 1)))
@@ -451,17 +501,17 @@ func rebuild_file_paths_from_json(dict: Dictionary) -> void:
 			printerr("Drawing region (%d, %d) image file doesn't exist, check user:// folder or JSON save file" % [reg_v2i.x, reg_v2i.y])
 
 
-func rebuild_from_json(dict: Dictionary) -> void:
-	for key in dict:
-		var reg_v2i: Vector2i = Vector2i(int(key.get_slice("-", 0)), int(key.get_slice("-", 1)))
-		var image_path: String = dict[key]
-		if FileAccess.file_exists(image_path):
-			var image: Image = Image.load_from_file(image_path)
-			add_drawing_region(reg_v2i)
-			regions[reg_v2i].update_from_image(image, false)
-			regions[reg_v2i].file_path = image_path
-		else:
-			printerr("Drawing region (%d, %d) image file doesn't exist, check user:// folder or JSON save file" % [reg_v2i.x, reg_v2i.y])
+#func rebuild_from_json(dict: Dictionary) -> void:
+	#for key in dict:
+		#var reg_v2i: Vector2i = Vector2i(int(key.get_slice("-", 0)), int(key.get_slice("-", 1)))
+		#var image_path: String = dict[key]
+		#if FileAccess.file_exists(image_path):
+			#var image: Image = Image.load_from_file(image_path)
+			#add_drawing_region(reg_v2i)
+			# regions[reg_v2i].update_from_image(image, false)
+			# regions[reg_v2i].file_path = image_path
+		#else:
+			#printerr("Drawing region (%d, %d) image file doesn't exist, check user:// folder or JSON save file" % [reg_v2i.x, reg_v2i.y])
 
 
 func resize(s: Vector2) -> void:

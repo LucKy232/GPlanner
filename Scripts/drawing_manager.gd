@@ -117,7 +117,8 @@ func next_screenshot() -> void:
 	else:
 		if save_type == SaveType.NORMAL:
 			end_screenshot_sequence()
-			save_all_images_to_disk()
+			#save_all_images_to_folder_threaded()
+			save_all_images_to_json()
 		elif save_type == SaveType.FORCED:
 			end_screenshot_sequence()
 
@@ -146,7 +147,12 @@ func end_screenshot_sequence() -> void:
 	greyout_panel.visible = false
 
 
-func save_all_images_to_disk() -> void:
+func save_all_images_to_json() -> void:
+	canvas_groups[current_canvas].save_all_images_to_json()
+	finished_saving.emit()
+
+
+func save_all_images_to_folder_threaded() -> void:
 	if save_thread.is_alive():
 		printerr("Trying to save 2 file's images to disk at the same time!")
 		return
@@ -182,12 +188,14 @@ func resize_to_window() -> void:
 
 
 func drawing_region_paths_to_json() -> Dictionary:
-	return canvas_groups[current_canvas].drawing_region_paths_to_json()
+	return canvas_groups[current_canvas].complete_json_image_data			# Save in .json
+	#return canvas_groups[current_canvas].drawing_region_paths_to_json()	# Save images in folder individually
 
 
 func rebuild_paths_from_json(canvas_id: int, dict: Dictionary) -> void:
 	if canvas_groups.has(canvas_id):
-		canvas_groups[canvas_id].rebuild_file_paths_from_json(dict)
+		#canvas_groups[canvas_id].rebuild_file_paths_from_json(dict)		# Load images from folder
+		canvas_groups[canvas_id].rebuild_images_from_json(dict)				# Load images from .json
 
 
 # Called before starting to draw a new current_stroke (from planner_canvas.gd)
@@ -222,7 +230,6 @@ func add_canvas_drawing_group(canvas_id: int) -> void:
 	add_child(new_group)
 	new_group.temp_drawing_action_scene = temp_drawing_action_scene
 	new_group.drawing_region_scene = drawing_region_scene
-	#new_group.save_request.connect(_on_canvas_drawing_group_save_request.bind(canvas_id))
 	new_group.force_save_request.connect(_on_canvas_drawing_group_force_save_request)
 	new_group.saving_images_to_disk.connect(_on_canvas_drawing_group_saving_images)
 	new_group.force_save_message.connect(_on_canvas_drawing_group_force_save_message)

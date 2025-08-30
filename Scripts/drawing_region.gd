@@ -6,6 +6,7 @@ var has_changes: bool = false		## Used to check which images to save to disk
 var is_invisible: bool = true		## Used to check which image paths to save
 var is_loaded: bool = false
 var file_path: String = ""			## Set on file load from .json or on save CanvasDrawingGroup:save_all_regions_to_disk()
+var serialized_data: String = ""	## Set on file load from .json
 
 
 func update_from_image(img: Image, changes: bool = true) -> void:
@@ -60,6 +61,14 @@ func unload() -> void:
 
 func load_from_path() -> void:
 	image = Image.load_from_file(file_path)
+
+
+func load_from_data() -> void:
+	#print(.decompress(serialized_data))
+	var raw: PackedByteArray = Marshalls.base64_to_raw(serialized_data)
+	image = Image.new()
+	image.load_png_from_buffer(raw)
+	update_from_image(image, false)
 
 
 func redraw_existing_image() -> void:

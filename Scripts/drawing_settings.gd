@@ -39,7 +39,7 @@ class PencilSettings:
 
 
 class BrushSettings:
-	var size_limits: Vector2 = Vector2(1.4, 200.0)
+	var size_limits: Vector2 = Vector2(1.4, 1000.0)
 	var size: float = 10.0:
 		get:
 			return clampf(size, size_limits.x, size_limits.y)
