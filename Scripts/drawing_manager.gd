@@ -26,6 +26,7 @@ var initial_scale: Vector2 = Vector2(1.0, 1.0)
 var save_thread: Thread = Thread.new()
 var save_thread_running: bool = false
 var save_type: SaveType
+var save_method: SaveMethod = SaveMethod.DIRECT_JSON
 
 signal finished_saving		## Unlocks the UI in main.gd, emitted from _process() if save_thread is running
 signal requested_status_message
@@ -37,6 +38,11 @@ enum SaveType {
 	FORCED,		# Immediately, move 50% of the past actions to past_overflow_actions, screenshot every region with an overflow action, don't save to disk
 	STOPPED,	# Is not saving
 	#PARTIAL,	# unused; On tool change, screenshot every region with an overflow action, don't save to disk
+}
+enum SaveMethod {
+	USER_FOLDER,
+	DIRECT_JSON,
+	#SECOND_FILE,
 }
 
 
@@ -117,8 +123,10 @@ func next_screenshot() -> void:
 	else:
 		if save_type == SaveType.NORMAL:
 			end_screenshot_sequence()
-			#save_all_images_to_folder_threaded()
-			save_all_images_to_json()
+			if save_method == SaveMethod.USER_FOLDER:
+				save_all_images_to_folder_threaded()
+			elif save_method == SaveMethod.DIRECT_JSON:
+				save_all_images_to_json_threaded()
 		elif save_type == SaveType.FORCED:
 			end_screenshot_sequence()
 
@@ -152,11 +160,19 @@ func save_all_images_to_json() -> void:
 	finished_saving.emit()
 
 
+func save_all_images_to_json_threaded() -> void:
+	if save_thread.is_alive():
+		printerr("Trying to save 2 file's images to disk at the same time!")
+		return
+	save_thread.start(canvas_groups[current_canvas].save_all_images_to_json)
+	save_thread_running = true
+
+
 func save_all_images_to_folder_threaded() -> void:
 	if save_thread.is_alive():
 		printerr("Trying to save 2 file's images to disk at the same time!")
 		return
-	save_thread.start(canvas_groups[current_canvas].save_all_regions_to_disk)
+	save_thread.start(canvas_groups[current_canvas].save_all_images_to_folder)
 	save_thread_running = true
 
 
@@ -187,15 +203,22 @@ func resize_to_window() -> void:
 		canvas_groups[current_canvas].resize(get_viewport_rect().size)
 
 
-func drawing_region_paths_to_json() -> Dictionary:
-	return canvas_groups[current_canvas].complete_json_image_data			# Save in .json
-	#return canvas_groups[current_canvas].drawing_region_paths_to_json()	# Save images in folder individually
+func drawing_region_data_to_json() -> Dictionary:
+	if save_method == SaveMethod.USER_FOLDER:
+		return canvas_groups[current_canvas].drawing_region_paths_to_json()
+	elif save_method == SaveMethod.DIRECT_JSON:
+		return canvas_groups[current_canvas].complete_json_image_data
+	else:
+		printerr("Bad SaveMethod")
+		return {}
 
 
 func rebuild_paths_from_json(canvas_id: int, dict: Dictionary) -> void:
 	if canvas_groups.has(canvas_id):
-		#canvas_groups[canvas_id].rebuild_file_paths_from_json(dict)		# Load images from folder
-		canvas_groups[canvas_id].rebuild_images_from_json(dict)				# Load images from .json
+		if save_method == SaveMethod.USER_FOLDER:
+			canvas_groups[canvas_id].rebuild_file_paths_from_json(dict)		# Load image paths from folder
+		elif save_method == SaveMethod.DIRECT_JSON:
+			canvas_groups[canvas_id].rebuild_images_from_json(dict)				# Load images from .json
 
 
 # Called before starting to draw a new current_stroke (from planner_canvas.gd)
@@ -254,12 +277,18 @@ func change_active_canvas_drawing_group(canvas_id: int) -> void:
 	if current_canvas == canvas_id:
 		return
 	if canvas_groups.has(current_canvas):
-		canvas_groups[current_canvas].unload_all_drawing_regions_with_path()
+		if save_method == SaveMethod.USER_FOLDER:
+			canvas_groups[current_canvas].unload_all_drawing_regions_with_path()
+		elif save_method == SaveMethod.DIRECT_JSON:
+			canvas_groups[current_canvas].unload_all_drawing_regions_with_data()
 		canvas_groups[current_canvas].visible = false
 	if canvas_groups.has(canvas_id):
 		current_canvas = canvas_id
 		canvas_groups[canvas_id].visible = true
-		canvas_groups[canvas_id].reload_all_drawing_regions_from_path()
+		if save_method == SaveMethod.USER_FOLDER:
+			canvas_groups[canvas_id].reload_all_drawing_regions_from_path()
+		elif save_method == SaveMethod.DIRECT_JSON:
+			canvas_groups[canvas_id].reload_all_drawing_regions_from_data()
 	else:
 		printerr("Given canvas ID %d doesn't exist in DrawingManager! (change_active_canvas_drawing_group())" % canvas_id)
 		current_canvas = -1
@@ -268,7 +297,10 @@ func change_active_canvas_drawing_group(canvas_id: int) -> void:
 func reload_all_drawing_regions(canvas_id: int) -> void:
 	if !canvas_groups.has(canvas_id):
 		return
-	canvas_groups[canvas_id].reload_all_drawing_regions_from_path()
+	if save_method == SaveMethod.USER_FOLDER:
+		canvas_groups[canvas_id].reload_all_drawing_regions_from_path()
+	elif save_method == SaveMethod.DIRECT_JSON:
+		canvas_groups[canvas_id].reload_all_drawing_regions_from_data()
 
 
 func _on_canvas_drawing_group_force_save_request() -> void:
@@ -283,7 +315,3 @@ func _on_canvas_drawing_group_saving_images(message: String) -> void:
 
 func _on_canvas_drawing_group_force_save_message(message: String) -> void:
 	requested_status_message.emit(message)
-
-
-#func _on_item_rect_changed() -> void:
-#	print("MOVED", get_rect().position)

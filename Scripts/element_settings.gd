@@ -1,7 +1,8 @@
 extends Control
 class_name ElementSettings
 
-@export_range(150.0, 800.0, 5.0) var max_height: float = 335.0
+@export_range(150.0, 800.0, 5.0) var MAX_HEIGHT_SETTINGS: float = 335.0
+@export_range(150.0, 1000.0, 5.0) var MAX_HEIGHT_ALL: float = 490.0
 @export var default_background_style_box: StyleBoxFlat
 @export var default_line_edit_theme: Theme
 @export var color_picker_theme: Theme
@@ -429,6 +430,7 @@ func _on_border_category_button_toggled(toggled_on: bool) -> void:
 # Need to change other container sizes after the size change occured
 func _on_v_box_container_resized() -> void:
 	if v_box_container:
-		scroll_container.size.y = clampf(v_box_container.size.y + 20.0, 0.0, max_height)
-		settings_panel.size.y = clampf(v_box_container.size.y + 20.0 + 4.0, 0.0, max_height + 4.0)
+		scroll_container.size.y = clampf(v_box_container.size.y + 20.0, 0.0, MAX_HEIGHT_SETTINGS)
+		settings_panel.size.y = clampf(v_box_container.size.y + 20.0 + 4.0, 0.0, MAX_HEIGHT_SETTINGS + 4.0)
+		custom_minimum_size.y = clampf(v_box_container.size.y + 20.0 + 4.0 + 151.0, 350.0, MAX_HEIGHT_ALL)
 		resize_scroll_container = false

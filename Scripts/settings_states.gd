@@ -9,3 +9,4 @@ func _init() -> void:
 	checkbox_data.resize(Enums.Checkbox.size())
 	for i in Enums.Checkbox.size():
 		checkbox_data[i] = false
+	priority_filter_value = Enums.Priority.NONE

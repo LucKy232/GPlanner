@@ -47,7 +47,7 @@ var is_editing_preset_name: bool = false
 var is_saving_images: bool = false
 var app_version: String = ""
 var canvases: Dictionary[int, PlannerCanvas]
-var tab_to_canvas: Dictionary[int, int]
+var tab_to_canvas: Dictionary[int, int]		## KEY tab ID, VALUE PlannerCanvas ID 
 var cc: int = -1		## Current Canvas ID
 var max_canvas_id: int = 0
 var show_load_dialog: bool = false
@@ -94,7 +94,7 @@ func _process(_delta):
 	else:
 		is_editing_element_text = false
 	if use_mouse_cursor_big_brush():
-		cursor_big_brush.position = get_viewport().get_mouse_position() - cursor_big_brush.size * 0.5
+		cursor_big_brush.position = get_local_mouse_position() - cursor_big_brush.size * 0.5
 	if Input.is_action_just_pressed("fullscreen_borderless") and !is_saving_images:
 		toggle_borderless_window()
 	if Input.is_action_just_pressed("exit_fullscreen_borderless") and get_window().mode == Window.MODE_FULLSCREEN and !is_saving_images:
@@ -311,10 +311,13 @@ func new_file(add_canvas: bool) -> int:
 		new_canvas.zoom_speed = zoom_speed
 		drawing_manager.add_canvas_drawing_group(new_canvas.id)
 		new_canvas.drawing_manager = drawing_manager
+		new_canvas.save_state.is_loaded = true
 	elif canvases.has(cc):
 		new_canvas = canvases[cc]
 		new_canvas.erase_everything()
 		drawing_manager.clear_canvas_drawing_group(cc)
+		_on_toggle_mode_toggled(false)
+		toggle_mode_button.set_pressed_no_signal(false)
 	else:
 		return -1
 	
@@ -378,7 +381,7 @@ func save_file(path: String) -> void:
 		"StylePresets": canvases[cc].all_presets_to_json(),
 		"Elements": canvases[cc].all_elements_to_Json(),
 		"Connections": canvases[cc].all_connection_pairs_to_json(),
-		"DrawingRegions": drawing_manager.drawing_region_paths_to_json(),
+		"DrawingRegions": drawing_manager.drawing_region_data_to_json(),
 		"DrawingSettings": canvases[cc].drawing_settings.to_json(),
 	}
 	
@@ -469,12 +472,20 @@ func save_opened_file_paths_and_quit(path: String) -> void:
 	save_data["OpenedFiles"] = opened_files
 	# Canvas IDs will change at startup, aren't consistent between sessions because they aren't saved
 	# Tabs will be in the range [0 ~ tabs-1] and so will canvas IDs corresponding 1:1 with tabs (until a tab gets closed, but tab_to_canvas dictionary will be accurate)
-	save_data["CurrentID"] = file_tab_bar.current_tab
+	save_data["CurrentID"] = find_valid_tab()
 	save_data["WindowState"] = get_window_state_json()
 	
 	file.store_string(JSON.stringify(save_data, "\t"))
 	file.close()
 	get_tree().quit()
+
+
+# Checks if tab selected at exit is not a saved file
+# Now returning first tab - will always be valid, can select last valid tab instead
+func find_valid_tab() -> int:
+	if canvases[tab_to_canvas[file_tab_bar.current_tab]].opened_file_path != "":
+		return file_tab_bar.current_tab
+	return 0
 
 
 func load_opened_file_paths(path: String) -> void:
@@ -499,6 +510,8 @@ func load_opened_file_paths(path: String) -> void:
 				if files[f] != "":
 					_on_add_file_button_pressed()	# new_file(), new tab, switch tab -> switch_main_canvas()
 					load_file(files[f], true)
+			if files.size() == 0:	# No files
+				_on_add_file_button_pressed()
 			
 			# After loading all files, go to the active file that was in use when the last session ended
 			var current = int(data["CurrentID"])
@@ -633,14 +646,14 @@ func change_drawing_tool_cursor() -> void:
 	var tool: Enums.DrawingTool = drawing_tool_bar.settings.selected_tool as Enums.DrawingTool
 	
 	if canvases[cc].settings.app_mode == Enums.AppMode.PLANNING:
-		Input.set_custom_mouse_cursor(null, Input.CURSOR_ARROW)
+		#Input.set_custom_mouse_cursor(null, Input.CURSOR_ARROW)
 		using_cursor_image = false
 	else:
 		if tool == Enums.DrawingTool.PENCIL:
-			Input.set_custom_mouse_cursor(pencil_cursor, Input.CURSOR_ARROW, Vector2(2.0, 26.0))
+			Input.set_custom_mouse_cursor(pencil_cursor, Input.CURSOR_HELP, Vector2(2.0, 26.0))
 			using_cursor_image = false
 		if tool == Enums.DrawingTool.ERASER_PENCIL:
-			Input.set_custom_mouse_cursor(eraser_pencil_cursor, Input.CURSOR_ARROW, Vector2(4.5, 26.0))
+			Input.set_custom_mouse_cursor(eraser_pencil_cursor, Input.CURSOR_HELP, Vector2(4.5, 26.0))
 			using_cursor_image = false
 		if tool == Enums.DrawingTool.BRUSH:
 			var img = Image.new()
@@ -654,7 +667,7 @@ func change_drawing_tool_cursor() -> void:
 				using_cursor_image = false
 				b_size = clampf(b_size, 4.0, 127.0)
 				img.load_svg_from_string(get_circle_svg(b_size, ceilf(b_size / 40.0 + 1.0), canvases[cc].drawing_settings.brush_settings.color, 0.5))
-				Input.set_custom_mouse_cursor(img, Input.CURSOR_ARROW, img.get_size() * 0.5)
+				Input.set_custom_mouse_cursor(img, Input.CURSOR_HELP, img.get_size() * 0.5)
 		if tool == Enums.DrawingTool.ERASER_BRUSH:
 			var img = Image.new()
 			var b_size: float = canvases[cc].drawing_settings.eraser_brush_settings.size * canvases[cc].scale.x
@@ -667,13 +680,13 @@ func change_drawing_tool_cursor() -> void:
 				using_cursor_image = false
 				b_size = clampf(b_size, 4.0, 127.0)
 				img.load_svg_from_string(get_circle_svg(b_size, ceilf(b_size / 40.0 + 1.0), Color(1.0, 1.0, 1.0), 0.5))
-				Input.set_custom_mouse_cursor(img, Input.CURSOR_ARROW, img.get_size() * 0.5)
+				Input.set_custom_mouse_cursor(img, Input.CURSOR_HELP, img.get_size() * 0.5)
 	use_mouse_cursor_big_brush()
 
 
-# Toggles between replacing CursorArrow with TextureRect and default CursorArrow and returns true or false if TextureRect position needs to be updated
+# Toggles between replacing CursorHelp with TextureRect and default CursorHelp and returns true or false if TextureRect position needs to be updated
 func use_mouse_cursor_big_brush() -> bool:
-	if using_cursor_image and Input.get_current_cursor_shape() == Input.CURSOR_ARROW:
+	if using_cursor_image and Input.get_current_cursor_shape() == Input.CURSOR_HELP:
 		if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
 			cursor_big_brush.visible = true
 			Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
@@ -1107,10 +1120,12 @@ func _on_drawing_tool_box_item_selected(index: Enums.DrawingTool) -> void:
 func _on_toggle_mode_toggled(toggled_on: bool) -> void:
 	if !canvases.has(cc):
 		return
+	
 	if toggled_on:
 		canvases[cc].settings.app_mode = Enums.AppMode.DRAWING
 		canvases[cc].toggle_element_label_mouse_inputs(false)
-		canvases[cc].toggle_show_priority_tool(false, false)	# Hide priority tool popup while drawing
+		canvases[cc].toggle_show_priority_tool(false, false)		# Hide priority tool popup while drawing
+		canvases[cc].set_default_cursor_shape(Control.CURSOR_HELP)	# To be replaced by custom mouse cursor
 		tool_box.visible = false
 		drawing_tool_box.visible = true
 		drawing_tool_bar.visible = true
@@ -1124,6 +1139,7 @@ func _on_toggle_mode_toggled(toggled_on: bool) -> void:
 		canvases[cc].toggle_element_label_mouse_inputs(true)
 		# Restore priority tool popup enabled state
 		canvases[cc].toggle_show_priority_tool(canvases[cc].settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL], false)
+		canvases[cc].set_default_cursor_shape(Control.CURSOR_ARROW)	# Default
 		tool_box.visible = true
 		drawing_tool_box.visible = false
 		drawing_tool_bar.visible = false

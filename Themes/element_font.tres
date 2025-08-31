@@ -3,6 +3,5 @@
 [resource]
 font_names = PackedStringArray("Noto Sans Lao", "Tahoma")
 font_weight = 550
-generate_mipmaps = true
 multichannel_signed_distance_field = true
 msdf_size = 96

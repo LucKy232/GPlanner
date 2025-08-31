@@ -5,7 +5,7 @@ var image: Image
 var has_changes: bool = false		## Used to check which images to save to disk
 var is_invisible: bool = true		## Used to check which image paths to save
 var is_loaded: bool = false
-var file_path: String = ""			## Set on file load from .json or on save CanvasDrawingGroup:save_all_regions_to_disk()
+var file_path: String = ""			## Set on file load from .json or on save CanvasDrawingGroup:save_all_images_to_folder()
 var serialized_data: String = ""	## Set on file load from .json
 
 
@@ -64,17 +64,30 @@ func load_from_path() -> void:
 
 
 func load_from_data() -> void:
-	#print(.decompress(serialized_data))
 	var raw: PackedByteArray = Marshalls.base64_to_raw(serialized_data)
-	image = Image.new()
-	image.load_png_from_buffer(raw)
-	update_from_image(image, false)
+	if raw.size() > 0:
+		image = Image.new()
+		image.load_png_from_buffer(raw)
 
 
 func redraw_existing_image() -> void:
-	if !image.is_empty():
+	if image and !image.is_empty():
 		texture = ImageTexture.create_from_image(image)
 		is_loaded = true
 		if !image.is_invisible():
 			is_invisible = false
 		image = Image.new()
+
+
+# Only call if image is prepared
+func get_serialized_image_data() -> String:
+	var imgdata: PackedByteArray = image.save_png_to_buffer()
+	serialized_data = Marshalls.raw_to_base64(imgdata)
+	set_has_changes(false)
+	return serialized_data
+
+
+func update_serialized_image_data() -> void:
+	var imgdata: PackedByteArray = image.save_png_to_buffer()
+	serialized_data = Marshalls.raw_to_base64(imgdata)
+	set_has_changes(false)

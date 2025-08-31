@@ -43,7 +43,7 @@ signal force_save_message
 ## Emits when FORCE_SAVE_REQUEST_KB_LIMIT is reached to force save in order to save VRAM.
 signal force_save_request
 @warning_ignore("unused_signal")
-## Emits to give a progress message to be displayed when images are saved. Used inside a call_deferred, due to save_all_regions_to_disk() being called from a different thread
+## Emits to give a progress message to be displayed when images are saved. Used inside a call_deferred, due to save_all_images_to_folder() being called from a different thread
 signal saving_images_to_disk
 ## Emitted when all regions are visible, used when screenshotting images changes to ensure all are loaded
 signal all_drawing_regions_visible
@@ -327,17 +327,6 @@ func update_regions_from_screenshots(screenshots: Dictionary[Vector2i, Image]) -
 		regions[r].update_from_image(screenshots[r])
 
 
-#func blit_into_drawing_region(dict: Dictionary[Vector4i, Image], draw_tool: int) -> void:
-	#for key in dict:
-		#var region_v2i: Vector2i = Vector2i(key.x, key.y)
-		#if !regions.has(region_v2i):
-			#add_drawing_region(region_v2i)
-		#if draw_tool == Enums.DrawingTool.PENCIL:
-			# regions[region_v2i].blit_at(Vector2i(key.z, key.w), dict[key])
-		#if draw_tool == Enums.DrawingTool.ERASER:
-			# regions[region_v2i].mask_at(Vector2i(key.z, key.w), dict[key])
-
-
 func add_temp_drawing_action() -> TempDrawingAction:
 	var temp = load(temp_drawing_action_scene).instantiate()
 	temp_drawing_actions_container.add_child(temp)
@@ -376,15 +365,87 @@ func update_drawing_position_and_scale(pos: Vector2, scl: Vector2) -> void:
 	brush_draw_viewport_container.position = pos * Vector2(new_scale_x, new_scale_y)
 
 
-#func drawing_region_paths_to_json() -> Dictionary:
-	#var dict: Dictionary = {}
-	#for r in regions:
-		#if !regions[r].is_invisible:
-			#dict["%02d-%02d"%[r.x, r.y]] = "user://%s/%02d-%02d.png" % [folder_path, r.x, r.y]
-	#return dict
+func resize(s: Vector2) -> void:
+	size = s
+	brush_eraser_texture.size = s
+	eraser_sub_viewport.size = s
+	if !current_stroke.is_finished:
+		current_stroke.size = s
+		current_stroke.init_image(int(s.x), int(s.y))
 
 
-func save_all_regions_to_disk() -> void:
+# -------- .json save method: Saving all images directly inside the .json file -------- 
+# SAVE .PNG DATA IN JSON DICTIONARY
+func save_all_images_to_json() -> void:
+	var dict: Dictionary
+	var regions_to_save: Array[Vector2i]
+	call_deferred("emit_signal", "saving_images_to_disk", "Preparing to save image data")
+	
+	for r in regions:
+		# Has changes, not invisible
+		if regions[r].prepare_image_to_save():
+			regions_to_save.append(r)
+		# if old data exists but doesn't have changes also write it
+		elif regions[r].serialized_data != "":
+			dict["%02d-%02d"%[r.x, r.y]] = regions[r].serialized_data
+	
+	var saved_num: int = 0
+	for r in regions_to_save:
+		dict["%02d-%02d"%[r.x, r.y]] = regions[r].get_serialized_image_data()
+		saved_num += 1
+		call_deferred("emit_signal", "saving_images_to_disk", "Saving image data: %d / %d" % [saved_num, regions_to_save.size()])
+	
+	# If images get fully erased, they don't get saved in place of the old one,
+	# The old image needs to be deleted because it is outdated
+	var to_remove: Array[Vector2i] = []
+	for r in regions:
+		var remove_region: bool = false
+		if regions[r].image.is_invisible() and regions[r].has_changes:
+			regions[r].is_invisible = true
+			regions[r].has_changes = false
+			regions[r].is_loaded = false
+			regions[r].file_path = ""
+			dict.erase("%02d-%02d"%[r.x, r.y])
+			remove_region = true
+		
+		regions[r].free_image()
+		if remove_region:
+			to_remove.append(r)
+	complete_json_image_data = dict
+
+
+# LOAD .PNG FROM JSON DICTIONARY DATA
+func rebuild_images_from_json(dict: Dictionary) -> void:
+	for key in dict:
+		var reg_v2i: Vector2i = Vector2i(int(key.get_slice("-", 0)), int(key.get_slice("-", 1)))
+		var image_data: String = dict[key]
+		add_drawing_region(reg_v2i)
+		regions[reg_v2i].serialized_data = image_data
+		regions[reg_v2i].load_from_data()
+
+
+# UNLOAD IMAGES THAT HAVE SERIALIZED DATA
+func unload_all_drawing_regions_with_data() -> void:
+	for r in regions:
+		if regions[r].serialized_data != "" and regions[r].is_loaded:
+			regions[r].unload()
+
+
+# RELOAD FROM PATHS THREADED
+func reload_all_drawing_regions_from_data() -> bool:
+	for r in regions:
+		if regions[r].serialized_data != "" and !regions[r].is_loaded and !regions_being_loaded.has(r):
+			var task_id = WorkerThreadPool.add_task(regions[r].load_from_data, false)
+			image_load_tasks[task_id] = r
+			regions_being_loaded[r] = true
+	if image_load_tasks.size() == 0:
+		return false
+	return true
+
+
+# -------- Folder save method: Saving all images inside user:// folder -------- 
+# SAVE FILES
+func save_all_images_to_folder() -> void:
 	var saved_num: int = 0
 	var regions_to_save: Array[Vector2i]
 	if !DirAccess.dir_exists_absolute("user://%s" % folder_path):
@@ -422,74 +483,16 @@ func save_all_regions_to_disk() -> void:
 		regions.erase(r)
 
 
-func save_all_images_to_json() -> void:
-	#var timer: Stopwatch = Stopwatch.new("Saving .json in: ")
-	var dict: Dictionary
-	var regions_to_save: Array[Vector2i]
-	
-	#call_deferred("emit_signal", "saving_images_to_disk", "Preparing to save image data")
-	saving_images_to_disk.emit("Preparing to save image data")
+# SAVE IMAGE PATHS
+func drawing_region_paths_to_json() -> Dictionary:
+	var dict: Dictionary = {}
 	for r in regions:
-		# Has changes, not invisible
-		if regions[r].prepare_image_to_save():
-			regions_to_save.append(r)
-		# if old data exists but doesn't have changes also write it
-		elif regions[r].serialized_data != "":
-			dict["%02d-%02d"%[r.x, r.y]] = regions[r].serialized_data
-	
-	var saved_num: int = 0
-	for r in regions_to_save:
-		var imgdata: PackedByteArray = regions[r].image.save_png_to_buffer()
-		dict["%02d-%02d"%[r.x, r.y]] = Marshalls.raw_to_base64(imgdata)
-		saved_num += 1
-		saving_images_to_disk.emit(str("Saving images to disk: %d / %d" % [saved_num, regions_to_save.size()]))
-		print(saved_num)	# TODO this happens all at the same time
-		#call_deferred("emit_signal", "saving_images_to_disk", "Saving images to disk: %d / %d" % [saved_num, regions_to_save.size()])
-	
-	# If images get fully erased, they don't get saved in place of the old one,
-	# The old image needs to be deleted because it is outdated
-	var to_remove: Array[Vector2i] = []
-	for r in regions:
-		var remove_region: bool = false
-		if regions[r].image.is_invisible() and regions[r].has_changes:
-			regions[r].is_invisible = true
-			regions[r].has_changes = false
-			regions[r].is_loaded = false
-			regions[r].file_path = ""
-			remove_region = true
-		regions[r].free_image()
-		if remove_region:
-			to_remove.append(r)
-	complete_json_image_data = dict
-	#timer.stop()
+		if !regions[r].is_invisible:
+			dict["%02d-%02d"%[r.x, r.y]] = "user://%s/%02d-%02d.png" % [folder_path, r.x, r.y]
+	return dict
 
 
-func unload_all_drawing_regions_with_path() -> void:
-	for r in regions:
-		if regions[r].file_path != "" and regions[r].is_loaded:
-			regions[r].unload()
-
-
-func reload_all_drawing_regions_from_path() -> bool:
-	for r in regions:
-		if regions[r].file_path != "" and !regions[r].is_loaded and !regions_being_loaded.has(r):
-			var task_id = WorkerThreadPool.add_task(regions[r].load_from_path, false)
-			image_load_tasks[task_id] = r
-			regions_being_loaded[r] = true
-	if image_load_tasks.size() == 0:
-		return false
-	return true
-
-
-func rebuild_images_from_json(dict: Dictionary) -> void:
-	for key in dict:
-		var reg_v2i: Vector2i = Vector2i(int(key.get_slice("-", 0)), int(key.get_slice("-", 1)))
-		var image_data: String = dict[key]
-		add_drawing_region(reg_v2i)
-		regions[reg_v2i].serialized_data = image_data
-		regions[reg_v2i].load_from_data()
-
-
+# LOAD IMAGE PATHS
 func rebuild_file_paths_from_json(dict: Dictionary) -> void:
 	for key in dict:
 		var reg_v2i: Vector2i = Vector2i(int(key.get_slice("-", 0)), int(key.get_slice("-", 1)))
@@ -501,23 +504,20 @@ func rebuild_file_paths_from_json(dict: Dictionary) -> void:
 			printerr("Drawing region (%d, %d) image file doesn't exist, check user:// folder or JSON save file" % [reg_v2i.x, reg_v2i.y])
 
 
-#func rebuild_from_json(dict: Dictionary) -> void:
-	#for key in dict:
-		#var reg_v2i: Vector2i = Vector2i(int(key.get_slice("-", 0)), int(key.get_slice("-", 1)))
-		#var image_path: String = dict[key]
-		#if FileAccess.file_exists(image_path):
-			#var image: Image = Image.load_from_file(image_path)
-			#add_drawing_region(reg_v2i)
-			# regions[reg_v2i].update_from_image(image, false)
-			# regions[reg_v2i].file_path = image_path
-		#else:
-			#printerr("Drawing region (%d, %d) image file doesn't exist, check user:// folder or JSON save file" % [reg_v2i.x, reg_v2i.y])
+# RELOAD FROM PATHS THREADED
+func reload_all_drawing_regions_from_path() -> bool:
+	for r in regions:
+		if regions[r].file_path != "" and !regions[r].is_loaded and !regions_being_loaded.has(r):
+			var task_id = WorkerThreadPool.add_task(regions[r].load_from_path, false)
+			image_load_tasks[task_id] = r
+			regions_being_loaded[r] = true
+	if image_load_tasks.size() == 0:
+		return false
+	return true
 
 
-func resize(s: Vector2) -> void:
-	size = s
-	brush_eraser_texture.size = s
-	eraser_sub_viewport.size = s
-	if !current_stroke.is_finished:
-		current_stroke.size = s
-		current_stroke.init_image(int(s.x), int(s.y))
+# UNLOAD IMAGES THAT HAVE A FILE PATH
+func unload_all_drawing_regions_with_path() -> void:
+	for r in regions:
+		if regions[r].file_path != "" and regions[r].is_loaded:
+			regions[r].unload()

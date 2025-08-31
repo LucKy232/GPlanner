@@ -73,18 +73,21 @@ func _process(_delta: float) -> void:
 
 func new_canvas() -> void:
 	deselect_element()
-	get_viewport().size_changed.connect(_on_viewport_size_changed)
+	if !get_viewport().size_changed.is_connected(_on_viewport_size_changed):
+		get_viewport().size_changed.connect(_on_viewport_size_changed)
 	opened_file_path = ""
 	file_name_short = "New File"
 	position = -size * 0.5 + get_viewport_rect().size * 0.5	# Start from the center on New File
 	scale = Vector2(1.0, 1.0)
-	settings.priority_filter_value = Enums.Priority.NONE
+	settings = SettingsStates.new()
 	drawing_settings = DrawingSettings.new()
 	canvas_changed(true)
 	#print("New canvas id %d" % [id])
 
 
 func canvas_changed(reset: bool = false) -> void:
+	#print("Is user input: %s" % str(is_user_input))
+	#print("Is loaded: %s" % str(save_state.is_loaded))
 	if !is_user_input or !save_state.is_loaded:
 		return
 	if reset:
@@ -113,11 +116,9 @@ func drawings_changed(reset: bool = false) -> void:
 		else:
 			save_state.needs_to_save_images = false
 	else:
-		if save_state.needs_to_save_images:
+		if !save_state.needs_to_save_images:
 			save_state.needs_to_save_images = true
 			has_changed.emit()
-		else:
-			save_state.needs_to_save_images = true
 
 
 func has_changes() -> bool:
@@ -211,7 +212,7 @@ func add_element_label(at_position: Vector2, id_specified: int = -1) -> void:
 		element_id_counter += 1
 	else:
 		elem_id = id_specified
-		if id_specified > element_id_counter:
+		if id_specified >= element_id_counter:
 			element_id_counter = id_specified + 1
 	new_element.id = elem_id
 	elements[elem_id] = new_element
@@ -254,7 +255,7 @@ func add_connection(id_specified: int = -1, arrow_1_enabled: bool = false, arrow
 			connection_id_counter += 1
 		else:
 			conn_id = id_specified
-			if id_specified > connection_id_counter:
+			if id_specified >= connection_id_counter:
 				connection_id_counter = id_specified + 1
 		connections[conn_id] = new_connection
 		new_connection.elem_id1 = connection_candidate_1
@@ -527,6 +528,7 @@ func erase_everything() -> void:
 	connection_id_counter = 0
 	connection_candidate_1 = -1
 	connection_candidate_2 = -1
+	settings = SettingsStates.new()
 	is_dragging = false
 	is_resizing = false
 
@@ -661,7 +663,10 @@ func _on_gui_input(event: InputEvent) -> void:
 	if event.is_action("pan") and event.is_released():
 		if is_panning:
 			is_panning = false
-			set_default_cursor_shape(Control.CURSOR_ARROW)
+			if settings.app_mode == Enums.AppMode.PLANNING:
+				set_default_cursor_shape(Control.CURSOR_ARROW)
+			elif settings.app_mode == Enums.AppMode.DRAWING:
+				set_default_cursor_shape(Control.CURSOR_HELP)
 	
 	# Panning action
 	if event is InputEventMouseMotion and is_panning:

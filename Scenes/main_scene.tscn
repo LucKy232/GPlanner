@@ -121,7 +121,7 @@ popup_dialog_theme = ExtResource("18_2ebs2")
 priority_colors = Array[Color]([Color(1, 1, 1, 1), Color(1, 0, 0, 1), Color(1, 1, 0, 1), Color(0, 1, 0, 1), Color(0, 0, 0, 0)])
 priority_styleboxes = Array[StyleBoxFlat]([ExtResource("2_mai8y"), ExtResource("3_76v2p"), ExtResource("4_drdnd"), ExtResource("5_ioaeq"), ExtResource("6_7ewk0")])
 zoom_speed = 1.05
-opened_files_file_name = "opened_files_dev.json"
+opened_files_file_name = "opened_files.json"
 pencil_cursor = ExtResource("15_5oxhp")
 eraser_pencil_cursor = ExtResource("18_s8qe6")
 

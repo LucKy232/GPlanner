@@ -250,7 +250,7 @@ draw_straight={
 
 [input_devices]
 
-pen_tablet/driver.windows="auto"
+pen_tablet/driver.windows="wintab"
 
 [layer_names]
 
