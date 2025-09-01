@@ -22,6 +22,7 @@ extends Control
 @onready var input_repeat_timer: Timer = $InputRepeatTimer
 @onready var cursor_big_brush: TextureRect = $CursorBigBrush
 
+@export var android_build: bool = false
 @export_category("Scenes")
 @export_file("*.tscn") var element_scene
 @export_file("*.tscn") var connection_scene
@@ -83,6 +84,40 @@ func _ready() -> void:
 	close_tab_confirmation.add_cancel_button(" Cancel ")
 	exit_tab_confirmation.add_button("     No     ", true, "no_save")
 	exit_tab_confirmation.add_cancel_button(" Cancel ")
+	
+	if android_build:
+		OS.request_permissions()
+		scale_ui(2.4)
+
+
+func scale_ui(factor: float) -> void:
+	var new_scale := Vector2(factor, factor)
+	margin_container.scale = new_scale
+	margin_container.anchor_right = 1.0 / factor
+	margin_container.anchor_bottom = 1.0 / factor
+	margin_container.theme.set_constant("margin_bottom", "MarginContainer", 18.0 + 10.0 * factor)
+	margin_container.theme.set_constant("margin_left", "MarginContainer", 10.0 * factor)
+	margin_container.theme.set_constant("margin_right", "MarginContainer", 10.0 * factor)
+	margin_container.theme.set_constant("margin_top", "MarginContainer", 10.0 * factor)
+	status_bar.scale = new_scale
+	status_bar.position.x -= factor * 200.0
+	settings_drawer.scale = new_scale
+	settings_drawer.position.y -= factor * 100.0
+	bottom_bar.scale = new_scale
+	bottom_bar.position.x += factor * 10.0
+	bottom_bar.position.y -= factor * 20.0
+	file_dialog_save.content_scale_factor = factor
+	file_dialog_load.content_scale_factor = factor
+	new_file_confirmation.content_scale_factor = factor
+	load_file_confirmation.content_scale_factor = factor
+	close_tab_confirmation.content_scale_factor = factor
+	exit_tab_confirmation.content_scale_factor = factor
+	file_dialog_save.size *= factor
+	file_dialog_load.size *= factor
+	new_file_confirmation.size *= factor
+	load_file_confirmation.size *= factor
+	close_tab_confirmation.size *= factor
+	exit_tab_confirmation.size *= factor
 
 
 func _process(_delta):
@@ -373,7 +408,9 @@ func save_file(path: String) -> void:
 	var file = FileAccess.open(path, FileAccess.WRITE)
 	var save_data: Dictionary
 	if file == null:
-		printerr("FileAcces open error: ", FileAccess.get_open_error())
+		var error = error_string(FileAccess.get_open_error())
+		printerr("FileAcces error: %s", error)
+		status_bar.update_status("Error %s when saving file to path: %s" % [error, path], Color(0.55, 0.3, 0.3, 0.5))
 		return
 	
 	save_data = {

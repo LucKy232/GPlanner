@@ -1,6 +1,6 @@
 # GPlanner
 A simple offline idea planner made in Godot.
-
+Android .apk export is experimental for testing only.
 
 Features:
 - Add elements similar to sticky notes that contain a single line of text. Can move, resize, hide & change their style.

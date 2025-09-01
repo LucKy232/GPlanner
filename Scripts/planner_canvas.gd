@@ -648,7 +648,7 @@ func _on_gui_input(event: InputEvent) -> void:
 		else:
 			is_element_just_created = false
 	
-	# Begin pan
+	# Begin mouse pan
 	if event.is_action("pan") and event.is_pressed() and !is_drawing:
 		if !is_element_just_created:	# Don't deselect if this event is the one that created an element
 			select_element(-1)
@@ -659,7 +659,7 @@ func _on_gui_input(event: InputEvent) -> void:
 			set_default_cursor_shape(Control.CURSOR_DRAG)
 			drag_start_mouse_pos = event.position
 	
-	# End pan
+	# End mouse pan
 	if event.is_action("pan") and event.is_released():
 		if is_panning:
 			is_panning = false
@@ -668,11 +668,23 @@ func _on_gui_input(event: InputEvent) -> void:
 			elif settings.app_mode == Enums.AppMode.DRAWING:
 				set_default_cursor_shape(Control.CURSOR_HELP)
 	
-	# Panning action
+	# Panning action mouse
 	if event is InputEventMouseMotion and is_panning:
 		var move = (event.position - drag_start_mouse_pos) * scale.x
 		position = pan_limits(position + move)
 		changed_position.emit()
+	
+	# Panning action touch gesture
+	if event is InputEventPanGesture:
+		var move = event.delta * scale.x * 10.0
+		position = pan_limits(position + move)
+		changed_position.emit()
+	
+	# Touch input pinch zoom
+	if event is InputEventMagnifyGesture:
+		var old_zoom: float = zoom_level
+		zoom_level = clampf(zoom_level * event.factor, zoom_limits.x, zoom_limits.y)
+		handle_zoom(old_zoom, get_window().get_mouse_position())
 	
 	if event.is_action("zoom_in") and !is_drawing:
 		var old_zoom: float = zoom_level
