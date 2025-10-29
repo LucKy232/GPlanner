@@ -16,6 +16,7 @@ var connections_p1: Dictionary[int, PackedInt32Array]	## ELEMENT ID key, Array o
 var connections_p2: Dictionary[int, PackedInt32Array]	## ELEMENT ID key, Array of CONNECTION ID value
 var elements_to_connection: Dictionary[Vector2i, int]	## ELEMENT ID Vector2i(ID1, ID2) key, CONNECTION ID value
 var style_presets: Dictionary[String, ElementPresetStyle]	## PRESET ID key (not option_selector like in element_setting.gd)
+var swatches: Array[Color]
 var drawing_manager: DrawingManager
 
 var id: int			## Not consistent between sessions because it isn't saved (no good reason)
@@ -40,6 +41,7 @@ var drag_start_mouse_pos: Vector2
 var original_elem_size: Vector2
 var last_draw_event_position: Vector2 = Vector2.ZERO
 var zoom_level: float = 1.0
+var cycle_zoom_levels: Array[float]
 var zoom_limits: Vector2
 var zoom_speed: float
 var last_pressure_event: float = 1.0
@@ -400,6 +402,18 @@ func all_presets_to_json() -> Dictionary:
 	return dict
 
 
+func all_swatches_to_json() -> Dictionary:
+	var dict: Dictionary = {}
+	for c in swatches:
+		var c_idx: String = c.to_html()
+		var c_dict: Dictionary
+		c_dict["r"] = c.r
+		c_dict["g"] = c.g
+		c_dict["b"] = c.b
+		dict[c_idx] = c_dict
+	return dict
+
+
 func all_connection_pairs_to_json() -> Dictionary:
 	var dict: Dictionary = {}
 	for pair in elements_to_connection:
@@ -506,6 +520,21 @@ func rebuild_connections(json_conns: Dictionary) -> void:
 	is_user_input = true
 
 
+func rebuild_swatches(dict: Dictionary) -> void:
+	for c in dict:
+		swatches.append(Color(float(dict[c]["r"]), float(dict[c]["g"]), float(dict[c]["b"])))
+
+
+func add_swatch(color: Color) -> void:
+	if !swatches.has(color):
+		swatches.append(color)
+
+
+func remove_swatch(color: Color) -> void:
+	if swatches.has(color):
+		swatches.erase(color)
+
+
 func erase_everything() -> void:
 	canvas_changed(true)
 	opened_file_path = ""
@@ -583,9 +612,9 @@ func handle_zoom(old_zoom: float, target: Vector2) -> void:
 	# Keeps the top-left of the screen consistent while scaling the canvas
 	var delta_screen_tl: Vector2 = position - (position * scale) / old_zoom
 	# Gives you how much to move to go to a screen location after zooming
-	var delta_scale = 1.0 - old_zoom / scale.x
-	
-	position = pan_limits(position - delta_screen_tl - target * delta_scale)
+	var delta_scale = 1.0 - scale.x / old_zoom
+	#printt("postion", position, "delta_tl", delta_screen_tl, "Target", target, "delta_scale", delta_scale, "ScreenMiddle:", get_viewport_rect().size * 0.5, "Mouse:", get_window().get_mouse_position())
+	position = pan_limits(position - delta_screen_tl + target * delta_scale)
 	changed_position.emit()
 	changed_zoom.emit()
 
@@ -670,7 +699,7 @@ func _on_gui_input(event: InputEvent) -> void:
 	
 	# Panning action mouse
 	if event is InputEventMouseMotion and is_panning:
-		var move = (event.position - drag_start_mouse_pos) * scale.x
+		var move: Vector2 = (event.position - drag_start_mouse_pos) * scale.x
 		position = pan_limits(position + move)
 		changed_position.emit()
 	
@@ -686,15 +715,27 @@ func _on_gui_input(event: InputEvent) -> void:
 		zoom_level = clampf(zoom_level * event.factor, zoom_limits.x, zoom_limits.y)
 		handle_zoom(old_zoom, get_window().get_mouse_position())
 	
-	if event.is_action("zoom_in") and !is_drawing:
+	if event.is_action("zoom_in") and !is_drawing and event.is_released():
 		var old_zoom: float = zoom_level
 		zoom_level = clampf(zoom_level * zoom_speed, zoom_limits.x, zoom_limits.y)
 		handle_zoom(old_zoom, get_window().get_mouse_position())
 	
-	if event.is_action("zoom_out") and !is_drawing:
+	if event.is_action("zoom_out") and !is_drawing and event.is_released():
 		var old_zoom: float = zoom_level
 		zoom_level = clampf(zoom_level * (2.0 - zoom_speed), zoom_limits.x, zoom_limits.y)
 		handle_zoom(old_zoom, get_viewport_rect().size * 0.5)
+	
+	if event.is_action("zoom_cycle") and !is_drawing and event.is_released():
+		var old_zoom: float = zoom_level
+		var next_zoom_level: float = 0.0
+		for val in cycle_zoom_levels:
+			if val > zoom_level:
+				next_zoom_level = val
+				break
+		if next_zoom_level == 0.0:
+			next_zoom_level = cycle_zoom_levels[0]
+		zoom_level = clampf(next_zoom_level, zoom_limits.x, zoom_limits.y)
+		handle_zoom(old_zoom, get_window().get_mouse_position())
 	
 	if settings.app_mode == Enums.AppMode.PLANNING and event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed() and tool_id == Enums.Tool.ADD_ELEMENT:

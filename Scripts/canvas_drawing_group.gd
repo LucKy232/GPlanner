@@ -404,6 +404,7 @@ func save_all_images_to_json() -> void:
 			regions[r].is_invisible = true
 			regions[r].has_changes = false
 			regions[r].is_loaded = false
+			regions[r].serialized_data = ""
 			regions[r].file_path = ""
 			dict.erase("%02d-%02d"%[r.x, r.y])
 			remove_region = true
@@ -416,6 +417,7 @@ func save_all_images_to_json() -> void:
 
 # LOAD .PNG FROM JSON DICTIONARY DATA
 func rebuild_images_from_json(dict: Dictionary) -> void:
+	complete_json_image_data = dict
 	for key in dict:
 		var reg_v2i: Vector2i = Vector2i(int(key.get_slice("-", 0)), int(key.get_slice("-", 1)))
 		var image_data: String = dict[key]

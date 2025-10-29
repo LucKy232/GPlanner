@@ -22,3 +22,8 @@ Not impletemnted:
 - Select font
 - Copy / Duplicate element
 - Customize background color and grid lines
+
+
+Montserrat Bold by Julieta Ulanovsky
+License: SIL Open Font License (OFL)
+Link: https://www.fontspace.com/montserrat-font-f16544

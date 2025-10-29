@@ -67,7 +67,7 @@ class BrushSettings:
 
 class EraserPencilSettings:
 	var size_limits: Vector2i = Vector2i(0, 4)		## Inclusive
-	var size: int = 0:
+	var size: int = 4:
 		get:
 			return clampi(size, size_limits.x, size_limits.y)
 		set(value):
@@ -81,7 +81,7 @@ class EraserPencilSettings:
 
 class EraserBrushSettings:
 	var size_limits: Vector2 = Vector2(1.4, 400.0)
-	var size: float = 10.0:
+	var size: float = 30.0:
 		get:
 			return clampf(size, size_limits.x, size_limits.y)
 		set(value):

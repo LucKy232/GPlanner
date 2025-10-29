@@ -62,6 +62,7 @@ value = 1.0
 rounded = true
 alignment = 3
 prefix = "Size"
+suffix = " "
 
 [node name="BrushSizeSpinBox" type="SpinBox" parent="."]
 light_mask = 2
@@ -77,6 +78,7 @@ value = 1.0
 rounded = true
 alignment = 3
 prefix = "Size"
+suffix = " "
 
 [node name="PressureSpinBox" type="SpinBox" parent="."]
 light_mask = 2
@@ -96,6 +98,10 @@ suffix = "%"
 [node name="InputRepeatTimer" type="Timer" parent="."]
 wait_time = 0.4
 one_shot = true
+
+[node name="ColorPicker" type="ColorPicker" parent="."]
+visible = false
+layout_mode = 2
 
 [connection signal="color_changed" from="ColorPickerButton" to="." method="_on_color_picker_button_color_changed"]
 [connection signal="toggled" from="ColorPickerButton" to="." method="_on_color_picker_button_toggled"]

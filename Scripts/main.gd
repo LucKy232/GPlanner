@@ -37,6 +37,7 @@ extends Control
 @export_category("Settings")
 @export var zoom_limits: Vector2 = Vector2(0.2, 2.0)
 @export_range(1.01, 1.2, 0.01) var zoom_speed: float = 1.02
+@export var cycle_zoom_levels: Array[float] = [0.2, 0.5, 1.0, 1.5, 2.0]
 @export var opened_files_file_name: String
 @export var pencil_cursor: Texture2D
 @export var eraser_pencil_cursor: Texture2D
@@ -95,10 +96,10 @@ func scale_ui(factor: float) -> void:
 	margin_container.scale = new_scale
 	margin_container.anchor_right = 1.0 / factor
 	margin_container.anchor_bottom = 1.0 / factor
-	margin_container.theme.set_constant("margin_bottom", "MarginContainer", 18.0 + 10.0 * factor)
-	margin_container.theme.set_constant("margin_left", "MarginContainer", 10.0 * factor)
-	margin_container.theme.set_constant("margin_right", "MarginContainer", 10.0 * factor)
-	margin_container.theme.set_constant("margin_top", "MarginContainer", 10.0 * factor)
+	margin_container.theme.set_constant("margin_bottom", "MarginContainer", int(18.0 + 10.0 * factor))
+	margin_container.theme.set_constant("margin_left", "MarginContainer", int(10.0 * factor))
+	margin_container.theme.set_constant("margin_right", "MarginContainer", int(10.0 * factor))
+	margin_container.theme.set_constant("margin_top", "MarginContainer", int(10.0 * factor))
 	status_bar.scale = new_scale
 	status_bar.position.x -= factor * 200.0
 	settings_drawer.scale = new_scale
@@ -121,6 +122,8 @@ func scale_ui(factor: float) -> void:
 
 
 func _process(_delta):
+	if use_mouse_cursor_big_brush():
+		cursor_big_brush.position = get_local_mouse_position() - cursor_big_brush.size * 0.5
 	if selected_element_exists():
 		if get_selected_element().line_edit.is_editing():
 			is_editing_element_text = true
@@ -128,13 +131,11 @@ func _process(_delta):
 			is_editing_element_text = false
 	else:
 		is_editing_element_text = false
-	if use_mouse_cursor_big_brush():
-		cursor_big_brush.position = get_local_mouse_position() - cursor_big_brush.size * 0.5
 	if Input.is_action_just_pressed("fullscreen_borderless") and !is_saving_images:
 		toggle_borderless_window()
 	if Input.is_action_just_pressed("exit_fullscreen_borderless") and get_window().mode == Window.MODE_FULLSCREEN and !is_saving_images:
 		toggle_borderless_window()
-	if Input.is_action_just_pressed("save_file"):	# Can do while editing text because ctrl+s doesn't insert anything
+	if Input.is_action_just_pressed("save_file") and !disable_input():
 		_on_save_button_pressed()
 	if Input.is_action_just_pressed("edit_element") and !tool_box.is_selected(Enums.Tool.MARK_COMPLETED):
 		if selected_element_exists() and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
@@ -153,16 +154,16 @@ func _process(_delta):
 		first_input_repeat = true
 	
 	if canvases[cc].settings.app_mode == Enums.AppMode.DRAWING:
-		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.PENCIL], true):
+		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.PENCIL], true) and !disable_input():
 			drawing_tool_box.select(Enums.DrawingTool.PENCIL)
 			_on_drawing_tool_box_item_selected(Enums.DrawingTool.PENCIL)
-		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.BRUSH], true):
+		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.BRUSH], true) and !disable_input():
 			drawing_tool_box.select(Enums.DrawingTool.BRUSH)
 			_on_drawing_tool_box_item_selected(Enums.DrawingTool.BRUSH)
-		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.ERASER_PENCIL], true):
+		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.ERASER_PENCIL], true) and !disable_input():
 			drawing_tool_box.select(Enums.DrawingTool.ERASER_PENCIL)
 			_on_drawing_tool_box_item_selected(Enums.DrawingTool.ERASER_PENCIL)
-		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.ERASER_BRUSH], true):
+		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.ERASER_BRUSH], true) and !disable_input():
 			drawing_tool_box.select(Enums.DrawingTool.ERASER_BRUSH)
 			_on_drawing_tool_box_item_selected(Enums.DrawingTool.ERASER_BRUSH)
 	
@@ -212,6 +213,8 @@ func connect_signals() -> void:
 	drawing_tool_bar.color_picker_toggled.connect(_on_drawing_tool_bar_color_picker_toggled)
 	drawing_tool_bar.brush_size_changed.connect(change_drawing_tool_cursor)
 	drawing_tool_bar.brush_color_changed.connect(change_drawing_tool_cursor)
+	drawing_tool_bar.swatch_added.connect(_on_drawing_tool_bar_swatch_added)
+	drawing_tool_bar.swatch_removed.connect(_on_drawing_tooL_bar_swatch_removed)
 
 
 func create_tool_keybinds() -> void:
@@ -293,6 +296,8 @@ func switch_main_canvas(id: int) -> void:
 	drawing_manager.change_active_canvas_drawing_group(cc)
 	drawing_tool_bar.change_settings(canvases[cc].drawing_settings)
 	drawing_tool_box.select(canvases[cc].drawing_settings.selected_tool)
+	drawing_tool_bar.delete_color_picker_swatches()
+	drawing_tool_bar.add_color_picker_swatches_from_array(canvases[cc].swatches)
 	_on_drawing_tool_box_item_selected(canvases[cc].drawing_settings.selected_tool)
 	call_deferred("_on_canvas_changed_zoom")
 	call_deferred("_on_canvas_changed_position")
@@ -344,6 +349,7 @@ func new_file(add_canvas: bool) -> int:
 		new_canvas.priority_colors = priority_colors
 		new_canvas.zoom_limits = zoom_limits
 		new_canvas.zoom_speed = zoom_speed
+		new_canvas.cycle_zoom_levels = cycle_zoom_levels
 		drawing_manager.add_canvas_drawing_group(new_canvas.id)
 		new_canvas.drawing_manager = drawing_manager
 		new_canvas.save_state.is_loaded = true
@@ -420,6 +426,7 @@ func save_file(path: String) -> void:
 		"Connections": canvases[cc].all_connection_pairs_to_json(),
 		"DrawingRegions": drawing_manager.drawing_region_data_to_json(),
 		"DrawingSettings": canvases[cc].drawing_settings.to_json(),
+		"Swatches": canvases[cc].all_swatches_to_json(),
 	}
 	
 	var success: bool = file.store_string(JSON.stringify(save_data, "\t"))
@@ -479,11 +486,15 @@ func load_file(path: String, app_startup: bool = false) -> void:
 	drawing_manager.clear_canvas_drawing_group(cc)
 	if data.has("DrawingSettings"):
 		canvases[cc].drawing_settings.rebuild_from_json(data["DrawingSettings"])
+	if data.has("Swatches"):
+		canvases[cc].rebuild_swatches(data["Swatches"])
 	if data.has("DrawingRegions"):
 		#print("Load drawing %d %s" % [cc, "at app startup" if app_startup else ""])
 		drawing_manager.rebuild_paths_from_json(cc, data["DrawingRegions"])
 		if !app_startup:
 			drawing_manager.reload_all_drawing_regions(cc)
+		else:
+			drawing_tool_bar.add_color_picker_swatches_from_array(canvases[cc].swatches)
 	
 	status_bar.update_status("File loaded: %s" % path, Color(0.3, 0.55, 0.3, 0.5))
 	canvases[cc].canvas_changed(true)
@@ -673,7 +684,8 @@ func tab_from_canvas_id(c_id: int) -> int:
 
 
 func disable_input() -> bool:
-	return is_editing_element_text or is_editing_preset_name or is_saving_images
+	var popup_visible: bool = file_dialog_load.visible or file_dialog_save.visible or new_file_confirmation.visible or load_file_confirmation.visible or close_tab_confirmation.visible or exit_tab_confirmation.visible
+	return is_editing_element_text or is_editing_preset_name or is_saving_images or popup_visible
 
 
 # Cursor size limit 256x256, on web 128x128; Switching to a TextureRect based cursor beyond that
@@ -1192,3 +1204,13 @@ func _on_toggle_mode_toggled(toggled_on: bool) -> void:
 func _on_drawing_tool_bar_color_picker_toggled(toggled_on) -> void:
 	if canvases.has(cc):
 		canvases[cc].is_color_picker_visible = toggled_on
+
+
+func _on_drawing_tool_bar_swatch_added(color: Color) -> void:
+	if canvases.has(cc):
+		canvases[cc].add_swatch(color)
+
+
+func _on_drawing_tooL_bar_swatch_removed(color: Color) -> void:
+	if canvases.has(cc):
+		canvases[cc].remove_swatch(color)

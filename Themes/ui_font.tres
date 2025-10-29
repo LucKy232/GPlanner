@@ -1,12 +1,9 @@
 [gd_resource type="SystemFont" load_steps=2 format=3 uid="uid://cwnk6cgp4s4cs"]
 
-[sub_resource type="SystemFont" id="SystemFont_qy3m5"]
-font_names = PackedStringArray("Sans-Serif")
-font_weight = 550
+[ext_resource type="FontFile" uid="uid://ho5qncg1srhi" path="res://Fonts/MontserratBold.otf" id="1_ww0da"]
 
 [resource]
-fallbacks = Array[Font]([SubResource("SystemFont_qy3m5")])
-font_names = PackedStringArray("Tahoma", "Verdana", "Arial")
+fallbacks = Array[Font]([ExtResource("1_ww0da")])
 font_weight = 550
 multichannel_signed_distance_field = true
 msdf_size = 96

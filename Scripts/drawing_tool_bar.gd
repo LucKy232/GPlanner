@@ -20,6 +20,8 @@ var input_repeats: int = 0
 signal color_picker_toggled
 signal brush_size_changed
 signal brush_color_changed
+signal swatch_added
+signal swatch_removed
 
 enum SettingKeybind {
 	PENCIL_SIZE_INCREASE,
@@ -35,6 +37,8 @@ func _ready() -> void:
 	init_tooltips()
 	create_keybinds()
 	customize_color_picker(color_picker_button)
+	color_picker_button.get_picker().preset_added.connect(_on_swatch_added)
+	color_picker_button.get_picker().preset_removed.connect(_on_swatch_removed)
 
 
 func _process(_delta: float) -> void:
@@ -194,6 +198,19 @@ func customize_color_picker(button: ColorPickerButton) -> void:
 	popup.about_to_popup.connect(move_color_picker_popup.bind(popup))
 
 
+#swatches.append(Color(float(dict[key]["color.r"]), float(dict[key]["color.g"]), float(dict[key]["color.b"])))
+func add_color_picker_swatches_from_array(arr: Array[Color]) -> void:
+	var picker: ColorPicker = color_picker_button.get_picker()
+	for color in arr:
+		picker.add_preset(color)
+
+
+func delete_color_picker_swatches() -> void:
+	var picker: ColorPicker = color_picker_button.get_picker()
+	for color in picker.get_presets():
+		picker.erase_preset(color)
+
+
 func move_color_picker_popup(popup: PopupPanel) -> void:
 	popup.position = Vector2i(int(global_position.x + size.x) + 40, 20)
 
@@ -244,3 +261,11 @@ func _on_input_repeat_timer_timeout() -> void:
 
 func _on_color_picker_button_toggled(toggled_on: bool) -> void:
 	color_picker_toggled.emit(toggled_on)
+
+
+func _on_swatch_added(color: Color) -> void:
+	swatch_added.emit(color)
+
+
+func _on_swatch_removed(color: Color) -> void:
+	swatch_removed.emit(color)
