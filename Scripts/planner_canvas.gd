@@ -834,6 +834,26 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 			canvas_changed()
 
 
+func _on_temp_drawing_region_input(event: InputEvent, reg: TempDrawingAction) -> void:
+	if settings.app_mode == Enums.AppMode.PLANNING or drawing_settings.selected_tool != Enums.DrawingTool.MOVE:
+		return
+	if drawing_manager.is_taking_screenshots:
+		return
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
+			reg.set_default_cursor_shape(Control.CURSOR_DRAG)
+			drag_start_mouse_pos = event.position
+			is_drawing = true
+		if event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
+			reg.set_default_cursor_shape(Control.CURSOR_POINTING_HAND)
+			is_dragging = false
+	if event is InputEventMouseMotion and (tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS):
+		var move = event.position - drag_start_mouse_pos
+		if is_dragging:
+			reg.position += move
+			selection_viewer.position = reg.position
+
+
 func _on_element_text_box_active(elem_id: int) -> void:
 	if elements.has(elem_id):
 		select_element(elem_id)

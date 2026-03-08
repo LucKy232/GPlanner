@@ -49,4 +49,5 @@ enum DrawingTool {
 	BRUSH,
 	ERASER_PENCIL,
 	ERASER_BRUSH,
+	MOVE,
 }

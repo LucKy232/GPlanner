@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=8 format=3 uid="uid://y7w4cfil7ay0"]
+[gd_resource type="Theme" format=3 uid="uid://y7w4cfil7ay0"]
 
 [ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_oxmtg"]
 [ext_resource type="StyleBox" uid="uid://v0oe6am8pk4o" path="res://Themes/panel_style_box_flat.tres" id="2_ewvkp"]

@@ -11,6 +11,7 @@ class_name DrawingManager
 @export_file("*.tscn") var canvas_drawing_group_scene
 @export_file("*.tscn") var temp_drawing_action_scene
 @export_file("*.tscn") var drawing_region_scene
+@export_file("*.tscn") var clipboard_image_scene
 
 var canvas_groups: Dictionary[int, CanvasDrawingGroup]
 var current_canvas: int = -1
@@ -53,11 +54,15 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
+	if !canvas_groups.has(current_canvas):
+		return
+	if Input.is_action_just_pressed("clipboard_paste"):
+		if DisplayServer.clipboard_has_image():
+			canvas_groups[current_canvas].add_clipboard_image(DisplayServer.clipboard_get_image(), position, scale)
 	if save_thread_running and !save_thread.is_alive():
 		save_thread_running = false
 		save_thread.wait_to_finish()
 		finished_saving.emit()
-
 
 
 func canvas_drawing_group_has_changes(id: int) -> bool:
@@ -249,10 +254,11 @@ func add_canvas_drawing_group(canvas_id: int) -> void:
 	if canvas_groups.has(canvas_id):
 		printerr("Drawing Manager already has a canvas with that ID (on drawing_manager.add_canvas_drawing_group(id)")
 		return
-	var new_group = load(canvas_drawing_group_scene).instantiate()
+	var new_group: CanvasDrawingGroup = load(canvas_drawing_group_scene).instantiate()
 	add_child(new_group)
 	new_group.temp_drawing_action_scene = temp_drawing_action_scene
 	new_group.drawing_region_scene = drawing_region_scene
+	new_group.clipboard_image_scene = clipboard_image_scene
 	new_group.force_save_request.connect(_on_canvas_drawing_group_force_save_request)
 	new_group.saving_images_to_disk.connect(_on_canvas_drawing_group_saving_images)
 	new_group.force_save_message.connect(_on_canvas_drawing_group_force_save_message)

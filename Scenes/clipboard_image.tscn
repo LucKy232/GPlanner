@@ -1,19 +1,19 @@
-[gd_scene format=3 uid="uid://cpu02i5li1jfy"]
+[gd_scene format=3 uid="uid://cph01rtbsrwne"]
 
-[ext_resource type="Script" uid="uid://7d2lj2kc8a2d" path="res://Scripts/temp_drawing_action.gd" id="1_s0ehb"]
+[ext_resource type="Script" uid="uid://3skn0lwmxpk8" path="res://Scripts/clipboard_image.gd" id="1_ntkdd"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0ec2q"]
 
-[node name="TempDrawingAction" type="TextureRect" unique_id=1903721844]
-light_mask = 5
-visibility_layer = 5
-z_index = -3
+[node name="ClipboardImage" type="TextureRect" unique_id=1903721844]
+light_mask = 32
+visibility_layer = 32
+z_index = -2
 z_as_relative = false
 texture_filter = 1
 texture_repeat = 1
 size_flags_horizontal = 0
 size_flags_vertical = 0
-script = ExtResource("1_s0ehb")
+script = ExtResource("1_ntkdd")
 
 [node name="Area2D" type="Area2D" parent="." unique_id=282743479]
 monitorable = false
@@ -21,4 +21,6 @@ monitorable = false
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=951847635]
 shape = SubResource("RectangleShape2D_0ec2q")
 
+[connection signal="item_rect_changed" from="." to="." method="_on_item_rect_changed"]
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
 [connection signal="input_event" from="Area2D" to="." method="_on_area_2d_input_event"]

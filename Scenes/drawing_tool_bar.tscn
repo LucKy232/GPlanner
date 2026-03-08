@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://beylfa265iu7e"]
+[gd_scene format=3 uid="uid://beylfa265iu7e"]
 
 [ext_resource type="Script" uid="uid://bbbggtoioxgv3" path="res://Scripts/drawing_tool_bar.gd" id="1_6c0qi"]
 [ext_resource type="Theme" uid="uid://d02qopbtpa4om" path="res://Themes/color_picker_theme.tres" id="2_ds173"]
@@ -20,7 +20,7 @@ corner_detail = 1
 [sub_resource type="Theme" id="Theme_fywfu"]
 Panel/styles/panel = SubResource("StyleBoxFlat_kln4y")
 
-[node name="DrawingToolBar" type="HBoxContainer"]
+[node name="DrawingToolBar" type="HBoxContainer" unique_id=786594650]
 light_mask = 2
 visibility_layer = 2
 anchors_preset = 15
@@ -36,7 +36,7 @@ script = ExtResource("1_6c0qi")
 color_picker_theme = ExtResource("2_ds173")
 color_picker_panel_theme = SubResource("Theme_fywfu")
 
-[node name="ColorPickerButton" type="ColorPickerButton" parent="."]
+[node name="ColorPickerButton" type="ColorPickerButton" parent="." unique_id=1222131644]
 light_mask = 2
 visibility_layer = 2
 custom_minimum_size = Vector2(32, 32)
@@ -47,7 +47,7 @@ mouse_default_cursor_shape = 2
 theme = ExtResource("2_l2mxm")
 edit_alpha = false
 
-[node name="PencilSizeSpinBox" type="SpinBox" parent="."]
+[node name="PencilSizeSpinBox" type="SpinBox" parent="." unique_id=219555007]
 light_mask = 2
 visibility_layer = 2
 custom_minimum_size = Vector2(95, 32)
@@ -64,7 +64,7 @@ alignment = 3
 prefix = "Size"
 suffix = " "
 
-[node name="BrushSizeSpinBox" type="SpinBox" parent="."]
+[node name="BrushSizeSpinBox" type="SpinBox" parent="." unique_id=1591029650]
 light_mask = 2
 visibility_layer = 2
 custom_minimum_size = Vector2(95, 32)
@@ -80,7 +80,7 @@ alignment = 3
 prefix = "Size"
 suffix = " "
 
-[node name="PressureSpinBox" type="SpinBox" parent="."]
+[node name="PressureSpinBox" type="SpinBox" parent="." unique_id=1501992806]
 light_mask = 2
 visibility_layer = 2
 custom_minimum_size = Vector2(100, 32)
@@ -95,11 +95,11 @@ alignment = 3
 prefix = "P"
 suffix = "%"
 
-[node name="InputRepeatTimer" type="Timer" parent="."]
+[node name="InputRepeatTimer" type="Timer" parent="." unique_id=1889073272]
 wait_time = 0.4
 one_shot = true
 
-[node name="ColorPicker" type="ColorPicker" parent="."]
+[node name="ColorPicker" type="ColorPicker" parent="." unique_id=1589327383]
 visible = false
 layout_mode = 2
 

@@ -166,6 +166,9 @@ func _process(_delta):
 		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.ERASER_BRUSH], true) and !disable_input():
 			drawing_tool_box.select(Enums.DrawingTool.ERASER_BRUSH)
 			_on_drawing_tool_box_item_selected(Enums.DrawingTool.ERASER_BRUSH)
+		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.MOVE], true) and !disable_input():
+			drawing_tool_box.select(Enums.DrawingTool.MOVE)
+			_on_drawing_tool_box_item_selected(Enums.DrawingTool.MOVE)
 	
 	if canvases[cc].settings.app_mode == Enums.AppMode.PLANNING:
 		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.SELECT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
@@ -235,6 +238,7 @@ func create_drawing_tool_keybinds() -> void:
 	draw_tool_keybinds[Enums.DrawingTool.BRUSH] = "brush"
 	draw_tool_keybinds[Enums.DrawingTool.ERASER_PENCIL] = "eraser_pencil"
 	draw_tool_keybinds[Enums.DrawingTool.ERASER_BRUSH] = "eraser_brush"
+	draw_tool_keybinds[Enums.DrawingTool.MOVE] = "drawing_move"
 	
 	for tool in draw_tool_keybinds:
 		for event in InputMap.action_get_events(draw_tool_keybinds[tool]):

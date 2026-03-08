@@ -20,7 +20,10 @@ var past_drawing_actions: Array[TempDrawingAction]
 var future_drawing_actions: Array[TempDrawingAction]
 ## When past_drawing_actions is full, the front TempDrawingAction gets removed and placed here
 var past_actions_overflow: Array[TempDrawingAction]
+var moving_images: Dictionary[ClipboardImage, bool]
 var regions: Dictionary[Vector2i, DrawingRegion]
+var clipboard_images: Array[ClipboardImage]
+
 var pencil_material: CanvasItemMaterial			## CanvasItemMaterial.BLEND_MODE_MIX set up in init()
 var eraser_material: CanvasItemMaterial			## CanvasItemMaterial.BLEND_MODE_SUB set up in init()
 var mask_eraser_material: CanvasItemMaterial	## CanvasItemMaterial.BLEND_MODE_MUL set up in init()
@@ -29,6 +32,7 @@ var MAX_PAST_ACTIONS: int = 100	## Actions available to undo.
 var FORCE_SAVE_REQUEST_KB_LIMIT: float = 512000.0	## When the force_save_request signal will be triggered, (used_temp_data_kb + used_overflow_data_kb is measured currently). A message will be sent using StatusBar via force_save_message signal at 75% of this value.
 var temp_drawing_action_scene	## Scene to instantiate for a single drawing stroke / action.
 var drawing_region_scene		## Scene to instantiate for a final image (1024x1024) that will get saved to disk.
+var clipboard_image_scene
 var folder_path: String = ""	## Folder inside user:// in which the images are stored, created on save_images() inside main.gd or loaded on rebuild_canvas_state() inside planner_canvas.gd
 var size: Vector2
 var used_temp_data_kb: float = 0.0		## Counts the image sizes of past_drawing_actions
@@ -109,7 +113,6 @@ func has_changes() -> bool:
 
 func receive_coords(p1: Vector2, p2: Vector2, settings: DrawingSettings, pressure: float) -> void:
 	var to_set_material: bool = true if current_stroke.type != settings.selected_tool else false
-	
 	if settings.selected_tool == Enums.DrawingTool.BRUSH:
 		if to_set_material:
 			position_brush_to_current_stroke()
@@ -198,11 +201,12 @@ func end_stroke() -> void:
 		current_stroke.queue_free()
 	else:
 		past_drawing_actions.append(current_stroke)
+		#current_stroke.mouse_pressed.connect(_on_temp_drawing_action_mouse_pressed.bind(current_stroke))
 	used_temp_data_kb += current_stroke.data_usage_kb
 	check_save_request_needed()
 	
 	current_stroke = add_temp_drawing_action()
-	# If inputting an action, can't redo anymore
+	# If inputting a new action, can't redo anymore so delete the future actions
 	for i in future_drawing_actions.size():
 		var remove: TempDrawingAction = future_drawing_actions.pop_front()
 		used_temp_data_kb -= remove.data_usage_kb
@@ -328,12 +332,12 @@ func update_regions_from_screenshots(screenshots: Dictionary[Vector2i, Image]) -
 
 
 func add_temp_drawing_action() -> TempDrawingAction:
-	var temp = load(temp_drawing_action_scene).instantiate()
+	var temp: TempDrawingAction = load(temp_drawing_action_scene).instantiate()
 	temp_drawing_actions_container.add_child(temp)
 	temp.name = "TempDrawingAction"
 	temp.size = size
 	temp.position = position
-	temp.init_image(size.x, size.y)
+	temp.init_image(int(size.x), int(size.y))
 	return temp
 
 
@@ -345,6 +349,26 @@ func add_drawing_region(region_v2i: Vector2i) -> void:
 	reg.position = Vector2(region_v2i.x * 1024.0, region_v2i.y * 1024.0)
 	regions[region_v2i] = reg
 	reg.move_to_front()
+
+
+func add_clipboard_image(image: Image, pos: Vector2, scl: Vector2) -> void:
+	var clip: ClipboardImage = load(clipboard_image_scene).instantiate()
+	temp_drawing_actions_container.add_child(clip)
+	clip.name = "ClipboardImage"
+	clip.size = image.get_size()
+	clip.update_from_image(image)
+	clip.mouse_pressed.connect(_on_clipboard_image_mouse_pressed.bind(clip))
+	clip.position = -pos / scl.x + get_viewport_rect().size * 0.5 / scl.x - image.get_size() * 0.5
+	clipboard_images.append(clip)
+
+
+func add_clipboard_image_from_data(data: Dictionary) -> void:
+	var clip: ClipboardImage = load(clipboard_image_scene).instantiate()
+	temp_drawing_actions_container.add_child(clip)
+	clip.name = "ClipboardImage"
+	clip.load_from_dict(data)
+	clip.mouse_pressed.connect(_on_clipboard_image_mouse_pressed.bind(clip))
+	clipboard_images.append(clip)
 
 
 ## Repositions the current_stroke TempDrawingAction to the current viewport
@@ -390,6 +414,20 @@ func save_all_images_to_json() -> void:
 			dict["%02d-%02d"%[r.x, r.y]] = regions[r].serialized_data
 	
 	var saved_num: int = 0
+	for ci in clipboard_images:
+		if ci.save:
+			var ci_dict: Dictionary
+			if ci.serialized_data == "":
+				ci_dict["serialized_data"] = ci.get_serialized_image_data()
+			else:
+				ci_dict["serialized_data"] = ci.serialized_data
+			ci_dict["pos_x"] = ci.cached_position.x
+			ci_dict["pos_y"] = ci.cached_position.y
+			ci_dict["scale"] = ci.cached_scale
+			dict["ci%d"%[saved_num]] = ci_dict
+			saved_num += 1
+			call_deferred("emit_signal", "saving_images_to_disk", "Saving image data: %d / %d" % [saved_num, clipboard_images.size()])
+	saved_num = 0
 	for r in regions_to_save:
 		dict["%02d-%02d"%[r.x, r.y]] = regions[r].get_serialized_image_data()
 		saved_num += 1
@@ -419,11 +457,15 @@ func save_all_images_to_json() -> void:
 func rebuild_images_from_json(dict: Dictionary) -> void:
 	complete_json_image_data = dict
 	for key in dict:
-		var reg_v2i: Vector2i = Vector2i(int(key.get_slice("-", 0)), int(key.get_slice("-", 1)))
-		var image_data: String = dict[key]
-		add_drawing_region(reg_v2i)
-		regions[reg_v2i].serialized_data = image_data
-		regions[reg_v2i].load_from_data()
+		if key.begins_with("ci"):
+			var image_data: Dictionary = dict[key]
+			add_clipboard_image_from_data(image_data)
+		else:
+			var reg_v2i: Vector2i = Vector2i(int(key.get_slice("-", 0)), int(key.get_slice("-", 1)))
+			var image_data: String = dict[key]
+			add_drawing_region(reg_v2i)
+			regions[reg_v2i].serialized_data = image_data
+			regions[reg_v2i].load_from_data()
 
 
 # UNLOAD IMAGES THAT HAVE SERIALIZED DATA
@@ -523,3 +565,20 @@ func unload_all_drawing_regions_with_path() -> void:
 	for r in regions:
 		if regions[r].file_path != "" and regions[r].is_loaded:
 			regions[r].unload()
+
+
+func _on_clipboard_image_mouse_pressed(temp: ClipboardImage) -> void:
+	moving_images.clear()
+	moving_images[temp] = true
+
+
+# TODO check if selected tool move
+# TODO mouse pointer
+func _input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.button_mask == 0:
+		moving_images.clear()
+		return
+	if event is InputEventMouseMotion and event.button_mask == 1:
+		for m_tda in moving_images:
+			m_tda.position += event.relative * brush_draw_viewport_container.scale
+			m_tda.cached_position = m_tda.position

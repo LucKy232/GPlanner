@@ -1,6 +1,7 @@
 extends TextureRect
 class_name TempDrawingAction
 
+@onready var collision_shape_2d: CollisionShape2D = $Area2D/CollisionShape2D
 var image: Image
 var width: int
 var height: int
@@ -19,6 +20,7 @@ var pixel_brushes: Dictionary = {
 	3: [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1], [1, 1], [-1, -1], [1, -1], [-1, 1]],
 	4: [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1], [1, 1], [-1, -1], [1, -1], [-1, 1], [2, 0], [-2, 0], [0, 2], [0, -2]],
 }
+signal mouse_pressed
 
 func init_image(img_width: int, img_height: int) -> void:
 	width = img_width
@@ -92,9 +94,12 @@ func get_drawing_regions_array() -> Array[Vector2i]:
 	return arr
 
 
-func set_final_texture(img: Image) -> void:
+func set_final_texture(img: Image, set_area_size: bool = false) -> void:
 	image = img
 	texture = ImageTexture.create_from_image(img)
+	if set_area_size:
+		collision_shape_2d.shape.size = img.get_size()
+		collision_shape_2d.position = img.get_size() * 0.5
 
 
 # Returns true if image is 0 pixels and needs to be deleted, and false if >0 pixels
@@ -112,4 +117,11 @@ func trim_down() -> bool:
 	occupied_regions = get_drawing_regions_array()
 	data_usage_kb = float(image.get_data_size()) / 1024.0	# Approximate VRAM usage
 	image = Image.new()			# Save RAM usage, shouldn't be accessed afterwards
+	collision_shape_2d.shape.size = img_used_space.size
+	collision_shape_2d.position = img_used_space.size * 0.5
 	return false
+
+
+#func _on_area_2d_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
+	#if event is InputEventMouseButton and event.button_index == MouseButton.MOUSE_BUTTON_LEFT and event.is_pressed():
+		#mouse_pressed.emit()

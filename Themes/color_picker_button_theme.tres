@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=6 format=3 uid="uid://baxthgpikfcos"]
+[gd_resource type="Theme" format=3 uid="uid://baxthgpikfcos"]
 
 [ext_resource type="SystemFont" uid="uid://celycldjtwytq" path="res://Themes/tooltip_font.tres" id="1_nd36o"]
 

@@ -1,5 +1,4 @@
-extends TextureRect
-class_name DrawingRegion
+class_name DrawingRegion extends TextureRect
 
 var image: Image
 var has_changes: bool = false		## Used to check which images to save to disk
