@@ -30,6 +30,7 @@
 [ext_resource type="Texture2D" uid="uid://dojsm17sk75ju" path="res://Icons/eraser.svg" id="19_yb0ja"]
 [ext_resource type="PackedScene" uid="uid://beylfa265iu7e" path="res://Scenes/drawing_tool_bar.tscn" id="22_s8qe6"]
 [ext_resource type="Texture2D" uid="uid://bq8p1ptkssix3" path="res://Icons/move_arrows.svg" id="23_viu5a"]
+[ext_resource type="Texture2D" uid="uid://byl3rjcb1pn5" path="res://Icons/box_select.svg" id="25_b00ha"]
 [ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="30_15kh8"]
 
 [sub_resource type="Theme" id="Theme_6l7je"]
@@ -126,6 +127,7 @@ cycle_zoom_levels = Array[float]([0.25, 0.5, 1.0, 1.5, 2.0])
 opened_files_file_name = "opened_files_dev.json"
 pencil_cursor = ExtResource("15_5oxhp")
 eraser_pencil_cursor = ExtResource("18_s8qe6")
+hand_cursor = ExtResource("8_76v2p")
 
 [node name="CursorBigBrush" type="TextureRect" parent="." unique_id=13884809]
 visible = false
@@ -225,7 +227,7 @@ theme = SubResource("Theme_x6ack")
 allow_search = false
 auto_width = true
 auto_height = true
-item_count = 5
+item_count = 6
 max_columns = 9
 icon_mode = 0
 item_0/text = "Pencil"
@@ -238,6 +240,8 @@ item_3/text = "Eraser (Brush)"
 item_3/icon = ExtResource("19_yb0ja")
 item_4/text = "Move"
 item_4/icon = ExtResource("23_viu5a")
+item_5/text = "Box Select"
+item_5/icon = ExtResource("25_b00ha")
 
 [node name="DrawingToolBar" parent="MarginContainer/ToolVBox" unique_id=277649483 instance=ExtResource("22_s8qe6")]
 layout_mode = 2

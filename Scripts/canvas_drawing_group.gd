@@ -28,6 +28,7 @@ var pencil_material: CanvasItemMaterial			## CanvasItemMaterial.BLEND_MODE_MIX s
 var eraser_material: CanvasItemMaterial			## CanvasItemMaterial.BLEND_MODE_SUB set up in init()
 var mask_eraser_material: CanvasItemMaterial	## CanvasItemMaterial.BLEND_MODE_MUL set up in init()
 
+var CANVAS_SIZE: Vector2 = Vector2(20000.0, 10000.0)
 var MAX_PAST_ACTIONS: int = 100	## Actions available to undo.
 var FORCE_SAVE_REQUEST_KB_LIMIT: float = 512000.0	## When the force_save_request signal will be triggered, (used_temp_data_kb + used_overflow_data_kb is measured currently). A message will be sent using StatusBar via force_save_message signal at 75% of this value.
 var temp_drawing_action_scene	## Scene to instantiate for a single drawing stroke / action.
@@ -35,6 +36,7 @@ var drawing_region_scene		## Scene to instantiate for a final image (1024x1024) 
 var clipboard_image_scene
 var folder_path: String = ""	## Folder inside user:// in which the images are stored, created on save_images() inside main.gd or loaded on rebuild_canvas_state() inside planner_canvas.gd
 var size: Vector2
+var current_zoom: float = 1.0
 var used_temp_data_kb: float = 0.0		## Counts the image sizes of past_drawing_actions
 var used_overflow_data_kb: float = 0.0	## Counts the image sizes of past_actions_overflow
 var image_load_tasks: Dictionary[int, Vector2i]			## Used to check if the task is finished to then render the texture (can only be done on main thread).
@@ -374,7 +376,7 @@ func add_clipboard_image_from_data(data: Dictionary) -> void:
 ## Repositions the current_stroke TempDrawingAction to the current viewport
 func update_drawing_position_and_scale(pos: Vector2, scl: Vector2) -> void:
 	var new_scale_x: float = 1.0 / scl.x
-	var new_scale_y: float = 1.0 / scl.x
+	var new_scale_y: float = 1.0 / scl.y
 	# Clamping to 1.0 minimum scale so the pixels on the TempDrawingAction 
 	# Won't be smaller than the pixels in the final DrawingRegion
 	var clamped_scale_x: float = clampf(1.0 / scl.x, 1.0, 100.0)
@@ -387,6 +389,12 @@ func update_drawing_position_and_scale(pos: Vector2, scl: Vector2) -> void:
 	brush_eraser_texture.capped_zoom = new_scale_x if new_scale_x < 1.0 else 1.0
 	brush_draw_viewport_container.scale = Vector2(clamped_scale_x, clamped_scale_y)
 	brush_draw_viewport_container.position = pos * Vector2(new_scale_x, new_scale_y)
+	current_zoom = clamped_scale_x
+
+
+func update_current_zoom(scl: float) -> void:
+	var clamped_scale_x: float = clampf(1.0 / scl, 1.0, 100.0)
+	current_zoom = clamped_scale_x
 
 
 func resize(s: Vector2) -> void:
@@ -416,15 +424,7 @@ func save_all_images_to_json() -> void:
 	var saved_num: int = 0
 	for ci in clipboard_images:
 		if ci.save:
-			var ci_dict: Dictionary
-			if ci.serialized_data == "":
-				ci_dict["serialized_data"] = ci.get_serialized_image_data()
-			else:
-				ci_dict["serialized_data"] = ci.serialized_data
-			ci_dict["pos_x"] = ci.cached_position.x
-			ci_dict["pos_y"] = ci.cached_position.y
-			ci_dict["scale"] = ci.cached_scale
-			dict["ci%d"%[saved_num]] = ci_dict
+			dict["ci%d"%[saved_num]] = ci.to_json()
 			saved_num += 1
 			call_deferred("emit_signal", "saving_images_to_disk", "Saving image data: %d / %d" % [saved_num, clipboard_images.size()])
 	saved_num = 0
@@ -572,13 +572,13 @@ func _on_clipboard_image_mouse_pressed(temp: ClipboardImage) -> void:
 	moving_images[temp] = true
 
 
-# TODO check if selected tool move
-# TODO mouse pointer
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_mask == 0:
 		moving_images.clear()
 		return
 	if event is InputEventMouseMotion and event.button_mask == 1:
-		for m_tda in moving_images:
-			m_tda.position += event.relative * brush_draw_viewport_container.scale
-			m_tda.cached_position = m_tda.position
+		for ci in moving_images:
+			ci.position += event.relative * current_zoom
+			ci.position.x = clampf(ci.position.x, 0.0, CANVAS_SIZE.x - ci.size.x)
+			ci.position.y = clampf(ci.position.y, 0.0, CANVAS_SIZE.y - ci.size.y)
+			ci.cached_position = ci.position

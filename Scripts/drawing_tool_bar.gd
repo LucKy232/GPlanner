@@ -115,46 +115,52 @@ func create_keybinds() -> void:
 
 
 func change_tool() -> void:
-	if settings.selected_tool == Enums.DrawingTool.PENCIL:
-		pencil_size_spin_box.visible = true
-		brush_size_spin_box.visible = false
-		color_picker_button.visible = true
-		pressure_spin_box.visible = false
-		
-		pencil_size_spin_box.min_value = settings.pencil_settings.size_limits.x
-		pencil_size_spin_box.max_value = settings.pencil_settings.size_limits.y
-		pencil_size_spin_box.value = settings.pencil_settings.size
-		color_picker_button.color = settings.pencil_settings.color
-	elif settings.selected_tool == Enums.DrawingTool.BRUSH:
-		pencil_size_spin_box.visible = false
-		brush_size_spin_box.visible = true
-		color_picker_button.visible = true
-		pressure_spin_box.visible = true
-		
-		brush_size_spin_box.min_value = settings.brush_settings.size_limits.x
-		brush_size_spin_box.max_value = settings.brush_settings.size_limits.y
-		brush_size_spin_box.value = settings.brush_settings.size
-		color_picker_button.color = settings.brush_settings.color
-		pressure_spin_box.value = settings.brush_settings.pressure * 100.0
-	elif settings.selected_tool == Enums.DrawingTool.ERASER_PENCIL:
-		pencil_size_spin_box.visible = true
-		brush_size_spin_box.visible = false
-		color_picker_button.visible = false
-		pressure_spin_box.visible = false
-		
-		pencil_size_spin_box.min_value = settings.eraser_pencil_settings.size_limits.x
-		pencil_size_spin_box.max_value = settings.eraser_pencil_settings.size_limits.y
-		pencil_size_spin_box.value = settings.eraser_pencil_settings.size
-	elif settings.selected_tool == Enums.DrawingTool.ERASER_BRUSH:
-		pencil_size_spin_box.visible = false
-		brush_size_spin_box.visible = true
-		color_picker_button.visible = false
-		pressure_spin_box.visible = true
-		
-		brush_size_spin_box.min_value = settings.eraser_brush_settings.size_limits.x
-		brush_size_spin_box.max_value = settings.eraser_brush_settings.size_limits.y
-		brush_size_spin_box.value = settings.eraser_brush_settings.size
-		pressure_spin_box.value = settings.eraser_brush_settings.pressure * 100.0
+	match settings.selected_tool:
+		Enums.DrawingTool.PENCIL:
+			pencil_size_spin_box.visible = true
+			brush_size_spin_box.visible = false
+			color_picker_button.visible = true
+			pressure_spin_box.visible = false
+			
+			pencil_size_spin_box.min_value = settings.pencil_settings.size_limits.x
+			pencil_size_spin_box.max_value = settings.pencil_settings.size_limits.y
+			pencil_size_spin_box.value = settings.pencil_settings.size
+			color_picker_button.color = settings.pencil_settings.color
+		Enums.DrawingTool.BRUSH:
+			pencil_size_spin_box.visible = false
+			brush_size_spin_box.visible = true
+			color_picker_button.visible = true
+			pressure_spin_box.visible = true
+			
+			brush_size_spin_box.min_value = settings.brush_settings.size_limits.x
+			brush_size_spin_box.max_value = settings.brush_settings.size_limits.y
+			brush_size_spin_box.value = settings.brush_settings.size
+			color_picker_button.color = settings.brush_settings.color
+			pressure_spin_box.value = settings.brush_settings.pressure * 100.0
+		Enums.DrawingTool.ERASER_PENCIL:
+			pencil_size_spin_box.visible = true
+			brush_size_spin_box.visible = false
+			color_picker_button.visible = false
+			pressure_spin_box.visible = false
+			
+			pencil_size_spin_box.min_value = settings.eraser_pencil_settings.size_limits.x
+			pencil_size_spin_box.max_value = settings.eraser_pencil_settings.size_limits.y
+			pencil_size_spin_box.value = settings.eraser_pencil_settings.size
+		Enums.DrawingTool.ERASER_BRUSH:
+			pencil_size_spin_box.visible = false
+			brush_size_spin_box.visible = true
+			color_picker_button.visible = false
+			pressure_spin_box.visible = true
+			
+			brush_size_spin_box.min_value = settings.eraser_brush_settings.size_limits.x
+			brush_size_spin_box.max_value = settings.eraser_brush_settings.size_limits.y
+			brush_size_spin_box.value = settings.eraser_brush_settings.size
+			pressure_spin_box.value = settings.eraser_brush_settings.pressure * 100.0
+		Enums.DrawingTool.MOVE, Enums.DrawingTool.BOX_SELECT:
+			pencil_size_spin_box.visible = false
+			brush_size_spin_box.visible = false
+			color_picker_button.visible = false
+			pressure_spin_box.visible = false
 
 
 func change_settings(sett: DrawingSettings) -> void:

@@ -41,6 +41,7 @@ extends Control
 @export var opened_files_file_name: String
 @export var pencil_cursor: Texture2D
 @export var eraser_pencil_cursor: Texture2D
+@export var hand_cursor: Texture2D
 
 var draw_tool_keybinds: Dictionary[int, String] = {}
 var tool_keybinds: Dictionary[int, String] = {}
@@ -169,6 +170,9 @@ func _process(_delta):
 		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.MOVE], true) and !disable_input():
 			drawing_tool_box.select(Enums.DrawingTool.MOVE)
 			_on_drawing_tool_box_item_selected(Enums.DrawingTool.MOVE)
+		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.BOX_SELECT], true) and !disable_input():
+			drawing_tool_box.select(Enums.DrawingTool.BOX_SELECT)
+			_on_drawing_tool_box_item_selected(Enums.DrawingTool.BOX_SELECT)
 	
 	if canvases[cc].settings.app_mode == Enums.AppMode.PLANNING:
 		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.SELECT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
@@ -239,6 +243,7 @@ func create_drawing_tool_keybinds() -> void:
 	draw_tool_keybinds[Enums.DrawingTool.ERASER_PENCIL] = "eraser_pencil"
 	draw_tool_keybinds[Enums.DrawingTool.ERASER_BRUSH] = "eraser_brush"
 	draw_tool_keybinds[Enums.DrawingTool.MOVE] = "drawing_move"
+	draw_tool_keybinds[Enums.DrawingTool.BOX_SELECT] = "drawing_box_select"
 	
 	for tool in draw_tool_keybinds:
 		for event in InputMap.action_get_events(draw_tool_keybinds[tool]):
@@ -335,6 +340,7 @@ func new_file(add_canvas: bool) -> int:
 	if add_canvas:
 		new_canvas = load(canvas_scene).instantiate()
 		add_child(new_canvas)
+		drawing_manager.move_to_front()
 		margin_container.move_to_front()
 		element_settings.move_to_front()
 		settings_drawer.move_to_front()
@@ -697,43 +703,46 @@ func change_drawing_tool_cursor() -> void:
 	if !canvases.has(cc):
 		return
 	var tool: Enums.DrawingTool = drawing_tool_bar.settings.selected_tool as Enums.DrawingTool
-	
 	if canvases[cc].settings.app_mode == Enums.AppMode.PLANNING:
 		#Input.set_custom_mouse_cursor(null, Input.CURSOR_ARROW)
 		using_cursor_image = false
 	else:
-		if tool == Enums.DrawingTool.PENCIL:
-			Input.set_custom_mouse_cursor(pencil_cursor, Input.CURSOR_HELP, Vector2(2.0, 26.0))
-			using_cursor_image = false
-		if tool == Enums.DrawingTool.ERASER_PENCIL:
-			Input.set_custom_mouse_cursor(eraser_pencil_cursor, Input.CURSOR_HELP, Vector2(4.5, 26.0))
-			using_cursor_image = false
-		if tool == Enums.DrawingTool.BRUSH:
-			var img = Image.new()
-			var b_size: float = canvases[cc].drawing_settings.brush_settings.size * canvases[cc].scale.x
-			if b_size > 127.0:
-				using_cursor_image = true
-				img.load_svg_from_string(get_2circle_svg(b_size, ceilf(b_size / 40.0 + 1.0), canvases[cc].drawing_settings.brush_settings.color, 0.5))
-				cursor_big_brush.texture = ImageTexture.create_from_image(img)
-				cursor_big_brush.size = Vector2(b_size, b_size)
-			else:
+		match tool:
+			Enums.DrawingTool.PENCIL:
+				Input.set_custom_mouse_cursor(pencil_cursor, Input.CURSOR_HELP, Vector2(2.0, 26.0))
 				using_cursor_image = false
-				b_size = clampf(b_size, 4.0, 127.0)
-				img.load_svg_from_string(get_circle_svg(b_size, ceilf(b_size / 40.0 + 1.0), canvases[cc].drawing_settings.brush_settings.color, 0.5))
-				Input.set_custom_mouse_cursor(img, Input.CURSOR_HELP, img.get_size() * 0.5)
-		if tool == Enums.DrawingTool.ERASER_BRUSH:
-			var img = Image.new()
-			var b_size: float = canvases[cc].drawing_settings.eraser_brush_settings.size * canvases[cc].scale.x
-			if b_size > 127.0:
-				using_cursor_image = true
-				img.load_svg_from_string(get_2circle_svg(b_size, ceilf(b_size / 40.0 + 1.0), Color(1.0, 1.0, 1.0), 0.5))
-				cursor_big_brush.texture = ImageTexture.create_from_image(img)
-				cursor_big_brush.size = Vector2(b_size, b_size)
-			else:
+			Enums.DrawingTool.ERASER_PENCIL:
+				Input.set_custom_mouse_cursor(eraser_pencil_cursor, Input.CURSOR_HELP, Vector2(4.5, 26.0))
 				using_cursor_image = false
-				b_size = clampf(b_size, 4.0, 127.0)
-				img.load_svg_from_string(get_circle_svg(b_size, ceilf(b_size / 40.0 + 1.0), Color(1.0, 1.0, 1.0), 0.5))
-				Input.set_custom_mouse_cursor(img, Input.CURSOR_HELP, img.get_size() * 0.5)
+			Enums.DrawingTool.MOVE, Enums.DrawingTool.BOX_SELECT:
+				Input.set_custom_mouse_cursor(hand_cursor, Input.CURSOR_HELP, Vector2(9.0, 0.0))
+				using_cursor_image = false
+			Enums.DrawingTool.BRUSH:
+				var img = Image.new()
+				var b_size: float = canvases[cc].drawing_settings.brush_settings.size * canvases[cc].scale.x
+				if b_size > 127.0:
+					using_cursor_image = true
+					img.load_svg_from_string(get_2circle_svg(b_size, ceilf(b_size / 40.0 + 1.0), canvases[cc].drawing_settings.brush_settings.color, 0.5))
+					cursor_big_brush.texture = ImageTexture.create_from_image(img)
+					cursor_big_brush.size = Vector2(b_size, b_size)
+				else:
+					using_cursor_image = false
+					b_size = clampf(b_size, 4.0, 127.0)
+					img.load_svg_from_string(get_circle_svg(b_size, ceilf(b_size / 40.0 + 1.0), canvases[cc].drawing_settings.brush_settings.color, 0.5))
+					Input.set_custom_mouse_cursor(img, Input.CURSOR_HELP, img.get_size() * 0.5)
+			Enums.DrawingTool.ERASER_BRUSH:
+				var img = Image.new()
+				var b_size: float = canvases[cc].drawing_settings.eraser_brush_settings.size * canvases[cc].scale.x
+				if b_size > 127.0:
+					using_cursor_image = true
+					img.load_svg_from_string(get_2circle_svg(b_size, ceilf(b_size / 40.0 + 1.0), Color(1.0, 1.0, 1.0), 0.5))
+					cursor_big_brush.texture = ImageTexture.create_from_image(img)
+					cursor_big_brush.size = Vector2(b_size, b_size)
+				else:
+					using_cursor_image = false
+					b_size = clampf(b_size, 4.0, 127.0)
+					img.load_svg_from_string(get_circle_svg(b_size, ceilf(b_size / 40.0 + 1.0), Color(1.0, 1.0, 1.0), 0.5))
+					Input.set_custom_mouse_cursor(img, Input.CURSOR_HELP, img.get_size() * 0.5)
 	use_mouse_cursor_big_brush()
 
 
@@ -967,6 +976,7 @@ func _on_canvas_changed_zoom() -> void:
 	zoom_indicator.update_zoom(canvases[cc].scale.x)
 	pan_indicator_camera.update_zoom(canvases[cc].position, canvases[cc].scale.x)
 	drawing_manager.scale = canvases[cc].scale
+	drawing_manager.update_current_zoom(canvases[cc].scale.x)
 	if canvases[cc].settings.app_mode == Enums.AppMode.DRAWING:
 		change_drawing_tool_cursor()
 

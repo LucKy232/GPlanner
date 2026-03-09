@@ -1,6 +1,98 @@
 [gd_scene format=3 uid="uid://cph01rtbsrwne"]
 
 [ext_resource type="Script" uid="uid://3skn0lwmxpk8" path="res://Scripts/clipboard_image.gd" id="1_ntkdd"]
+[ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="2_elnlm"]
+[ext_resource type="Texture2D" uid="uid://end3da7uy1ct" path="res://Icons/close_button.svg" id="2_jn52f"]
+[ext_resource type="Texture2D" uid="uid://bjdohnbteubps" path="res://Icons/drawing_front.svg" id="3_ax8r8"]
+[ext_resource type="SystemFont" uid="uid://celycldjtwytq" path="res://Themes/tooltip_font.tres" id="3_fa2i1"]
+[ext_resource type="Texture2D" uid="uid://daldghxv524n3" path="res://Icons/image_front.svg" id="5_fa2i1"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ax8r8"]
+content_margin_top = 4.0
+bg_color = Color(0, 0, 0, 0.705882)
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+corner_detail = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u26wf"]
+content_margin_top = 4.0
+bg_color = Color(1, 1, 1, 0.7058824)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.188235, 0.701961, 1, 1)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+corner_detail = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p0vr5"]
+content_margin_top = 4.0
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+corner_detail = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qr5b2"]
+bg_color = Color(0, 0, 0, 0.7058824)
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+corner_detail = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5be5y"]
+content_margin_top = 4.0
+bg_color = Color(0.6, 0.6, 0.6, 0.7058824)
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+corner_detail = 2
+
+[sub_resource type="Theme" id="Theme_8g6fy"]
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/fonts/font = ExtResource("2_elnlm")
+Button/styles/focus = SubResource("StyleBoxFlat_ax8r8")
+Button/styles/hover = SubResource("StyleBoxFlat_u26wf")
+Button/styles/hover_pressed = SubResource("StyleBoxFlat_p0vr5")
+Button/styles/normal = SubResource("StyleBoxFlat_qr5b2")
+Button/styles/pressed = SubResource("StyleBoxFlat_5be5y")
+TooltipLabel/font_sizes/font_size = 16
+TooltipLabel/fonts/font = ExtResource("3_fa2i1")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0ec2q"]
 
@@ -11,9 +103,47 @@ z_index = -2
 z_as_relative = false
 texture_filter = 1
 texture_repeat = 1
+offset_right = 500.0
+offset_bottom = 500.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
 script = ExtResource("1_ntkdd")
+IMAGE_FRONT_TEXTURE = ExtResource("5_fa2i1")
+DRAWING_FRONT_TEXTURE = ExtResource("3_ax8r8")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1463570960]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1624625077]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="HideButton" type="Button" parent="MarginContainer/HBoxContainer" unique_id=70841885]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+tooltip_text = "Delete image"
+theme = SubResource("Theme_8g6fy")
+icon = ExtResource("2_jn52f")
+
+[node name="OrderButton" type="Button" parent="MarginContainer/HBoxContainer" unique_id=1798761089]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(32, 32)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = SubResource("Theme_8g6fy")
+toggle_mode = true
+button_pressed = true
+icon = ExtResource("5_fa2i1")
 
 [node name="Area2D" type="Area2D" parent="." unique_id=282743479]
 monitorable = false
@@ -23,4 +153,8 @@ shape = SubResource("RectangleShape2D_0ec2q")
 
 [connection signal="item_rect_changed" from="." to="." method="_on_item_rect_changed"]
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="pressed" from="MarginContainer/HBoxContainer/HideButton" to="." method="_on_hide_button_pressed"]
+[connection signal="toggled" from="MarginContainer/HBoxContainer/OrderButton" to="." method="_on_order_button_toggled"]
 [connection signal="input_event" from="Area2D" to="." method="_on_area_2d_input_event"]
+[connection signal="mouse_entered" from="Area2D" to="." method="_on_area_2d_mouse_entered"]
+[connection signal="mouse_exited" from="Area2D" to="." method="_on_area_2d_mouse_exited"]

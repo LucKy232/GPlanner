@@ -20,6 +20,7 @@ var pixel_brushes: Dictionary = {
 	3: [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1], [1, 1], [-1, -1], [1, -1], [-1, 1]],
 	4: [[0, 0], [1, 0], [0, 1], [-1, 0], [0, -1], [1, 1], [-1, -1], [1, -1], [-1, 1], [2, 0], [-2, 0], [0, 2], [0, -2]],
 }
+@warning_ignore("unused_signal")
 signal mouse_pressed
 
 func init_image(img_width: int, img_height: int) -> void:

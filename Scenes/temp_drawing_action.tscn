@@ -13,6 +13,7 @@ texture_filter = 1
 texture_repeat = 1
 size_flags_horizontal = 0
 size_flags_vertical = 0
+mouse_filter = 2
 script = ExtResource("1_s0ehb")
 
 [node name="Area2D" type="Area2D" parent="." unique_id=282743479]

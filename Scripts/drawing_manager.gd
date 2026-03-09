@@ -232,6 +232,10 @@ func update_drawing_position_and_scale(pos: Vector2, scl: Vector2) -> void:
 	canvas_groups[current_canvas].update_drawing_position_and_scale(pos, scl)
 
 
+func update_current_zoom(scl: float) -> void:
+	canvas_groups[current_canvas].update_current_zoom(scl)
+
+
 func set_folder_path(canvas_id: int, path: String) -> void:
 	if !canvas_groups.has(canvas_id):
 		return

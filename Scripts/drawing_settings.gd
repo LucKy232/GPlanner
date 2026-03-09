@@ -15,8 +15,8 @@ enum Direction
 	NONE,
 	UPDOWN,
 	LEFTRIGHT,
-	DIAGONALUP,
-	DIAGONALDOWN,
+	#DIAGONALUP,
+	#DIAGONALDOWN,
 }
 
 class PencilSettings:
@@ -146,16 +146,16 @@ func find_direction(p1: Vector2, p2: Vector2) -> void:
 	initial_straight_point = p1
 	var diff: Vector2 = p2 - p1
 	var ang: float = atan2(diff.y, diff.x) * 180.0 / PI
-	var margin: float = 22.5
-	
+	#var margin: float = 22.5
+	var margin: float = 40.0	# Diagonals disabled
 	if (ang > -90.0 - margin and ang <= -90.0 + margin) or (ang > 90.0 - margin and ang <= 90.0 + margin):
 		direction = Direction.UPDOWN
-	elif (ang > -45.0 - margin and ang <= -45 + margin) or (ang > 135.0 - margin and ang <= 135.0 + margin):
-		direction = Direction.DIAGONALUP
 	elif (ang > 0.0 - margin and ang <= 0.0 + margin) or (ang > 180.0 - margin or ang < -180.0 + margin):
 		direction = Direction.LEFTRIGHT
-	elif (ang > 45.0 - margin and ang <= 45.0 + margin) or (ang > -135.0 - margin and ang <= -135.0 + margin):
-		direction = Direction.DIAGONALDOWN
+	#elif (ang > -45.0 - margin and ang <= -45 + margin) or (ang > 135.0 - margin and ang <= 135.0 + margin):
+		#direction = Direction.DIAGONALUP
+	#elif (ang > 45.0 - margin and ang <= 45.0 + margin) or (ang > -135.0 - margin and ang <= -135.0 + margin):
+		#direction = Direction.DIAGONALDOWN
 
 
 func get_next_straight_point(p: Vector2) -> Vector2:
@@ -164,15 +164,15 @@ func get_next_straight_point(p: Vector2) -> Vector2:
 			return Vector2(initial_straight_point.x, p.y)
 		Direction.LEFTRIGHT:
 			return Vector2(p.x, initial_straight_point.y)
-		Direction.DIAGONALUP:
-			var dist: float = initial_straight_point.distance_to(p)
-			var mult: float = 1.0 if p.x > initial_straight_point.x else -1.0
-			return initial_straight_point + Vector2(1.0, -1.0) * dist * mult / SQRT2
-		Direction.DIAGONALDOWN:
-			var dist: float = initial_straight_point.distance_to(p)
-			var mult: float = 1.0 if p.x > initial_straight_point.x else -1.0
-			return initial_straight_point + Vector2(1.0, 1.0) * dist * mult / SQRT2
 		Direction.NONE:
 			return p
 		_:
 			return p
+		#Direction.DIAGONALUP:
+			#var dist: float = initial_straight_point.distance_to(p)
+			#var mult: float = 1.0 if p.x > initial_straight_point.x else -1.0
+			#return initial_straight_point + Vector2(1.0, -1.0) * dist * mult / SQRT2
+		#Direction.DIAGONALDOWN:
+			#var dist: float = initial_straight_point.distance_to(p)
+			#var mult: float = 1.0 if p.x > initial_straight_point.x else -1.0
+			#return initial_straight_point + Vector2(1.0, 1.0) * dist * mult / SQRT2
