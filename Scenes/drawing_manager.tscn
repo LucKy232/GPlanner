@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://cg3drsp3kg5hm"]
+[gd_scene format=3 uid="uid://cg3drsp3kg5hm"]
 
 [ext_resource type="Script" uid="uid://bl6j87vh8ghmf" path="res://Scripts/drawing_manager.gd" id="1_5m78p"]
 [ext_resource type="Texture2D" uid="uid://ck2luoi8jg6g" path="res://Icons/pencil.svg" id="2_6e8qd"]
@@ -22,16 +22,12 @@ font_size = 30
 outline_size = 8
 outline_color = Color(0, 0, 0, 1)
 
-[node name="DrawingManager" type="Control"]
+[node name="DrawingManager" type="Control" unique_id=195826480]
 light_mask = 4
 visibility_layer = 4
 z_index = 4
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
 mouse_filter = 2
 script = ExtResource("1_5m78p")
 pencil_cursor = ExtResource("2_6e8qd")
@@ -40,7 +36,7 @@ canvas_drawing_group_scene = "uid://ciqbw443fikno"
 temp_drawing_action_scene = "uid://cpu02i5li1jfy"
 drawing_region_scene = "uid://cco3y5ld1vdkm"
 
-[node name="Curtain" type="Panel" parent="."]
+[node name="Curtain" type="Panel" parent="." unique_id=1026901446]
 visible = false
 top_level = true
 light_mask = 8
@@ -54,7 +50,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_5m78p")
 
-[node name="GreyoutPanel" type="Panel" parent="Curtain"]
+[node name="GreyoutPanel" type="Panel" parent="Curtain" unique_id=515109495]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -63,7 +59,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_6e8qd")
 
-[node name="MarginContainer" type="MarginContainer" parent="Curtain"]
+[node name="MarginContainer" type="MarginContainer" parent="Curtain" unique_id=2026430980]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -72,23 +68,23 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_bottom = 50
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Curtain/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="Curtain/MarginContainer" unique_id=791879358]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 8
 
-[node name="Label" type="Label" parent="Curtain/MarginContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="Curtain/MarginContainer/VBoxContainer" unique_id=1834687154]
 layout_mode = 2
 text = "Saving Images in Progress"
 label_settings = SubResource("LabelSettings_5m78p")
 
-[node name="ScreenshotProgressLabel" type="Label" parent="Curtain/MarginContainer/VBoxContainer"]
+[node name="ScreenshotProgressLabel" type="Label" parent="Curtain/MarginContainer/VBoxContainer" unique_id=1287950524]
 layout_mode = 2
 text = "..."
 label_settings = SubResource("LabelSettings_6e8qd")
 horizontal_alignment = 1
 
-[node name="SubViewport" type="SubViewport" parent="."]
+[node name="SubViewport" type="SubViewport" parent="." unique_id=1116943753]
 disable_3d = true
 transparent_bg = true
 handle_input_locally = false

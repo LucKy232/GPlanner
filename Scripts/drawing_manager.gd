@@ -75,6 +75,7 @@ func save_if_canvas_drawing_group_has_changes(id: int) -> bool:
 	if current_canvas != id and canvas_groups.has(id):
 		change_active_canvas_drawing_group(id)
 	var changes: bool = canvas_groups[current_canvas].has_changes()
+	print("SAVING IMAGES | Changes: %s" % [str(changes)])
 	if !changes:
 		finished_saving.emit()
 	else:
@@ -91,6 +92,7 @@ func begin_save_sequence() -> void:
 	#elif save_type == SaveType.PARTIAL:
 		#screenshot_requests = canvas_groups[current_canvas].make_past_and_overflow_actions_permanent(0.0)
 	needed_screenshot_number = screenshot_requests.size()
+	print("SAVE NEEDS SCREENSHOTS: %d" % needed_screenshot_number)
 	
 	if canvas_groups[current_canvas].reload_all_drawing_regions_from_path():
 		await canvas_groups[current_canvas].all_drawing_regions_visible
@@ -115,6 +117,8 @@ func begin_screenshot_sequence() -> void:
 		move_to_region(screenshot_requests[0])
 		await prepare_next_screenshot()
 		next_screenshot()
+	else:
+		end_save_sequence()
 
 
 # Calls itself until screenshot_requests is empty
@@ -128,12 +132,16 @@ func next_screenshot() -> void:
 	else:
 		if save_type == SaveType.NORMAL:
 			end_screenshot_sequence()
-			if save_method == SaveMethod.USER_FOLDER:
-				save_all_images_to_folder_threaded()
-			elif save_method == SaveMethod.DIRECT_JSON:
-				save_all_images_to_json_threaded()
+			end_save_sequence()
 		elif save_type == SaveType.FORCED:
 			end_screenshot_sequence()
+
+
+func end_save_sequence() -> void:
+	if save_method == SaveMethod.USER_FOLDER:
+		save_all_images_to_folder_threaded()
+	elif save_method == SaveMethod.DIRECT_JSON:
+		save_all_images_to_json_threaded()
 
 
 func prepare_next_screenshot() -> void:
@@ -221,9 +229,9 @@ func drawing_region_data_to_json() -> Dictionary:
 func rebuild_paths_from_json(canvas_id: int, dict: Dictionary) -> void:
 	if canvas_groups.has(canvas_id):
 		if save_method == SaveMethod.USER_FOLDER:
-			canvas_groups[canvas_id].rebuild_file_paths_from_json(dict)		# Load image paths from folder
+			canvas_groups[canvas_id].rebuild_file_paths_from_json(dict)	# Load image paths from folder
 		elif save_method == SaveMethod.DIRECT_JSON:
-			canvas_groups[canvas_id].rebuild_images_from_json(dict)				# Load images from .json
+			canvas_groups[canvas_id].rebuild_images_from_json(dict)		# Load images from .json
 
 
 # Called before starting to draw a new current_stroke (from planner_canvas.gd)
@@ -266,7 +274,7 @@ func add_canvas_drawing_group(canvas_id: int) -> void:
 	new_group.force_save_request.connect(_on_canvas_drawing_group_force_save_request)
 	new_group.saving_images_to_disk.connect(_on_canvas_drawing_group_saving_images)
 	new_group.force_save_message.connect(_on_canvas_drawing_group_force_save_message)
-	new_group.init(size)
+	new_group.init(get_viewport_rect().size)
 	canvas_groups[canvas_id] = new_group
 
 

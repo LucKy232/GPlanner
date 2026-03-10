@@ -144,10 +144,6 @@ func set_requested_save_action(act: int) -> void:
 	#print("Request action %d" % act)
 
 
-func is_ready_for_action() -> bool:
-	return save_state.is_ready_to_save()
-
-
 func set_file_names(path: String) -> void:
 	opened_file_path = path
 	file_name_short = opened_file_path.get_file().get_slice(".", 0)

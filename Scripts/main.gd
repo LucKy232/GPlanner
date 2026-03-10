@@ -340,6 +340,7 @@ func new_file(add_canvas: bool) -> int:
 	if add_canvas:
 		new_canvas = load(canvas_scene).instantiate()
 		add_child(new_canvas)
+		new_canvas.name = "PlanningCanvas"
 		drawing_manager.move_to_front()
 		margin_container.move_to_front()
 		element_settings.move_to_front()
@@ -393,6 +394,7 @@ func save_images() -> void:
 	
 	drawing_manager.finished_saving.connect(_on_drawing_manager_finished_saving.bind(cc), CONNECT_ONE_SHOT)
 	var needs_save: bool = drawing_manager.save_if_canvas_drawing_group_has_changes(cc)
+	print("Needs save: %s" % [str(needs_save)])
 	if needs_save:
 		prepare_to_save_images_lock_UI()
 
@@ -850,8 +852,7 @@ func _on_save_button_pressed() -> void:
 		return
 	if canvases[cc].opened_file_path == "":
 		file_dialog_save.visible = true
-	# Not currently saving images, but needs to
-	elif !canvases[cc].is_ready_for_action():
+	elif drawing_manager.canvas_drawing_group_has_changes(cc):
 		if close_this_tab:
 			close_this_tab = false
 			canvases[cc].set_requested_save_action(Enums.RequestedActionType.CLOSE_TAB_BUTTON)
@@ -882,7 +883,7 @@ func _on_save_as_button_pressed() -> void:
 
 
 func _on_file_dialog_save_file_selected(path: String) -> void:
-	if !canvases[cc].is_ready_for_action():
+	if drawing_manager.canvas_drawing_group_has_changes(cc):
 		canvases[cc].set_file_names(path)
 		if close_this_tab:
 			close_this_tab = false

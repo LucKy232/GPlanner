@@ -62,20 +62,21 @@ func load_from_path() -> void:
 	image = Image.load_from_file(file_path)
 
 
-func load_from_data() -> void:
+func load_image_from_data() -> void:
 	var raw: PackedByteArray = Marshalls.base64_to_raw(serialized_data)
 	if raw.size() > 0:
-		image = Image.new()
+		free_image()
 		image.load_png_from_buffer(raw)
+		call_thread_safe("redraw_texture_from_image")
 
 
-func redraw_existing_image() -> void:
+func redraw_texture_from_image() -> void:
 	if image and !image.is_empty():
 		texture = ImageTexture.create_from_image(image)
 		is_loaded = true
 		if !image.is_invisible():
 			is_invisible = false
-		image = Image.new()
+		free_image()
 
 
 # Only call if image is prepared

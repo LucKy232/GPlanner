@@ -25,7 +25,3 @@ func set_requested_action(act: Enums.RequestedActionType) -> void:
 
 func reset_requested_action() -> void:
 	action_type = -1
-
-
-func is_ready_to_save() -> bool:
-	return !needs_to_save_images

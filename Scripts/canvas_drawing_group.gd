@@ -41,8 +41,11 @@ var used_temp_data_kb: float = 0.0		## Counts the image sizes of past_drawing_ac
 var used_overflow_data_kb: float = 0.0	## Counts the image sizes of past_actions_overflow
 var image_load_tasks: Dictionary[int, Vector2i]			## Used to check if the task is finished to then render the texture (can only be done on main thread).
 var regions_being_loaded: Dictionary[Vector2i, bool]	## Bool not used, just searching the hash map to not cycle trough all regions or use array search.
+var clipboard_image_load_tasks: Dictionary[int, ClipboardImage]
+var clipboard_images_being_loaded: Dictionary[ClipboardImage, bool]
 var active_brush_shader: ShaderMaterial					## The material of the current_stroke
 var complete_json_image_data: Dictionary
+var clipboard_images_changed: bool = false
 
 ## Emits when 75% of FORCE_SAVE_REQUEST_KB_LIMIT is reached to inform the user that they should save.
 signal force_save_message
@@ -58,6 +61,8 @@ signal all_drawing_regions_visible
 func _process(_delta: float) -> void:
 	if image_load_tasks.size() > 0:
 		check_image_load_tasks_completed()
+	if clipboard_image_load_tasks.size() > 0:
+		check_clipboard_image_load_tasks_completed()
 
 
 # Update the shader brush texture from the brush_sub_viewport to accumulate shader contributions
@@ -80,7 +85,6 @@ func check_image_load_tasks_completed() -> void:
 	for task in image_load_tasks:
 		if WorkerThreadPool.is_task_completed(task):
 			#print("Task %d done" % task)
-			regions[image_load_tasks[task]].redraw_existing_image()
 			tasks_completed.append(task)
 	for task in tasks_completed:
 		var reg: Vector2i = image_load_tasks[task]
@@ -91,6 +95,20 @@ func check_image_load_tasks_completed() -> void:
 		image_load_tasks.erase(task)
 	if image_load_tasks.size() == 0:
 		all_drawing_regions_visible.emit()
+
+
+func check_clipboard_image_load_tasks_completed() -> void:
+	var tasks_completed: Array[int] = []
+	for task in clipboard_image_load_tasks:
+		if WorkerThreadPool.is_task_completed(task):
+			tasks_completed.append(task)
+	# If file tab changed before the tasks were finished. Can't stop threads, so unload the textures after the tasks are finished.
+	for task in tasks_completed:
+		var ci: ClipboardImage = clipboard_image_load_tasks[task]
+		if !visible:
+			ci.unload()
+		clipboard_images_being_loaded.erase(ci)
+		clipboard_image_load_tasks.erase(task)
 
 
 func init(manager_size: Vector2) -> void:
@@ -108,7 +126,7 @@ func init(manager_size: Vector2) -> void:
 
 
 func has_changes() -> bool:
-	if past_drawing_actions.size() > 0:
+	if past_drawing_actions.size() > 0 or clipboard_images_changed:
 		return true
 	return false
 
@@ -319,11 +337,22 @@ func clear_all_overflow_actions() -> void:
 	used_overflow_data_kb = 0.0
 
 
-func erase_everything() -> void:
-	clear_all_drawing_actions()
+func clear_all_clipboard_images() -> void:
+	for ci in clipboard_images:
+		ci.queue_free()
+	clipboard_images.clear()
+
+
+func clear_all_regions() -> void:
 	for r in regions:
 		regions[r].queue_free()
 	regions.clear()
+
+
+func erase_everything() -> void:
+	clear_all_drawing_actions()
+	clear_all_clipboard_images()
+	clear_all_regions()
 
 
 func update_regions_from_screenshots(screenshots: Dictionary[Vector2i, Image]) -> void:
@@ -360,8 +389,10 @@ func add_clipboard_image(image: Image, pos: Vector2, scl: Vector2) -> void:
 	clip.size = image.get_size()
 	clip.update_from_image(image)
 	clip.mouse_pressed.connect(_on_clipboard_image_mouse_pressed.bind(clip))
+	clip.resized.connect(_on_clipboard_image_resized.bind(clip))
 	clip.position = -pos / scl.x + get_viewport_rect().size * 0.5 / scl.x - image.get_size() * 0.5
 	clipboard_images.append(clip)
+	clipboard_images_changed = true
 
 
 func add_clipboard_image_from_data(data: Dictionary) -> void:
@@ -370,6 +401,7 @@ func add_clipboard_image_from_data(data: Dictionary) -> void:
 	clip.name = "ClipboardImage"
 	clip.load_from_dict(data)
 	clip.mouse_pressed.connect(_on_clipboard_image_mouse_pressed.bind(clip))
+	clip.resized.connect(_on_clipboard_image_resized.bind(clip))
 	clipboard_images.append(clip)
 
 
@@ -389,12 +421,11 @@ func update_drawing_position_and_scale(pos: Vector2, scl: Vector2) -> void:
 	brush_eraser_texture.capped_zoom = new_scale_x if new_scale_x < 1.0 else 1.0
 	brush_draw_viewport_container.scale = Vector2(clamped_scale_x, clamped_scale_y)
 	brush_draw_viewport_container.position = pos * Vector2(new_scale_x, new_scale_y)
-	current_zoom = clamped_scale_x
+	current_zoom = new_scale_x
 
 
 func update_current_zoom(scl: float) -> void:
-	var clamped_scale_x: float = clampf(1.0 / scl, 1.0, 100.0)
-	current_zoom = clamped_scale_x
+	current_zoom = 1.0 / scl
 
 
 func resize(s: Vector2) -> void:
@@ -451,6 +482,7 @@ func save_all_images_to_json() -> void:
 		if remove_region:
 			to_remove.append(r)
 	complete_json_image_data = dict
+	clipboard_images_changed = false
 
 
 # LOAD .PNG FROM JSON DICTIONARY DATA
@@ -465,7 +497,7 @@ func rebuild_images_from_json(dict: Dictionary) -> void:
 			var image_data: String = dict[key]
 			add_drawing_region(reg_v2i)
 			regions[reg_v2i].serialized_data = image_data
-			regions[reg_v2i].load_from_data()
+			regions[reg_v2i].load_image_from_data()
 
 
 # UNLOAD IMAGES THAT HAVE SERIALIZED DATA
@@ -473,21 +505,30 @@ func unload_all_drawing_regions_with_data() -> void:
 	for r in regions:
 		if regions[r].serialized_data != "" and regions[r].is_loaded:
 			regions[r].unload()
+	for ci in clipboard_images:
+		if ci.serialized_data != "" and ci.is_loaded:
+			ci.unload()
 
 
 # RELOAD FROM PATHS THREADED
 func reload_all_drawing_regions_from_data() -> bool:
 	for r in regions:
 		if regions[r].serialized_data != "" and !regions[r].is_loaded and !regions_being_loaded.has(r):
-			var task_id = WorkerThreadPool.add_task(regions[r].load_from_data, false)
+			var task_id = WorkerThreadPool.add_task(regions[r].load_image_from_data, false)
 			image_load_tasks[task_id] = r
 			regions_being_loaded[r] = true
-	if image_load_tasks.size() == 0:
+	for ci in clipboard_images:
+		if ci.serialized_data != "" and !ci.is_loaded and !clipboard_images_being_loaded.has(ci):
+			var task_id = WorkerThreadPool.add_task(ci.load_image_from_data, false)
+			clipboard_image_load_tasks[task_id] = ci
+			clipboard_images_being_loaded[ci] = true
+	if image_load_tasks.size() == 0 and clipboard_image_load_tasks.size() == 0:
 		return false
 	return true
 
 
 # -------- Folder save method: Saving all images inside user:// folder -------- 
+# NOTE missing ClipboardImage implementation
 # SAVE FILES
 func save_all_images_to_folder() -> void:
 	var saved_num: int = 0
@@ -567,9 +608,16 @@ func unload_all_drawing_regions_with_path() -> void:
 			regions[r].unload()
 
 
+# ----------- INPUTS ------------
 func _on_clipboard_image_mouse_pressed(temp: ClipboardImage) -> void:
 	moving_images.clear()
 	moving_images[temp] = true
+
+
+func _on_clipboard_image_resized(ci: ClipboardImage) -> void:
+	ci.position.x = clampf(ci.position.x, 0.0, CANVAS_SIZE.x - ci.size.x * ci.scale.x)
+	ci.position.y = clampf(ci.position.y, 0.0, CANVAS_SIZE.y - ci.size.y * ci.scale.x)
+	clipboard_images_changed = true
 
 
 func _input(event: InputEvent) -> void:
@@ -579,6 +627,7 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and event.button_mask == 1:
 		for ci in moving_images:
 			ci.position += event.relative * current_zoom
-			ci.position.x = clampf(ci.position.x, 0.0, CANVAS_SIZE.x - ci.size.x)
-			ci.position.y = clampf(ci.position.y, 0.0, CANVAS_SIZE.y - ci.size.y)
+			ci.position.x = clampf(ci.position.x, 0.0, CANVAS_SIZE.x - ci.size.x * ci.scale.x)
+			ci.position.y = clampf(ci.position.y, 0.0, CANVAS_SIZE.y - ci.size.y * ci.scale.x)
 			ci.cached_position = ci.position
+			clipboard_images_changed = true

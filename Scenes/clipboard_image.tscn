@@ -96,24 +96,33 @@ TooltipLabel/fonts/font = ExtResource("3_fa2i1")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0ec2q"]
 
-[node name="ClipboardImage" type="TextureRect" unique_id=1903721844]
+[node name="ClipboardImage" type="Control" unique_id=796088940]
 light_mask = 32
 visibility_layer = 32
-z_index = -2
+z_index = -4
 z_as_relative = false
-texture_filter = 1
-texture_repeat = 1
-offset_right = 500.0
-offset_bottom = 500.0
-size_flags_horizontal = 0
-size_flags_vertical = 0
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 1
 script = ExtResource("1_ntkdd")
 IMAGE_FRONT_TEXTURE = ExtResource("5_fa2i1")
 DRAWING_FRONT_TEXTURE = ExtResource("3_ax8r8")
 
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1903721844]
+light_mask = 32
+visibility_layer = 32
+texture_filter = 1
+texture_repeat = 1
+layout_mode = 1
+size_flags_horizontal = 0
+size_flags_vertical = 0
+mouse_filter = 2
+
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=1463570960]
-layout_mode = 0
-offset_right = 40.0
+light_mask = 32
+visibility_layer = 32
+layout_mode = 1
+offset_right = 76.0
 offset_bottom = 40.0
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
@@ -121,11 +130,15 @@ theme_override_constants/margin_right = 4
 theme_override_constants/margin_bottom = 4
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer" unique_id=1624625077]
+light_mask = 32
+visibility_layer = 32
 layout_mode = 2
 theme_override_constants/separation = 4
 
 [node name="HideButton" type="Button" parent="MarginContainer/HBoxContainer" unique_id=70841885]
 unique_name_in_owner = true
+light_mask = 32
+visibility_layer = 32
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -136,6 +149,8 @@ icon = ExtResource("2_jn52f")
 
 [node name="OrderButton" type="Button" parent="MarginContainer/HBoxContainer" unique_id=1798761089]
 unique_name_in_owner = true
+light_mask = 32
+visibility_layer = 32
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -145,16 +160,26 @@ toggle_mode = true
 button_pressed = true
 icon = ExtResource("5_fa2i1")
 
-[node name="Area2D" type="Area2D" parent="." unique_id=282743479]
+[node name="Area2DMove" type="Area2D" parent="." unique_id=282743479]
 monitorable = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=951847635]
+[node name="MainShape" type="CollisionShape2D" parent="Area2DMove" unique_id=951847635]
+unique_name_in_owner = true
 shape = SubResource("RectangleShape2D_0ec2q")
 
-[connection signal="item_rect_changed" from="." to="." method="_on_item_rect_changed"]
-[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[node name="Area2DResize" type="Area2D" parent="." unique_id=441222297]
+monitorable = false
+
+[node name="ResizeShape" type="CollisionShape2D" parent="Area2DResize" unique_id=511932690]
+unique_name_in_owner = true
+z_index = 1
+shape = SubResource("RectangleShape2D_0ec2q")
+
 [connection signal="pressed" from="MarginContainer/HBoxContainer/HideButton" to="." method="_on_hide_button_pressed"]
 [connection signal="toggled" from="MarginContainer/HBoxContainer/OrderButton" to="." method="_on_order_button_toggled"]
-[connection signal="input_event" from="Area2D" to="." method="_on_area_2d_input_event"]
-[connection signal="mouse_entered" from="Area2D" to="." method="_on_area_2d_mouse_entered"]
-[connection signal="mouse_exited" from="Area2D" to="." method="_on_area_2d_mouse_exited"]
+[connection signal="input_event" from="Area2DMove" to="." method="_on_area_2d_move_input_event"]
+[connection signal="mouse_entered" from="Area2DMove" to="." method="_on_area_2d_move_mouse_entered"]
+[connection signal="mouse_exited" from="Area2DMove" to="." method="_on_area_2d_move_mouse_exited"]
+[connection signal="input_event" from="Area2DResize" to="." method="_on_area_2d_resize_input_event"]
+[connection signal="mouse_entered" from="Area2DResize" to="." method="_on_area_2d_resize_mouse_entered"]
+[connection signal="mouse_exited" from="Area2DResize" to="." method="_on_area_2d_resize_mouse_exited"]
