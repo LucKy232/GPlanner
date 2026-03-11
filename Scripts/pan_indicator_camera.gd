@@ -30,12 +30,19 @@ func set_window_size(s: Vector2) -> void:
 	#print("Set window size %f %f" % [s.x, s.y])
 	window_size = s
 	window_canvas_size_ratio = window_size / (canvas_size * canvas_scale)
-	highlight_panel.size = size * window_canvas_size_ratio
+	highlight_panel.set_deferred("size", size * window_canvas_size_ratio)
+
+
+func hide_animation() -> void:
+	if !animation_player.is_playing():
+		animation_player.play("hide")
+		sub_viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
 
 
 func move_camera_and_highlight(c_position: Vector2) -> void:
 	if !animation_player.is_playing() and modulate.a == 0.0:
 		animation_player.play("show")
+		sub_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
 	
 	timer.start()
 	camera.position = c_position
@@ -50,7 +57,7 @@ func update_zoom(c_position: Vector2, c_scale: float) -> void:
 	camera.position = c_position
 	
 	highlight_panel.position = -c_position * indicator_size_ratio / c_scale
-	highlight_panel.size = size * window_canvas_size_ratio
+	highlight_panel.set_deferred("size", size * window_canvas_size_ratio)
 	#print("Highlight pos X: %f Y: %f   Highlight size X: %f Y: %f   
 			#Control size X: %f Y: %f   Window Ratio X: %f Y: %f   
 			#Indicator Ratio: %f   Canvas pos X: %f Y: %f   Canvas scale: %f" % 
@@ -60,5 +67,4 @@ func update_zoom(c_position: Vector2, c_scale: float) -> void:
 
 
 func _on_timer_timeout() -> void:
-	if !animation_player.is_playing():
-		animation_player.play("hide")
+	hide_animation()

@@ -59,6 +59,7 @@ var exiting_app: bool = false
 var need_to_save_images_on_tool_change = false
 var first_input_repeat: bool = true
 var using_cursor_image: bool = false
+var is_at_startup: bool = true
 var last_window_mode: Window.Mode = Window.Mode.MODE_WINDOWED		## When going to borderless fullscreen, remember the last Window.Mode
 
 
@@ -73,9 +74,6 @@ func _ready() -> void:
 		priority_styleboxes[i].bg_color = priority_colors[i]
 	create_tool_keybinds()
 	create_drawing_tool_keybinds()
-	load_opened_file_paths(opened_files_file_name)
-	if canvases.size() == 0:
-		_on_add_file_button_pressed()
 	update_zoom_limits(zoom_limits)
 	connect_signals()
 	new_file_confirmation.add_button("     No     ", true, "no_save")
@@ -86,10 +84,15 @@ func _ready() -> void:
 	close_tab_confirmation.add_cancel_button(" Cancel ")
 	exit_tab_confirmation.add_button("     No     ", true, "no_save")
 	exit_tab_confirmation.add_cancel_button(" Cancel ")
-	
 	if android_build:
 		OS.request_permissions()
 		scale_ui(2.4)
+	# Load files
+	var active_id: int = load_opened_file_paths(opened_files_file_name)
+	is_at_startup = false
+	if canvases.size() == 0:
+		_on_add_file_button_pressed()
+	post_load_select_active_canvas(active_id)
 
 
 func scale_ui(factor: float) -> void:
@@ -170,9 +173,9 @@ func _process(_delta):
 		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.MOVE], true) and !disable_input():
 			drawing_tool_box.select(Enums.DrawingTool.MOVE)
 			_on_drawing_tool_box_item_selected(Enums.DrawingTool.MOVE)
-		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.BOX_SELECT], true) and !disable_input():
-			drawing_tool_box.select(Enums.DrawingTool.BOX_SELECT)
-			_on_drawing_tool_box_item_selected(Enums.DrawingTool.BOX_SELECT)
+		#if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.BOX_SELECT], true) and !disable_input():
+			#drawing_tool_box.select(Enums.DrawingTool.BOX_SELECT)
+			#_on_drawing_tool_box_item_selected(Enums.DrawingTool.BOX_SELECT)
 	
 	if canvases[cc].settings.app_mode == Enums.AppMode.PLANNING:
 		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.SELECT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
@@ -216,6 +219,7 @@ func connect_signals() -> void:
 	drawing_manager.requested_status_message.connect(_on_drawing_manager_status_message)
 	drawing_manager.forced_save_started.connect(_on_drawing_manager_forced_save_started)
 	drawing_manager.forced_save_ended.connect(_on_drawing_manager_forced_save_ended)
+	drawing_manager.added_clipboard_image.connect(_on_drawing_manager_added_clipboard_image)
 	
 	drawing_tool_bar.color_picker_toggled.connect(_on_drawing_tool_bar_color_picker_toggled)
 	drawing_tool_bar.brush_size_changed.connect(change_drawing_tool_cursor)
@@ -243,7 +247,7 @@ func create_drawing_tool_keybinds() -> void:
 	draw_tool_keybinds[Enums.DrawingTool.ERASER_PENCIL] = "eraser_pencil"
 	draw_tool_keybinds[Enums.DrawingTool.ERASER_BRUSH] = "eraser_brush"
 	draw_tool_keybinds[Enums.DrawingTool.MOVE] = "drawing_move"
-	draw_tool_keybinds[Enums.DrawingTool.BOX_SELECT] = "drawing_box_select"
+	#draw_tool_keybinds[Enums.DrawingTool.BOX_SELECT] = "drawing_box_select"
 	
 	for tool in draw_tool_keybinds:
 		for event in InputMap.action_get_events(draw_tool_keybinds[tool]):
@@ -285,24 +289,30 @@ func selected_element_exists() -> bool:
 	return canvases.has(cc) and canvases[cc].elements.has(canvases[cc].selected_element)
 
 
-func switch_main_canvas(id: int) -> void:
+func switch_main_canvas(id: int, force_load_same: bool = false) -> void:
 	if is_saving_images:
 		return
-	if cc == id:
+	if cc == id and !force_load_same:
 		return
 	if canvases.has(cc):	# Disable old canvas visibility
 		canvases[cc].visible = false
 	if canvases.has(id):
 		canvases[id].visible = true
 	cc = id
-	pan_indicator_camera.set_canvas_size(canvases[cc].size)
+	if is_at_startup:
+		return
 	if file_tab_bar.tab_count == 0:
 		file_tab_bar.add_tab("")
-	set_tab_name_and_title_from_canvas(cc)
+	if !canvases[cc].save_state.is_loaded and canvases[cc].opened_file_path != "":
+		load_file(canvases[cc].opened_file_path)
+	elif canvases[cc].save_state.is_loaded:
+		set_tab_name_and_title_from_canvas(cc)
+	drawing_manager.change_active_canvas_drawing_group(cc)
+	pan_indicator_camera.set_canvas_size(canvases[cc].size)
+	pan_indicator_camera.hide_animation()
 	canvases[cc].change_selected_preset_style("none")
 	element_settings.erase_everything()
 	element_settings.rebuild_options_and_dictionary_from_canvas(canvases[cc].style_presets)
-	drawing_manager.change_active_canvas_drawing_group(cc)
 	drawing_tool_bar.change_settings(canvases[cc].drawing_settings)
 	drawing_tool_box.select(canvases[cc].drawing_settings.selected_tool)
 	drawing_tool_bar.delete_color_picker_swatches()
@@ -310,7 +320,7 @@ func switch_main_canvas(id: int) -> void:
 	_on_drawing_tool_box_item_selected(canvases[cc].drawing_settings.selected_tool)
 	call_deferred("_on_canvas_changed_zoom")
 	call_deferred("_on_canvas_changed_position")
-	if canvases[cc].save_state.is_loaded:
+	if canvases[cc].save_state.is_created:
 		settings_drawer.update_data(canvases[cc].settings)
 	if canvases[cc].settings.app_mode == Enums.AppMode.DRAWING:
 		_on_toggle_mode_toggled(true)
@@ -335,7 +345,7 @@ func set_tab_name_and_title_from_canvas(c_id: int) -> void:
 		set_current_tab_title(canvases[c_id].file_name_short, canvases[c_id].opened_file_path, token)
 
 
-func new_file(add_canvas: bool) -> int:
+func new_file(add_canvas: bool, show_status: bool = true) -> int:
 	var new_canvas: PlannerCanvas
 	if add_canvas:
 		new_canvas = load(canvas_scene).instantiate()
@@ -363,7 +373,7 @@ func new_file(add_canvas: bool) -> int:
 		new_canvas.cycle_zoom_levels = cycle_zoom_levels
 		drawing_manager.add_canvas_drawing_group(new_canvas.id)
 		new_canvas.drawing_manager = drawing_manager
-		new_canvas.save_state.is_loaded = true
+		new_canvas.save_state.is_created = true
 	elif canvases.has(cc):
 		new_canvas = canvases[cc]
 		new_canvas.erase_everything()
@@ -374,11 +384,12 @@ func new_file(add_canvas: bool) -> int:
 		return -1
 	
 	new_canvas.new_canvas()
-	#DisplayServer.window_set_title("GPlanner %s: New File" % [app_version])
-	get_tree().root.title = ("GPlanner %s: New File" % [app_version])
-	status_bar.update_status("New File")
+	if show_status:
+		#DisplayServer.window_set_title("GPlanner %s: New File" % [app_version])
+		get_tree().root.title = ("GPlanner %s: New File" % [app_version])
+		status_bar.update_status("New File")
 	tool_box.select(Enums.Tool.SELECT)
-	if canvases[new_canvas.id].save_state.is_loaded:
+	if canvases[new_canvas.id].save_state.is_created:
 		settings_drawer.update_data(canvases[new_canvas.id].settings)
 	_on_tool_box_item_selected(Enums.Tool.SELECT)
 	_on_canvas_changed_position()
@@ -394,7 +405,6 @@ func save_images() -> void:
 	
 	drawing_manager.finished_saving.connect(_on_drawing_manager_finished_saving.bind(cc), CONNECT_ONE_SHOT)
 	var needs_save: bool = drawing_manager.save_if_canvas_drawing_group_has_changes(cc)
-	print("Needs save: %s" % [str(needs_save)])
 	if needs_save:
 		prepare_to_save_images_lock_UI()
 
@@ -504,12 +514,13 @@ func load_file(path: String, app_startup: bool = false) -> void:
 		#print("Load drawing %d %s" % [cc, "at app startup" if app_startup else ""])
 		drawing_manager.rebuild_paths_from_json(cc, data["DrawingRegions"])
 		if !app_startup:
-			drawing_manager.reload_all_drawing_regions(cc)
+			drawing_manager.change_active_canvas_drawing_group(cc)
 		else:
 			drawing_tool_bar.add_color_picker_swatches_from_array(canvases[cc].swatches)
 	
 	status_bar.update_status("File loaded: %s" % path, Color(0.3, 0.55, 0.3, 0.5))
 	canvases[cc].canvas_changed(true)
+	canvases[cc].save_state.is_created = true
 	canvases[cc].save_state.is_loaded = true
 	settings_drawer.update_data(canvases[cc].settings)
 	set_tab_name_and_title_from_canvas(cc)
@@ -548,12 +559,12 @@ func find_valid_tab() -> int:
 	return 0
 
 
-func load_opened_file_paths(path: String) -> void:
+func load_opened_file_paths(path: String) -> int:
 	if FileAccess.file_exists("user://" + path):
 		var file = FileAccess.open("user://" + path, FileAccess.READ)
 		if file == null:
 			printerr("FileAcces open error: ", FileAccess.get_open_error())
-			return
+			return 0
 		
 		var content = file.get_as_text()
 		file.close()
@@ -561,40 +572,49 @@ func load_opened_file_paths(path: String) -> void:
 		if data == null:
 			status_bar.update_status("Can't load file / Can't parse JSON string: %s" % path, Color(0.55, 0.3, 0.3, 0.5))
 			printerr("Can't parse JSON string @ main.gd:load_file()")
-			return
+			return 0
 		else:
 			var files = data["OpenedFiles"]
+			var current = int(data["CurrentID"])
 			if data.has("WindowState"):
 				restore_window_state(data["WindowState"])
 			for f in files:
 				if files[f] != "":
-					_on_add_file_button_pressed()	# new_file(), new tab, switch tab -> switch_main_canvas()
-					load_file(files[f], true)
+					var tab_name: String = files[f].get_file().get_slice(".", 0)	# For tab name or referring to the file in general
+					_on_add_file_button_pressed(tab_name)	# new_file(), new tab, switch tab -> switch_main_canvas()
+					if cc == current:	# Load file that was opened last session
+						load_file(files[f], true)
+					else:			# Store file path for all other files, for future load
+						canvases[cc].opened_file_path = files[f]
+						canvases[cc].save_state.is_loaded = false
 			if files.size() == 0:	# No files
 				_on_add_file_button_pressed()
-			
-			# After loading all files, go to the active file that was in use when the last session ended
-			var current = int(data["CurrentID"])
-			if canvases.has(current):
-				if file_tab_bar.current_tab == current:
-					drawing_manager.reload_all_drawing_regions(current)
-					drawing_tool_bar.change_tool()
-					drawing_tool_box.select(canvases[current].drawing_settings.selected_tool)
-					_on_drawing_tool_box_item_selected(canvases[current].drawing_settings.selected_tool)
-				else:
-					file_tab_bar.current_tab = current
-				if canvases[current].settings.app_mode == Enums.AppMode.DRAWING:
-					_on_toggle_mode_toggled(true)
-					toggle_mode_button.set_pressed_no_signal(true)
-			else:	# Select last tab (if any exist, it will be valid)
-				printerr("Tab indicated at startup doesn't exist / have a planner canvas file corresponding to it.")
-				file_tab_bar.current_tab = file_tab_bar.tab_count - 1
+			return current
 	else:
 		# Create empty file on first time load
 		var file = FileAccess.open("user://" + path, FileAccess.WRITE)
 		var save_data: Dictionary = { 0: "" }
 		file.store_string(JSON.stringify(save_data, "\t"))
 		file.close()
+		return 0
+
+
+# After loading all files, go to the active file that was in use when the last session ended
+func post_load_select_active_canvas(canvas_id: int) -> void:
+	if canvases.has(canvas_id):
+		if file_tab_bar.current_tab == canvas_id:
+			switch_main_canvas(canvas_id, true)
+		else:
+			file_tab_bar.current_tab = canvas_id
+		if canvases[canvas_id].settings.app_mode == Enums.AppMode.DRAWING:
+			_on_toggle_mode_toggled(true)
+			toggle_mode_button.set_pressed_no_signal(true)
+		else:
+			_on_toggle_mode_toggled(false)
+			toggle_mode_button.set_pressed_no_signal(false)
+	else:	# Select last tab (if any exist, it will be valid)
+		printerr("Tab indicated at startup doesn't exist / have a planner canvas file corresponding to it.")
+		file_tab_bar.current_tab = file_tab_bar.tab_count - 1
 
 
 func get_window_state_json() -> Dictionary:
@@ -716,7 +736,7 @@ func change_drawing_tool_cursor() -> void:
 			Enums.DrawingTool.ERASER_PENCIL:
 				Input.set_custom_mouse_cursor(eraser_pencil_cursor, Input.CURSOR_HELP, Vector2(4.5, 26.0))
 				using_cursor_image = false
-			Enums.DrawingTool.MOVE, Enums.DrawingTool.BOX_SELECT:
+			Enums.DrawingTool.MOVE:#, Enums.DrawingTool.BOX_SELECT:
 				Input.set_custom_mouse_cursor(hand_cursor, Input.CURSOR_HELP, Vector2(9.0, 0.0))
 				using_cursor_image = false
 			Enums.DrawingTool.BRUSH:
@@ -811,10 +831,14 @@ func change_accent_color(c: Color) -> void:
 
 
 func _on_tool_box_item_selected(index: Enums.Tool) -> void:
-	if canvases.has(cc):
-		canvases[cc].tool_id = index
-		if index != Enums.Tool.ADD_CONNECTION:
-			canvases[cc].reset_adding_connection()
+	if !canvases.has(cc):
+		return
+	canvases[cc].tool_id = index
+	
+	var move_images: bool = true if index == Enums.Tool.SELECT else false
+	drawing_manager.toggle_clipboard_image_input(move_images)
+	if index != Enums.Tool.ADD_CONNECTION:
+		canvases[cc].reset_adding_connection()
 	if index == Enums.Tool.ELEMENT_STYLE_SETTINGS:
 		element_settings.toggle_visible(true)
 	elif index != Enums.Tool.ELEMENT_STYLE_SETTINGS and element_settings.is_panel_visible():
@@ -996,12 +1020,14 @@ func _on_file_tab_bar_tab_changed(tab: int) -> void:
 		switch_main_canvas(tab_to_canvas[tab])
 
 
-func _on_add_file_button_pressed() -> void:
+func _on_add_file_button_pressed(tab_name: String = "New File") -> void:
 	if is_saving_images:
 		return
-	var canvas_id: int = new_file(true)
+	var show_status: bool = true if tab_name == "New File" else false
+	var canvas_id: int = new_file(true, show_status)
+	canvases[canvas_id].file_name_short = tab_name
 	tab_to_canvas[file_tab_bar.tab_count] = canvas_id
-	file_tab_bar.add_tab("New File")
+	file_tab_bar.add_tab(tab_name)
 	file_tab_bar.current_tab = file_tab_bar.tab_count - 1	# Also switches to the new tab & calls switch_main_canvas(tab)
 
 
@@ -1177,6 +1203,8 @@ func _on_drawing_tool_box_item_selected(index: Enums.DrawingTool) -> void:
 		return
 	canvases[cc].drawing_settings.selected_tool = index as Enums.DrawingTool
 	drawing_tool_bar.change_tool()
+	var move_images: bool = true if index == Enums.DrawingTool.MOVE else false
+	drawing_manager.toggle_clipboard_image_input(move_images)
 	change_drawing_tool_cursor()
 
 
@@ -1196,6 +1224,8 @@ func _on_toggle_mode_toggled(toggled_on: bool) -> void:
 		drawing_tool_bar.inputs_enabled = true
 		element_settings.toggle_style_presets(false)
 		change_accent_color(accent_color_drawing)
+		var move_images: bool = drawing_tool_box.is_selected(Enums.DrawingTool.MOVE)
+		drawing_manager.toggle_clipboard_image_input(move_images)
 		set_toggle_mode_button_tooltip("Change to Planning Mode")
 	else:
 		drawing_manager.end_stroke()
@@ -1229,3 +1259,14 @@ func _on_drawing_tool_bar_swatch_added(color: Color) -> void:
 func _on_drawing_tooL_bar_swatch_removed(color: Color) -> void:
 	if canvases.has(cc):
 		canvases[cc].remove_swatch(color)
+
+
+func _on_drawing_manager_added_clipboard_image() -> void:
+	if canvases[cc].settings.app_mode == Enums.AppMode.DRAWING:
+		drawing_tool_box.select(Enums.DrawingTool.MOVE)
+		_on_drawing_tool_box_item_selected(Enums.DrawingTool.MOVE)
+	elif canvases[cc].settings.app_mode == Enums.AppMode.PLANNING:
+		tool_box.select(Enums.Tool.SELECT)
+		_on_tool_box_item_selected(Enums.Tool.SELECT)
+	drawing_manager.update_current_zoom(canvases[cc].scale.x)
+	canvases[cc].canvas_changed()

@@ -395,11 +395,11 @@ func add_clipboard_image(image: Image, pos: Vector2, scl: Vector2) -> void:
 	clipboard_images_changed = true
 
 
-func add_clipboard_image_from_data(data: Dictionary) -> void:
+func add_clipboard_image_from_data(data: Dictionary, create_image: bool = true) -> void:
 	var clip: ClipboardImage = load(clipboard_image_scene).instantiate()
 	temp_drawing_actions_container.add_child(clip)
 	clip.name = "ClipboardImage"
-	clip.load_from_dict(data)
+	clip.load_from_dict(data, create_image)
 	clip.mouse_pressed.connect(_on_clipboard_image_mouse_pressed.bind(clip))
 	clip.resized.connect(_on_clipboard_image_resized.bind(clip))
 	clipboard_images.append(clip)
@@ -491,13 +491,12 @@ func rebuild_images_from_json(dict: Dictionary) -> void:
 	for key in dict:
 		if key.begins_with("ci"):
 			var image_data: Dictionary = dict[key]
-			add_clipboard_image_from_data(image_data)
+			add_clipboard_image_from_data(image_data, false)
 		else:
 			var reg_v2i: Vector2i = Vector2i(int(key.get_slice("-", 0)), int(key.get_slice("-", 1)))
 			var image_data: String = dict[key]
 			add_drawing_region(reg_v2i)
 			regions[reg_v2i].serialized_data = image_data
-			regions[reg_v2i].load_image_from_data()
 
 
 # UNLOAD IMAGES THAT HAVE SERIALIZED DATA
@@ -609,6 +608,11 @@ func unload_all_drawing_regions_with_path() -> void:
 
 
 # ----------- INPUTS ------------
+func toggle_clipboard_image_input(toggled_on: bool) -> void:
+	for ci in clipboard_images:
+		ci.toggle_input(toggled_on)
+
+
 func _on_clipboard_image_mouse_pressed(temp: ClipboardImage) -> void:
 	moving_images.clear()
 	moving_images[temp] = true

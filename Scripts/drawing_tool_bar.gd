@@ -156,11 +156,11 @@ func change_tool() -> void:
 			brush_size_spin_box.max_value = settings.eraser_brush_settings.size_limits.y
 			brush_size_spin_box.value = settings.eraser_brush_settings.size
 			pressure_spin_box.value = settings.eraser_brush_settings.pressure * 100.0
-		Enums.DrawingTool.MOVE, Enums.DrawingTool.BOX_SELECT:
-			pencil_size_spin_box.visible = false
-			brush_size_spin_box.visible = false
-			color_picker_button.visible = false
-			pressure_spin_box.visible = false
+		#Enums.DrawingTool.MOVE, Enums.DrawingTool.BOX_SELECT:
+			#pencil_size_spin_box.visible = false
+			#brush_size_spin_box.visible = false
+			#color_picker_button.visible = false
+			#pressure_spin_box.visible = false
 
 
 func change_settings(sett: DrawingSettings) -> void:

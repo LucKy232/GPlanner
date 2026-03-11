@@ -89,8 +89,8 @@ func new_canvas() -> void:
 
 func canvas_changed(reset: bool = false) -> void:
 	#print("Is user input: %s" % str(is_user_input))
-	#print("Is loaded: %s" % str(save_state.is_loaded))
-	if !is_user_input or !save_state.is_loaded:
+	#print("Is created: %s" % str(save_state.is_created))
+	if !is_user_input or !save_state.is_created:
 		return
 	if reset:
 		# NOTE Needs to change the state before emitting, but also check old value, so order of operations is correct here
@@ -108,7 +108,7 @@ func canvas_changed(reset: bool = false) -> void:
 
 
 func drawings_changed(reset: bool = false) -> void:
-	if !is_user_input or !save_state.is_loaded:
+	if !is_user_input or !save_state.is_created:
 		return
 	if reset:
 		# NOTE Needs to change the state before emitting, but also check old value, so order of operations is correct here
@@ -156,12 +156,12 @@ func get_file_name_short() -> String:
 		return file_name_short
 
 
-func reset_save_state(is_already_loaded: bool = false) -> void:
+func reset_save_state(is_already_created: bool = false) -> void:
 	canvas_changed(true)
 	drawings_changed(true)
 	save_state = SaveState.new()
-	if is_already_loaded:
-		save_state.is_loaded = true
+	if is_already_created:
+		save_state.is_created = true
 
 
 func update_all_style_presets(dict: Dictionary[int, ElementPresetStyle]) -> void:

@@ -99,11 +99,11 @@ TooltipLabel/fonts/font = ExtResource("3_fa2i1")
 [node name="ClipboardImage" type="Control" unique_id=796088940]
 light_mask = 32
 visibility_layer = 32
-z_index = -4
+z_index = -2
 z_as_relative = false
 layout_mode = 3
 anchors_preset = 0
-mouse_filter = 1
+mouse_filter = 2
 script = ExtResource("1_ntkdd")
 IMAGE_FRONT_TEXTURE = ExtResource("5_fa2i1")
 DRAWING_FRONT_TEXTURE = ExtResource("3_ax8r8")
@@ -116,14 +116,15 @@ texture_repeat = 1
 layout_mode = 1
 size_flags_horizontal = 0
 size_flags_vertical = 0
-mouse_filter = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=1463570960]
+visible = false
 light_mask = 32
 visibility_layer = 32
 layout_mode = 1
 offset_right = 76.0
 offset_bottom = 40.0
+mouse_filter = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_right = 4

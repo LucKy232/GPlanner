@@ -15,7 +15,7 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="GPlanner"
-config/version="0.5.1"
+config/version="0.5.2"
 run/main_scene="uid://bfydfy3iq0rjx"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="uid://b4j2iargpd3wt"
@@ -292,6 +292,7 @@ pen_tablet/driver.windows="wintab"
 2d_render/layer_4="Canvas"
 2d_render/layer_5="CanvasBackground"
 2d_render/layer_6="ClipboardImages"
+2d_render/layer_7="Layer 7"
 2d_render/layer_8="TempBrushDrawing"
 
 [rendering]

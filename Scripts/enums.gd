@@ -50,5 +50,5 @@ enum DrawingTool {
 	ERASER_PENCIL,
 	ERASER_BRUSH,
 	MOVE,
-	BOX_SELECT,
+	#BOX_SELECT,
 }

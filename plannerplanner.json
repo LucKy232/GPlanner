@@ -1708,7 +1708,7 @@
 			"pos.x": 2874.02954101563,
 			"pos.y": 1218.5654296875,
 			"priority_id": 0,
-			"size.x": 137.0,
+			"size.x": 139.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Font Color"
@@ -1743,7 +1743,7 @@
 			"pos.x": 2891.98779296875,
 			"pos.y": 616.996215820313,
 			"priority_id": 4,
-			"size.x": 173.75244140625,
+			"size.x": 176.854248046875,
 			"size.y": 111.741821289063,
 			"style_preset_id": "none",
 			"text": "QoL"
@@ -1883,7 +1883,7 @@
 			"pos.x": 3365.47705078125,
 			"pos.y": 1352.4501953125,
 			"priority_id": 0,
-			"size.x": 278.0,
+			"size.x": 297.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Start from center on New"
@@ -1895,7 +1895,7 @@
 			"pos.x": 3163.13647460938,
 			"pos.y": 795.692993164063,
 			"priority_id": 3,
-			"size.x": 267.0,
+			"size.x": 280.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Cancel delete on R.click"
@@ -1930,7 +1930,7 @@
 			"pos.x": 3420.5615234375,
 			"pos.y": 1017.41009521484,
 			"priority_id": 0,
-			"size.x": 290.648193359375,
+			"size.x": 319.0,
 			"size.y": 64.0000610351563,
 			"style_preset_id": "none",
 			"text": "Select none on canvas click"
@@ -1965,7 +1965,7 @@
 			"pos.x": 3264.63745117188,
 			"pos.y": 1549.09045410156,
 			"priority_id": 0,
-			"size.x": 347.0,
+			"size.x": 354.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Resize element if text overflow"
@@ -1977,7 +1977,7 @@
 			"pos.x": 2028.044921875,
 			"pos.y": 688.028930664063,
 			"priority_id": 2,
-			"size.x": 184.900634765625,
+			"size.x": 189.0,
 			"size.y": 82.0,
 			"style_preset_id": "2025-05-11T11:51:00 26457",
 			"text": "Mark complete"
@@ -2047,7 +2047,7 @@
 			"pos.x": 1707.0,
 			"pos.y": 758.999938964844,
 			"priority_id": 4,
-			"size.x": 288.0,
+			"size.x": 321.0,
 			"size.y": 73.5609741210938,
 			"style_preset_id": "none",
 			"text": "Hide all complete checkbox"
@@ -2082,7 +2082,7 @@
 			"pos.x": 2193.927734375,
 			"pos.y": 1128.11694335938,
 			"priority_id": 2,
-			"size.x": 318.0,
+			"size.x": 355.0,
 			"size.y": 75.0,
 			"style_preset_id": "none",
 			"text": "Connection style improvement"
@@ -2129,7 +2129,7 @@
 			"pos.x": 4625.0478515625,
 			"pos.y": 1257.32397460938,
 			"priority_id": 0,
-			"size.x": 120.0,
+			"size.x": 121.03369140625,
 			"size.y": 80.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Pen Tool"
@@ -2141,7 +2141,7 @@
 			"pos.x": 5071.65625,
 			"pos.y": 1466.73193359375,
 			"priority_id": 0,
-			"size.x": 117.12841796875,
+			"size.x": 121.03369140625,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Color"
@@ -2153,7 +2153,7 @@
 			"pos.x": 5072.412109375,
 			"pos.y": 1532.94897460938,
 			"priority_id": 0,
-			"size.x": 118.8623046875,
+			"size.x": 121.03369140625,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Size"
@@ -2165,7 +2165,7 @@
 			"pos.x": 5071.818359375,
 			"pos.y": 1400.53161621094,
 			"priority_id": 0,
-			"size.x": 120.2978515625,
+			"size.x": 121.03369140625,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Erase"
@@ -2177,7 +2177,7 @@
 			"pos.x": 5071.8359375,
 			"pos.y": 1268.89099121094,
 			"priority_id": 0,
-			"size.x": 115.79150390625,
+			"size.x": 121.03369140625,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Pencil"
@@ -2189,7 +2189,7 @@
 			"pos.x": 2704.93896484375,
 			"pos.y": 1888.94653320313,
 			"priority_id": 3,
-			"size.x": 327.0,
+			"size.x": 352.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Select Font from System Fonts"
@@ -2224,7 +2224,7 @@
 			"pos.x": 2729.30004882813,
 			"pos.y": 1294.05590820313,
 			"priority_id": 0,
-			"size.x": 279.097900390625,
+			"size.x": 291.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Font Outline Color & Size"
@@ -2259,7 +2259,7 @@
 			"pos.x": 2268.68115234375,
 			"pos.y": 940.47021484375,
 			"priority_id": 0,
-			"size.x": 161.0,
+			"size.x": 178.0,
 			"size.y": 95.0,
 			"style_preset_id": "none",
 			"text": "Priority Select"
@@ -2294,7 +2294,7 @@
 			"pos.x": 2126.96948242188,
 			"pos.y": 1039.32666015625,
 			"priority_id": 0,
-			"size.x": 210.0,
+			"size.x": 217.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Toolbox w/ circles"
@@ -2329,7 +2329,7 @@
 			"pos.x": 4495.2666015625,
 			"pos.y": 1647.20556640625,
 			"priority_id": 4,
-			"size.x": 416.88671875,
+			"size.x": 419.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Save current file path on load or save"
@@ -2364,7 +2364,7 @@
 			"pos.x": 4743.33056640625,
 			"pos.y": 1730.24194335938,
 			"priority_id": 4,
-			"size.x": 221.8154296875,
+			"size.x": 225.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Swap window title"
@@ -2399,7 +2399,7 @@
 			"pos.x": 4407.21630859375,
 			"pos.y": 1722.375,
 			"priority_id": 4,
-			"size.x": 265.0,
+			"size.x": 296.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Set a label with file name"
@@ -2434,7 +2434,7 @@
 			"pos.x": 2423.86865234375,
 			"pos.y": 359.004913330078,
 			"priority_id": 4,
-			"size.x": 224.0,
+			"size.x": 251.0,
 			"size.y": 126.296844482422,
 			"style_preset_id": "none",
 			"text": "KB Shortcuts"
@@ -2446,7 +2446,7 @@
 			"pos.x": 2126.95092773438,
 			"pos.y": 1053.98620605469,
 			"priority_id": 1,
-			"size.x": 296.664306640625,
+			"size.x": 308.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Panning indicator window"
@@ -2458,7 +2458,7 @@
 			"pos.x": 3164.11108398438,
 			"pos.y": 928.859069824219,
 			"priority_id": 3,
-			"size.x": 570.193115234375,
+			"size.x": 622.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "When panning, move mouse to opposite side of window"
@@ -2505,7 +2505,7 @@
 			"pos.x": 1986.24060058594,
 			"pos.y": 920.33935546875,
 			"priority_id": 0,
-			"size.x": 439.000122070313,
+			"size.x": 485.000122070313,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Settings for BG lines + DrawingRegion lines"
@@ -2552,7 +2552,7 @@
 			"pos.x": 3530.392578125,
 			"pos.y": 1149.74267578125,
 			"priority_id": 0,
-			"size.x": 428.0,
+			"size.x": 485.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Deselect LineEdit if element is not selected"
@@ -2587,7 +2587,7 @@
 			"pos.x": 4238.859375,
 			"pos.y": 244.088790893555,
 			"priority_id": 4,
-			"size.x": 173.3017578125,
+			"size.x": 177.0,
 			"size.y": 148.481155395508,
 			"style_preset_id": "none",
 			"text": "Features"
@@ -2611,7 +2611,7 @@
 			"pos.x": 3703.1650390625,
 			"pos.y": 518.909301757813,
 			"priority_id": 1,
-			"size.x": 190.0361328125,
+			"size.x": 206.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Rectangle select"
@@ -2635,7 +2635,7 @@
 			"pos.x": 4875.89111328125,
 			"pos.y": 607.326538085938,
 			"priority_id": 0,
-			"size.x": 232.96337890625,
+			"size.x": 243.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Use UndoRedo class"
@@ -2647,7 +2647,7 @@
 			"pos.x": 2243.0908203125,
 			"pos.y": 1512.08386230469,
 			"priority_id": 3,
-			"size.x": 177.8916015625,
+			"size.x": 193.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Canvas Size Set"
@@ -2671,7 +2671,7 @@
 			"pos.x": 4624.3251953125,
 			"pos.y": 786.697143554688,
 			"priority_id": 3,
-			"size.x": 212.0,
+			"size.x": 234.0,
 			"size.y": 77.5191040039063,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Save planned order"
@@ -2683,7 +2683,7 @@
 			"pos.x": 4971.4345703125,
 			"pos.y": 794.2412109375,
 			"priority_id": 3,
-			"size.x": 247.7705078125,
+			"size.x": 261.0,
 			"size.y": 76.2784423828125,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Toolbar with numbers"
@@ -2695,7 +2695,7 @@
 			"pos.x": 5352.02783203125,
 			"pos.y": 872.316467285156,
 			"priority_id": 3,
-			"size.x": 448.73095703125,
+			"size.x": 487.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "More numbers get added if used + scrollbar"
@@ -2707,7 +2707,7 @@
 			"pos.x": 5354.16845703125,
 			"pos.y": 942.408386230469,
 			"priority_id": 3,
-			"size.x": 382.0,
+			"size.x": 413.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "1 - 9 have keyboard shortcuts = go to"
@@ -2731,7 +2731,7 @@
 			"pos.x": 5353.93603515625,
 			"pos.y": 1079.5927734375,
 			"priority_id": 3,
-			"size.x": 427.64208984375,
+			"size.x": 457.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Remove / Replace element from number"
@@ -2766,7 +2766,7 @@
 			"pos.x": 3276.33276367188,
 			"pos.y": 1481.390625,
 			"priority_id": 0,
-			"size.x": 438.806884765625,
+			"size.x": 443.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Visual confirmation for first connection"
@@ -2801,7 +2801,7 @@
 			"pos.x": 3052.94287109375,
 			"pos.y": 1152.52990722656,
 			"priority_id": 4,
-			"size.x": 459.701904296875,
+			"size.x": 476.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Can select element when picking BG color"
@@ -2836,7 +2836,7 @@
 			"pos.x": 3239.72485351563,
 			"pos.y": 1285.744140625,
 			"priority_id": 4,
-			"size.x": 396.0,
+			"size.x": 443.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Save canvas data in file: Location, Scale"
@@ -2848,7 +2848,7 @@
 			"pos.x": 3162.10766601563,
 			"pos.y": 1196.57458496094,
 			"priority_id": 1,
-			"size.x": 355.078857421875,
+			"size.x": 377.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Easier move element when small"
@@ -2918,7 +2918,7 @@
 			"pos.x": 4623.4501953125,
 			"pos.y": 1255.02758789063,
 			"priority_id": 0,
-			"size.x": 261.0,
+			"size.x": 281.0,
 			"size.y": 109.998168945313,
 			"style_preset_id": "none",
 			"text": "Time Estimate "
@@ -2930,7 +2930,7 @@
 			"pos.x": 5014.75244140625,
 			"pos.y": 1451.08605957031,
 			"priority_id": 2,
-			"size.x": 267.0,
+			"size.x": 296.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Array with possible times"
@@ -2942,7 +2942,7 @@
 			"pos.x": 5373.77880859375,
 			"pos.y": 1447.54760742188,
 			"priority_id": 2,
-			"size.x": 264.66357421875,
+			"size.x": 273.0,
 			"size.y": 64.0001220703125,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Set / Add from settings"
@@ -2989,7 +2989,7 @@
 			"pos.x": 5013.21484375,
 			"pos.y": 1319.18884277344,
 			"priority_id": 0,
-			"size.x": 227.31396484375,
+			"size.x": 242.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Selector on element"
@@ -3013,7 +3013,7 @@
 			"pos.x": 5014.43896484375,
 			"pos.y": 1253.419921875,
 			"priority_id": 0,
-			"size.x": 361.537109375,
+			"size.x": 385.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Show total with priority threshold"
@@ -3025,7 +3025,7 @@
 			"pos.x": 3969.98779296875,
 			"pos.y": 366.994995117188,
 			"priority_id": 1,
-			"size.x": 120.0,
+			"size.x": 128.0,
 			"size.y": 80.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Autosave"
@@ -3037,7 +3037,7 @@
 			"pos.x": 3692.10864257813,
 			"pos.y": 372.905944824219,
 			"priority_id": 1,
-			"size.x": 226.238037109375,
+			"size.x": 249.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Set Timer in Settings"
@@ -3072,7 +3072,7 @@
 			"pos.x": 1710.55627441406,
 			"pos.y": 361.644195556641,
 			"priority_id": 4,
-			"size.x": 165.374877929688,
+			"size.x": 176.854125976563,
 			"size.y": 116.299865722656,
 			"style_preset_id": "none",
 			"text": "Issues"
@@ -3119,7 +3119,7 @@
 			"pos.x": 2805.03857421875,
 			"pos.y": 1397.33337402344,
 			"priority_id": 4,
-			"size.x": 248.916015625,
+			"size.x": 263.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "File Name / \"New File\""
@@ -3131,7 +3131,7 @@
 			"pos.x": 1879.28186035156,
 			"pos.y": 1967.04272460938,
 			"priority_id": 2,
-			"size.x": 215.999877929688,
+			"size.x": 231.999877929688,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Autosave succesful"
@@ -3166,7 +3166,7 @@
 			"pos.x": 2805.0390625,
 			"pos.y": 1453.64172363281,
 			"priority_id": 4,
-			"size.x": 170.38134765625,
+			"size.x": 184.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Save succesful"
@@ -3201,7 +3201,7 @@
 			"pos.x": 2806.5205078125,
 			"pos.y": 1511.43176269531,
 			"priority_id": 4,
-			"size.x": 165.935791015625,
+			"size.x": 186.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Load succesful"
@@ -3213,7 +3213,7 @@
 			"pos.x": 1195.67443847656,
 			"pos.y": 470.178527832031,
 			"priority_id": 3,
-			"size.x": 391.785888671875,
+			"size.x": 422.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "BG / text outline aliasing at low zoom"
@@ -3225,7 +3225,7 @@
 			"pos.x": 1806.63500976563,
 			"pos.y": 1832.7294921875,
 			"priority_id": 2,
-			"size.x": 289.63330078125,
+			"size.x": 295.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Last saved x minutes ago"
@@ -3249,7 +3249,7 @@
 			"pos.x": 2179.001953125,
 			"pos.y": 1445.2763671875,
 			"priority_id": 3,
-			"size.x": 243.108154296875,
+			"size.x": 247.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Higher DPI UI option"
@@ -3284,7 +3284,7 @@
 			"pos.x": 3071.03393554688,
 			"pos.y": 1027.62292480469,
 			"priority_id": 0,
-			"size.x": 324.0,
+			"size.x": 353.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Unite Select + Pan&Zoom tools"
@@ -3296,7 +3296,7 @@
 			"pos.x": 3163.38989257813,
 			"pos.y": 796.291015625,
 			"priority_id": 3,
-			"size.x": 634.311279296875,
+			"size.x": 690.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Pointing finger mouse cursor only when able to select or move"
@@ -3308,7 +3308,7 @@
 			"pos.x": 4632.51708984375,
 			"pos.y": 290.848937988281,
 			"priority_id": 1,
-			"size.x": 151.0,
+			"size.x": 166.0,
 			"size.y": 77.2518310546875,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Save as PNG "
@@ -3320,7 +3320,7 @@
 			"pos.x": 4856.3837890625,
 			"pos.y": 300.462921142578,
 			"priority_id": 1,
-			"size.x": 273.72705078125,
+			"size.x": 291.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Find bounding rectangle"
@@ -3332,8 +3332,8 @@
 			"pos.x": 4624.162109375,
 			"pos.y": 962.611022949219,
 			"priority_id": 2,
-			"size.x": 276.5947265625,
-			"size.y": 64.0000076293945,
+			"size.x": 296.0,
+			"size.y": 64.0000610351563,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Paste img from clipboard"
 		},
@@ -3367,7 +3367,7 @@
 			"pos.x": 3253.39453125,
 			"pos.y": 1132.35107421875,
 			"priority_id": 0,
-			"size.x": 512.388427734375,
+			"size.x": 556.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Save opened file paths on exit & reopen on launch"
@@ -3402,7 +3402,7 @@
 			"pos.x": 1635.00256347656,
 			"pos.y": 673.513061523438,
 			"priority_id": 4,
-			"size.x": 138.806640625,
+			"size.x": 145.0,
 			"size.y": 65.89501953125,
 			"style_preset_id": "none",
 			"text": "Swap Style"
@@ -3472,7 +3472,7 @@
 			"pos.x": 1808.490234375,
 			"pos.y": 583.158081054688,
 			"priority_id": 4,
-			"size.x": 191.548461914063,
+			"size.x": 203.0,
 			"size.y": 66.3748779296875,
 			"style_preset_id": "none",
 			"text": "Save / Load data"
@@ -3507,7 +3507,7 @@
 			"pos.x": 2356.318359375,
 			"pos.y": 1038.39038085938,
 			"priority_id": 0,
-			"size.x": 185.0,
+			"size.x": 203.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Save / Load data"
@@ -3542,7 +3542,7 @@
 			"pos.x": 1374.43017578125,
 			"pos.y": 756.932861328125,
 			"priority_id": 4,
-			"size.x": 241.0,
+			"size.x": 270.0,
 			"size.y": 73.3602294921875,
 			"style_preset_id": "none",
 			"text": "Hide their connections"
@@ -3577,7 +3577,7 @@
 			"pos.x": 1741.90124511719,
 			"pos.y": 193.270721435547,
 			"priority_id": 4,
-			"size.x": 138.091186523438,
+			"size.x": 176.854125976563,
 			"size.y": 90.5532531738281,
 			"style_preset_id": "none",
 			"text": "Code"
@@ -3612,7 +3612,7 @@
 			"pos.x": 3302.34838867188,
 			"pos.y": 1414.84130859375,
 			"priority_id": 0,
-			"size.x": 485.396484375,
+			"size.x": 542.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Make / Remove connection by selecting LineEdit"
@@ -3647,7 +3647,7 @@
 			"pos.x": 1469.49743652344,
 			"pos.y": 584.86328125,
 			"priority_id": 4,
-			"size.x": 318.0,
+			"size.x": 357.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Hide when marked if checkbox"
@@ -3682,7 +3682,7 @@
 			"pos.x": 1691.32629394531,
 			"pos.y": 504.430145263672,
 			"priority_id": 4,
-			"size.x": 301.438232421875,
+			"size.x": 316.0,
 			"size.y": 64.0000305175781,
 			"style_preset_id": "none",
 			"text": "Save / Load checkbox state"
@@ -3694,7 +3694,7 @@
 			"pos.x": 5349.068359375,
 			"pos.y": 794.500549316406,
 			"priority_id": 3,
-			"size.x": 264.0,
+			"size.x": 280.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Undefined order button"
@@ -3729,7 +3729,7 @@
 			"pos.x": 2694.60083007813,
 			"pos.y": 809.320739746094,
 			"priority_id": 4,
-			"size.x": 179.3818359375,
+			"size.x": 184.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Save + Save As"
@@ -3799,7 +3799,7 @@
 			"pos.x": 5164.185546875,
 			"pos.y": 915.6669921875,
 			"priority_id": 3,
-			"size.x": 308.1650390625,
+			"size.x": 319.0,
 			"size.y": 68.8494873046875,
 			"style_preset_id": "none",
 			"text": "Dialogue Box on Load / Exit"
@@ -3834,7 +3834,7 @@
 			"pos.x": 5018.84765625,
 			"pos.y": 918.215942382813,
 			"priority_id": 3,
-			"size.x": 106.0615234375,
+			"size.x": 121.03369140625,
 			"size.y": 64.66796875,
 			"style_preset_id": "none",
 			"text": "Title"
@@ -3904,7 +3904,7 @@
 			"pos.x": 2448.48486328125,
 			"pos.y": 930.461547851563,
 			"priority_id": 0,
-			"size.x": 169.32421875,
+			"size.x": 189.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Filter elements"
@@ -3939,7 +3939,7 @@
 			"pos.x": 2164.95532226563,
 			"pos.y": 1086.76513671875,
 			"priority_id": 0,
-			"size.x": 275.44873046875,
+			"size.x": 293.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Play anim. on mouse exit"
@@ -3974,7 +3974,7 @@
 			"pos.x": 1737.86059570313,
 			"pos.y": 1122.32836914063,
 			"priority_id": 0,
-			"size.x": 411.0,
+			"size.x": 459.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Disable tool when checkbox / completed"
@@ -4009,7 +4009,7 @@
 			"pos.x": 2634.2666015625,
 			"pos.y": 873.728210449219,
 			"priority_id": 0,
-			"size.x": 318.779541015625,
+			"size.x": 320.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Style - Thicker & +/- Buttons"
@@ -4044,7 +4044,7 @@
 			"pos.x": 2631.1181640625,
 			"pos.y": 933.189880371094,
 			"priority_id": 0,
-			"size.x": 218.387451171875,
+			"size.x": 239.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Hide with checkbox"
@@ -4079,7 +4079,7 @@
 			"pos.x": 2633.9326171875,
 			"pos.y": 989.503173828125,
 			"priority_id": 0,
-			"size.x": 272.05322265625,
+			"size.x": 273.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Hide extra connections"
@@ -4114,7 +4114,7 @@
 			"pos.x": 2462.9326171875,
 			"pos.y": 992.859924316406,
 			"priority_id": 0,
-			"size.x": 144.020751953125,
+			"size.x": 151.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Toggle Tool"
@@ -4149,7 +4149,7 @@
 			"pos.x": 3182.79931640625,
 			"pos.y": 1220.00573730469,
 			"priority_id": 0,
-			"size.x": 388.0,
+			"size.x": 435.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Select newly created element text-box"
@@ -4161,7 +4161,7 @@
 			"pos.x": 3161.23364257813,
 			"pos.y": 659.88671875,
 			"priority_id": 3,
-			"size.x": 396.76416015625,
+			"size.x": 421.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Input current file path on Load / Save"
@@ -4196,7 +4196,7 @@
 			"pos.x": 2069.990234375,
 			"pos.y": 1159.607421875,
 			"priority_id": 0,
-			"size.x": 341.4345703125,
+			"size.x": 373.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Checkbox style against black BG"
@@ -4243,7 +4243,7 @@
 			"pos.x": 4620.44189453125,
 			"pos.y": 487.544525146484,
 			"priority_id": 0,
-			"size.x": 190.0,
+			"size.x": 204.0,
 			"size.y": 77.6110534667969,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Mark As Issue !!! "
@@ -4255,7 +4255,7 @@
 			"pos.x": 4625.23046875,
 			"pos.y": 879.271728515625,
 			"priority_id": 3,
-			"size.x": 211.18701171875,
+			"size.x": 228.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Pin / Lock Element"
@@ -4290,7 +4290,7 @@
 			"pos.x": 592.462341308594,
 			"pos.y": 543.266296386719,
 			"priority_id": 0,
-			"size.x": 887.868713378906,
+			"size.x": 941.000061035156,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Selection Viewer / Element bad size when element is small because of priority tool size"
@@ -4325,7 +4325,7 @@
 			"pos.x": 3574.66796875,
 			"pos.y": 1216.68322753906,
 			"priority_id": 0,
-			"size.x": 318.42724609375,
+			"size.x": 346.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "On different element selected"
@@ -4337,7 +4337,7 @@
 			"pos.x": 810.037170410156,
 			"pos.y": 335.549865722656,
 			"priority_id": 2,
-			"size.x": 779.142395019531,
+			"size.x": 864.999938964844,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Show completed + priority filtered items - hide connections to hidden elements"
@@ -4372,7 +4372,7 @@
 			"pos.x": 4632.837890625,
 			"pos.y": 1533.17004394531,
 			"priority_id": 0,
-			"size.x": 246.8857421875,
+			"size.x": 259.0,
 			"size.y": 99.5963134765625,
 			"style_preset_id": "none",
 			"text": " Element List "
@@ -4407,7 +4407,7 @@
 			"pos.x": 2857.50048828125,
 			"pos.y": 232.682189941406,
 			"priority_id": 0,
-			"size.x": 249.26806640625,
+			"size.x": 266.0,
 			"size.y": 74.5571594238281,
 			"style_preset_id": "none",
 			"text": "Tooltip shows keybind"
@@ -4442,7 +4442,7 @@
 			"pos.x": 1044.1826171875,
 			"pos.y": 183.138122558594,
 			"priority_id": 0,
-			"size.x": 515.65966796875,
+			"size.x": 536.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Grey text / White text style on toggle completed"
@@ -4477,7 +4477,7 @@
 			"pos.x": 1003.33422851563,
 			"pos.y": 250.434204101563,
 			"priority_id": 0,
-			"size.x": 572.0244140625,
+			"size.x": 616.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Change zoom progress bar according to zoom limits set"
@@ -4489,7 +4489,7 @@
 			"pos.x": 923.437377929688,
 			"pos.y": 305.524047851563,
 			"priority_id": 2,
-			"size.x": 669.697021484375,
+			"size.x": 695.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Clicking LineEdit while it is already active doesn't trigger signal"
@@ -4524,7 +4524,7 @@
 			"pos.x": 2771.36669921875,
 			"pos.y": 1253.09887695313,
 			"priority_id": 2,
-			"size.x": 243.0,
+			"size.x": 273.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Better selection viewer"
@@ -4559,7 +4559,7 @@
 			"pos.x": 3224.88623046875,
 			"pos.y": 1235.5048828125,
 			"priority_id": 0,
-			"size.x": 409.0,
+			"size.x": 463.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Remove connections by clicking LineEdit"
@@ -4594,7 +4594,7 @@
 			"pos.x": 2868.08129882813,
 			"pos.y": 1145.98876953125,
 			"priority_id": 0,
-			"size.x": 144.0,
+			"size.x": 163.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Canvas class"
@@ -4629,7 +4629,7 @@
 			"pos.x": 3179.52270507813,
 			"pos.y": 1153.18908691406,
 			"priority_id": 0,
-			"size.x": 415.0,
+			"size.x": 452.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Switch between canvases & handle data"
@@ -4641,7 +4641,7 @@
 			"pos.x": 3857.87084960938,
 			"pos.y": 141.648056030273,
 			"priority_id": 2,
-			"size.x": 232.0,
+			"size.x": 255.000244140625,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Arrow key navigation"
@@ -4653,7 +4653,7 @@
 			"pos.x": 3419.52587890625,
 			"pos.y": 140.726821899414,
 			"priority_id": 2,
-			"size.x": 376.84521484375,
+			"size.x": 401.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Canvas pan, zoom & element select"
@@ -4665,7 +4665,7 @@
 			"pos.x": 2734.82934570313,
 			"pos.y": 442.652618408203,
 			"priority_id": 2,
-			"size.x": 174.313232421875,
+			"size.x": 183.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:51:39 65088",
 			"text": "Assign priority"
@@ -4677,7 +4677,7 @@
 			"pos.x": 4601.607421875,
 			"pos.y": 1419.33422851563,
 			"priority_id": 0,
-			"size.x": 164.0,
+			"size.x": 181.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Drawing areas"
@@ -4689,7 +4689,7 @@
 			"pos.x": 4551.07763671875,
 			"pos.y": 1567.24389648438,
 			"priority_id": 0,
-			"size.x": 109.0,
+			"size.x": 121.03369140625,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Create"
@@ -4701,7 +4701,7 @@
 			"pos.x": 4689.23876953125,
 			"pos.y": 1567.69702148438,
 			"priority_id": 0,
-			"size.x": 139.0,
+			"size.x": 150.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Save / Load"
@@ -4771,7 +4771,7 @@
 			"pos.x": 1702.18310546875,
 			"pos.y": 549.987915039063,
 			"priority_id": 0,
-			"size.x": 217.0,
+			"size.x": 228.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "New file behaviour"
@@ -4806,7 +4806,7 @@
 			"pos.x": 1815.34399414063,
 			"pos.y": 624.767761230469,
 			"priority_id": 0,
-			"size.x": 186.15625,
+			"size.x": 201.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "If no file opened"
@@ -4841,7 +4841,7 @@
 			"pos.x": 1606.81909179688,
 			"pos.y": 625.356811523438,
 			"priority_id": 0,
-			"size.x": 186.0,
+			"size.x": 206.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "With file opened"
@@ -4876,7 +4876,7 @@
 			"pos.x": 2979.75927734375,
 			"pos.y": 1236.95556640625,
 			"priority_id": 0,
-			"size.x": 232.0,
+			"size.x": 249.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Change window title"
@@ -4911,7 +4911,7 @@
 			"pos.x": 4607.005859375,
 			"pos.y": 1519.29931640625,
 			"priority_id": 0,
-			"size.x": 572.0,
+			"size.x": 641.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Save/Load current selected file path / consistent canvas id"
@@ -4946,7 +4946,7 @@
 			"pos.x": 3016.12768554688,
 			"pos.y": 1235.49865722656,
 			"priority_id": 0,
-			"size.x": 355.260986328125,
+			"size.x": 387.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Save unsaved file on exit in user://"
@@ -4958,7 +4958,7 @@
 			"pos.x": 2108.5166015625,
 			"pos.y": 1775.87878417969,
 			"priority_id": 2,
-			"size.x": 310.946533203125,
+			"size.x": 340.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Open file location in explorer "
@@ -4993,7 +4993,7 @@
 			"pos.x": 3023.85229492188,
 			"pos.y": 914.159912109375,
 			"priority_id": 2,
-			"size.x": 460.01025390625,
+			"size.x": 505.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Modify z_index on toggle completed element"
@@ -5028,7 +5028,7 @@
 			"pos.x": 2474.02807617188,
 			"pos.y": 1604.29443359375,
 			"priority_id": 0,
-			"size.x": 256.0,
+			"size.x": 276.0,
 			"size.y": 80.0,
 			"style_preset_id": "none",
 			"text": "Better connection lines"
@@ -5098,7 +5098,7 @@
 			"pos.x": 2061.7724609375,
 			"pos.y": 1793.26477050781,
 			"priority_id": 0,
-			"size.x": 522.0,
+			"size.x": 558.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Gradient color going from 1st element color to 2nd"
@@ -5133,7 +5133,7 @@
 			"pos.x": 2048.25415039063,
 			"pos.y": 1710.0986328125,
 			"priority_id": 0,
-			"size.x": 405.0,
+			"size.x": 450.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Start left / right based on other element"
@@ -5168,7 +5168,7 @@
 			"pos.x": 2300.06811523438,
 			"pos.y": 1555.11853027344,
 			"priority_id": 0,
-			"size.x": 172.0,
+			"size.x": 190.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Curved corners"
@@ -5203,7 +5203,7 @@
 			"pos.x": 1437.39196777344,
 			"pos.y": 1788.96557617188,
 			"priority_id": 0,
-			"size.x": 535.000122070313,
+			"size.x": 596.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Change connection color together with element color"
@@ -5238,7 +5238,7 @@
 			"pos.x": 4434.9599609375,
 			"pos.y": 1542.275390625,
 			"priority_id": 0,
-			"size.x": 151.11376953125,
+			"size.x": 168.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Canvases IDs"
@@ -5273,7 +5273,7 @@
 			"pos.x": 4474.69482421875,
 			"pos.y": 1877.859375,
 			"priority_id": 4,
-			"size.x": 276.0,
+			"size.x": 309.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "canvas: has_changed: bool"
@@ -5308,7 +5308,7 @@
 			"pos.x": 4154.44921875,
 			"pos.y": 1792.44714355469,
 			"priority_id": 0,
-			"size.x": 113.0,
+			"size.x": 121.03369140625,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Load"
@@ -5343,7 +5343,7 @@
 			"pos.x": 4303.447265625,
 			"pos.y": 1789.07019042969,
 			"priority_id": 0,
-			"size.x": 115.0,
+			"size.x": 121.03369140625,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Exit"
@@ -5378,7 +5378,7 @@
 			"pos.x": 4463.7255859375,
 			"pos.y": 1785.650390625,
 			"priority_id": 0,
-			"size.x": 112.0,
+			"size.x": 131.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Close Tab"
@@ -5425,7 +5425,7 @@
 			"pos.x": 4856.1748046875,
 			"pos.y": 365.154388427734,
 			"priority_id": 1,
-			"size.x": 276.0,
+			"size.x": 308.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Panning indicator window"
@@ -5437,7 +5437,7 @@
 			"pos.x": 3740.61279296875,
 			"pos.y": 293.069458007813,
 			"priority_id": 2,
-			"size.x": 279.0,
+			"size.x": 308.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Copy element to clipboard"
@@ -5449,7 +5449,7 @@
 			"pos.x": 4856.29296875,
 			"pos.y": 431.307586669922,
 			"priority_id": 1,
-			"size.x": 280.443359375,
+			"size.x": 314.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Camera with scale settings"
@@ -5461,7 +5461,7 @@
 			"pos.x": 5213.8349609375,
 			"pos.y": 440.214782714844,
 			"priority_id": 1,
-			"size.x": 205.88720703125,
+			"size.x": 225.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Specify image size"
@@ -5496,7 +5496,7 @@
 			"pos.x": 4275.63720703125,
 			"pos.y": 1697.69750976563,
 			"priority_id": 0,
-			"size.x": 163.0,
+			"size.x": 181.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Popup per tab"
@@ -5531,7 +5531,7 @@
 			"pos.x": 3850.1298828125,
 			"pos.y": 1875.53039550781,
 			"priority_id": 0,
-			"size.x": 180.0,
+			"size.x": 192.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Show file name"
@@ -5543,7 +5543,7 @@
 			"pos.x": 3160.71240234375,
 			"pos.y": 728.357849121094,
 			"priority_id": 2,
-			"size.x": 514.0,
+			"size.x": 568.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Open file by dragging into window / on executable "
@@ -5555,7 +5555,7 @@
 			"pos.x": 3162.255859375,
 			"pos.y": 862.943115234375,
 			"priority_id": 3,
-			"size.x": 380.8681640625,
+			"size.x": 419.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Change tab color if unsaved changes"
@@ -5590,7 +5590,7 @@
 			"pos.x": 4842.27783203125,
 			"pos.y": 1878.15771484375,
 			"priority_id": 4,
-			"size.x": 165.88720703125,
+			"size.x": 169.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "(*) Tab & Title"
@@ -5602,7 +5602,7 @@
 			"pos.x": 3163.25952148438,
 			"pos.y": 928.925964355469,
 			"priority_id": 0,
-			"size.x": 352.0,
+			"size.x": 369.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Connection line from top to side"
@@ -5614,7 +5614,7 @@
 			"pos.x": 3580.8603515625,
 			"pos.y": 293.328582763672,
 			"priority_id": 2,
-			"size.x": 118.510986328125,
+			"size.x": 121.033935546875,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "& Paste"
@@ -5626,7 +5626,7 @@
 			"pos.x": 5071.7451171875,
 			"pos.y": 1334.54455566406,
 			"priority_id": 0,
-			"size.x": 118.97314453125,
+			"size.x": 121.03369140625,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Brush"
@@ -5638,7 +5638,7 @@
 			"pos.x": 2735.86376953125,
 			"pos.y": 242.675445556641,
 			"priority_id": 0,
-			"size.x": 301.0,
+			"size.x": 321.0,
 			"size.y": 64.0000305175781,
 			"style_preset_id": "2025-05-11T11:51:39 65088",
 			"text": "Ctrl+D to duplicate element"
@@ -5650,7 +5650,7 @@
 			"pos.x": 2737.26196289063,
 			"pos.y": 310.448974609375,
 			"priority_id": 0,
-			"size.x": 256.032958984375,
+			"size.x": 259.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:51:39 65088",
 			"text": "Del to delete selected"
@@ -5662,7 +5662,7 @@
 			"pos.x": 3092.45092773438,
 			"pos.y": 307.739562988281,
 			"priority_id": 0,
-			"size.x": 411.203125,
+			"size.x": 438.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:51:39 65088",
 			"text": "Stop editing, moving, resizing, select -1"
@@ -5697,7 +5697,7 @@
 			"pos.x": 4949.8203125,
 			"pos.y": 1315.35021972656,
 			"priority_id": 0,
-			"size.x": 242.0,
+			"size.x": 268.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Popup drawer left side"
@@ -5709,7 +5709,7 @@
 			"pos.x": 3162.55908203125,
 			"pos.y": 996.311645507813,
 			"priority_id": 0,
-			"size.x": 403.16357421875,
+			"size.x": 450.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Can only select LineEdit with select tool"
@@ -5721,7 +5721,7 @@
 			"pos.x": 4625.1787109375,
 			"pos.y": 1051.21337890625,
 			"priority_id": 2,
-			"size.x": 165.1279296875,
+			"size.x": 172.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Export to .csv"
@@ -5756,7 +5756,7 @@
 			"pos.x": 3286.12817382813,
 			"pos.y": 1246.39587402344,
 			"priority_id": 0,
-			"size.x": 183.0,
+			"size.x": 196.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Element Border"
@@ -5791,7 +5791,7 @@
 			"pos.x": 3406.94189453125,
 			"pos.y": 1375.18286132813,
 			"priority_id": 0,
-			"size.x": 181.673828125,
+			"size.x": 184.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Thickness >= 0"
@@ -5826,7 +5826,7 @@
 			"pos.x": 3305.3603515625,
 			"pos.y": 1376.02294921875,
 			"priority_id": 0,
-			"size.x": 89.19873046875,
+			"size.x": 121.033935546875,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Color"
@@ -5838,7 +5838,7 @@
 			"pos.x": 4622.134765625,
 			"pos.y": 1183.47082519531,
 			"priority_id": 2,
-			"size.x": 336.0,
+			"size.x": 377.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Create new canvas from element"
@@ -5850,7 +5850,7 @@
 			"pos.x": 5073.26416015625,
 			"pos.y": 1182.19287109375,
 			"priority_id": 2,
-			"size.x": 631.73876953125,
+			"size.x": 687.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Create 1st element with big font size, alpha bg color, no border"
@@ -5862,7 +5862,7 @@
 			"pos.x": 3665.2490234375,
 			"pos.y": 997.75,
 			"priority_id": 0,
-			"size.x": 227.0,
+			"size.x": 250.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Deselect if other tool"
@@ -5897,7 +5897,7 @@
 			"pos.x": 809.315856933594,
 			"pos.y": 547.328979492188,
 			"priority_id": 0,
-			"size.x": 776.228576660156,
+			"size.x": 848.000061035156,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Switching tabs doesn't keep the (*) to indicate modified file (tab name or title)"
@@ -5909,7 +5909,7 @@
 			"pos.x": 2518.1962890625,
 			"pos.y": 1378.29675292969,
 			"priority_id": 4,
-			"size.x": 290.0,
+			"size.x": 314.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Per element settings panel"
@@ -5956,7 +5956,7 @@
 			"pos.x": 1968.46923828125,
 			"pos.y": 134.733734130859,
 			"priority_id": 2,
-			"size.x": 529.483032226563,
+			"size.x": 584.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T14:18:44 1336605",
 			"text": "Check current focused object to check if editing text"
@@ -5991,7 +5991,7 @@
 			"pos.x": 3642.5400390625,
 			"pos.y": 1167.517578125,
 			"priority_id": 0,
-			"size.x": 117.7890625,
+			"size.x": 121.033935546875,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Presets"
@@ -6131,7 +6131,7 @@
 			"pos.x": 3864.166015625,
 			"pos.y": 1304.85095214844,
 			"priority_id": 0,
-			"size.x": 192.2578125,
+			"size.x": 194.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Remove Button"
@@ -6166,7 +6166,7 @@
 			"pos.x": 2939.34765625,
 			"pos.y": 1575.94702148438,
 			"priority_id": 1,
-			"size.x": 490.6787109375,
+			"size.x": 537.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Color dropdown menu choice based on BG color"
@@ -6213,7 +6213,7 @@
 			"pos.x": 2893.19897460938,
 			"pos.y": 777.751403808594,
 			"priority_id": 0,
-			"size.x": 183.31494140625,
+			"size.x": 184.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Fast elem. add"
@@ -6237,7 +6237,7 @@
 			"pos.x": 2788.81298828125,
 			"pos.y": 1019.25225830078,
 			"priority_id": 0,
-			"size.x": 134.7783203125,
+			"size.x": 139.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Insert text"
@@ -6249,7 +6249,7 @@
 			"pos.x": 2685.650390625,
 			"pos.y": 1086.44421386719,
 			"priority_id": 0,
-			"size.x": 237.0,
+			"size.x": 259.0,
 			"size.y": 64.0001220703125,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "\"Enter\" to place down"
@@ -6261,7 +6261,7 @@
 			"pos.x": 2379.14990234375,
 			"pos.y": 778.815002441406,
 			"priority_id": 0,
-			"size.x": 468.0,
+			"size.x": 517.0,
 			"size.y": 64.0000610351563,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Don't exit add tool until esc press or other tool"
@@ -6273,7 +6273,7 @@
 			"pos.x": 2678.5029296875,
 			"pos.y": 952.619140625,
 			"priority_id": 0,
-			"size.x": 245.92431640625,
+			"size.x": 263.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Under mouse location"
@@ -6308,7 +6308,7 @@
 			"pos.x": 3867.66357421875,
 			"pos.y": 1636.29064941406,
 			"priority_id": 1,
-			"size.x": 259.32763671875,
+			"size.x": 271.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Update on select elem."
@@ -6320,7 +6320,7 @@
 			"pos.x": 2705.35205078125,
 			"pos.y": 1757.50415039063,
 			"priority_id": 2,
-			"size.x": 195.52783203125,
+			"size.x": 204.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Duplicate preset"
@@ -6355,7 +6355,7 @@
 			"pos.x": 3897.65893554688,
 			"pos.y": 1504.77465820313,
 			"priority_id": 0,
-			"size.x": 649.539306640625,
+			"size.x": 719.000244140625,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Change every element that has the preset when changes happen"
@@ -6390,7 +6390,7 @@
 			"pos.x": 3868.6689453125,
 			"pos.y": 1568.31225585938,
 			"priority_id": 1,
-			"size.x": 499.033203125,
+			"size.x": 545.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Newly created element inherits current selection"
@@ -6425,7 +6425,7 @@
 			"pos.x": 2976.17163085938,
 			"pos.y": 1295.09997558594,
 			"priority_id": 0,
-			"size.x": 454.0,
+			"size.x": 497.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Change BG color tool into Element Style tool"
@@ -6460,7 +6460,7 @@
 			"pos.x": 3863.61743164063,
 			"pos.y": 1371.4794921875,
 			"priority_id": 0,
-			"size.x": 467.972412109375,
+			"size.x": 487.999755859375,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Change available presets on canvas change"
@@ -6495,7 +6495,7 @@
 			"pos.x": 3872.28515625,
 			"pos.y": 1485.88256835938,
 			"priority_id": 0,
-			"size.x": 443.85791015625,
+			"size.x": 487.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Change dropdown menu on canvas change"
@@ -6530,7 +6530,7 @@
 			"pos.x": 3863.345703125,
 			"pos.y": 1236.53552246094,
 			"priority_id": 0,
-			"size.x": 345.6103515625,
+			"size.x": 355.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Element: ID for selected Preset"
@@ -6565,7 +6565,7 @@
 			"pos.x": 4261.703125,
 			"pos.y": 1236.42956542969,
 			"priority_id": 0,
-			"size.x": 346.80517578125,
+			"size.x": 368.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "on preset delete, switch to none"
@@ -6612,7 +6612,7 @@
 			"pos.x": 2704.7724609375,
 			"pos.y": 1693.08520507813,
 			"priority_id": 2,
-			"size.x": 219.0,
+			"size.x": 234.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Copy / Paste Preset"
@@ -6647,7 +6647,7 @@
 			"pos.x": 4142.4912109375,
 			"pos.y": 1303.58203125,
 			"priority_id": 0,
-			"size.x": 407.630859375,
+			"size.x": 449.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Canvas & Elements that have the preset"
@@ -6659,7 +6659,7 @@
 			"pos.x": 2213.48950195313,
 			"pos.y": 1051.73974609375,
 			"priority_id": 0,
-			"size.x": 211.0,
+			"size.x": 222.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "App icon / taskbar"
@@ -6694,7 +6694,7 @@
 			"pos.x": 3865.8330078125,
 			"pos.y": 1706.57165527344,
 			"priority_id": 0,
-			"size.x": 270.669921875,
+			"size.x": 294.0,
 			"size.y": 64.0,
 			"style_preset_id": "none",
 			"text": "Change connection color"
@@ -6718,7 +6718,7 @@
 			"pos.x": 2735.3798828125,
 			"pos.y": 375.585662841797,
 			"priority_id": 3,
-			"size.x": 300.0,
+			"size.x": 310.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:51:39 65088",
 			"text": "F1 to brind up keybind info"
@@ -6730,7 +6730,7 @@
 			"pos.x": 1274.47033691406,
 			"pos.y": 270.70458984375,
 			"priority_id": 2,
-			"size.x": 316.0,
+			"size.x": 355.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "selecting tool with ctrl pressed"
@@ -6742,7 +6742,7 @@
 			"pos.x": 2704.61596679688,
 			"pos.y": 1492.23583984375,
 			"priority_id": 0,
-			"size.x": 195.59375,
+			"size.x": 198.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Reorder presets"
@@ -6754,7 +6754,7 @@
 			"pos.x": 1186.49841308594,
 			"pos.y": 204.988433837891,
 			"priority_id": 2,
-			"size.x": 405.216064453125,
+			"size.x": 449.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Element is moving with priority buttons"
@@ -6778,7 +6778,7 @@
 			"pos.x": 2165.34155273438,
 			"pos.y": 1577.57299804688,
 			"priority_id": 2,
-			"size.x": 254.0,
+			"size.x": 267.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Loading scene for files"
@@ -6790,7 +6790,7 @@
 			"pos.x": 2704.77197265625,
 			"pos.y": 1626.00915527344,
 			"priority_id": 1,
-			"size.x": 308.157470703125,
+			"size.x": 324.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "\"Modify individually\" button"
@@ -6802,7 +6802,7 @@
 			"pos.x": 5006.08984375,
 			"pos.y": 1530.69799804688,
 			"priority_id": 0,
-			"size.x": 256.26318359375,
+			"size.x": 274.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Merge element into list"
@@ -6814,7 +6814,7 @@
 			"pos.x": 5005.904296875,
 			"pos.y": 1595.84924316406,
 			"priority_id": 0,
-			"size.x": 356.45849609375,
+			"size.x": 378.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Drag out of list to create element"
@@ -6826,7 +6826,7 @@
 			"pos.x": 2736.00366210938,
 			"pos.y": 176.018829345703,
 			"priority_id": 0,
-			"size.x": 508.885009765625,
+			"size.x": 555.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:51:39 65088",
 			"text": "esc to close element settings, return to select tool"
@@ -6838,7 +6838,7 @@
 			"pos.x": 2704.3857421875,
 			"pos.y": 1558.91003417969,
 			"priority_id": 0,
-			"size.x": 260.625,
+			"size.x": 276.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Border blend checkbox"
@@ -6850,7 +6850,7 @@
 			"pos.x": 3739.5634765625,
 			"pos.y": 454.016571044922,
 			"priority_id": 1,
-			"size.x": 153.49072265625,
+			"size.x": 155.0,
 			"size.y": 64.0000305175781,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Move group"
@@ -6862,7 +6862,7 @@
 			"pos.x": 3740.02880859375,
 			"pos.y": 646.5126953125,
 			"priority_id": 1,
-			"size.x": 153.0,
+			"size.x": 168.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Delete group"
@@ -6874,7 +6874,7 @@
 			"pos.x": 3883.4091796875,
 			"pos.y": 742.958557128906,
 			"priority_id": 3,
-			"size.x": 298.00537109375,
+			"size.x": 305.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Assign date on completed"
@@ -6886,7 +6886,7 @@
 			"pos.x": 3992.73315429688,
 			"pos.y": 612.183898925781,
 			"priority_id": 3,
-			"size.x": 187.000244140625,
+			"size.x": 209.000244140625,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Show time taken"
@@ -6898,7 +6898,7 @@
 			"pos.x": 4010.36767578125,
 			"pos.y": 677.126220703125,
 			"priority_id": 3,
-			"size.x": 171.0,
+			"size.x": 172.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Disable dates"
@@ -6910,7 +6910,7 @@
 			"pos.x": 4148.1162109375,
 			"pos.y": 541.843017578125,
 			"priority_id": 3,
-			"size.x": 150.3662109375,
+			"size.x": 152.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Date / Time"
@@ -6922,7 +6922,7 @@
 			"pos.x": 3979.16040039063,
 			"pos.y": 931.973327636719,
 			"priority_id": 3,
-			"size.x": 246.456787109375,
+			"size.x": 266.999755859375,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Assign date on started"
@@ -6934,7 +6934,7 @@
 			"pos.x": 4026.4912109375,
 			"pos.y": 808.502258300781,
 			"priority_id": 3,
-			"size.x": 154.892578125,
+			"size.x": 165.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Mark started"
@@ -6946,7 +6946,7 @@
 			"pos.x": 3162.13891601563,
 			"pos.y": 1263.27587890625,
 			"priority_id": 2,
-			"size.x": 461.649169921875,
+			"size.x": 489.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Connection color - don't match background"
@@ -6958,7 +6958,7 @@
 			"pos.x": 2073.79516601563,
 			"pos.y": 988.174438476563,
 			"priority_id": 0,
-			"size.x": 348.915771484375,
+			"size.x": 366.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Hide priority settings if disabled"
@@ -6970,7 +6970,7 @@
 			"pos.x": 3544.14770507813,
 			"pos.y": 584.410888671875,
 			"priority_id": 1,
-			"size.x": 349.637451171875,
+			"size.x": 373.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Reparent to move 1 single object"
@@ -6982,7 +6982,7 @@
 			"pos.x": 1080.62182617188,
 			"pos.y": 267.585571289063,
 			"priority_id": 0,
-			"size.x": 509.166625976563,
+			"size.x": 551.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Selecting the LineEdit under the priority tool area"
@@ -6994,7 +6994,7 @@
 			"pos.x": 1103.18115234375,
 			"pos.y": 537.269897460938,
 			"priority_id": 0,
-			"size.x": 487.0,
+			"size.x": 544.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Pan indicator outside of its window (sometimes) "
@@ -7006,7 +7006,7 @@
 			"pos.x": 1186.78698730469,
 			"pos.y": 604.428588867188,
 			"priority_id": 0,
-			"size.x": 400.076416015625,
+			"size.x": 430.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Pan indicator wrong zoom on new file"
@@ -7018,8 +7018,8 @@
 			"pos.x": 4058.36938476563,
 			"pos.y": 997.371643066406,
 			"priority_id": 2,
-			"size.x": 166.36669921875,
-			"size.y": 67.63330078125,
+			"size.x": 169.999755859375,
+			"size.y": 67.6332397460938,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "R. click Menu"
 		},
@@ -7030,7 +7030,7 @@
 			"pos.x": 2706.0498046875,
 			"pos.y": 1823.20190429688,
 			"priority_id": 2,
-			"size.x": 197.48583984375,
+			"size.x": 205.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Shadow settings"
@@ -7042,7 +7042,7 @@
 			"pos.x": 3163.01025390625,
 			"pos.y": 1328.75659179688,
 			"priority_id": 0,
-			"size.x": 197.31689453125,
+			"size.x": 215.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Caret visibility x2 "
@@ -7054,7 +7054,7 @@
 			"pos.x": 721.431396484375,
 			"pos.y": 239.846130371094,
 			"priority_id": 1,
-			"size.x": 872.0,
+			"size.x": 970.0,
 			"size.y": 64.0000305175781,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Connections not snapped (on x) the same depending on type (side-side) vs (bottom-side) "
@@ -7078,7 +7078,7 @@
 			"pos.x": 4853.7119140625,
 			"pos.y": 495.632934570313,
 			"priority_id": 1,
-			"size.x": 319.07861328125,
+			"size.x": 343.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Include / exclude background"
@@ -7090,7 +7090,7 @@
 			"pos.x": 3160.54345703125,
 			"pos.y": 1327.08764648438,
 			"priority_id": 0,
-			"size.x": 296.755859375,
+			"size.x": 319.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Save window size / location"
@@ -7102,7 +7102,7 @@
 			"pos.x": 2169.8701171875,
 			"pos.y": 1709.61462402344,
 			"priority_id": 2,
-			"size.x": 248.0,
+			"size.x": 271.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Custom mouse cursors"
@@ -7114,7 +7114,7 @@
 			"pos.x": 1915.09643554688,
 			"pos.y": 1643.50512695313,
 			"priority_id": 2,
-			"size.x": 504.0,
+			"size.x": 547.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Hide RAW color picker, show OKHSL (from script)"
@@ -7126,7 +7126,7 @@
 			"pos.x": 1863.75805664063,
 			"pos.y": 856.791625976563,
 			"priority_id": 0,
-			"size.x": 562.251220703125,
+			"size.x": 602.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Default pointing hand cursor for buttons / checkboxes"
@@ -7138,7 +7138,7 @@
 			"pos.x": 2016.44897460938,
 			"pos.y": 405.76416015625,
 			"priority_id": 4,
-			"size.x": 120.0,
+			"size.x": 121.033935546875,
 			"size.y": 80.0,
 			"style_preset_id": "2025-05-11T14:18:44 1336605",
 			"text": ""
@@ -7150,7 +7150,7 @@
 			"pos.x": 1966.55200195313,
 			"pos.y": 200.844573974609,
 			"priority_id": 2,
-			"size.x": 306.7763671875,
+			"size.x": 314.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T14:18:44 1336605",
 			"text": "Multithreaded load images"
@@ -7162,7 +7162,7 @@
 			"pos.x": 3162.255859375,
 			"pos.y": 1130.14855957031,
 			"priority_id": 0,
-			"size.x": 477.77734375,
+			"size.x": 507.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Different selection viewer color if editing text"
@@ -7174,7 +7174,7 @@
 			"pos.x": 691.8115234375,
 			"pos.y": 372.718566894531,
 			"priority_id": 3,
-			"size.x": 899.0,
+			"size.x": 1004.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "SaveMethod.UserFolder Duplicating a file keeps the same drawings folder in use in both files"
@@ -7186,7 +7186,7 @@
 			"pos.x": 178.956695556641,
 			"pos.y": 439.277008056641,
 			"priority_id": 3,
-			"size.x": 875.0,
+			"size.x": 977.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Check if any of the loaded canvas folders are duplicates & assign a new one & save images"
@@ -7210,7 +7210,7 @@
 			"pos.x": 4880.986328125,
 			"pos.y": 1886.4580078125,
 			"priority_id": 2,
-			"size.x": 624.4658203125,
+			"size.x": 673.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Move UI elements to accomodate window widths ~ [100, 600]"
@@ -7222,7 +7222,7 @@
 			"pos.x": 4880.12744140625,
 			"pos.y": 1952.76977539063,
 			"priority_id": 2,
-			"size.x": 304.7041015625,
+			"size.x": 316.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Hide Element style buttons"
@@ -7234,7 +7234,7 @@
 			"pos.x": 4880.482421875,
 			"pos.y": 2082.6826171875,
 			"priority_id": 2,
-			"size.x": 523.7294921875,
+			"size.x": 569.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Panning camera preview very small, buttom screen"
@@ -7246,7 +7246,7 @@
 			"pos.x": 4879.58984375,
 			"pos.y": 2018.39184570313,
 			"priority_id": 2,
-			"size.x": 285.0,
+			"size.x": 309.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Status bar short messages"
@@ -7258,7 +7258,7 @@
 			"pos.x": 4879.83837890625,
 			"pos.y": 2146.57373046875,
 			"priority_id": 2,
-			"size.x": 342.0,
+			"size.x": 366.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Don't show zoom bar animation"
@@ -7270,7 +7270,7 @@
 			"pos.x": 3158.38037109375,
 			"pos.y": 1395.12756347656,
 			"priority_id": 1,
-			"size.x": 509.923095703125,
+			"size.x": 549.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Priority tool buttons - tween instead of animation"
@@ -7282,7 +7282,7 @@
 			"pos.x": 3447.1640625,
 			"pos.y": 1461.46118164063,
 			"priority_id": 1,
-			"size.x": 710.0,
+			"size.x": 787.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Stop hide animation on hover without moving right side / hover buttons"
@@ -7294,7 +7294,7 @@
 			"pos.x": 3159.154296875,
 			"pos.y": 1329.24633789063,
 			"priority_id": 2,
-			"size.x": 530.5556640625,
+			"size.x": 587.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Disable text resizing element if text becomes smaller"
@@ -7330,7 +7330,7 @@
 			"pos.x": 2188.33081054688,
 			"pos.y": 986.130432128906,
 			"priority_id": 0,
-			"size.x": 235.78125,
+			"size.x": 247.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Settings for BG color"
@@ -7354,7 +7354,7 @@
 			"pos.x": 1600.43957519531,
 			"pos.y": 1153.43371582031,
 			"priority_id": 2,
-			"size.x": 392.05322265625,
+			"size.x": 420.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Accent colors for planning & drawing"
@@ -7366,7 +7366,7 @@
 			"pos.x": 1706.29736328125,
 			"pos.y": 1217.64404296875,
 			"priority_id": 2,
-			"size.x": 285.220825195313,
+			"size.x": 305.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Buttons background color"
@@ -7378,7 +7378,7 @@
 			"pos.x": 1708.23059082031,
 			"pos.y": 1282.228515625,
 			"priority_id": 2,
-			"size.x": 282.248901367188,
+			"size.x": 292.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Panels background color"
@@ -7426,7 +7426,7 @@
 			"pos.x": 5147.17236328125,
 			"pos.y": 654.866271972656,
 			"priority_id": 0,
-			"size.x": 209.09326171875,
+			"size.x": 213.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Enabled / Disable"
@@ -7438,7 +7438,7 @@
 			"pos.x": 5006.14501953125,
 			"pos.y": 1661.07373046875,
 			"priority_id": 0,
-			"size.x": 309.49658203125,
+			"size.x": 339.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Toggle relevant style settings"
@@ -7462,7 +7462,7 @@
 			"pos.x": 4625.9814453125,
 			"pos.y": 393.121643066406,
 			"priority_id": 3,
-			"size.x": 168.47998046875,
+			"size.x": 184.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Save swatches"
@@ -7474,7 +7474,7 @@
 			"pos.x": 1967.62377929688,
 			"pos.y": 333.122375488281,
 			"priority_id": 1,
-			"size.x": 418.367797851563,
+			"size.x": 445.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T14:18:44 1336605",
 			"text": "In-engine documentation for all classes"
@@ -7486,7 +7486,7 @@
 			"pos.x": 4868.0439453125,
 			"pos.y": 1726.32666015625,
 			"priority_id": 0,
-			"size.x": 765.8896484375,
+			"size.x": 841.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "MarkCompleted adds the element to a list with today's date instead of hiding"
@@ -7498,7 +7498,7 @@
 			"pos.x": 5306.3349609375,
 			"pos.y": 1792.77319335938,
 			"priority_id": 0,
-			"size.x": 430.38916015625,
+			"size.x": 473.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Rename Mark Completed to Hide Element"
@@ -7510,7 +7510,7 @@
 			"pos.x": 1938.99853515625,
 			"pos.y": 1379.04943847656,
 			"priority_id": 2,
-			"size.x": 483.908447265625,
+			"size.x": 517.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Draw a 2nd set of lines with a 2nd background"
@@ -7522,7 +7522,7 @@
 			"pos.x": 3158.54541015625,
 			"pos.y": 1529.38037109375,
 			"priority_id": 2,
-			"size.x": 480.745361328125,
+			"size.x": 519.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Saving images without interrupting user input"
@@ -7534,8 +7534,8 @@
 			"pos.x": 1967.92211914063,
 			"pos.y": 68.9721908569336,
 			"priority_id": 1,
-			"size.x": 264.45068359375,
-			"size.y": 64.0,
+			"size.x": 272.0,
+			"size.y": 64.0000076293945,
 			"style_preset_id": "2025-05-11T14:18:44 1336605",
 			"text": "Errors for duplicate IDs"
 		},
@@ -7546,7 +7546,7 @@
 			"pos.x": 3770.001953125,
 			"pos.y": 1065.18676757813,
 			"priority_id": 2,
-			"size.x": 454.45166015625,
+			"size.x": 490.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "PanIndicatorCamera enable canvas preview"
@@ -7558,7 +7558,7 @@
 			"pos.x": 4070.2041015625,
 			"pos.y": 1135.51928710938,
 			"priority_id": 2,
-			"size.x": 261.32080078125,
+			"size.x": 270.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Manual texture update"
@@ -7582,7 +7582,7 @@
 			"pos.x": 3159.19970703125,
 			"pos.y": 1593.61181640625,
 			"priority_id": 2,
-			"size.x": 676.0,
+			"size.x": 734.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Show how many elements are hidden by priority in SettingsDrawer"
@@ -7594,7 +7594,7 @@
 			"pos.x": 2119.44360351563,
 			"pos.y": 855.035095214844,
 			"priority_id": 0,
-			"size.x": 306.929931640625,
+			"size.x": 321.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "New splash screen / disable"
@@ -7606,7 +7606,7 @@
 			"pos.x": 1967.92822265625,
 			"pos.y": 266.596649169922,
 			"priority_id": 2,
-			"size.x": 449.802734375,
+			"size.x": 484.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T14:18:44 1336605",
 			"text": "Multithreaded load elements / connections"
@@ -7630,7 +7630,7 @@
 			"pos.x": 3159.34692382813,
 			"pos.y": 1660.04956054688,
 			"priority_id": 2,
-			"size.x": 519.0,
+			"size.x": 575.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Improve straight line drawing - sample more points "
@@ -7642,7 +7642,7 @@
 			"pos.x": 2124.12915039063,
 			"pos.y": 1116.7978515625,
 			"priority_id": 0,
-			"size.x": 298.327392578125,
+			"size.x": 311.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "PlanningMode button icon"
@@ -7702,7 +7702,7 @@
 			"pos.x": 4939.994140625,
 			"pos.y": 2386.17138671875,
 			"priority_id": 3,
-			"size.x": 289.6611328125,
+			"size.x": 293.0,
 			"size.y": 64.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Brush inventory + import"
@@ -7711,15 +7711,15 @@
 	"State": {
 		"app_mode": 0,
 		"drawing_folder_path": "plannerplanner 2025-08-31T215146",
-		"position.x": -373.933868408203,
+		"position.x": 0.0,
 		"position.y": 0.0,
 		"priority_filter_value": 4,
-		"scale.x": 0.396962195634842,
-		"scale.y": 0.396962195634842,
+		"scale.x": 0.241999998688698,
+		"scale.y": 0.241999998688698,
 		"show_completed": false,
 		"show_priorities": true,
 		"show_priority_tool": false,
-		"zoom_level": 0.396962199135956
+		"zoom_level": 0.242000003606081
 	},
 	"StylePresets": {
 		"1": {
@@ -7883,5 +7883,8 @@
 			"outline_color.r": 0.0,
 			"outline_size": 8
 		}
+	},
+	"Swatches": {
+
 	}
 }

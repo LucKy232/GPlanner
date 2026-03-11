@@ -33,6 +33,7 @@ signal finished_saving		## Unlocks the UI in main.gd, emitted from _process() if
 signal requested_status_message
 signal forced_save_started
 signal forced_save_ended
+signal added_clipboard_image
 
 enum SaveType {
 	NORMAL,		# Screenshot every region with an action and save images to disk
@@ -59,6 +60,7 @@ func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("clipboard_paste"):
 		if DisplayServer.clipboard_has_image():
 			canvas_groups[current_canvas].add_clipboard_image(DisplayServer.clipboard_get_image(), position, scale)
+			added_clipboard_image.emit()
 	if save_thread_running and !save_thread.is_alive():
 		save_thread_running = false
 		save_thread.wait_to_finish()
@@ -75,7 +77,6 @@ func save_if_canvas_drawing_group_has_changes(id: int) -> bool:
 	if current_canvas != id and canvas_groups.has(id):
 		change_active_canvas_drawing_group(id)
 	var changes: bool = canvas_groups[current_canvas].has_changes()
-	print("SAVING IMAGES | Changes: %s" % [str(changes)])
 	if !changes:
 		finished_saving.emit()
 	else:
@@ -92,8 +93,6 @@ func begin_save_sequence() -> void:
 	#elif save_type == SaveType.PARTIAL:
 		#screenshot_requests = canvas_groups[current_canvas].make_past_and_overflow_actions_permanent(0.0)
 	needed_screenshot_number = screenshot_requests.size()
-	print("SAVE NEEDS SCREENSHOTS: %d" % needed_screenshot_number)
-	
 	if canvas_groups[current_canvas].reload_all_drawing_regions_from_path():
 		await canvas_groups[current_canvas].all_drawing_regions_visible
 	begin_screenshot_sequence()
@@ -199,8 +198,14 @@ func receive_coords(p1: Vector2, p2: Vector2, settings: DrawingSettings, pressur
 	canvas_groups[current_canvas].receive_coords(p1, p2, settings, pressure)
 
 
+func toggle_clipboard_image_input(toggled_on: bool) -> void:
+	if canvas_groups.has(current_canvas):
+		canvas_groups[current_canvas].toggle_clipboard_image_input(toggled_on)
+
+
 func end_stroke() -> void:
-	canvas_groups[current_canvas].end_stroke()
+	if canvas_groups.has(current_canvas):
+		canvas_groups[current_canvas].end_stroke()
 
 
 func undo_drawing_action() -> bool:
@@ -241,6 +246,8 @@ func update_drawing_position_and_scale(pos: Vector2, scl: Vector2) -> void:
 
 
 func update_current_zoom(scl: float) -> void:
+	if !canvas_groups.has(current_canvas):
+		return
 	canvas_groups[current_canvas].update_current_zoom(scl)
 
 
@@ -312,13 +319,14 @@ func change_active_canvas_drawing_group(canvas_id: int) -> void:
 		current_canvas = -1
 
 
-func reload_all_drawing_regions(canvas_id: int) -> void:
-	if !canvas_groups.has(canvas_id):
-		return
-	if save_method == SaveMethod.USER_FOLDER:
-		canvas_groups[canvas_id].reload_all_drawing_regions_from_path()
-	elif save_method == SaveMethod.DIRECT_JSON:
-		canvas_groups[canvas_id].reload_all_drawing_regions_from_data()
+#func reload_all_drawing_regions(canvas_id: int) -> void:
+	#if !canvas_groups.has(canvas_id):
+		#return
+	#if save_method == SaveMethod.USER_FOLDER:
+		#canvas_groups[canvas_id].reload_all_drawing_regions_from_path()
+	#elif save_method == SaveMethod.DIRECT_JSON:
+		#print("RELOAD %d" % [canvas_id])
+		#canvas_groups[canvas_id].reload_all_drawing_regions_from_data()
 
 
 func _on_canvas_drawing_group_force_save_request() -> void:

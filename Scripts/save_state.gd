@@ -3,6 +3,7 @@ class_name SaveState
 var action_type: int = -1
 var needs_to_save_images: bool = false
 var has_changes: bool = false
+var is_created: bool = false
 var is_loaded: bool = false
 
 
