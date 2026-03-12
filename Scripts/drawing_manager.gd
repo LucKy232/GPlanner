@@ -34,6 +34,7 @@ signal requested_status_message
 signal forced_save_started
 signal forced_save_ended
 signal added_clipboard_image
+signal clipboard_images_changed
 
 enum SaveType {
 	NORMAL,		# Screenshot every region with an action and save images to disk
@@ -233,6 +234,7 @@ func drawing_region_data_to_json() -> Dictionary:
 
 func rebuild_paths_from_json(canvas_id: int, dict: Dictionary) -> void:
 	if canvas_groups.has(canvas_id):
+		canvas_groups[canvas_id].is_at_startup = true
 		if save_method == SaveMethod.USER_FOLDER:
 			canvas_groups[canvas_id].rebuild_file_paths_from_json(dict)	# Load image paths from folder
 		elif save_method == SaveMethod.DIRECT_JSON:
@@ -281,6 +283,7 @@ func add_canvas_drawing_group(canvas_id: int) -> void:
 	new_group.force_save_request.connect(_on_canvas_drawing_group_force_save_request)
 	new_group.saving_images_to_disk.connect(_on_canvas_drawing_group_saving_images)
 	new_group.force_save_message.connect(_on_canvas_drawing_group_force_save_message)
+	new_group.clipboard_images_changed.connect(_on_canvas_drawing_group_clipboard_images_changed)
 	new_group.init(get_viewport_rect().size)
 	canvas_groups[canvas_id] = new_group
 
@@ -298,8 +301,8 @@ func clear_canvas_drawing_group(canvas_id: int) -> void:
 		canvas_groups[canvas_id].erase_everything()
 
 
-func change_active_canvas_drawing_group(canvas_id: int) -> void:
-	if current_canvas == canvas_id:
+func change_active_canvas_drawing_group(canvas_id: int, force_switch: bool = false) -> void:
+	if current_canvas == canvas_id and !force_switch:
 		return
 	if canvas_groups.has(current_canvas):
 		if save_method == SaveMethod.USER_FOLDER:
@@ -310,6 +313,7 @@ func change_active_canvas_drawing_group(canvas_id: int) -> void:
 	if canvas_groups.has(canvas_id):
 		current_canvas = canvas_id
 		canvas_groups[canvas_id].visible = true
+		canvas_groups[canvas_id].is_at_startup = true
 		if save_method == SaveMethod.USER_FOLDER:
 			canvas_groups[canvas_id].reload_all_drawing_regions_from_path()
 		elif save_method == SaveMethod.DIRECT_JSON:
@@ -341,3 +345,7 @@ func _on_canvas_drawing_group_saving_images(message: String) -> void:
 
 func _on_canvas_drawing_group_force_save_message(message: String) -> void:
 	requested_status_message.emit(message)
+
+
+func _on_canvas_drawing_group_clipboard_images_changed() -> void:
+	clipboard_images_changed.emit()

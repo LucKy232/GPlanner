@@ -220,6 +220,7 @@ func connect_signals() -> void:
 	drawing_manager.forced_save_started.connect(_on_drawing_manager_forced_save_started)
 	drawing_manager.forced_save_ended.connect(_on_drawing_manager_forced_save_ended)
 	drawing_manager.added_clipboard_image.connect(_on_drawing_manager_added_clipboard_image)
+	drawing_manager.clipboard_images_changed.connect(_on_drawing_manager_clipboard_images_changed)
 	
 	drawing_tool_bar.color_picker_toggled.connect(_on_drawing_tool_bar_color_picker_toggled)
 	drawing_tool_bar.brush_size_changed.connect(change_drawing_tool_cursor)
@@ -523,6 +524,8 @@ func load_file(path: String, app_startup: bool = false) -> void:
 	canvases[cc].save_state.is_created = true
 	canvases[cc].save_state.is_loaded = true
 	settings_drawer.update_data(canvases[cc].settings)
+	if tab_to_canvas[file_tab_bar.current_tab] == cc:
+		drawing_manager.change_active_canvas_drawing_group(cc, true)
 	set_tab_name_and_title_from_canvas(cc)
 	_on_canvas_changed_position()
 	_on_canvas_changed_zoom()
@@ -1270,3 +1273,8 @@ func _on_drawing_manager_added_clipboard_image() -> void:
 		_on_tool_box_item_selected(Enums.Tool.SELECT)
 	drawing_manager.update_current_zoom(canvases[cc].scale.x)
 	canvases[cc].canvas_changed()
+
+
+func _on_drawing_manager_clipboard_images_changed() -> void:
+	if canvases.has(cc):
+		canvases[cc].canvas_changed()

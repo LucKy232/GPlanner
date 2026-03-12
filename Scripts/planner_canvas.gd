@@ -162,6 +162,7 @@ func reset_save_state(is_already_created: bool = false) -> void:
 	save_state = SaveState.new()
 	if is_already_created:
 		save_state.is_created = true
+		save_state.is_loaded = true
 
 
 func update_all_style_presets(dict: Dictionary[int, ElementPresetStyle]) -> void:

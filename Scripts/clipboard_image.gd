@@ -142,10 +142,7 @@ func unload() -> void:
 
 func _on_hide_button_pressed() -> void:
 	visible = false
-
-
-func _on_visibility_changed() -> void:
-	save = visible
+	save = false
 
 
 func toggle_input(toggled_on: bool) -> void:

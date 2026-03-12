@@ -45,7 +45,9 @@ var clipboard_image_load_tasks: Dictionary[int, ClipboardImage]
 var clipboard_images_being_loaded: Dictionary[ClipboardImage, bool]
 var active_brush_shader: ShaderMaterial					## The material of the current_stroke
 var complete_json_image_data: Dictionary
-var clipboard_images_changed: bool = false
+var clipboard_image_changes: bool = false
+var is_at_startup: bool = true		## Used to not emit clipboard_images_changed when loading them
+var is_loading: bool = false
 
 ## Emits when 75% of FORCE_SAVE_REQUEST_KB_LIMIT is reached to inform the user that they should save.
 signal force_save_message
@@ -56,6 +58,7 @@ signal force_save_request
 signal saving_images_to_disk
 ## Emitted when all regions are visible, used when screenshotting images changes to ensure all are loaded
 signal all_drawing_regions_visible
+signal clipboard_images_changed
 
 
 func _process(_delta: float) -> void:
@@ -63,6 +66,9 @@ func _process(_delta: float) -> void:
 		check_image_load_tasks_completed()
 	if clipboard_image_load_tasks.size() > 0:
 		check_clipboard_image_load_tasks_completed()
+	if is_loading and image_load_tasks.size() == 0 and clipboard_image_load_tasks.size() == 0:
+		is_loading = false
+		is_at_startup = false
 
 
 # Update the shader brush texture from the brush_sub_viewport to accumulate shader contributions
@@ -126,7 +132,7 @@ func init(manager_size: Vector2) -> void:
 
 
 func has_changes() -> bool:
-	if past_drawing_actions.size() > 0 or clipboard_images_changed:
+	if past_drawing_actions.size() > 0 or clipboard_image_changes:
 		return true
 	return false
 
@@ -392,7 +398,9 @@ func add_clipboard_image(image: Image, pos: Vector2, scl: Vector2) -> void:
 	clip.resized.connect(_on_clipboard_image_resized.bind(clip))
 	clip.position = -pos / scl.x + get_viewport_rect().size * 0.5 / scl.x - image.get_size() * 0.5
 	clipboard_images.append(clip)
-	clipboard_images_changed = true
+	if !clipboard_image_changes and !is_at_startup:
+		clipboard_image_changes = true
+		clipboard_images_changed.emit()
 
 
 func add_clipboard_image_from_data(data: Dictionary, create_image: bool = true) -> void:
@@ -453,9 +461,9 @@ func save_all_images_to_json() -> void:
 			dict["%02d-%02d"%[r.x, r.y]] = regions[r].serialized_data
 	
 	var saved_num: int = 0
-	for ci in clipboard_images:
-		if ci.save:
-			dict["ci%d"%[saved_num]] = ci.to_json()
+	for ci in clipboard_images.size():
+		if clipboard_images[ci].save:
+			dict["ci%d"%[saved_num]] = clipboard_images[ci].to_json()
 			saved_num += 1
 			call_deferred("emit_signal", "saving_images_to_disk", "Saving image data: %d / %d" % [saved_num, clipboard_images.size()])
 	saved_num = 0
@@ -482,7 +490,8 @@ func save_all_images_to_json() -> void:
 		if remove_region:
 			to_remove.append(r)
 	complete_json_image_data = dict
-	clipboard_images_changed = false
+	if clipboard_image_changes:
+		clipboard_image_changes = false
 
 
 # LOAD .PNG FROM JSON DICTIONARY DATA
@@ -511,6 +520,7 @@ func unload_all_drawing_regions_with_data() -> void:
 
 # RELOAD FROM PATHS THREADED
 func reload_all_drawing_regions_from_data() -> bool:
+	is_loading = true
 	for r in regions:
 		if regions[r].serialized_data != "" and !regions[r].is_loaded and !regions_being_loaded.has(r):
 			var task_id = WorkerThreadPool.add_task(regions[r].load_image_from_data, false)
@@ -621,7 +631,9 @@ func _on_clipboard_image_mouse_pressed(temp: ClipboardImage) -> void:
 func _on_clipboard_image_resized(ci: ClipboardImage) -> void:
 	ci.position.x = clampf(ci.position.x, 0.0, CANVAS_SIZE.x - ci.size.x * ci.scale.x)
 	ci.position.y = clampf(ci.position.y, 0.0, CANVAS_SIZE.y - ci.size.y * ci.scale.x)
-	clipboard_images_changed = true
+	if !clipboard_image_changes and !is_at_startup:
+		clipboard_image_changes = true
+		clipboard_images_changed.emit()
 
 
 func _input(event: InputEvent) -> void:
@@ -634,4 +646,6 @@ func _input(event: InputEvent) -> void:
 			ci.position.x = clampf(ci.position.x, 0.0, CANVAS_SIZE.x - ci.size.x * ci.scale.x)
 			ci.position.y = clampf(ci.position.y, 0.0, CANVAS_SIZE.y - ci.size.y * ci.scale.x)
 			ci.cached_position = ci.position
-			clipboard_images_changed = true
+			if !clipboard_image_changes and !is_at_startup:
+				clipboard_image_changes = true
+				clipboard_images_changed.emit()
