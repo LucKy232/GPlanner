@@ -176,12 +176,14 @@ light_mask = 2
 visibility_layer = 2
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
-size_flags_vertical = 0
+size_flags_horizontal = 0
+size_flags_vertical = 4
 mouse_default_cursor_shape = 2
 theme = ExtResource("4_x6ack")
 theme_override_icons/checked = ExtResource("7_8edxt")
 theme_override_icons/unchecked = ExtResource("8_nt2eh")
 shortcut_in_tooltip = false
+alignment = 1
 icon_alignment = 1
 
 [node name="PlannerToolBox" type="ItemList" parent="MarginContainer/ToolVBox/ToolArea" unique_id=1914868989]
