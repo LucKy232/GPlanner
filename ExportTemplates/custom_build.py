@@ -1,7 +1,6 @@
 debug_symbols="no"
 optimize="size_extra" # Godot >4.5 only. Otherwise, use optimize="size"
 lto="full"          # Much slower build times, smaller export size
-disable_3d="yes"
 deprecated="no"     # Disables deprecated features
 vulkan="no"         # Disables the Vulkan driver (used in Forward+/Mobile Renderers)
 use_volk="no"       # Disables more Vulkan stuff
