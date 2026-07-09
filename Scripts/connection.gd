@@ -35,14 +35,14 @@ func update_p2(pos: Vector2, size: Vector2) -> void:
 
 func update_p1_color(color: Color) -> void:
 	var c: Color = Color(color.r, color.g, color.b, 1.0)
-	gradient.colors[0] = c
+	gradient.set_color(0, c)
 	arrow_1.color = c
 	arrow_1.queue_redraw()
 
 
 func update_p2_color(color: Color) -> void:
 	var c: Color = Color(color.r, color.g, color.b, 1.0)
-	gradient.colors[1] = c
+	gradient.set_color(1, c)
 	arrow_2.color = c
 	arrow_2.queue_redraw()
 
@@ -60,66 +60,66 @@ func update_positions() -> void:
 	var p2_right: bool = p2_right_inside_p1(p1.x, size_1.x, p2.x, size_2.x, TEST_MARGIN)
 	
 	if p1_left and p1_right and p2_left and p2_right:			# Top-Bottom = Full overlap
-		points[0] = middle_of_bottom(p1, size_1) if p1_on_top else middle_of_top(p1, size_1)
-		points[3] = middle_of_top(p2, size_2) if p1_on_top else middle_of_bottom(p2, size_2)
+		set_point_position(0, middle_of_bottom(p1, size_1) if p1_on_top else middle_of_top(p1, size_1))
+		set_point_position(3, middle_of_top(p2, size_2) if p1_on_top else middle_of_bottom(p2, size_2))
 		if abs(points[0].x - points[3].x) < 10.0:	# Average x coord if in range to prevent very small difference in points[1] & points[2] for aesthetic reasons
 			var mid_x: float = snappedf((points[0].x + points[3].x) * 0.5, SNAP_TO)
-			points[0].x = mid_x
-			points[3].x = mid_x
+			set_point_position(0, Vector2(mid_x, points[0].y))
+			set_point_position(3, Vector2(mid_x, points[3].y))
 		var mid_y: float = snappedf((points[0].y + points[3].y) * 0.5, SNAP_TO)
-		points[1] = Vector2(points[0].x, mid_y)
-		points[2] = Vector2(points[3].x, mid_y)
+		set_point_position(1, Vector2(points[0].x, mid_y))
+		set_point_position(2, Vector2(points[3].x, mid_y))
 	elif !p1_left and !p1_right and !p2_left and !p2_right:		# Side-Side = No overlap
-		points[0] = right_side(p1, size_1) if p1_on_left else left_side(p1, size_1)
-		points[3] = left_side(p2, size_2) if p1_on_left else right_side(p2, size_2)
+		set_point_position(0, right_side(p1, size_1) if p1_on_left else left_side(p1, size_1))
+		set_point_position(3, left_side(p2, size_2) if p1_on_left else right_side(p2, size_2))
 		if abs(points[0].y - points[3].y) < 10.0:	# Average y coord if in range to prevent very small difference in points[1] & points[2] for aesthetic reasons
 			var mid_y: float = snappedf((points[0].y + points[3].y) * 0.5, SNAP_TO)
-			points[0].y = mid_y
-			points[3].y = mid_y
+			set_point_position(0, Vector2(points[0].x, mid_y))
+			set_point_position(3, Vector2(points[3].x, mid_y))
 		var mid_x: float = snappedf((points[0].x + points[3].x) * 0.5, SNAP_TO)
-		points[1] = Vector2(mid_x, points[0].y)
-		points[2] = Vector2(mid_x, points[3].y)
+		set_point_position(1, Vector2(mid_x, points[0].y))
+		set_point_position(2, Vector2(mid_x, points[3].y))
 	elif p1_left or p1_right or p2_left or p2_right:			# Partial overlap: Top-Bottom or Top-Side
 		if p1_on_top:
-			points[0] = middle_of_bottom(p1, size_1)
+			set_point_position(0, middle_of_bottom(p1, size_1))
 			var overlap_middle: bool = false
 			if p2_left or p1_right:
 				overlap_middle = p2.x < p1.x + size_1.x * 0.5 + TEST_MARGIN
-				points[3] = middle_of_top(p2, size_2) if overlap_middle else left_side(p2, size_2)
+				set_point_position(3, middle_of_top(p2, size_2) if overlap_middle else left_side(p2, size_2))
 			elif p2_right or p1_left:
 				overlap_middle = p2.x + size_2.x > p1.x + size_1.x * 0.5 - TEST_MARGIN
-				points[3] = middle_of_top(p2, size_2) if overlap_middle else right_side(p2, size_2)
+				set_point_position(3, middle_of_top(p2, size_2) if overlap_middle else right_side(p2, size_2))
 			if overlap_middle:
 				if abs(points[0].x - points[3].x) < 10.0:	# Average x coord if in range to prevent very small difference in points[1] & points[2] for aesthetic reasons
 					var mid_x: float = snappedf((points[0].x + points[3].x) * 0.5, SNAP_TO)
-					points[0].x = mid_x
-					points[3].x = mid_x
+					set_point_position(0, Vector2(mid_x, points[0].y))
+					set_point_position(3, Vector2(mid_x, points[3].y))
 				var mid_y: float = snappedf((points[0].y + points[3].y) * 0.5, SNAP_TO)
-				points[1] = Vector2(points[0].x, mid_y)
-				points[2] = Vector2(points[3].x, mid_y)
+				set_point_position(1, Vector2(points[0].x, mid_y))
+				set_point_position(2, Vector2(points[3].x, mid_y))
 			else:
-				points[1] = Vector2(points[0].x, points[3].y)
-				points[2] = Vector2(points[0].x, points[3].y)
+				set_point_position(1, Vector2(points[0].x, points[3].y))
+				set_point_position(2, Vector2(points[0].x, points[3].y))
 		else:
-			points[3] = middle_of_bottom(p2, size_2)
+			set_point_position(3, middle_of_bottom(p2, size_2))
 			var overlap_middle: bool = false
 			if p1_left or p2_right:
 				overlap_middle = p1.x < p2.x + size_2.x * 0.5 + TEST_MARGIN
-				points[0] = middle_of_top(p1, size_1) if overlap_middle else left_side(p1, size_1)
+				set_point_position(0, middle_of_top(p1, size_1) if overlap_middle else left_side(p1, size_1))
 			elif p1_right or p2_left:
 				overlap_middle = p1.x + size_1.x > p2.x + size_2.x * 0.5 - TEST_MARGIN
-				points[0] = middle_of_top(p1, size_1) if overlap_middle else right_side(p1, size_1)
+				set_point_position(0, middle_of_top(p1, size_1) if overlap_middle else right_side(p1, size_1))
 			if overlap_middle:
 				if abs(points[0].x - points[3].x) < 10.0:	# Average x coord if in range to prevent very small difference in points[1] & points[2] for aesthetic reasons
 					var mid_x: float = snappedf((points[0].x + points[3].x) * 0.5, SNAP_TO)
-					points[0].x = mid_x
-					points[3].x = mid_x
+					set_point_position(0, Vector2(mid_x, points[0].y))
+					set_point_position(3, Vector2(mid_x, points[3].y))
 				var mid_y: float = snappedf((points[0].y + points[3].y) * 0.5, SNAP_TO)
-				points[1] = Vector2(points[0].x, mid_y)
-				points[2] = Vector2(points[3].x, mid_y)
+				set_point_position(1, Vector2(points[0].x, mid_y))
+				set_point_position(2, Vector2(points[3].x, mid_y))
 			else:
-				points[1] = Vector2(points[3].x, points[0].y)
-				points[2] = Vector2(points[3].x, points[0].y)
+				set_point_position(1, Vector2(points[3].x, points[0].y))
+				set_point_position(2, Vector2(points[3].x, points[0].y))
 	
 	var rot_1: Vector3 = find_rotation(points[0] - points[1])
 	var rot_2: Vector3 = find_rotation(points[3] - points[2])

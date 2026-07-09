@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://c4jirlcfvnhoj"]
+[gd_scene format=3 uid="uid://c4jirlcfvnhoj"]
 
 [ext_resource type="Script" uid="uid://5tyaibbe0tuu" path="res://Scripts/connection.gd" id="1_w0fw0"]
 [ext_resource type="Script" uid="uid://b80k62h1g0od2" path="res://Scripts/connection_arrow.gd" id="2_612rt"]
@@ -26,7 +26,7 @@ Button/styles/hover_pressed = SubResource("StyleBoxFlat_04irf")
 Button/styles/normal = SubResource("StyleBoxEmpty_e0w0v")
 Button/styles/pressed = SubResource("StyleBoxEmpty_qjhek")
 
-[node name="ConnectionLine" type="Line2D"]
+[node name="ConnectionLine" type="Line2D" unique_id=180899863]
 light_mask = 8
 visibility_layer = 8
 points = PackedVector2Array(0, 0, 0, 0, 0, 0, 0, 0)
@@ -39,7 +39,7 @@ round_precision = 2
 antialiased = true
 script = ExtResource("1_w0fw0")
 
-[node name="Arrow1" type="Button" parent="."]
+[node name="Arrow1" type="Button" parent="." unique_id=1641018411]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -57,7 +57,7 @@ theme = SubResource("Theme_daqqj")
 toggle_mode = true
 script = ExtResource("2_612rt")
 
-[node name="Arrow2" type="Button" parent="."]
+[node name="Arrow2" type="Button" parent="." unique_id=142955589]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
