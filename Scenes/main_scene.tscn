@@ -353,6 +353,7 @@ mouse_force_pass_scroll_events = false
 mouse_default_cursor_shape = 2
 theme = SubResource("Theme_viu5a")
 clip_tabs = false
+close_with_middle_mouse = false
 tab_close_display_policy = 1
 max_tab_width = 300
 
