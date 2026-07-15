@@ -128,8 +128,8 @@ func scale_ui(factor: float) -> void:
 func _process(_delta):
 	if use_mouse_cursor_big_brush():
 		cursor_big_brush.position = get_local_mouse_position() - cursor_big_brush.size * 0.5
-	if selected_element_exists():
-		if get_selected_element().line_edit.is_editing():
+	if selected_element_exists():		# If editing text, don't use shortcuts
+		if get_selected_element().is_editing_text():
 			is_editing_element_text = true
 		else:
 			is_editing_element_text = false
@@ -143,18 +143,18 @@ func _process(_delta):
 		_on_save_button_pressed()
 	if Input.is_action_just_pressed("edit_element") and !tool_box.is_selected(Enums.Tool.MARK_COMPLETED):
 		if selected_element_exists() and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
-			get_selected_element().line_edit.edit()
-	if Input.is_action_pressed("undo", true) and !disable_input() and (input_repeat_timer.is_stopped() or first_input_repeat):
+			get_selected_element().enter_text_edit()
+	if Input.is_action_pressed("ui_undo", true) and !disable_input() and (input_repeat_timer.is_stopped() or first_input_repeat):
 		if drawing_manager.undo_drawing_action():	# Check + action
 			input_repeat_timer.start(0.5 if first_input_repeat else 0.1)
 			first_input_repeat = false
 			canvases[cc].drawings_changed()	# A bit redundant since it already has changes if there's something that you can undo / redo
-	if Input.is_action_pressed("redo", true) and !disable_input() and (input_repeat_timer.is_stopped() or first_input_repeat):
+	if Input.is_action_pressed("ui_redo", true) and !disable_input() and (input_repeat_timer.is_stopped() or first_input_repeat):
 		if drawing_manager.redo_drawing_action():	# Check + action
 			input_repeat_timer.start(0.5 if first_input_repeat else 0.1)
 			first_input_repeat = false
 			canvases[cc].drawings_changed()	# A bit redundant since it already has changes if there's something that you can undo / redo
-	if Input.is_action_just_released("undo") or Input.is_action_just_released("redo"):
+	if Input.is_action_just_released("ui_undo") or Input.is_action_just_released("ui_redo"):
 		first_input_repeat = true
 	
 	if canvases[cc].settings.app_mode == Enums.AppMode.DRAWING:
@@ -1142,7 +1142,6 @@ func _on_canvas_has_selected_element() -> void:
 	#print("Selected element %d" % get_selected_element().id)
 	if !canvases.has(cc):
 		return
-	
 	if canvases[cc].selected_preset_style == "none":
 		var selected_element: ElementLabel = get_selected_element()
 		if selected_element != null:

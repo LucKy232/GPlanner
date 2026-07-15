@@ -103,7 +103,7 @@ func focus_button(idx: int) -> void:
 	if buttons.has(current_pressed):
 		buttons[current_pressed].set_pressed_no_signal(false)
 	buttons[idx].set_pressed_no_signal(true)
-	buttons[idx].grab_focus()
+	#buttons[idx].grab_focus()
 	current_pressed = idx
 
 

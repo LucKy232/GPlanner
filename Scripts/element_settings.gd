@@ -4,7 +4,7 @@ class_name ElementSettings
 @export_range(150.0, 800.0, 5.0) var MAX_HEIGHT_SETTINGS: float = 335.0
 @export_range(150.0, 1000.0, 5.0) var MAX_HEIGHT_ALL: float = 490.0
 @export var default_background_style_box: StyleBoxFlat
-@export var default_line_edit_theme: Theme
+@export var default_text_edit_theme: Theme
 @export var color_picker_theme: Theme
 @export var color_picker_panel_theme: Theme
 @export var div_theme: Theme
@@ -114,7 +114,7 @@ func change_preset(idx: int) -> void:
 func get_new_preset() -> ElementPresetStyle:
 	var new_preset: ElementPresetStyle = ElementPresetStyle.new("%s %d" % [Time.get_datetime_string_from_system(), Time.get_ticks_msec()])
 	new_preset.background_panel_style_box = default_background_style_box.duplicate()
-	new_preset.line_edit_theme = default_line_edit_theme.duplicate()
+	new_preset.text_edit_theme = default_text_edit_theme.duplicate()
 	return new_preset
 
 
@@ -131,7 +131,7 @@ func erase_everything() -> void:
 func reset_none_preset() -> void:
 	none_preset = ElementPresetStyle.new("individual")
 	none_preset.background_panel_style_box = default_background_style_box.duplicate()
-	none_preset.line_edit_theme = default_line_edit_theme.duplicate()
+	none_preset.text_edit_theme = default_text_edit_theme.duplicate()
 
 
 func rebuild_options_and_dictionary_from_json(dict: Dictionary) -> void:

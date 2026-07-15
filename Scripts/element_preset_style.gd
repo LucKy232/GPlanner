@@ -10,7 +10,7 @@ var font_color: Color = Color.WHITE
 var outline_color: Color = Color.BLACK
 var border_color: Color = Color.BLACK
 var background_panel_style_box: StyleBoxFlat
-var line_edit_theme: Theme
+var text_edit_theme: Theme
 
 
 func _init(idx: String) -> void:
@@ -19,12 +19,12 @@ func _init(idx: String) -> void:
 
 func set_font_size(size: int) -> void:
 	font_size = size
-	line_edit_theme.set_font_size("font_size", "LineEdit", size)
+	text_edit_theme.set_font_size("font_size", "TextEdit", size)
 
 
 func set_outline_size(size: int) -> void:
 	outline_size = size
-	line_edit_theme.set_constant("outline_size", "LineEdit", size)
+	text_edit_theme.set_constant("outline_size", "TextEdit", size)
 
 
 func set_background_color(color: Color) -> void:
@@ -34,12 +34,12 @@ func set_background_color(color: Color) -> void:
 
 func set_font_color(color: Color) -> void:
 	font_color = color
-	line_edit_theme.set_color("font_color", "LineEdit", color)
+	text_edit_theme.set_color("font_color", "TextEdit", color)
 
 
 func set_outline_color(color: Color) -> void:
 	outline_color = color
-	line_edit_theme.set_color("font_outline_color", "LineEdit", color)
+	text_edit_theme.set_color("font_outline_color", "TextEdit", color)
 
 
 func set_border_color(color: Color) -> void:
@@ -62,12 +62,12 @@ func set_background_panel_style_box(style_box_flat: StyleBoxFlat) -> void:
 	border_color = background_panel_style_box.border_color
 
 
-func set_line_edit_theme(theme: Theme) -> void:
-	line_edit_theme = theme
-	font_size = line_edit_theme.get_font_size("font_size", "LineEdit")
-	outline_size = line_edit_theme.get_constant("outline_size", "LineEdit")
-	font_color = line_edit_theme.get_color("font_color", "LineEdit")
-	outline_color = line_edit_theme.get_color("font_outline_color", "LineEdit")
+func set_text_edit_theme(theme: Theme) -> void:
+	text_edit_theme = theme
+	font_size = text_edit_theme.get_font_size("font_size", "TextEdit")
+	outline_size = text_edit_theme.get_constant("outline_size", "TextEdit")
+	font_color = text_edit_theme.get_color("font_color", "TextEdit")
+	outline_color = text_edit_theme.get_color("font_outline_color", "TextEdit")
 
 
 func rebuild_from_json_dict(dict: Dictionary) -> void:

@@ -1,23 +1,26 @@
-extends Panel
-class_name ElementLabel
+class_name ElementLabel extends Panel
 
+@export var priority_tool_animation_time: float = 1.0
+@export var priority_tool_hide_delay: float = 3.0
+@export var line_wrap_limit: float = 4.0
 @export var completed_stylebox: StyleBoxFlat
-@export var line_edit_theme: Theme
-@export var line_edit_completed_theme: Theme
+@export var text_edit_theme: Theme
+@export var text_edit_completed_theme: Theme
 @export var completed_z_index = 0
 @export var active_z_index = 1
 @onready var background: Panel = $PanelContainer/Background
 @onready var priority: Panel = $PanelContainer/Background/Priority
-@onready var line_edit: LineEdit = $PanelContainer/Background/TextMarginContainer/LineEdit
+@onready var text_edit: TextEdit = %TextEdit
 @onready var text_margin_container: MarginContainer = $PanelContainer/Background/TextMarginContainer
-@onready var tool_margin_container: MarginContainer = $PanelContainer/ToolMarginContainer
-@onready var animation_player: AnimationPlayer = $AnimationPlayer
-@onready var hide_options_timer: Timer = $HideOptionsTimer
+@onready var priority_buttons_margin: Control = %PriorityButtonsMargin
+@onready var priority_buttons: VBoxContainer = %PriorityButtons
+@onready var grab_indicator: Panel = %GrabIndicator
 @onready var resize_timer: Timer = $ResizeTimer
+@onready var hide_animation_timer: Timer = $HideAnimationTimer
 
 var individual_style: ElementPresetStyle
 var priority_stylebox: StyleBoxFlat
-var preset_line_edit_theme: Theme
+var preset_text_edit_theme: Theme
 var preset_background_stylebox: StyleBoxFlat
 var id: int
 var priority_id: int
@@ -28,24 +31,29 @@ var priority_enabled: bool = false
 var priority_tool_shown: bool = false
 var priority_tool_enabled: bool = true
 var manual_resize: bool = false
+var total_horizontal_margin: float
+var total_vertical_margin: float
+var tween_priority_buttons: Tween
 
 signal became_selected
 signal changed_priority
+signal text_changed
+
 
 func _ready() -> void:
 	init_individual_style()
 	background.add_theme_stylebox_override("panel", individual_style.background_panel_style_box)
-	line_edit.theme = individual_style.line_edit_theme
-	
+	text_edit.theme = individual_style.text_edit_theme
 	priority_stylebox = priority.get_theme_stylebox("panel").duplicate()
 	priority.add_theme_stylebox_override("panel", priority_stylebox)
-	tool_margin_container.modulate.a = 0.0
+	total_horizontal_margin = text_margin_container.get_theme_constant("margin_left") + text_margin_container.get_theme_constant("margin_right")
+	total_vertical_margin = text_margin_container.get_theme_constant("margin_top") + text_margin_container.get_theme_constant("margin_bottom")
 
 
 func init_individual_style() -> void:
 	individual_style = ElementPresetStyle.new("individual")
 	individual_style.set_background_panel_style_box(background.get_theme_stylebox("panel").duplicate())
-	individual_style.set_line_edit_theme(line_edit_theme.duplicate())
+	individual_style.set_text_edit_theme(text_edit_theme.duplicate())
 
 
 func toggle_completed() -> void:
@@ -53,15 +61,15 @@ func toggle_completed() -> void:
 	if completed:
 		background.add_theme_stylebox_override("panel", completed_stylebox)
 		priority.visible = false
-		line_edit.theme = line_edit_completed_theme
+		text_edit.theme = text_edit_completed_theme
 		z_index = completed_z_index
 	else:
 		if has_style_preset:
 			background.add_theme_stylebox_override("panel", preset_background_stylebox)
-			line_edit.theme = preset_line_edit_theme
+			text_edit.theme = preset_text_edit_theme
 		else:
 			background.add_theme_stylebox_override("panel", individual_style.background_panel_style_box)
-			line_edit.theme = individual_style.line_edit_theme
+			text_edit.theme = individual_style.text_edit_theme
 		priority.visible = true
 		z_index = active_z_index
 
@@ -89,17 +97,37 @@ func set_priority_visible(toggled_on: bool) -> void:
 
 
 func toggle_priority_tool(toggle_on: bool) -> void:
+	if toggle_on and !hide_animation_timer.is_stopped():
+		hide_animation_timer.stop()
 	if toggle_on and !priority_tool_shown and priority_tool_enabled:
-		animation_player.play("show_priority_buttons")
+		priority_buttons_margin.visible = true
+		if tween_priority_buttons and tween_priority_buttons.is_running():
+			tween_priority_buttons.stop()
+		tween_priority_buttons = create_tween()
+		tween_priority_buttons.set_parallel().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+		var distance_mult: float = (priority_buttons.size.x - priority_buttons_margin.offset_transform_position.x) / priority_buttons.size.x
+		tween_priority_buttons.tween_property(priority_buttons_margin, "offset_transform_position:x", priority_buttons.size.x, priority_tool_animation_time * distance_mult)
+		tween_priority_buttons.tween_property(priority_buttons_margin, "modulate:a", 1.0, 0.2)
 		priority_tool_shown = true
 	elif !toggle_on and priority_tool_shown:
-		animation_player.play("hide_priority_buttons")
+		if tween_priority_buttons and tween_priority_buttons.is_running():
+			tween_priority_buttons.stop()
+		tween_priority_buttons = create_tween()
+		tween_priority_buttons.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+		tween_priority_buttons.tween_interval(priority_tool_hide_delay)
+		tween_priority_buttons.tween_property(priority_buttons_margin, "offset_transform_position:x", 0.0, priority_tool_animation_time)
+		tween_priority_buttons.tween_property(priority_buttons_margin, "modulate:a", 0.0, 0.2)
+		tween_priority_buttons.tween_property(priority_buttons_margin, "visible", true, 0.0)
 		priority_tool_shown = false
 
 
 func change_size(new_size: Vector2) -> void:
 	manual_resize = true
-	size = new_size
+	var smaller: bool = true if new_size.x < size.x else false
+	var wraps: float = float(text_edit.get_visible_line_count()) / float(text_edit.get_line_count())
+	if (smaller and wraps < line_wrap_limit) or !smaller:
+		size = new_size
+		text_edit.custom_maximum_size.x = clampf(new_size.x - total_horizontal_margin, text_edit.custom_minimum_size.x, 1000.0)
 	resize_timer.start()
 
 
@@ -111,10 +139,10 @@ func set_size_fixed() -> void:
 func change_style_preset(preset: ElementPresetStyle) -> void:
 	has_style_preset = true
 	style_preset_id = preset.id
-	preset_line_edit_theme = preset.line_edit_theme
+	preset_text_edit_theme = preset.text_edit_theme
 	preset_background_stylebox = preset.background_panel_style_box
 	if !completed:
-		line_edit.theme = preset.line_edit_theme
+		text_edit.theme = preset.text_edit_theme
 		background.add_theme_stylebox_override("panel", preset.background_panel_style_box)
 
 
@@ -123,10 +151,34 @@ func unassign_preset_style() -> void:
 	style_preset_id = "none"
 	if completed:
 		background.add_theme_stylebox_override("panel", completed_stylebox)
-		line_edit.theme = line_edit_completed_theme
+		text_edit.theme = text_edit_completed_theme
 	else:
 		background.add_theme_stylebox_override("panel", individual_style.background_panel_style_box)
-		line_edit.theme = individual_style.line_edit_theme
+		text_edit.theme = individual_style.text_edit_theme
+
+
+func enter_text_edit() -> void:
+	text_edit.grab_focus()
+
+
+func exit_text_edit() -> void:
+	text_edit.release_focus()
+
+
+func is_editing_text() -> bool:
+	return text_edit.has_focus()
+
+
+func select() -> void:
+	z_index = 2
+	grab_indicator.visible = true
+
+
+func deselect() -> void:
+	text_edit.apply_ime()
+	z_index = completed_z_index if completed else active_z_index
+	exit_text_edit()
+	grab_indicator.visible = false
 
 
 func to_json() -> Dictionary:
@@ -140,16 +192,11 @@ func to_json() -> Dictionary:
 		"pos.y": position.y,
 		"size.x": size.x,
 		"size.y": size.y,
-		"text": line_edit.text,
+		"text": text_edit.text,
 	}
 	if !has_style_preset:
 		dict["individual_style"] = individual_style.to_json()
 	return dict
-
-
-func _on_line_edit_editing_toggled(toggled_on: bool) -> void:
-	if toggled_on:
-		became_selected.emit()
 
 
 func _on_priority_active_pressed() -> void:
@@ -177,27 +224,13 @@ func _on_priority_none_pressed() -> void:
 	changed_priority.emit()
 
 
-func _on_hide_options_timer_timeout() -> void:
-	if !animation_player.is_playing():
-		toggle_priority_tool(false)
-
-
-func _on_priority_buttons_mouse_entered() -> void:
-	if !animation_player.is_playing() and !completed and priority_enabled:
+func _on_priority_buttons_gui_input(_event: InputEvent) -> void:
+	if !completed and priority_enabled:
 		toggle_priority_tool(true)
-	if !hide_options_timer.is_stopped():
-		hide_options_timer.stop()
 
 
 func _on_priority_buttons_mouse_exited() -> void:
-	if hide_options_timer.is_inside_tree():
-		hide_options_timer.start()
-
-
-func _on_text_margin_container_resized() -> void:
-	if is_node_ready() and !manual_resize:
-		size.x = text_margin_container.size.x
-		#print("Resizing element %d to the text box" % [id])
+	hide_animation_timer.start()
 
 
 func _on_resize_timer_timeout() -> void:
@@ -209,9 +242,29 @@ func _on_visibility_changed() -> void:
 		set_size_fixed()
 
 
+func _on_text_edit_resized() -> void:
+	if text_edit :
+		custom_minimum_size.y = text_edit.size.y + total_vertical_margin
+
+
 func _on_background_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion and event.position.x > (size.x - 25.0):
-		if !completed and priority_enabled:
+		if !manual_resize and !completed and priority_enabled:
 			toggle_priority_tool(true)
-		if hide_options_timer.is_inside_tree():
-			hide_options_timer.start()
+
+
+func _on_text_edit_lines_edited_from(_from_line: int, _to_line: int) -> void:
+	text_changed.emit()
+
+
+func _on_text_edit_gui_input(event: InputEvent) -> void:
+	if event.is_action_pressed("exit_text_edit", false, true):
+		exit_text_edit()
+
+
+func _on_text_edit_focus_entered() -> void:
+	became_selected.emit()
+
+
+func _on_hide_animation_timer_timeout() -> void:
+	toggle_priority_tool(false)

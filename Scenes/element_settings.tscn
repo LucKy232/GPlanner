@@ -1,9 +1,9 @@
-[gd_scene load_steps=26 format=3 uid="uid://cwbooma1lih12"]
+[gd_scene format=3 uid="uid://cwbooma1lih12"]
 
 [ext_resource type="Script" uid="uid://jbprsvf8b31y" path="res://Scripts/element_settings.gd" id="1_5y8lb"]
 [ext_resource type="StyleBox" uid="uid://cdui0dgu3vdrr" path="res://Themes/element_background_style_box.tres" id="2_llryx"]
 [ext_resource type="PackedScene" uid="uid://brbbmqwm6hpj4" path="res://Scenes/div.tscn" id="2_qtb5q"]
-[ext_resource type="Theme" uid="uid://dao6v8vx8h5ip" path="res://Themes/line_edit_theme.tres" id="3_qg77d"]
+[ext_resource type="Theme" uid="uid://dao6v8vx8h5ip" path="res://Themes/text_edit_theme.tres" id="3_qg77d"]
 [ext_resource type="LabelSettings" uid="uid://bdej1kps06ib8" path="res://Themes/element_settings_label_settings.tres" id="3_uc373"]
 [ext_resource type="Texture2D" uid="uid://bomg2pg3t5h4u" path="res://Icons/plus_small.svg" id="4_1og04"]
 [ext_resource type="Script" uid="uid://b55xehho2e04x" path="res://Scripts/preset_style_buttons.gd" id="4_qg77d"]
@@ -45,7 +45,7 @@ VScrollBar/styles/scroll = SubResource("StyleBoxEmpty_a0ehm")
 
 [sub_resource type="Theme" id="Theme_63ede"]
 
-[node name="ElementSettings" type="PanelContainer"]
+[node name="ElementSettings" type="PanelContainer" unique_id=589894355]
 z_index = 5
 custom_minimum_size = Vector2(300, 350)
 offset_right = 300.0
@@ -55,19 +55,19 @@ mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_6vqs3")
 script = ExtResource("1_5y8lb")
 default_background_style_box = ExtResource("2_llryx")
-default_line_edit_theme = ExtResource("3_qg77d")
+default_text_edit_theme = ExtResource("3_qg77d")
 color_picker_theme = ExtResource("4_r7vyq")
 color_picker_panel_theme = ExtResource("8_btr2c")
 div_theme = ExtResource("6_btr2c")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=334371073]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=198621327]
 layout_mode = 2
 
-[node name="CurrentPresetLabel" type="Label" parent="VBoxContainer/HBoxContainer"]
+[node name="CurrentPresetLabel" type="Label" parent="VBoxContainer/HBoxContainer" unique_id=946921422]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("4_vcnja")
@@ -75,11 +75,11 @@ text = "Current Style: "
 clip_text = true
 text_overrun_behavior = 3
 
-[node name="MarginBlockerControl" type="Control" parent="VBoxContainer/HBoxContainer"]
+[node name="MarginBlockerControl" type="Control" parent="VBoxContainer/HBoxContainer" unique_id=1488723566]
 custom_minimum_size = Vector2(45, 0)
 layout_mode = 2
 
-[node name="StyleButtons" type="MarginContainer" parent="VBoxContainer"]
+[node name="StyleButtons" type="MarginContainer" parent="VBoxContainer" unique_id=282340161]
 custom_minimum_size = Vector2(0, 120)
 layout_mode = 2
 mouse_filter = 2
@@ -90,53 +90,53 @@ theme_override_constants/margin_bottom = 8
 script = ExtResource("4_qg77d")
 button_scene = "uid://dvorb6p8oev77"
 
-[node name="StyleButtonGrid" type="GridContainer" parent="VBoxContainer/StyleButtons"]
+[node name="StyleButtonGrid" type="GridContainer" parent="VBoxContainer/StyleButtons" unique_id=1159601047]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 columns = 7
 
-[node name="SettingsPanel" type="PanelContainer" parent="VBoxContainer"]
+[node name="SettingsPanel" type="PanelContainer" parent="VBoxContainer" unique_id=534980217]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 1
 theme = ExtResource("8_btr2c")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/SettingsPanel"]
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/SettingsPanel" unique_id=433727858]
 unique_name_in_owner = true
 layout_mode = 2
 theme = SubResource("Theme_6vqs3")
 horizontal_scroll_mode = 4
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer" unique_id=2034021529]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme = SubResource("Theme_63ede")
 theme_override_constants/separation = 1
 
-[node name="ElementSettingsTitleLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer"]
+[node name="ElementSettingsTitleLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=1662587949]
 layout_mode = 2
 theme = ExtResource("4_vcnja")
 theme_override_styles/normal = ExtResource("6_nvup7")
 text = "Element Settings"
 horizontal_alignment = 1
 
-[node name="div1" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" instance=ExtResource("2_qtb5q")]
+[node name="div1" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=2067608040 instance=ExtResource("2_qtb5q")]
 layout_mode = 2
 
-[node name="PresetHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer"]
+[node name="PresetHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=916788176]
 layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/separation = 6
 
-[node name="Label" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox"]
+[node name="Label" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox" unique_id=627002484]
 layout_mode = 2
 theme = ExtResource("4_vcnja")
 text = "Preset"
 label_settings = ExtResource("3_uc373")
 
-[node name="PresetOptions" type="OptionButton" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox"]
+[node name="PresetOptions" type="OptionButton" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox" unique_id=841293952]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
@@ -151,7 +151,7 @@ item_count = 1
 popup/item_0/text = "None"
 popup/item_0/id = 0
 
-[node name="AddPreset" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox"]
+[node name="AddPreset" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox" unique_id=484451912]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 mouse_default_cursor_shape = 2
@@ -159,7 +159,7 @@ icon = ExtResource("4_1og04")
 text_overrun_behavior = 1
 icon_alignment = 1
 
-[node name="RemovePreset" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox"]
+[node name="RemovePreset" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox" unique_id=123426904]
 custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 mouse_default_cursor_shape = 2
@@ -167,27 +167,27 @@ icon = ExtResource("5_0h7gu")
 text_overrun_behavior = 1
 icon_alignment = 1
 
-[node name="BackgroundCategoryButton" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer"]
+[node name="BackgroundCategoryButton" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=760489696]
 layout_mode = 2
 theme = ExtResource("15_rhtjl")
 toggle_mode = true
 button_pressed = true
 text = "Background"
 
-[node name="div2" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" instance=ExtResource("2_qtb5q")]
+[node name="div2" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=1226294336 instance=ExtResource("2_qtb5q")]
 layout_mode = 2
 
-[node name="BackgroundColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer"]
+[node name="BackgroundColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=935132236]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="BackgroundColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BackgroundColorHBox"]
+[node name="BackgroundColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BackgroundColorHBox" unique_id=2071455275]
 layout_mode = 2
 theme = ExtResource("4_vcnja")
 text = "Background Color"
 label_settings = ExtResource("3_uc373")
 
-[node name="BackgroundColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BackgroundColorHBox"]
+[node name="BackgroundColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BackgroundColorHBox" unique_id=288348132]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
@@ -195,7 +195,7 @@ size_flags_horizontal = 10
 mouse_default_cursor_shape = 2
 theme = ExtResource("12_r7vyq")
 
-[node name="FontCategoryButton" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer"]
+[node name="FontCategoryButton" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=2111005931]
 layout_mode = 2
 theme = ExtResource("15_rhtjl")
 theme_override_styles/normal = ExtResource("6_nvup7")
@@ -203,20 +203,20 @@ toggle_mode = true
 button_pressed = true
 text = "Font"
 
-[node name="div3" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" instance=ExtResource("2_qtb5q")]
+[node name="div3" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=818131481 instance=ExtResource("2_qtb5q")]
 layout_mode = 2
 
-[node name="FontSizeHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer"]
+[node name="FontSizeHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=111563572]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="FontSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontSizeHBox"]
+[node name="FontSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontSizeHBox" unique_id=120439315]
 layout_mode = 2
 theme = ExtResource("4_vcnja")
 text = "Font Size"
 label_settings = ExtResource("3_uc373")
 
-[node name="FontSizeSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontSizeHBox"]
+[node name="FontSizeSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontSizeHBox" unique_id=516852465]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
@@ -230,17 +230,17 @@ rounded = true
 alignment = 2
 custom_arrow_step = 1.0
 
-[node name="FontColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer"]
+[node name="FontColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=1082843192]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="FontColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontColorHBox"]
+[node name="FontColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontColorHBox" unique_id=1830396473]
 layout_mode = 2
 theme = ExtResource("4_vcnja")
 text = "Font Color"
 label_settings = ExtResource("3_uc373")
 
-[node name="FontColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontColorHBox"]
+[node name="FontColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontColorHBox" unique_id=526004219]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
@@ -248,17 +248,17 @@ size_flags_horizontal = 10
 mouse_default_cursor_shape = 2
 theme = ExtResource("12_r7vyq")
 
-[node name="FontOutlineHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer"]
+[node name="FontOutlineHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=610572079]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="FontOutlineSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontOutlineHBox"]
+[node name="FontOutlineSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontOutlineHBox" unique_id=184376395]
 layout_mode = 2
 theme = ExtResource("4_vcnja")
 text = "Outline Size"
 label_settings = ExtResource("3_uc373")
 
-[node name="FontOutlineSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontOutlineHBox"]
+[node name="FontOutlineSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontOutlineHBox" unique_id=1138109619]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
@@ -271,17 +271,17 @@ rounded = true
 alignment = 2
 custom_arrow_step = 1.0
 
-[node name="OutlineColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer"]
+[node name="OutlineColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=782603242]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="FontOutlineColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/OutlineColorHBox"]
+[node name="FontOutlineColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/OutlineColorHBox" unique_id=500644649]
 layout_mode = 2
 theme = ExtResource("4_vcnja")
 text = "Outline Color"
 label_settings = ExtResource("3_uc373")
 
-[node name="FontOutlineColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/OutlineColorHBox"]
+[node name="FontOutlineColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/OutlineColorHBox" unique_id=1603398918]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
@@ -289,7 +289,7 @@ size_flags_horizontal = 10
 mouse_default_cursor_shape = 2
 theme = ExtResource("12_r7vyq")
 
-[node name="BorderCategoryButton" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer"]
+[node name="BorderCategoryButton" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=2071507040]
 layout_mode = 2
 theme = ExtResource("15_rhtjl")
 theme_override_styles/normal = ExtResource("6_nvup7")
@@ -297,20 +297,20 @@ toggle_mode = true
 button_pressed = true
 text = "Border"
 
-[node name="div4" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" instance=ExtResource("2_qtb5q")]
+[node name="div4" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=1704069206 instance=ExtResource("2_qtb5q")]
 layout_mode = 2
 
-[node name="BorderSizeHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer"]
+[node name="BorderSizeHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=546180535]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="BorderSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderSizeHBox"]
+[node name="BorderSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderSizeHBox" unique_id=924010134]
 layout_mode = 2
 theme = ExtResource("4_vcnja")
 text = "Border Size"
 label_settings = ExtResource("3_uc373")
 
-[node name="BorderSizeSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderSizeHBox"]
+[node name="BorderSizeSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderSizeHBox" unique_id=988227872]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
@@ -322,17 +322,17 @@ rounded = true
 alignment = 2
 custom_arrow_step = 1.0
 
-[node name="BorderColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer"]
+[node name="BorderColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=146050177]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="BorderColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderColorHBox"]
+[node name="BorderColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderColorHBox" unique_id=1583830612]
 layout_mode = 2
 theme = ExtResource("4_vcnja")
 text = "Border Color"
 label_settings = ExtResource("3_uc373")
 
-[node name="BorderColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderColorHBox"]
+[node name="BorderColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderColorHBox" unique_id=1777643174]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
@@ -340,13 +340,13 @@ size_flags_horizontal = 10
 mouse_default_cursor_shape = 2
 theme = ExtResource("12_r7vyq")
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/SettingsPanel"]
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/SettingsPanel" unique_id=44170739]
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/margin_top = 76
 theme_override_constants/margin_right = 20
 
-[node name="NameInsert" type="LineEdit" parent="VBoxContainer/SettingsPanel/MarginContainer"]
+[node name="NameInsert" type="LineEdit" parent="VBoxContainer/SettingsPanel/MarginContainer" unique_id=1308498212]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2

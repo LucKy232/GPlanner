@@ -33,7 +33,7 @@ var is_dragging: bool = false
 var is_resizing: bool = false
 var is_panning: bool = false
 var is_adding_elements: bool = false
-var is_element_just_created: bool = false	## Cuts down on calling deselect_element() when creating an ElementLabel by not registering the click that created the element as a deselect
+var is_element_just_created: bool = false	## Cuts down on calling deselect_any() when creating an ElementLabel by not registering the click that created the element as a deselect
 var is_drawing: bool = false
 var is_color_picker_visible = false
 var is_user_input: bool = true
@@ -74,7 +74,7 @@ func _process(_delta: float) -> void:
 
 
 func new_canvas() -> void:
-	deselect_element()
+	deselect_any()
 	if !get_viewport().size_changed.is_connected(_on_viewport_size_changed):
 		get_viewport().size_changed.connect(_on_viewport_size_changed)
 	opened_file_path = ""
@@ -219,6 +219,7 @@ func add_element_label(at_position: Vector2, id_specified: int = -1) -> void:
 	new_element.resized.connect(_on_element_label_resized.bind(elem_id))
 	new_element.became_selected.connect(_on_element_text_box_active.bind(elem_id))
 	new_element.changed_priority.connect(_on_element_changed_priority.bind(elem_id))
+	new_element.text_changed.connect(_on_element_label_text_changed)
 	add_child(new_element)
 	new_element.name = "ElementLabel"
 	new_element.position = at_position
@@ -229,9 +230,19 @@ func add_element_label(at_position: Vector2, id_specified: int = -1) -> void:
 	new_element.z_index = 1
 	if style_presets.has(selected_preset_style):
 		new_element.change_style_preset(style_presets[selected_preset_style])
-	if id_specified < 0:	# Don't select elements when creating them in bulk by specifying their ids
-		elements[elem_id].line_edit.edit()	# NOTE Also signals select_element(elem_id)
+	# Auto select created element, and start editing text
+	if id_specified < 0:	# Don't select elements when creating them in bulk (when id is specified)
+		select_element(elem_id)
+		new_element.enter_text_edit()
 		is_element_just_created = true
+
+
+func remove_element_label(elem_id: int) -> void:
+	canvas_changed()
+	deselect_any()
+	remove_connections(elem_id)
+	elements[elem_id].queue_free()
+	elements.erase(elem_id)
 
 
 func add_connection(id_specified: int = -1, arrow_1_enabled: bool = false, arrow_2_enabled: bool = false) -> void:
@@ -329,27 +340,20 @@ func select_element(elem_id: int) -> void:
 	if elem_id == selected_element:
 		return
 	if elements.has(selected_element):	# Deselect previous element
-		#print("Deselect previous")
-		elements[selected_element].line_edit.apply_ime()
-		elements[selected_element].line_edit.deselect()
-		elements[selected_element].line_edit.unedit()
-		if elements[selected_element].completed:
-			elements[selected_element].z_index = elements[selected_element].completed_z_index
-		else:
-			elements[selected_element].z_index = elements[selected_element].active_z_index
+		elements[selected_element].deselect()
 	if elements.has(elem_id):
 		selected_element = elem_id
+		elements[selected_element].select()
 		selection_viewer.visible = true
 		selection_viewer.size = elements[elem_id].size
 		selection_viewer.position = elements[elem_id].position
-		elements[selected_element].z_index = 2
 		change_selected_preset_style(elements[selected_element].style_preset_id)
 		has_selected_element.emit()
 	else:	# Deselect element if elem_id invalid
-		deselect_element()
+		deselect_any()
 
 
-func deselect_element() -> void:
+func deselect_any() -> void:
 	selected_element = -1
 	selection_viewer.visible = false
 	has_deselected_element.emit()
@@ -490,7 +494,7 @@ func rebuild_elements(json_elems: Dictionary) -> void:
 				var c: Color = Color(json_elems[i]["bgcolor.r"], json_elems[i]["bgcolor.g"], json_elems[i]["bgcolor.b"], json_elems[i]["bgcolor.a"])
 				elements[elem_id].set_bg_color(c)
 			elements[elem_id].manual_resize = false
-			elements[elem_id].line_edit.text = json_elems[i]["text"]
+			elements[elem_id].text_edit.text = json_elems[i]["text"]
 			if completed:
 				elements[elem_id].toggle_completed()
 			if has_style and style_presets.has(style_id):
@@ -537,7 +541,7 @@ func erase_everything() -> void:
 	opened_file_path = ""
 	file_name_short = "New File"
 	selection_viewer.visible = false
-	deselect_element()
+	deselect_any()
 	zoom_level = 1.0
 	connections_p1 = {}
 	connections_p2 = {}
@@ -561,7 +565,7 @@ func erase_everything() -> void:
 
 func toggle_element_and_connections(elem_id: int, state: bool) -> void:
 	if selected_element == elem_id:
-		deselect_element()
+		deselect_any()
 	elements[elem_id].visible = state
 	
 	if elem_id in connections_p1:
@@ -574,7 +578,7 @@ func toggle_element_and_connections(elem_id: int, state: bool) -> void:
 
 func toggle_element(elem_id: int, state: bool) -> void:
 	if selected_element == elem_id:
-		deselect_element()
+		deselect_any()
 	elements[elem_id].visible = state
 
 
@@ -652,10 +656,10 @@ func change_priority_filter(value: int) -> void:
 func toggle_element_label_mouse_inputs(toggled_on: bool) -> void:
 	for e in elements:
 		if toggled_on:
-			elements[e].line_edit.mouse_filter = Control.MOUSE_FILTER_PASS
+			elements[e].text_edit.mouse_filter = Control.MOUSE_FILTER_PASS
 			elements[e].mouse_filter = Control.MOUSE_FILTER_PASS
 		else:
-			elements[e].line_edit.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			elements[e].text_edit.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			elements[e].mouse_filter = Control.MOUSE_FILTER_IGNORE
 	for c in connections:
 		connections[c].toggle_arrow_inputs(toggled_on)
@@ -787,7 +791,8 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 				remove_connections(elem_id)
 			if (tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS):
 				select_element(elem_id)
-				if event.position.distance_to(elements[elem_id].size) < 12.0:
+				# Distance to bottom-right corner
+				if event.position.distance_to(elements[elem_id].size) < 17.0:
 					is_resizing = true
 					is_panning = false
 					original_elem_size = elements[elem_id].size
@@ -810,11 +815,7 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 			else:
 				printerr("Element doesn't exist at release mouse click")
 			if tool_id == Enums.Tool.REMOVE_ELEMENT:
-				canvas_changed()
-				deselect_element()
-				remove_connections(elem_id)
-				elements[elem_id].queue_free()
-				elements.erase(elem_id)
+				remove_element_label(elem_id)
 			if is_dragging:
 				is_dragging = false
 			if is_resizing:
@@ -852,24 +853,31 @@ func _on_temp_drawing_region_input(event: InputEvent, reg: TempDrawingAction) ->
 
 
 func _on_element_text_box_active(elem_id: int) -> void:
-	if elements.has(elem_id):
-		select_element(elem_id)
-		if tool_id == Enums.Tool.MARK_COMPLETED:
-			canvas_changed()
-			elements[elem_id].toggle_completed()
-			toggle_element_and_connections(elem_id, settings.checkbox_data[Enums.Checkbox.SHOW_COMPLETED])
-		if tool_id == Enums.Tool.ADD_CONNECTION:
-			if connection_candidate_1 == -1:
-				connection_candidate_1 = elem_id
-				select_element(elem_id)
-				connection_indicator.visible = true
-				connection_indicator.position = elements[selected_element].position - Vector2(20.0, 20.0)
-				#print("FIRST ID CONFIRMED")
-			else:
-				connection_candidate_2 = elem_id
-				add_connection()
-		if tool_id == Enums.Tool.REMOVE_CONNECTIONS:
-			remove_connections(elem_id)
+	if !elements.has(elem_id):
+		return
+	select_element(elem_id)
+	if tool_id == Enums.Tool.MARK_COMPLETED:
+		canvas_changed()
+		elements[elem_id].toggle_completed()
+		toggle_element_and_connections(elem_id, settings.checkbox_data[Enums.Checkbox.SHOW_COMPLETED])
+	if tool_id == Enums.Tool.ADD_CONNECTION:
+		if connection_candidate_1 == -1:
+			connection_candidate_1 = elem_id
+			select_element(elem_id)
+			connection_indicator.visible = true
+			connection_indicator.position = elements[selected_element].position - Vector2(20.0, 20.0)
+			#print("FIRST ID CONFIRMED")
+		else:
+			connection_candidate_2 = elem_id
+			add_connection()
+	if tool_id == Enums.Tool.REMOVE_ELEMENT:
+		remove_element_label(elem_id)
+	if tool_id == Enums.Tool.REMOVE_CONNECTIONS:
+		remove_connections(elem_id)
+
+
+func _on_element_label_text_changed() -> void:
+	canvas_changed()
 
 
 func _on_element_label_resized(elem_id: int) -> void:
