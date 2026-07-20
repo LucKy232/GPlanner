@@ -1742,7 +1742,7 @@
 			"pos.y": 708.654541015625,
 			"priority_id": 4,
 			"size.x": 175.481689453125,
-			"size.y": 153.0,
+			"size.y": 212.0,
 			"style_preset_id": "none",
 			"text": "Buttons"
 		},
@@ -1777,7 +1777,7 @@
 			"pos.y": 1145.67944335938,
 			"priority_id": 0,
 			"size.x": 133.0,
-			"size.y": 177.0,
+			"size.y": 270.0,
 			"style_preset_id": "none",
 			"text": "Font Size"
 		},
@@ -1812,7 +1812,7 @@
 			"pos.y": 1218.5654296875,
 			"priority_id": 0,
 			"size.x": 139.0,
-			"size.y": 225.0,
+			"size.y": 299.0,
 			"style_preset_id": "none",
 			"text": "Font Color"
 		},
@@ -1917,7 +1917,7 @@
 			"pos.y": 1876.52587890625,
 			"priority_id": 0,
 			"size.x": 307.27734375,
-			"size.y": 345.0,
+			"size.y": 560.0,
 			"style_preset_id": "none",
 			"text": "Confirm dialogue on:"
 		},
@@ -1952,7 +1952,7 @@
 			"pos.y": 1164.8759765625,
 			"priority_id": 0,
 			"size.x": 143.250244140625,
-			"size.y": 225.0,
+			"size.y": 270.0,
 			"style_preset_id": "none",
 			"text": "Tool Icons"
 		},
@@ -1987,7 +1987,7 @@
 			"pos.y": 1352.4501953125,
 			"priority_id": 0,
 			"size.x": 297.0,
-			"size.y": 393.0,
+			"size.y": 705.0,
 			"style_preset_id": "none",
 			"text": "Start from center on New"
 		},
@@ -2034,7 +2034,7 @@
 			"pos.y": 1017.41009521484,
 			"priority_id": 0,
 			"size.x": 319.0,
-			"size.y": 585.0,
+			"size.y": 792.000061035156,
 			"style_preset_id": "none",
 			"text": "Select none on canvas click"
 		},
@@ -2069,7 +2069,7 @@
 			"pos.y": 1549.09045410156,
 			"priority_id": 0,
 			"size.x": 354.0,
-			"size.y": 369.0,
+			"size.y": 878.999877929688,
 			"style_preset_id": "none",
 			"text": "Resize element if text overflow"
 		},
@@ -2081,7 +2081,7 @@
 			"pos.y": 688.028930664063,
 			"priority_id": 2,
 			"size.x": 189.0,
-			"size.y": 201.0,
+			"size.y": 386.0,
 			"style_preset_id": "2025-05-11T11:51:00 26457",
 			"text": "Mark complete"
 		},
@@ -2116,7 +2116,7 @@
 			"pos.y": 670.999938964844,
 			"priority_id": 4,
 			"size.x": 148.0,
-			"size.y": 249.0,
+			"size.y": 299.0,
 			"style_preset_id": "none",
 			"text": "Save Style"
 		},
@@ -2151,7 +2151,7 @@
 			"pos.y": 758.999938964844,
 			"priority_id": 4,
 			"size.x": 321.0,
-			"size.y": 369.0,
+			"size.y": 734.000061035156,
 			"style_preset_id": "none",
 			"text": "Hide all complete checkbox"
 		},
@@ -2186,7 +2186,7 @@
 			"pos.y": 1128.11694335938,
 			"priority_id": 2,
 			"size.x": 355.0,
-			"size.y": 393.0,
+			"size.y": 821.0,
 			"style_preset_id": "none",
 			"text": "Connection style improvement"
 		},
@@ -2221,7 +2221,7 @@
 			"pos.y": 1166.29272460938,
 			"priority_id": 0,
 			"size.x": 122.0,
-			"size.y": 177.0,
+			"size.y": 212.0,
 			"style_preset_id": "none",
 			"text": "Toolbar"
 		},
@@ -2233,7 +2233,7 @@
 			"pos.y": 1257.32397460938,
 			"priority_id": 0,
 			"size.x": 121.03369140625,
-			"size.y": 201.0,
+			"size.y": 241.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Pen Tool"
 		},
@@ -2245,7 +2245,7 @@
 			"pos.y": 1466.73193359375,
 			"priority_id": 0,
 			"size.x": 121.03369140625,
-			"size.y": 129.0,
+			"size.y": 154.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Color"
 		},
@@ -2257,7 +2257,7 @@
 			"pos.y": 1532.94897460938,
 			"priority_id": 0,
 			"size.x": 121.03369140625,
-			"size.y": 105.0,
+			"size.y": 125.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Size"
 		},
@@ -2269,7 +2269,7 @@
 			"pos.y": 1400.53161621094,
 			"priority_id": 0,
 			"size.x": 121.03369140625,
-			"size.y": 129.0,
+			"size.y": 154.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Erase"
 		},
@@ -2281,7 +2281,7 @@
 			"pos.y": 1268.89099121094,
 			"priority_id": 0,
 			"size.x": 121.03369140625,
-			"size.y": 129.0,
+			"size.y": 183.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Pencil"
 		},
@@ -2328,7 +2328,7 @@
 			"pos.y": 1294.05590820313,
 			"priority_id": 0,
 			"size.x": 291.0,
-			"size.y": 417.0,
+			"size.y": 734.0,
 			"style_preset_id": "none",
 			"text": "Font Outline Color & Size"
 		},
@@ -2363,7 +2363,7 @@
 			"pos.y": 940.47021484375,
 			"priority_id": 0,
 			"size.x": 178.0,
-			"size.y": 273.0,
+			"size.y": 444.0,
 			"style_preset_id": "none",
 			"text": "Priority Select"
 		},
@@ -2398,7 +2398,7 @@
 			"pos.y": 1039.32666015625,
 			"priority_id": 0,
 			"size.x": 217.0,
-			"size.y": 297.0,
+			"size.y": 531.0,
 			"style_preset_id": "none",
 			"text": "Toolbox w/ circles"
 		},
@@ -2433,7 +2433,7 @@
 			"pos.y": 1647.20556640625,
 			"priority_id": 4,
 			"size.x": 419.0,
-			"size.y": 825.0,
+			"size.y": 1082.0,
 			"style_preset_id": "none",
 			"text": "Save current file path on load or save"
 		},
@@ -2468,7 +2468,7 @@
 			"pos.y": 1730.24194335938,
 			"priority_id": 4,
 			"size.x": 225.0,
-			"size.y": 297.0,
+			"size.y": 502.0,
 			"style_preset_id": "none",
 			"text": "Swap window title"
 		},
@@ -2503,7 +2503,7 @@
 			"pos.y": 1722.375,
 			"priority_id": 4,
 			"size.x": 296.0,
-			"size.y": 345.0,
+			"size.y": 705.0,
 			"style_preset_id": "none",
 			"text": "Set a label with file name"
 		},
@@ -2550,7 +2550,7 @@
 			"pos.y": 1053.98620605469,
 			"priority_id": 1,
 			"size.x": 308.0,
-			"size.y": 417.0,
+			"size.y": 705.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Panning indicator window"
 		},
@@ -2597,7 +2597,7 @@
 			"pos.y": 1091.63745117188,
 			"priority_id": 0,
 			"size.x": 313.531982421875,
-			"size.y": 297.0,
+			"size.y": 647.0,
 			"style_preset_id": "none",
 			"text": "Zoom at mouse position"
 		},
@@ -2656,7 +2656,7 @@
 			"pos.y": 1149.74267578125,
 			"priority_id": 0,
 			"size.x": 485.0,
-			"size.y": 537.0,
+			"size.y": 1285.0,
 			"style_preset_id": "none",
 			"text": "Deselect LineEdit if element is not selected"
 		},
@@ -2870,7 +2870,7 @@
 			"pos.y": 1481.390625,
 			"priority_id": 0,
 			"size.x": 443.0,
-			"size.y": 513.0,
+			"size.y": 1082.0,
 			"style_preset_id": "none",
 			"text": "Visual confirmation for first connection"
 		},
@@ -2905,7 +2905,7 @@
 			"pos.y": 1152.52990722656,
 			"priority_id": 4,
 			"size.x": 476.0,
-			"size.y": 537.0,
+			"size.y": 1168.99987792969,
 			"style_preset_id": "none",
 			"text": "Can select element when picking BG color"
 		},
@@ -2940,7 +2940,7 @@
 			"pos.y": 1285.744140625,
 			"priority_id": 4,
 			"size.x": 443.0,
-			"size.y": 873.0,
+			"size.y": 1111.0,
 			"style_preset_id": "none",
 			"text": "Save canvas data in file: Location, Scale"
 		},
@@ -2987,7 +2987,7 @@
 			"pos.y": 1301.97546386719,
 			"priority_id": 4,
 			"size.x": 400.55029296875,
-			"size.y": 561.0,
+			"size.y": 850.000122070313,
 			"style_preset_id": "none",
 			"text": "Color picker Background Color"
 		},
@@ -3081,7 +3081,7 @@
 			"pos.y": 1313.06494140625,
 			"priority_id": 0,
 			"size.x": 206.123046875,
-			"size.y": 201.0,
+			"size.y": 386.0,
 			"style_preset_id": "none",
 			"text": "Settings menu"
 		},
@@ -3223,7 +3223,7 @@
 			"pos.y": 1397.33337402344,
 			"priority_id": 4,
 			"size.x": 263.0,
-			"size.y": 297.0,
+			"size.y": 647.0,
 			"style_preset_id": "none",
 			"text": "File Name / \"New File\""
 		},
@@ -3270,7 +3270,7 @@
 			"pos.y": 1453.64172363281,
 			"priority_id": 4,
 			"size.x": 184.0,
-			"size.y": 345.0,
+			"size.y": 415.0,
 			"style_preset_id": "none",
 			"text": "Save succesful"
 		},
@@ -3305,7 +3305,7 @@
 			"pos.y": 1511.43176269531,
 			"priority_id": 4,
 			"size.x": 186.0,
-			"size.y": 345.0,
+			"size.y": 415.0,
 			"style_preset_id": "none",
 			"text": "Load succesful"
 		},
@@ -3317,7 +3317,7 @@
 			"pos.y": 470.178527832031,
 			"priority_id": 3,
 			"size.x": 422.0,
-			"size.y": 513.0,
+			"size.y": 1111.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "BG / text outline aliasing at low zoom"
 		},
@@ -3388,7 +3388,7 @@
 			"pos.y": 1027.62292480469,
 			"priority_id": 0,
 			"size.x": 353.0,
-			"size.y": 441.0,
+			"size.y": 850.0,
 			"style_preset_id": "none",
 			"text": "Unite Select + Pan&Zoom tools"
 		},
@@ -3400,7 +3400,7 @@
 			"pos.y": 796.291015625,
 			"priority_id": 3,
 			"size.x": 690.0,
-			"size.y": 753.0,
+			"size.y": 1749.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Pointing finger mouse cursor only when able to select or move"
 		},
@@ -3471,7 +3471,7 @@
 			"pos.y": 1132.35107421875,
 			"priority_id": 0,
 			"size.x": 556.0,
-			"size.y": 1017.0,
+			"size.y": 1401.0,
 			"style_preset_id": "none",
 			"text": "Save opened file paths on exit & reopen on launch"
 		},
@@ -3506,7 +3506,7 @@
 			"pos.y": 673.513061523438,
 			"priority_id": 4,
 			"size.x": 145.0,
-			"size.y": 177.0,
+			"size.y": 299.0,
 			"style_preset_id": "none",
 			"text": "Swap Style"
 		},
@@ -3541,7 +3541,7 @@
 			"pos.y": 1099.03210449219,
 			"priority_id": 0,
 			"size.x": 276.583984375,
-			"size.y": 345.0,
+			"size.y": 618.0,
 			"style_preset_id": "none",
 			"text": "Update on elem. select"
 		},
@@ -3576,7 +3576,7 @@
 			"pos.y": 583.158081054688,
 			"priority_id": 4,
 			"size.x": 203.0,
-			"size.y": 369.0,
+			"size.y": 473.0,
 			"style_preset_id": "none",
 			"text": "Save / Load data"
 		},
@@ -3611,7 +3611,7 @@
 			"pos.y": 1038.39038085938,
 			"priority_id": 0,
 			"size.x": 203.0,
-			"size.y": 369.0,
+			"size.y": 473.0,
 			"style_preset_id": "none",
 			"text": "Save / Load data"
 		},
@@ -3646,7 +3646,7 @@
 			"pos.y": 756.932861328125,
 			"priority_id": 4,
 			"size.x": 270.0,
-			"size.y": 393.0,
+			"size.y": 647.0,
 			"style_preset_id": "none",
 			"text": "Hide their connections"
 		},
@@ -3716,7 +3716,7 @@
 			"pos.y": 1414.84130859375,
 			"priority_id": 0,
 			"size.x": 542.0,
-			"size.y": 609.0,
+			"size.y": 1343.0,
 			"style_preset_id": "none",
 			"text": "Make / Remove connection by selecting LineEdit"
 		},
@@ -3751,7 +3751,7 @@
 			"pos.y": 584.86328125,
 			"priority_id": 4,
 			"size.x": 357.0,
-			"size.y": 417.0,
+			"size.y": 821.0,
 			"style_preset_id": "none",
 			"text": "Hide when marked if checkbox"
 		},
@@ -3786,7 +3786,7 @@
 			"pos.y": 504.430145263672,
 			"priority_id": 4,
 			"size.x": 316.0,
-			"size.y": 609.0,
+			"size.y": 763.0,
 			"style_preset_id": "none",
 			"text": "Save / Load checkbox state"
 		},
@@ -3833,7 +3833,7 @@
 			"pos.y": 809.320739746094,
 			"priority_id": 4,
 			"size.x": 184.0,
-			"size.y": 273.0,
+			"size.y": 415.000061035156,
 			"style_preset_id": "none",
 			"text": "Save + Save As"
 		},
@@ -3868,7 +3868,7 @@
 			"pos.y": 99.5380401611328,
 			"priority_id": 4,
 			"size.x": 170.584716796875,
-			"size.y": 225.0,
+			"size.y": 357.0,
 			"style_preset_id": "none",
 			"text": "Ctrl + S save"
 		},
@@ -3903,7 +3903,7 @@
 			"pos.y": 915.6669921875,
 			"priority_id": 3,
 			"size.x": 319.0,
-			"size.y": 465.0,
+			"size.y": 792.0,
 			"style_preset_id": "none",
 			"text": "Dialogue Box on Load / Exit"
 		},
@@ -3938,7 +3938,7 @@
 			"pos.y": 918.215942382813,
 			"priority_id": 3,
 			"size.x": 121.03369140625,
-			"size.y": 105.0,
+			"size.y": 154.0,
 			"style_preset_id": "none",
 			"text": "Title"
 		},
@@ -3973,7 +3973,7 @@
 			"pos.y": 1441.04077148438,
 			"priority_id": 0,
 			"size.x": 146.9521484375,
-			"size.y": 201.0,
+			"size.y": 270.0,
 			"style_preset_id": "none",
 			"text": "File tabs"
 		},
@@ -4008,7 +4008,7 @@
 			"pos.y": 930.461547851563,
 			"priority_id": 0,
 			"size.x": 189.0,
-			"size.y": 201.0,
+			"size.y": 444.0,
 			"style_preset_id": "none",
 			"text": "Filter elements"
 		},
@@ -4043,7 +4043,7 @@
 			"pos.y": 1086.76513671875,
 			"priority_id": 0,
 			"size.x": 293.0,
-			"size.y": 345.0,
+			"size.y": 676.0,
 			"style_preset_id": "none",
 			"text": "Play anim. on mouse exit"
 		},
@@ -4078,7 +4078,7 @@
 			"pos.y": 1122.32836914063,
 			"priority_id": 0,
 			"size.x": 459.0,
-			"size.y": 537.0,
+			"size.y": 1082.0,
 			"style_preset_id": "none",
 			"text": "Disable tool when checkbox / completed"
 		},
@@ -4113,7 +4113,7 @@
 			"pos.y": 873.728210449219,
 			"priority_id": 0,
 			"size.x": 320.0,
-			"size.y": 513.0,
+			"size.y": 850.000061035156,
 			"style_preset_id": "none",
 			"text": "Style - Thicker & +/- Buttons"
 		},
@@ -4148,7 +4148,7 @@
 			"pos.y": 933.189880371094,
 			"priority_id": 0,
 			"size.x": 239.0,
-			"size.y": 345.0,
+			"size.y": 531.000061035156,
 			"style_preset_id": "none",
 			"text": "Hide with checkbox"
 		},
@@ -4183,7 +4183,7 @@
 			"pos.y": 989.503173828125,
 			"priority_id": 0,
 			"size.x": 273.0,
-			"size.y": 393.0,
+			"size.y": 647.0,
 			"style_preset_id": "none",
 			"text": "Hide extra connections"
 		},
@@ -4218,7 +4218,7 @@
 			"pos.y": 992.859924316406,
 			"priority_id": 0,
 			"size.x": 151.0,
-			"size.y": 249.0,
+			"size.y": 327.999938964844,
 			"style_preset_id": "none",
 			"text": "Toggle Tool"
 		},
@@ -4253,7 +4253,7 @@
 			"pos.y": 1220.00573730469,
 			"priority_id": 0,
 			"size.x": 435.0,
-			"size.y": 489.0,
+			"size.y": 1082.00012207031,
 			"style_preset_id": "none",
 			"text": "Select newly created element text-box"
 		},
@@ -4300,7 +4300,7 @@
 			"pos.y": 1159.607421875,
 			"priority_id": 0,
 			"size.x": 373.0,
-			"size.y": 561.0,
+			"size.y": 908.0,
 			"style_preset_id": "none",
 			"text": "Checkbox style against black BG"
 		},
@@ -4335,7 +4335,7 @@
 			"pos.y": 231.84326171875,
 			"priority_id": 0,
 			"size.x": 143.93701171875,
-			"size.y": 153.0,
+			"size.y": 241.0,
 			"style_preset_id": "none",
 			"text": "All Tools"
 		},
@@ -4394,7 +4394,7 @@
 			"pos.y": 543.266296386719,
 			"priority_id": 0,
 			"size.x": 941.000061035156,
-			"size.y": 1089.0,
+			"size.y": 2474.0,
 			"style_preset_id": "none",
 			"text": "Selection Viewer / Element bad size when element is small because of priority tool size"
 		},
@@ -4429,7 +4429,7 @@
 			"pos.y": 1216.68322753906,
 			"priority_id": 0,
 			"size.x": 346.0,
-			"size.y": 393.0,
+			"size.y": 849.999877929688,
 			"style_preset_id": "none",
 			"text": "On different element selected"
 		},
@@ -4441,7 +4441,7 @@
 			"pos.y": 335.549865722656,
 			"priority_id": 2,
 			"size.x": 864.999938964844,
-			"size.y": 969.0,
+			"size.y": 2242.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Show completed + priority filtered items - hide connections to hidden elements"
 		},
@@ -4511,7 +4511,7 @@
 			"pos.y": 232.682189941406,
 			"priority_id": 0,
 			"size.x": 266.0,
-			"size.y": 393.0,
+			"size.y": 618.0,
 			"style_preset_id": "none",
 			"text": "Tooltip shows keybind"
 		},
@@ -4546,7 +4546,7 @@
 			"pos.y": 183.138122558594,
 			"priority_id": 0,
 			"size.x": 536.0,
-			"size.y": 585.0,
+			"size.y": 1401.0,
 			"style_preset_id": "none",
 			"text": "Grey text / White text style on toggle completed"
 		},
@@ -4581,7 +4581,7 @@
 			"pos.y": 250.434204101563,
 			"priority_id": 0,
 			"size.x": 616.0,
-			"size.y": 801.0,
+			"size.y": 1546.0,
 			"style_preset_id": "none",
 			"text": "Change zoom progress bar according to zoom limits set"
 		},
@@ -4628,7 +4628,7 @@
 			"pos.y": 1253.09887695313,
 			"priority_id": 2,
 			"size.x": 273.0,
-			"size.y": 321.0,
+			"size.y": 676.0,
 			"style_preset_id": "none",
 			"text": "Better selection viewer"
 		},
@@ -4663,7 +4663,7 @@
 			"pos.y": 1235.5048828125,
 			"priority_id": 0,
 			"size.x": 463.0,
-			"size.y": 489.0,
+			"size.y": 1140.0,
 			"style_preset_id": "none",
 			"text": "Remove connections by clicking LineEdit"
 		},
@@ -4698,7 +4698,7 @@
 			"pos.y": 1145.98876953125,
 			"priority_id": 0,
 			"size.x": 163.0,
-			"size.y": 249.0,
+			"size.y": 357.0,
 			"style_preset_id": "none",
 			"text": "Canvas class"
 		},
@@ -4733,7 +4733,7 @@
 			"pos.y": 1153.18908691406,
 			"priority_id": 0,
 			"size.x": 452.0,
-			"size.y": 657.0,
+			"size.y": 1081.99987792969,
 			"style_preset_id": "none",
 			"text": "Switch between canvases & handle data"
 		},
@@ -4781,7 +4781,7 @@
 			"pos.y": 1419.33422851563,
 			"priority_id": 0,
 			"size.x": 181.0,
-			"size.y": 201.0,
+			"size.y": 386.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Drawing areas"
 		},
@@ -4793,7 +4793,7 @@
 			"pos.y": 1567.24389648438,
 			"priority_id": 0,
 			"size.x": 121.03369140625,
-			"size.y": 153.0,
+			"size.y": 183.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Create"
 		},
@@ -4805,7 +4805,7 @@
 			"pos.y": 1567.69702148438,
 			"priority_id": 0,
 			"size.x": 150.0,
-			"size.y": 249.0,
+			"size.y": 328.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Save / Load"
 		},
@@ -4840,7 +4840,7 @@
 			"pos.y": 1444.09729003906,
 			"priority_id": 0,
 			"size.x": 147.27197265625,
-			"size.y": 201.0,
+			"size.y": 270.0,
 			"style_preset_id": "none",
 			"text": "Close tab"
 		},
@@ -4875,7 +4875,7 @@
 			"pos.y": 549.987915039063,
 			"priority_id": 0,
 			"size.x": 228.0,
-			"size.y": 321.0,
+			"size.y": 502.0,
 			"style_preset_id": "none",
 			"text": "New file behaviour"
 		},
@@ -4910,7 +4910,7 @@
 			"pos.y": 624.767761230469,
 			"priority_id": 0,
 			"size.x": 201.0,
-			"size.y": 369.0,
+			"size.y": 473.000061035156,
 			"style_preset_id": "none",
 			"text": "If no file opened"
 		},
@@ -4945,7 +4945,7 @@
 			"pos.y": 625.356811523438,
 			"priority_id": 0,
 			"size.x": 206.0,
-			"size.y": 177.0,
+			"size.y": 444.0,
 			"style_preset_id": "none",
 			"text": "With file opened"
 		},
@@ -4980,7 +4980,7 @@
 			"pos.y": 1236.95556640625,
 			"priority_id": 0,
 			"size.x": 249.0,
-			"size.y": 345.0,
+			"size.y": 560.0,
 			"style_preset_id": "none",
 			"text": "Change window title"
 		},
@@ -5015,7 +5015,7 @@
 			"pos.y": 1519.29931640625,
 			"priority_id": 0,
 			"size.x": 641.0,
-			"size.y": 1257.0,
+			"size.y": 1691.0,
 			"style_preset_id": "none",
 			"text": "Save/Load current selected file path / consistent canvas id"
 		},
@@ -5050,7 +5050,7 @@
 			"pos.y": 1235.49865722656,
 			"priority_id": 0,
 			"size.x": 387.0,
-			"size.y": 777.0,
+			"size.y": 1023.99987792969,
 			"style_preset_id": "none",
 			"text": "Save unsaved file on exit in user://"
 		},
@@ -5097,7 +5097,7 @@
 			"pos.y": 914.159912109375,
 			"priority_id": 2,
 			"size.x": 505.0,
-			"size.y": 609.0,
+			"size.y": 1227.0,
 			"style_preset_id": "none",
 			"text": "Modify z_index on toggle completed element"
 		},
@@ -5132,7 +5132,7 @@
 			"pos.y": 1604.29443359375,
 			"priority_id": 0,
 			"size.x": 276.0,
-			"size.y": 441.0,
+			"size.y": 676.0,
 			"style_preset_id": "none",
 			"text": "Better connection lines"
 		},
@@ -5167,7 +5167,7 @@
 			"pos.y": 1633.71655273438,
 			"priority_id": 0,
 			"size.x": 271.0,
-			"size.y": 345.0,
+			"size.y": 473.0,
 			"style_preset_id": "none",
 			"text": "90 degree angles"
 		},
@@ -5202,7 +5202,7 @@
 			"pos.y": 1793.26477050781,
 			"priority_id": 0,
 			"size.x": 558.0,
-			"size.y": 657.0,
+			"size.y": 1458.99987792969,
 			"style_preset_id": "none",
 			"text": "Gradient color going from 1st element color to 2nd"
 		},
@@ -5237,7 +5237,7 @@
 			"pos.y": 1710.0986328125,
 			"priority_id": 0,
 			"size.x": 450.0,
-			"size.y": 561.0,
+			"size.y": 1198.0,
 			"style_preset_id": "none",
 			"text": "Start left / right based on other element"
 		},
@@ -5272,7 +5272,7 @@
 			"pos.y": 1555.11853027344,
 			"priority_id": 0,
 			"size.x": 190.0,
-			"size.y": 345.0,
+			"size.y": 415.0,
 			"style_preset_id": "none",
 			"text": "Curved corners"
 		},
@@ -5307,7 +5307,7 @@
 			"pos.y": 1788.96557617188,
 			"priority_id": 0,
 			"size.x": 596.0,
-			"size.y": 705.0,
+			"size.y": 1488.0,
 			"style_preset_id": "none",
 			"text": "Change connection color together with element color"
 		},
@@ -5342,7 +5342,7 @@
 			"pos.y": 1542.275390625,
 			"priority_id": 0,
 			"size.x": 168.0,
-			"size.y": 273.0,
+			"size.y": 357.0,
 			"style_preset_id": "none",
 			"text": "Canvases IDs"
 		},
@@ -5377,7 +5377,7 @@
 			"pos.y": 1877.859375,
 			"priority_id": 4,
 			"size.x": 309.0,
-			"size.y": 561.0,
+			"size.y": 676.0,
 			"style_preset_id": "none",
 			"text": "canvas: has_changed: bool"
 		},
@@ -5412,7 +5412,7 @@
 			"pos.y": 1792.44714355469,
 			"priority_id": 0,
 			"size.x": 121.03369140625,
-			"size.y": 105.0,
+			"size.y": 125.0,
 			"style_preset_id": "none",
 			"text": "Load"
 		},
@@ -5447,7 +5447,7 @@
 			"pos.y": 1789.07019042969,
 			"priority_id": 0,
 			"size.x": 121.03369140625,
-			"size.y": 81.0,
+			"size.y": 125.0,
 			"style_preset_id": "none",
 			"text": "Exit"
 		},
@@ -5482,7 +5482,7 @@
 			"pos.y": 1785.650390625,
 			"priority_id": 0,
 			"size.x": 131.0,
-			"size.y": 201.0,
+			"size.y": 270.0,
 			"style_preset_id": "none",
 			"text": "Close Tab"
 		},
@@ -5517,7 +5517,7 @@
 			"pos.y": 1793.44702148438,
 			"priority_id": 0,
 			"size.x": 124.0,
-			"size.y": 81.0,
+			"size.y": 96.0,
 			"style_preset_id": "none",
 			"text": "New"
 		},
@@ -5600,7 +5600,7 @@
 			"pos.y": 1697.69750976563,
 			"priority_id": 0,
 			"size.x": 181.0,
-			"size.y": 297.0,
+			"size.y": 386.0,
 			"style_preset_id": "none",
 			"text": "Popup per tab"
 		},
@@ -5635,7 +5635,7 @@
 			"pos.y": 1875.53039550781,
 			"priority_id": 0,
 			"size.x": 192.0,
-			"size.y": 201.0,
+			"size.y": 385.999877929688,
 			"style_preset_id": "none",
 			"text": "Show file name"
 		},
@@ -5694,7 +5694,7 @@
 			"pos.y": 1878.15771484375,
 			"priority_id": 4,
 			"size.x": 169.0,
-			"size.y": 273.0,
+			"size.y": 444.0,
 			"style_preset_id": "none",
 			"text": "(*) Tab & Title"
 		},
@@ -5706,7 +5706,7 @@
 			"pos.y": 928.925964355469,
 			"priority_id": 0,
 			"size.x": 369.0,
-			"size.y": 513.0,
+			"size.y": 937.000061035156,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Connection line from top to side"
 		},
@@ -5730,7 +5730,7 @@
 			"pos.y": 1334.54455566406,
 			"priority_id": 0,
 			"size.x": 121.03369140625,
-			"size.y": 129.0,
+			"size.y": 154.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Brush"
 		},
@@ -5801,7 +5801,7 @@
 			"pos.y": 1315.35021972656,
 			"priority_id": 0,
 			"size.x": 268.0,
-			"size.y": 369.0,
+			"size.y": 647.0,
 			"style_preset_id": "none",
 			"text": "Popup drawer left side"
 		},
@@ -5860,7 +5860,7 @@
 			"pos.y": 1246.39587402344,
 			"priority_id": 0,
 			"size.x": 196.0,
-			"size.y": 225.0,
+			"size.y": 415.0,
 			"style_preset_id": "none",
 			"text": "Element Border"
 		},
@@ -5895,7 +5895,7 @@
 			"pos.y": 1375.18286132813,
 			"priority_id": 0,
 			"size.x": 184.0,
-			"size.y": 321.0,
+			"size.y": 415.0,
 			"style_preset_id": "none",
 			"text": "Thickness >= 0"
 		},
@@ -5930,7 +5930,7 @@
 			"pos.y": 1376.02294921875,
 			"priority_id": 0,
 			"size.x": 121.033935546875,
-			"size.y": 129.0,
+			"size.y": 154.0,
 			"style_preset_id": "none",
 			"text": "Color"
 		},
@@ -6001,7 +6001,7 @@
 			"pos.y": 547.328979492188,
 			"priority_id": 0,
 			"size.x": 848.000061035156,
-			"size.y": 993.0,
+			"size.y": 2300.0,
 			"style_preset_id": "none",
 			"text": "Switching tabs doesn't keep the (*) to indicate modified file (tab name or title)"
 		},
@@ -6048,7 +6048,7 @@
 			"pos.y": 1215.5625,
 			"priority_id": 3,
 			"size.x": 176.111328125,
-			"size.y": 273.0,
+			"size.y": 386.0,
 			"style_preset_id": "none",
 			"text": "Font Settings"
 		},
@@ -6095,7 +6095,7 @@
 			"pos.y": 1167.517578125,
 			"priority_id": 0,
 			"size.x": 121.033935546875,
-			"size.y": 177.0,
+			"size.y": 212.0,
 			"style_preset_id": "none",
 			"text": "Presets"
 		},
@@ -6130,7 +6130,7 @@
 			"pos.y": 1171.24340820313,
 			"priority_id": 0,
 			"size.x": 240.894287109375,
-			"size.y": 417.0,
+			"size.y": 560.0,
 			"style_preset_id": "none",
 			"text": "Save / Load per file"
 		},
@@ -6165,7 +6165,7 @@
 			"pos.y": 1245.05786132813,
 			"priority_id": 0,
 			"size.x": 135.14404296875,
-			"size.y": 177.0,
+			"size.y": 241.0,
 			"style_preset_id": "none",
 			"text": "BG Color"
 		},
@@ -6200,7 +6200,7 @@
 			"pos.y": 1235.93005371094,
 			"priority_id": 0,
 			"size.x": 151.80615234375,
-			"size.y": 201.0,
+			"size.y": 299.0,
 			"style_preset_id": "none",
 			"text": "Add button"
 		},
@@ -6235,7 +6235,7 @@
 			"pos.y": 1304.85095214844,
 			"priority_id": 0,
 			"size.x": 194.0,
-			"size.y": 201.0,
+			"size.y": 386.0,
 			"style_preset_id": "none",
 			"text": "Remove Button"
 		},
@@ -6270,7 +6270,7 @@
 			"pos.y": 1575.94702148438,
 			"priority_id": 1,
 			"size.x": 537.0,
-			"size.y": 609.0,
+			"size.y": 1285.0,
 			"style_preset_id": "none",
 			"text": "Color dropdown menu choice based on BG color"
 		},
@@ -6305,7 +6305,7 @@
 			"pos.y": 1368.080078125,
 			"priority_id": 2,
 			"size.x": 171.583984375,
-			"size.y": 177.0,
+			"size.y": 328.0,
 			"style_preset_id": "none",
 			"text": "Name preset"
 		},
@@ -6412,7 +6412,7 @@
 			"pos.y": 1636.29064941406,
 			"priority_id": 1,
 			"size.x": 271.0,
-			"size.y": 345.0,
+			"size.y": 646.999877929688,
 			"style_preset_id": "none",
 			"text": "Update on select elem."
 		},
@@ -6459,7 +6459,7 @@
 			"pos.y": 1504.77465820313,
 			"priority_id": 0,
 			"size.x": 719.000244140625,
-			"size.y": 801.0,
+			"size.y": 1749.0,
 			"style_preset_id": "none",
 			"text": "Change every element that has the preset when changes happen"
 		},
@@ -6494,7 +6494,7 @@
 			"pos.y": 1568.31225585938,
 			"priority_id": 1,
 			"size.x": 545.0,
-			"size.y": 609.0,
+			"size.y": 1401.0,
 			"style_preset_id": "none",
 			"text": "Newly created element inherits current selection"
 		},
@@ -6529,7 +6529,7 @@
 			"pos.y": 1295.09997558594,
 			"priority_id": 0,
 			"size.x": 497.0,
-			"size.y": 585.0,
+			"size.y": 1256.00012207031,
 			"style_preset_id": "none",
 			"text": "Change BG color tool into Element Style tool"
 		},
@@ -6564,7 +6564,7 @@
 			"pos.y": 1371.4794921875,
 			"priority_id": 0,
 			"size.x": 487.999755859375,
-			"size.y": 849.0,
+			"size.y": 1198.0,
 			"style_preset_id": "none",
 			"text": "Change available presets on canvas change"
 		},
@@ -6599,7 +6599,7 @@
 			"pos.y": 1485.88256835938,
 			"priority_id": 0,
 			"size.x": 487.0,
-			"size.y": 537.0,
+			"size.y": 1082.0,
 			"style_preset_id": "none",
 			"text": "Change dropdown menu on canvas change"
 		},
@@ -6634,7 +6634,7 @@
 			"pos.y": 1236.53552246094,
 			"priority_id": 0,
 			"size.x": 355.0,
-			"size.y": 417.0,
+			"size.y": 879.000122070313,
 			"style_preset_id": "none",
 			"text": "Element: ID for selected Preset"
 		},
@@ -6669,7 +6669,7 @@
 			"pos.y": 1236.42956542969,
 			"priority_id": 0,
 			"size.x": 368.0,
-			"size.y": 513.0,
+			"size.y": 908.000122070313,
 			"style_preset_id": "none",
 			"text": "on preset delete, switch to none"
 		},
@@ -6704,7 +6704,7 @@
 			"pos.y": 1167.89685058594,
 			"priority_id": 0,
 			"size.x": 198.1640625,
-			"size.y": 345.0,
+			"size.y": 444.0,
 			"style_preset_id": "none",
 			"text": "Rebuild presets"
 		},
@@ -6751,7 +6751,7 @@
 			"pos.y": 1303.58203125,
 			"priority_id": 0,
 			"size.x": 449.0,
-			"size.y": 465.0,
+			"size.y": 1111.0,
 			"style_preset_id": "none",
 			"text": "Canvas & Elements that have the preset"
 		},
@@ -6798,7 +6798,7 @@
 			"pos.y": 1706.57165527344,
 			"priority_id": 0,
 			"size.x": 294.0,
-			"size.y": 513.0,
+			"size.y": 676.000122070313,
 			"style_preset_id": "none",
 			"text": "Change connection color"
 		},
@@ -6834,7 +6834,7 @@
 			"pos.y": 270.70458984375,
 			"priority_id": 2,
 			"size.x": 355.0,
-			"size.y": 417.0,
+			"size.y": 879.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "selecting tool with ctrl pressed"
 		},
@@ -6858,7 +6858,7 @@
 			"pos.y": 204.988433837891,
 			"priority_id": 2,
 			"size.x": 449.0,
-			"size.y": 513.0,
+			"size.y": 1140.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Element is moving with priority buttons"
 		},
@@ -7062,7 +7062,7 @@
 			"pos.y": 988.174438476563,
 			"priority_id": 0,
 			"size.x": 366.0,
-			"size.y": 537.0,
+			"size.y": 995.0,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Hide priority settings if disabled"
 		},
@@ -7086,7 +7086,7 @@
 			"pos.y": 267.585571289063,
 			"priority_id": 0,
 			"size.x": 551.0,
-			"size.y": 969.0,
+			"size.y": 1459.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Selecting the LineEdit under the priority tool area"
 		},
@@ -7098,7 +7098,7 @@
 			"pos.y": 537.269897460938,
 			"priority_id": 0,
 			"size.x": 544.0,
-			"size.y": 609.0,
+			"size.y": 1401.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Pan indicator outside of its window (sometimes) "
 		},
@@ -7110,7 +7110,7 @@
 			"pos.y": 604.428588867188,
 			"priority_id": 0,
 			"size.x": 430.0,
-			"size.y": 561.0,
+			"size.y": 1024.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Pan indicator wrong zoom on new file"
 		},
@@ -7146,7 +7146,7 @@
 			"pos.y": 1328.75659179688,
 			"priority_id": 0,
 			"size.x": 215.0,
-			"size.y": 321.0,
+			"size.y": 589.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Caret visibility x2 "
 		},
@@ -7170,7 +7170,7 @@
 			"pos.y": 1348.03381347656,
 			"priority_id": 0,
 			"size.x": 136.8759765625,
-			"size.y": 225.0,
+			"size.y": 270.0,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Tool Icons"
 		},
@@ -7194,7 +7194,7 @@
 			"pos.y": 1327.08764648438,
 			"priority_id": 0,
 			"size.x": 319.0,
-			"size.y": 441.0,
+			"size.y": 792.0,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Save window size / location"
 		},
@@ -7230,7 +7230,7 @@
 			"pos.y": 856.791625976563,
 			"priority_id": 0,
 			"size.x": 602.0,
-			"size.y": 945.0,
+			"size.y": 1545.99987792969,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Default pointing hand cursor for buttons / checkboxes"
 		},
@@ -7818,7 +7818,7 @@
 			"pos.y": 440.215393066406,
 			"priority_id": 0,
 			"size.x": 367.0,
-			"size.y": 705.0,
+			"size.y": 907.999938964844,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Fonts broken on android & linux"
 		},
@@ -7830,7 +7830,7 @@
 			"pos.y": 515.201171875,
 			"priority_id": 2,
 			"size.x": 495.0,
-			"size.y": 537.0,
+			"size.y": 1285.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Android defaults both UI & elements to Arial"
 		},
@@ -7842,7 +7842,7 @@
 			"pos.y": 582.3759765625,
 			"priority_id": 0,
 			"size.x": 682.0,
-			"size.y": 801.0,
+			"size.y": 1778.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Linux defaults UI to Arial, but elements are completely broken"
 		},
@@ -7866,7 +7866,7 @@
 			"pos.y": 547.341674804688,
 			"priority_id": 2,
 			"size.x": 402.0,
-			"size.y": 561.0,
+			"size.y": 995.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Saving shortcut works while typing"
 		},
@@ -7878,7 +7878,7 @@
 			"pos.y": 658.296508789063,
 			"priority_id": 0,
 			"size.x": 273.0,
-			"size.y": 345.0,
+			"size.y": 618.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Disappearing drawings"
 		},
@@ -7902,7 +7902,7 @@
 			"pos.y": 720.9677734375,
 			"priority_id": 0,
 			"size.x": 355.0,
-			"size.y": 441.0,
+			"size.y": 937.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Interaction with just deleting? "
 		},
@@ -7914,7 +7914,7 @@
 			"pos.y": 721.156188964844,
 			"priority_id": 0,
 			"size.x": 242.0,
-			"size.y": 345.0,
+			"size.y": 589.000061035156,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Deleting not saving "
 		},
@@ -7926,7 +7926,7 @@
 			"pos.y": 653.366394042969,
 			"priority_id": 0,
 			"size.x": 826.0,
-			"size.y": 1233.0,
+			"size.y": 2155.0,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Cause: saving without changes to drawings (or undone) - data isn't loaded? "
 		},
@@ -8006,15 +8006,15 @@
 	"State": {
 		"app_mode": 0,
 		"drawing_folder_path": "plannerplanner 2025-08-31T215146",
-		"position.x": -3572.66870117188,
-		"position.y": -440.441162109375,
+		"position.x": -4156.54736328125,
+		"position.y": -526.737670898438,
 		"priority_filter_value": 4,
-		"scale.x": 0.735576570034027,
-		"scale.y": 0.735576570034027,
+		"scale.x": 0.794422686100006,
+		"scale.y": 0.794422686100006,
 		"show_completed": false,
 		"show_priorities": true,
 		"show_priority_tool": true,
-		"zoom_level": 0.735576544727202
+		"zoom_level": 0.794422668305378
 	},
 	"StylePresets": {
 		"1": {

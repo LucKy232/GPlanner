@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="16"
+   height="16"
+   version="1.1"
+   id="svg4"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs4" />
+  <polygon
+     points="3.1,8.9 4.5,6.9 7.5,9.7 11.1,3.9 13,5.5 7.9,13.5 "
+     fill="#ffffff"
+     id="polygon4"
+     transform="matrix(1.3067485,0,0,1.3067485,-2.4429448,-3.1595092)"
+     style="display:none" />
+  <path
+     style="fill:#ffffff;fill-opacity:1;stroke:#ffffff;stroke-width:2.27184;stroke-linecap:square;stroke-miterlimit:2;stroke-dasharray:none;stroke-dashoffset:33.3913;stroke-opacity:1"
+     d="M 3.456338,3.4563142 12.54371,12.543686"
+     id="path4" />
+  <path
+     style="fill:#ffffff;stroke:#ffffff;stroke-width:2.27184;stroke-linecap:square;stroke-miterlimit:2;stroke-dasharray:none;stroke-dashoffset:33.3913;stroke-opacity:1"
+     d="m 3.456338,12.543686 9.08752,-9.0873718"
+     id="path5" />
+</svg>

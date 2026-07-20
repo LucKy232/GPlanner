@@ -9,6 +9,7 @@ class_name PlannerCanvas
 
 var element_scene		## Passed by main.gd to be instantiated here
 var connection_scene	## Passed by main.gd to be instantiated here
+var list_scene			## Passed by main.gd to be instantiated here	# TODO object that keeps scene refs
 var priority_colors: Array[Color]
 var elements: Dictionary[int, ElementLabel]
 var connections: Dictionary[int, Connection]
@@ -200,6 +201,16 @@ func pan_limits(pos: Vector2) -> Vector2:
 	if pos.y < -size.y * scale.y + screen_size.y:
 		pos.y = -size.y * scale.y + screen_size.y
 	return pos
+
+
+func add_object_list(at_position: Vector2, id_specified: int = -1) -> void:
+	canvas_changed()
+	var new_list: ObjectList = load(list_scene).instantiate()
+	new_list.position = at_position
+	var list_id: int = -1	# TODO
+	new_list.gui_input.connect(_on_object_list_gui_input.bind(list_id))
+	add_child(new_list)
+	print("LIST HERE, COMPLETE")
 
 
 func add_element_label(at_position: Vector2, id_specified: int = -1) -> void:
@@ -742,6 +753,8 @@ func _on_gui_input(event: InputEvent) -> void:
 		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed() and tool_id == Enums.Tool.ADD_ELEMENT:
 			add_element_label(event.position)
 			is_adding_elements = true
+		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed() and tool_id == Enums.Tool.ADD_LIST:
+			add_object_list(event.position)
 	
 	if settings.app_mode == Enums.AppMode.DRAWING:
 		# Start drawing
@@ -830,6 +843,14 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 			elements[elem_id].change_size(original_elem_size + move)
 			update_connections(elem_id)
 			canvas_changed()
+
+
+func _on_object_list_gui_input(event: InputEvent, list_id: int) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
+			if tool_id == Enums.Tool.REMOVE_ELEMENT:
+				print("REMOVEEEEEEEEEEEEEEEEEEEE")
+	print(event)
 
 
 func _on_temp_drawing_region_input(event: InputEvent, reg: TempDrawingAction) -> void:

@@ -1,7 +1,0 @@
-[gd_scene format=3 uid="uid://q0me3hofnycc"]
-
-[node name="ListElement" type="Control" unique_id=1284734547]
-light_mask = 8
-visibility_layer = 8
-layout_mode = 3
-anchors_preset = 0

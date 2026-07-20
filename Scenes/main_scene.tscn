@@ -25,6 +25,7 @@
 [ext_resource type="PackedScene" uid="uid://cwbooma1lih12" path="res://Scenes/element_settings.tscn" id="17_oyb3p"]
 [ext_resource type="Texture2D" uid="uid://dvj0rxvoc7005" path="res://Icons/brush.svg" id="17_xle81"]
 [ext_resource type="Theme" uid="uid://nujp3orsr2ol" path="res://Themes/popup_dialog_theme.tres" id="18_2ebs2"]
+[ext_resource type="Texture2D" uid="uid://dm7n0ravddpec" path="res://Icons/add_list.svg" id="18_b00ha"]
 [ext_resource type="Texture2D" uid="uid://cektvw6goipya" path="res://Icons/pencil_eraser.svg" id="18_s8qe6"]
 [ext_resource type="PackedScene" uid="uid://binp5ftakgned" path="res://Scenes/pan_indicator_camera.tscn" id="19_jvnna"]
 [ext_resource type="Texture2D" uid="uid://dojsm17sk75ju" path="res://Icons/eraser.svg" id="19_yb0ja"]
@@ -113,7 +114,8 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_52fb6")
 element_scene = "uid://lufadl7u0ek3"
-connection_scene = "res://Scenes/connection.tscn"
+list_scene = "uid://6odwhurrp3jx"
+connection_scene = "uid://c4jirlcfvnhoj"
 canvas_scene = "uid://b1do6gcy6peum"
 accent_color_planning = Color(0.188235, 0.701961, 1, 1)
 accent_color_drawing = Color(0.760784, 0.537255, 1, 1)
@@ -127,6 +129,7 @@ opened_files_file_name = "opened_files_dev.json"
 pencil_cursor = ExtResource("15_5oxhp")
 eraser_pencil_cursor = ExtResource("18_s8qe6")
 hand_cursor = ExtResource("8_76v2p")
+metadata/_edit_horizontal_guides_ = [24.0, 48.0]
 
 [node name="CursorBigBrush" type="TextureRect" parent="." unique_id=13884809]
 visible = false
@@ -190,7 +193,7 @@ icon_alignment = 1
 light_mask = 2
 visibility_layer = 2
 layout_mode = 2
-size_flags_horizontal = 4
+size_flags_horizontal = 6
 size_flags_vertical = 0
 mouse_filter = 1
 mouse_default_cursor_shape = 2
@@ -198,23 +201,25 @@ theme = SubResource("Theme_x6ack")
 allow_search = false
 auto_width = true
 auto_height = true
-item_count = 7
+item_count = 8
 max_columns = 9
 icon_mode = 0
 item_0/text = "Select & Move Elements, Pan & Zoom"
 item_0/icon = ExtResource("8_76v2p")
 item_1/text = "Add Element"
 item_1/icon = ExtResource("9_7ewk0")
-item_2/text = "Remove Element"
-item_2/icon = ExtResource("10_lhp3t")
-item_3/text = "Element Style Settings"
-item_3/icon = ExtResource("10_oyb3p")
-item_4/text = "Add Connection"
-item_4/icon = ExtResource("13_psl12")
-item_5/text = "Remove All Connections to Element"
-item_5/icon = ExtResource("14_2ebs2")
-item_6/text = "Mark Element As Complete"
-item_6/icon = ExtResource("15_2ebs2")
+item_2/text = "Add List"
+item_2/icon = ExtResource("18_b00ha")
+item_3/text = "Remove Element"
+item_3/icon = ExtResource("10_lhp3t")
+item_4/text = "Element Style Settings"
+item_4/icon = ExtResource("10_oyb3p")
+item_5/text = "Add Connection"
+item_5/icon = ExtResource("13_psl12")
+item_6/text = "Remove All Connections to Element"
+item_6/icon = ExtResource("14_2ebs2")
+item_7/text = "Mark Element As Complete"
+item_7/icon = ExtResource("15_2ebs2")
 
 [node name="DrawingToolBox" type="ItemList" parent="MarginContainer/ToolVBox/ToolArea" unique_id=879489576]
 light_mask = 2

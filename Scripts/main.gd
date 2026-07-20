@@ -25,6 +25,7 @@ extends Control
 @export var android_build: bool = false
 @export_category("Scenes")
 @export_file("*.tscn") var element_scene
+@export_file("*.tscn") var list_scene
 @export_file("*.tscn") var connection_scene
 @export_file("*.tscn") var canvas_scene
 @export_category("Themes")
@@ -367,6 +368,7 @@ func new_file(add_canvas: bool, show_status: bool = true) -> int:
 		new_canvas.has_selected_element.connect(_on_canvas_has_selected_element)
 		new_canvas.has_deselected_element.connect(_on_canvas_has_deselected_element)
 		new_canvas.element_scene = element_scene
+		new_canvas.list_scene = list_scene
 		new_canvas.connection_scene = connection_scene
 		new_canvas.priority_colors = priority_colors
 		new_canvas.zoom_limits = zoom_limits

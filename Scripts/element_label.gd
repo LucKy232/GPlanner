@@ -230,7 +230,8 @@ func _on_priority_buttons_gui_input(_event: InputEvent) -> void:
 
 
 func _on_priority_buttons_mouse_exited() -> void:
-	hide_animation_timer.start()
+	if hide_animation_timer and hide_animation_timer.is_inside_tree():
+		hide_animation_timer.start()
 
 
 func _on_resize_timer_timeout() -> void:

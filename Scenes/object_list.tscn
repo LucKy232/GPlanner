@@ -1,17 +1,76 @@
 [gd_scene format=3 uid="uid://6odwhurrp3jx"]
 
+[ext_resource type="Script" uid="uid://0mgs2rfl4q7t" path="res://Scripts/object_list.gd" id="1_01tnx"]
+[ext_resource type="StyleBox" uid="uid://cdui0dgu3vdrr" path="res://Themes/element_background_style_box.tres" id="1_hw88c"]
+[ext_resource type="Theme" uid="uid://dao6v8vx8h5ip" path="res://Themes/text_edit_theme.tres" id="2_qbj2a"]
+[ext_resource type="PackedScene" uid="uid://brbbmqwm6hpj4" path="res://Scenes/div.tscn" id="3_qbj2a"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_qbj2a"]
+color = Color(0.71, 0.71, 0.71, 0.717647)
+grow_begin = -5.0
+grow_end = -5.0
+thickness = 2
+
 [node name="ObjectList" type="Control" unique_id=1704557420]
 light_mask = 8
 visibility_layer = 8
 layout_mode = 3
 anchors_preset = 0
+offset_right = 401.0
+offset_bottom = 303.0
+script = ExtResource("1_01tnx")
+list_text_entry_scene = "uid://q0me3hofnycc"
+div_scene = "uid://brbbmqwm6hpj4"
 
-[node name="ListVBox" type="VBoxContainer" parent="." unique_id=1926439559]
-light_mask = 8
-visibility_layer = 8
+[node name="Background" type="Panel" parent="." unique_id=972831401]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = ExtResource("1_hw88c")
+
+[node name="MarginContainer" type="MarginContainer" parent="Background" unique_id=980566324]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Background/MarginContainer" unique_id=1005963005]
+layout_mode = 2
+
+[node name="ListName" type="TextEdit" parent="Background/MarginContainer/VBoxContainer" unique_id=259169265]
+layout_mode = 2
+theme = ExtResource("2_qbj2a")
+text = "List Name"
+wrap_mode = 1
+scroll_fit_content_height = true
+scroll_fit_content_width = true
+
+[node name="div" parent="Background/MarginContainer/VBoxContainer" unique_id=1930850495 instance=ExtResource("3_qbj2a")]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxLine_qbj2a")
+
+[node name="ListVBox" type="VBoxContainer" parent="Background/MarginContainer/VBoxContainer" unique_id=1722893999]
+layout_mode = 2
+
+[node name="ObjectVBox" type="VBoxContainer" parent="Background/MarginContainer/VBoxContainer/ListVBox" unique_id=1926439559]
+unique_name_in_owner = true
+light_mask = 8
+visibility_layer = 8
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="AddButton" type="Button" parent="Background/MarginContainer/VBoxContainer/ListVBox" unique_id=718767195]
+unique_name_in_owner = true
+layout_mode = 2
+text = "+"
+
+[connection signal="pressed" from="Background/MarginContainer/VBoxContainer/ListVBox/AddButton" to="." method="_on_add_button_pressed"]

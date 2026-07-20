@@ -1,0 +1,67 @@
+[gd_scene format=3 uid="uid://q0me3hofnycc"]
+
+[ext_resource type="Script" uid="uid://ql7prfd1join" path="res://Scripts/list_text_entry.gd" id="1_64hbi"]
+[ext_resource type="Script" uid="uid://cukyivuw2svdj" path="res://Scripts/priority_idicator_dot.gd" id="2_30uiy"]
+[ext_resource type="Texture2D" uid="uid://bbpq8wbljm0dp" path="res://Icons/grabber.svg" id="3_1jr1i"]
+[ext_resource type="Theme" uid="uid://dao6v8vx8h5ip" path="res://Themes/text_edit_theme.tres" id="4_jvbgi"]
+[ext_resource type="Theme" uid="uid://y7w4cfil7ay0" path="res://Themes/button_theme.tres" id="5_7iimo"]
+[ext_resource type="Texture2D" uid="uid://bpg0cl1gsdmyi" path="res://Icons/object_check.svg" id="6_upunm"]
+[ext_resource type="Texture2D" uid="uid://c2aisi4g5mld" path="res://Icons/object_delete.svg" id="7_lo4fr"]
+
+[node name="ListTextEntry" type="HBoxContainer" unique_id=1590603649]
+offset_right = 380.0
+offset_bottom = 50.0
+script = ExtResource("1_64hbi")
+
+[node name="PriorityIdicator" type="Control" parent="." unique_id=1567381431]
+visible = false
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+mouse_filter = 1
+script = ExtResource("2_30uiy")
+circle_radius = 7.0
+inner_circle_color = Color(0.36, 1, 0.82933336, 1)
+
+[node name="GrabberMargin" type="MarginContainer" parent="." unique_id=1191081857]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+
+[node name="Grabber" type="TextureRect" parent="GrabberMargin" unique_id=255095561]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+texture = ExtResource("3_1jr1i")
+stretch_mode = 3
+
+[node name="TextEdit" type="TextEdit" parent="." unique_id=387839086]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+mouse_filter = 1
+theme = ExtResource("4_jvbgi")
+text = "wowee text goes here ??????????????????"
+wrap_mode = 1
+scroll_fit_content_height = true
+
+[node name="CompleteButton" type="Button" parent="." unique_id=1713152227]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+mouse_filter = 1
+theme = ExtResource("5_7iimo")
+icon = ExtResource("6_upunm")
+
+[node name="EraseButton" type="Button" parent="." unique_id=1258167089]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+mouse_filter = 1
+theme = ExtResource("5_7iimo")
+icon = ExtResource("7_lo4fr")
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
+[connection signal="gui_input" from="GrabberMargin" to="." method="_on_grabber_margin_gui_input"]
