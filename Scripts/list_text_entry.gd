@@ -18,6 +18,8 @@ func set_font_size(font_size: int) -> void:
 
 
 func hover_on(on: bool) -> void:
+	if grabber_clicked:
+		return
 	priority_idicator.visible = !on
 	grabber_margin.visible = on
 	complete_button.visible = on
@@ -32,9 +34,18 @@ func _on_mouse_exited() -> void:
 	hover_on(false)
 
 
+func _on_grabber_margin_mouse_entered() -> void:
+	hover_on(true)
+
+
+func _on_grabber_margin_mouse_exited() -> void:
+	hover_on(false)
+
+
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
 		grabber_clicked = false
+		hover_on(false)
 	if grabber_clicked:
 		print("GRAB ", event.position + global_position)
 

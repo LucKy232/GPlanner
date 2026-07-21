@@ -5950,11 +5950,11 @@
 			"completed": false,
 			"has_style_preset": true,
 			"id": 257,
-			"pos.x": 5101.908203125,
-			"pos.y": 1181.25048828125,
+			"pos.x": 5049.9072265625,
+			"pos.y": 1083.94995117188,
 			"priority_id": 2,
-			"size.x": 400.3134765625,
-			"size.y": 59.9195556640625,
+			"size.x": 254.697265625,
+			"size.y": 143.1015625,
 			"style_preset_id": "2025-05-11T11:48:50 768762",
 			"text": "Create 1st element with big font size, alpha bg color, no border"
 		},
@@ -8006,15 +8006,15 @@
 	"State": {
 		"app_mode": 0,
 		"drawing_folder_path": "plannerplanner 2025-08-31T215146",
-		"position.x": -4156.54736328125,
-		"position.y": -526.737670898438,
+		"position.x": -1677.107421875,
+		"position.y": -110.0,
 		"priority_filter_value": 4,
-		"scale.x": 0.794422686100006,
-		"scale.y": 0.794422686100006,
+		"scale.x": 0.441647052764893,
+		"scale.y": 0.441647052764893,
 		"show_completed": false,
 		"show_priorities": true,
 		"show_priority_tool": true,
-		"zoom_level": 0.794422668305378
+		"zoom_level": 0.441647058996273
 	},
 	"StylePresets": {
 		"1": {

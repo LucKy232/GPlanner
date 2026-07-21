@@ -11,27 +11,38 @@ grow_begin = -5.0
 grow_end = -5.0
 thickness = 2
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_553ya"]
+size = Vector2(401, 303)
+
 [node name="ObjectList" type="Control" unique_id=1704557420]
 light_mask = 8
 visibility_layer = 8
+custom_minimum_size = Vector2(250, 150)
 layout_mode = 3
 anchors_preset = 0
 offset_right = 401.0
 offset_bottom = 303.0
+mouse_filter = 1
+mouse_default_cursor_shape = 2
 script = ExtResource("1_01tnx")
 list_text_entry_scene = "uid://q0me3hofnycc"
 div_scene = "uid://brbbmqwm6hpj4"
 
 [node name="Background" type="Panel" parent="." unique_id=972831401]
+light_mask = 8
+visibility_layer = 8
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 theme_override_styles/panel = ExtResource("1_hw88c")
 
 [node name="MarginContainer" type="MarginContainer" parent="Background" unique_id=980566324]
+light_mask = 8
+visibility_layer = 8
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -44,9 +55,13 @@ theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Background/MarginContainer" unique_id=1005963005]
+light_mask = 8
+visibility_layer = 8
 layout_mode = 2
 
 [node name="ListName" type="TextEdit" parent="Background/MarginContainer/VBoxContainer" unique_id=259169265]
+light_mask = 8
+visibility_layer = 8
 layout_mode = 2
 theme = ExtResource("2_qbj2a")
 text = "List Name"
@@ -55,10 +70,14 @@ scroll_fit_content_height = true
 scroll_fit_content_width = true
 
 [node name="div" parent="Background/MarginContainer/VBoxContainer" unique_id=1930850495 instance=ExtResource("3_qbj2a")]
+light_mask = 8
+visibility_layer = 8
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxLine_qbj2a")
 
 [node name="ListVBox" type="VBoxContainer" parent="Background/MarginContainer/VBoxContainer" unique_id=1722893999]
+light_mask = 8
+visibility_layer = 8
 layout_mode = 2
 
 [node name="ObjectVBox" type="VBoxContainer" parent="Background/MarginContainer/VBoxContainer/ListVBox" unique_id=1926439559]
@@ -70,7 +89,22 @@ theme_override_constants/separation = 5
 
 [node name="AddButton" type="Button" parent="Background/MarginContainer/VBoxContainer/ListVBox" unique_id=718767195]
 unique_name_in_owner = true
+light_mask = 8
+visibility_layer = 8
 layout_mode = 2
 text = "+"
 
+[node name="MouseInput" type="Area2D" parent="." unique_id=1893935660]
+light_mask = 8
+visibility_layer = 8
+position = Vector2(200.5, 151.5)
+
+[node name="MouseInputShape" type="CollisionShape2D" parent="MouseInput" unique_id=673877043]
+light_mask = 8
+visibility_layer = 8
+shape = SubResource("RectangleShape2D_553ya")
+
+[connection signal="resized" from="." to="." method="_on_resized"]
 [connection signal="pressed" from="Background/MarginContainer/VBoxContainer/ListVBox/AddButton" to="." method="_on_add_button_pressed"]
+[connection signal="mouse_entered" from="MouseInput" to="." method="_on_mouse_input_mouse_entered"]
+[connection signal="mouse_exited" from="MouseInput" to="." method="_on_mouse_input_mouse_exited"]
