@@ -8,6 +8,10 @@ class_name ListTextEntry extends HBoxContainer
 var grabber_clicked: bool = false
 
 
+func _ready() -> void:
+	_on_hover(false)
+
+
 func change_priority_color(c: Color) -> void:
 	priority_idicator.inner_circle_color = c
 	priority_idicator.queue_redraw()
@@ -17,7 +21,18 @@ func set_font_size(font_size: int) -> void:
 	text_edit.add_theme_font_size_override("font_size", font_size)
 
 
-func hover_on(on: bool) -> void:
+func rebuild_from_dict(dict: Dictionary) -> void:
+	text_edit.text = dict["text"]
+
+
+func to_json() -> Dictionary:
+	var dict: Dictionary = {
+		"text": text_edit.text,
+	}
+	return dict
+
+
+func _on_hover(on: bool) -> void:
 	if grabber_clicked:
 		return
 	priority_idicator.visible = !on
@@ -27,25 +42,25 @@ func hover_on(on: bool) -> void:
 
 
 func _on_mouse_entered() -> void:
-	hover_on(true)
+	_on_hover(true)
 
 
 func _on_mouse_exited() -> void:
-	hover_on(false)
+	_on_hover(false)
 
 
 func _on_grabber_margin_mouse_entered() -> void:
-	hover_on(true)
+	_on_hover(true)
 
 
 func _on_grabber_margin_mouse_exited() -> void:
-	hover_on(false)
+	_on_hover(false)
 
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
 		grabber_clicked = false
-		hover_on(false)
+		_on_hover(false)
 	if grabber_clicked:
 		print("GRAB ", event.position + global_position)
 

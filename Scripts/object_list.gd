@@ -12,7 +12,7 @@ var entry_divs: Dictionary[ListTextEntry, Panel]
 
 
 func _ready() -> void:
-	size = Vector2(500.0, 500.0)
+	_on_hover(false)
 
 
 func add_text() -> void:
@@ -29,6 +29,36 @@ func change_size(delta_size: Vector2) -> void:
 	size += delta_size
 
 
+func rebuild_from_dict(dict: Dictionary) -> void:
+	id = dict["id"]
+	size = Vector2(dict["size.x"], dict["size.y"])
+	position = Vector2(dict["pos.x"], dict["pos.y"])
+	for idx in  dict["entries"]:
+		add_text()
+		entries[-1].rebuild_from_dict(dict["entries"][idx])
+		print("Added ", idx)
+	# TODO sort in idx order???
+
+
+# Map order to entry
+func to_json() -> Dictionary:
+	var dict: Dictionary
+	dict["entries"] = {}
+	for entry in entries:
+		var idx: int = entries.find(entry)
+		dict["entries"][idx] = entry.to_json()
+	dict["id"] = id
+	dict["pos.x"] = position.x
+	dict["pos.y"] = position.y
+	dict["size.x"] = size.x
+	dict["size.y"] = size.y
+	return dict
+
+
+func _on_hover(on: bool) -> void:
+	add_button.visible = on
+
+
 func _on_add_button_pressed() -> void:
 	add_text()
 
@@ -41,11 +71,11 @@ func _on_list_text_entry_erase(entry: ListTextEntry) -> void:
 
 
 func _on_mouse_input_mouse_entered() -> void:
-	add_button.visible = true
+	_on_hover(true)
 
 
 func _on_mouse_input_mouse_exited() -> void:
-	add_button.visible = false
+	_on_hover(false)
 
 
 func _on_resized() -> void:

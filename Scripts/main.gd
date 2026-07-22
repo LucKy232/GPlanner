@@ -448,6 +448,7 @@ func save_file(path: String) -> void:
 		"State": canvases[cc].canvas_state_to_json(),
 		"StylePresets": canvases[cc].all_presets_to_json(),
 		"Elements": canvases[cc].all_elements_to_Json(),
+		"Lists": canvases[cc].all_lists_to_json(),
 		"Connections": canvases[cc].all_connection_pairs_to_json(),
 		"DrawingRegions": drawing_manager.drawing_region_data_to_json(),
 		"DrawingSettings": canvases[cc].drawing_settings.to_json(),
@@ -492,11 +493,6 @@ func load_file(path: String, app_startup: bool = false) -> void:
 		printerr("Can't parse JSON string @ main.gd:load_file()")
 		return
 	
-	var elems = data["Elements"]
-	var conns = data["Connections"]
-	var presets
-	if data.has("StylePresets"):
-		presets = data["StylePresets"]
 	if data.has("State"):
 		var state = data["State"]
 		canvases[cc].opened_file_path = path
@@ -504,11 +500,16 @@ func load_file(path: String, app_startup: bool = false) -> void:
 		canvases[cc].rebuild_canvas_state(state)
 		if data.has("StylePresets"):
 			element_settings.erase_everything()
-			element_settings.rebuild_options_and_dictionary_from_json(presets)
+			element_settings.rebuild_options_and_dictionary_from_json(data["StylePresets"])
 			canvases[cc].update_all_style_presets(element_settings.presets)
-	canvases[cc].rebuild_elements(elems)
-	canvases[cc].rebuild_connections(conns)
+		
 	drawing_manager.clear_canvas_drawing_group(cc)
+	if data.has("Elements"):
+		canvases[cc].rebuild_elements(data["Elements"])
+	if data.has("Lists"):
+		canvases[cc].rebuild_lists(data["Lists"])
+	if data.has("Connections"):
+		canvases[cc].rebuild_connections(data["Connections"])
 	if data.has("DrawingSettings"):
 		canvases[cc].drawing_settings.rebuild_from_json(data["DrawingSettings"])
 	if data.has("Swatches"):

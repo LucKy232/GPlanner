@@ -17,7 +17,7 @@ size = Vector2(401, 303)
 [node name="ObjectList" type="Control" unique_id=1704557420]
 light_mask = 8
 visibility_layer = 8
-custom_minimum_size = Vector2(250, 150)
+custom_minimum_size = Vector2(150, 150)
 layout_mode = 3
 anchors_preset = 0
 offset_right = 401.0

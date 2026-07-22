@@ -416,13 +416,21 @@ func update_connections(elem_id: int) -> void:
 func all_elements_to_Json() -> Dictionary:
 	var dict: Dictionary = {}
 	for elem_id in elements:
-		if elements[elem_id] != null:
+		if elements[elem_id]:
 			dict[elem_id] = elements[elem_id].to_json()
 	return dict
 
 
+func all_lists_to_json() -> Dictionary:
+	var dict: Dictionary = {}
+	for list_id in lists:
+		if lists[list_id]:
+			dict[list_id] = lists[list_id].to_json()
+	return dict
+
+
 func all_presets_to_json() -> Dictionary:
-	var dict: Dictionary
+	var dict: Dictionary = {}
 	var entry_id: int = 1	# Put the style presets in order, same way they get read in element_settings.gd
 	for key in style_presets:
 		dict[entry_id] = style_presets[key].to_json()
@@ -529,6 +537,15 @@ func rebuild_elements(json_elems: Dictionary) -> void:
 				elements[elem_id].change_style_preset(style_presets[style_id])
 			elif json_elems[i].has("individual_style") and !has_style:
 				elements[elem_id].individual_style.rebuild_from_json_dict(json_elems[i]["individual_style"])
+	is_user_input = true
+
+
+func rebuild_lists(json_lists: Dictionary) -> void:
+	is_user_input = false
+	for i in json_lists:
+		var list_id = int(i)
+		add_object_list(Vector2.ZERO, list_id)
+		lists[list_id].rebuild_from_dict(json_lists[i])
 	is_user_input = true
 
 
