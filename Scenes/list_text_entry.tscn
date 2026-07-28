@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://cukyivuw2svdj" path="res://Scripts/priority_idicator_dot.gd" id="2_30uiy"]
 [ext_resource type="Texture2D" uid="uid://bbpq8wbljm0dp" path="res://Icons/grabber.svg" id="3_1jr1i"]
 [ext_resource type="Theme" uid="uid://dao6v8vx8h5ip" path="res://Themes/text_edit_theme.tres" id="4_jvbgi"]
-[ext_resource type="Theme" uid="uid://y7w4cfil7ay0" path="res://Themes/button_theme.tres" id="5_7iimo"]
+[ext_resource type="Theme" uid="uid://cyvcgv6iv156i" path="res://Themes/list_text_entry_buttons.tres" id="5_64hbi"]
 [ext_resource type="Texture2D" uid="uid://bpg0cl1gsdmyi" path="res://Icons/object_check.svg" id="6_upunm"]
 [ext_resource type="Texture2D" uid="uid://c2aisi4g5mld" path="res://Icons/object_delete.svg" id="7_lo4fr"]
 
@@ -12,7 +12,8 @@
 light_mask = 8
 visibility_layer = 8
 offset_right = 380.0
-offset_bottom = 50.0
+offset_bottom = 25.0
+offset_transform_enabled = true
 script = ExtResource("1_64hbi")
 
 [node name="PriorityIdicator" type="Control" parent="." unique_id=1567381431]
@@ -33,8 +34,12 @@ light_mask = 8
 visibility_layer = 8
 layout_mode = 2
 size_flags_horizontal = 0
-size_flags_vertical = 0
+size_flags_vertical = 4
 mouse_filter = 0
+theme_override_constants/margin_left = 2
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 2
+theme_override_constants/margin_bottom = 0
 
 [node name="Grabber" type="TextureRect" parent="GrabberMargin" unique_id=255095561]
 layout_mode = 2
@@ -58,20 +63,20 @@ scroll_fit_content_height = true
 light_mask = 8
 visibility_layer = 8
 layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 0
+size_flags_horizontal = 4
+size_flags_vertical = 4
 mouse_filter = 1
-theme = ExtResource("5_7iimo")
+theme = ExtResource("5_64hbi")
 icon = ExtResource("6_upunm")
 
 [node name="EraseButton" type="Button" parent="." unique_id=1258167089]
 light_mask = 8
 visibility_layer = 8
 layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 0
+size_flags_horizontal = 4
+size_flags_vertical = 4
 mouse_filter = 1
-theme = ExtResource("5_7iimo")
+theme = ExtResource("5_64hbi")
 icon = ExtResource("7_lo4fr")
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
@@ -79,3 +84,4 @@ icon = ExtResource("7_lo4fr")
 [connection signal="gui_input" from="GrabberMargin" to="." method="_on_grabber_margin_gui_input"]
 [connection signal="mouse_entered" from="GrabberMargin" to="." method="_on_grabber_margin_mouse_entered"]
 [connection signal="mouse_exited" from="GrabberMargin" to="." method="_on_grabber_margin_mouse_exited"]
+[connection signal="lines_edited_from" from="TextEdit" to="." method="_on_text_edit_lines_edited_from"]

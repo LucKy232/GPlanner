@@ -217,8 +217,11 @@ func add_object_list(at_position: Vector2, id_specified: int = -1) -> void:
 	new_list.id = list_id
 	lists[list_id] = new_list
 	add_child(new_list)
+	new_list.name = "ObjectList"
 	new_list.position = at_position
+	new_list.canvas_scale = scale.x
 	new_list.gui_input.connect(_on_object_list_mouse_input.bind(list_id))
+	new_list.list_changed.connect(_on_list_changed)
 
 
 func add_element_label(at_position: Vector2, id_specified: int = -1) -> void:
@@ -660,8 +663,14 @@ func handle_zoom(old_zoom: float, target: Vector2) -> void:
 	var delta_scale = 1.0 - scale.x / old_zoom
 	#printt("postion", position, "delta_tl", delta_screen_tl, "Target", target, "delta_scale", delta_scale, "ScreenMiddle:", get_viewport_rect().size * 0.5, "Mouse:", get_window().get_mouse_position())
 	position = pan_limits(position - delta_screen_tl + target * delta_scale)
+	update_lists_canvas_scale()
 	changed_position.emit()
 	changed_zoom.emit()
+
+
+func update_lists_canvas_scale() -> void:
+	for list_id in lists:
+		lists[list_id].canvas_scale = scale.x
 
 
 func toggle_show_completed(toggled_on: bool) -> void:
@@ -955,6 +964,10 @@ func _on_element_text_box_active(elem_id: int) -> void:
 
 
 func _on_element_label_text_changed() -> void:
+	canvas_changed()
+
+
+func _on_list_changed() -> void:
 	canvas_changed()
 
 

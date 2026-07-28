@@ -1,0 +1,60 @@
+class_name ListDragHelper
+
+var object_id: int	## Dragging object ID
+var current: int	## Current position ID, where object_id will be
+var lowest: int		## Lowest position ID
+var highest: int	## Highest position ID
+var list: Array[ListTextEntry]
+
+
+func start_drag(obj_id: int, _list: Array[ListTextEntry]) -> void:
+	list = _list
+	object_id = obj_id
+	current = obj_id
+	lowest = obj_id
+	highest = obj_id
+
+
+func end_drag() -> void:
+	for entry in list:
+		entry.offset_transform_position = Vector2.ZERO
+	sort_list()
+	list = []
+	object_id = 0
+	current = 0
+	lowest = 0
+	highest = 0
+
+
+func sort_list() -> void:
+	printt("ID %d TO %d LOW %d HIGH %d" % [object_id, current, lowest, highest])
+
+
+func drag() -> void:
+	var drag_pos: Vector2 = list[object_id].offset_transform_position + list[object_id].position
+	if current - 1 >= 0 and drag_pos.y < list[current - 1].position.y:
+		current -= 1
+		if lowest > current:
+			lowest = current
+		drag_inside_visual_offsets(object_id)
+		# Reset offsets if going opposite direction - was going up, now going down
+		if current < highest and highest != object_id:
+			list[highest].offset_transform_position = Vector2.ZERO
+			highest = current
+	elif current + 1 < list.size() and drag_pos.y > list[current + 1].position.y + list[current + 1].size.y * 0.5:
+		current += 1
+		if highest < current:
+			highest = current
+		drag_inside_visual_offsets(object_id)
+		# Reset offsets if going opposite direction - was going down, now going up
+		if current > lowest and lowest != object_id:
+			list[lowest].offset_transform_position = Vector2.ZERO
+			lowest = current
+
+
+func drag_inside_visual_offsets(moving_entry_id: int) -> void:
+	for entry in list:
+		if entry.id >= current and entry.id < moving_entry_id:
+			entry.offset_transform_position = Vector2(0.0, list[moving_entry_id].size.y)
+		if entry.id <= current and entry.id > moving_entry_id:
+			entry.offset_transform_position = Vector2(0.0, -list[moving_entry_id].size.y)

@@ -6,6 +6,12 @@ class_name ListTextEntry extends HBoxContainer
 @onready var complete_button: Button = $CompleteButton
 @onready var erase_button: Button = $EraseButton
 var grabber_clicked: bool = false
+var id: int = -1
+
+signal text_changed
+signal grabber_moved
+signal grabber_started_move
+signal grabber_ended_move
 
 
 func _ready() -> void:
@@ -59,12 +65,23 @@ func _on_grabber_margin_mouse_exited() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
-		grabber_clicked = false
-		_on_hover(false)
-	if grabber_clicked:
-		print("GRAB ", event.position + global_position)
+		if grabber_clicked:
+			grabber_clicked = false
+			complete_button.visible = true
+			erase_button.visible = true
+			grabber_ended_move.emit()
+			_on_hover(false)
+	if grabber_clicked and event is InputEventMouseMotion:
+		grabber_moved.emit(event)
 
 
 func _on_grabber_margin_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
+		grabber_started_move.emit()
 		grabber_clicked = true
+		complete_button.visible = false
+		erase_button.visible = false
+
+
+func _on_text_edit_lines_edited_from(_from_line: int, _to_line: int) -> void:
+	text_changed.emit()
