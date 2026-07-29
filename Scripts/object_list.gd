@@ -4,22 +4,45 @@ class_name ObjectList extends Control
 @export_file("*.tscn") var div_scene
 @onready var add_button: Button = %AddButton
 @onready var object_v_box: VBoxContainer = %ObjectVBox
-@onready var mouse_input: Area2D = $MouseInput
-@onready var mouse_input_shape: CollisionShape2D = $MouseInput/MouseInputShape
+@onready var scroll_container: ScrollContainer = %ScrollContainer
+@onready var mouse_hover: Area2D = $MouseHover
+@onready var mouse_hover_shape: CollisionShape2D = $MouseHover/MouseHoverShape
 var id: int = -1
 var entries: Array[ListTextEntry]
 #var entry_divs: Dictionary[ListTextEntry, Panel]
 var dragger: ListDragHelper = ListDragHelper.new()
 var canvas_scale: float = 1.0
-var drag_inside_lowest_id: int = -1
-var drag_inside_highest_id: int = -1
-var drag_inside_position_id: int = -1
 
 signal list_changed
+signal filtered_gui_input
 
 
 func _ready() -> void:
 	_on_hover(false)
+
+
+func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
+	if data is ListTextEntry:
+		if dragger.is_dragging:
+			print("Drag Same List ", _at_position)
+			return false
+		else:
+			print("Drag Different List ", _at_position)
+			return true
+	else:
+		return false
+	# TODO visually show at_position + move others with dragger
+
+
+func _drop_data(at_position: Vector2, data: Variant) -> void:
+	if data is ListTextEntry:
+		data.remove_from_list.emit()
+		data.reparent(object_v_box, false)
+		entries.append(data)
+		reset_entry_ids()
+		connect_list_text_entry(data)
+		# TODO position at_position
+		# TODO reorder IDs based on dropped position
 
 
 func add_text_entry(is_user_input: bool) -> void:
@@ -31,17 +54,51 @@ func add_text_entry(is_user_input: bool) -> void:
 	new_list_text_entry.name = "ListTextEntry"
 	entries.append(new_list_text_entry)
 	#entry_divs[new_list_text_entry] = new_div
-	new_list_text_entry.erase_button.pressed.connect(_on_list_text_entry_erase.bind(new_list_text_entry))
-	new_list_text_entry.grabber_moved.connect(_on_list_text_entry_grabber_moved.bind(new_list_text_entry.id))
-	new_list_text_entry.grabber_started_move.connect(_on_list_text_entry_grabber_started_move.bind(new_list_text_entry.id))
-	new_list_text_entry.grabber_ended_move.connect(_on_list_text_entry_grabber_ended_move.bind(new_list_text_entry.id))
-	new_list_text_entry.text_changed.connect(_on_list_text_entry_text_changed)
+	connect_list_text_entry(new_list_text_entry)
 	if is_user_input:
 		list_changed.emit()
 
 
+func connect_list_text_entry(entry: ListTextEntry) -> void:
+	entry.erase_button.pressed.connect(_on_list_text_entry_erase.bind(entry))
+	entry.grabber_moved.connect(_on_list_text_entry_grabber_moved)
+	entry.grabber_started_move.connect(_on_list_text_entry_grabber_started_move)
+	entry.grabber_ended_move.connect(_on_list_text_entry_grabber_ended_move)
+	entry.text_changed.connect(_on_list_text_entry_text_changed)
+	entry.remove_from_list.connect(_on_list_text_entry_remove_from_list.bind(entry))
+
+
+func disconnect_list_text_entry(entry: ListTextEntry) -> void:
+	entry.erase_button.pressed.disconnect(_on_list_text_entry_erase)
+	entry.grabber_moved.disconnect(_on_list_text_entry_grabber_moved)
+	entry.grabber_started_move.disconnect(_on_list_text_entry_grabber_started_move)
+	entry.grabber_ended_move.disconnect(_on_list_text_entry_grabber_ended_move)
+	entry.text_changed.disconnect(_on_list_text_entry_text_changed)
+	entry.remove_from_list.disconnect(_on_list_text_entry_remove_from_list)
+
+
 func change_size(delta_size: Vector2) -> void:
 	size += delta_size
+
+
+func sort_entries(move_entry_id: int, to_id: int) -> void:
+	var reference: ListTextEntry = entries[move_entry_id]
+	if move_entry_id > to_id:	# Moving entry down
+		var idx: int = move_entry_id
+		while idx > to_id:
+			entries[idx] = entries[idx - 1]
+			idx -= 1
+	if move_entry_id < to_id:	# Moving entry up
+		for idx in range(move_entry_id, to_id):
+			entries[idx] = entries[idx + 1]
+	entries[to_id] = reference
+	reset_entry_ids()
+
+
+# Set new IDs in list index (ascending) order
+func reset_entry_ids() -> void:
+	for i in range(0, entries.size()):
+		entries[i].id = i
 
 
 func rebuild_from_dict(dict: Dictionary) -> void:
@@ -52,7 +109,7 @@ func rebuild_from_dict(dict: Dictionary) -> void:
 		add_text_entry(false)
 		entries[-1].rebuild_from_dict(dict["entries"][entry_id])
 		#print("Added ", entry_id)
-	# TODO sort in entry_id order if they don't get saved in order in the .json???
+	# TODO sort in entry.id order if they don't get saved in order in the .json???
 
 
 # Map order to entry
@@ -82,32 +139,43 @@ func _on_list_text_entry_erase(entry: ListTextEntry) -> void:
 	#if entry_divs.has(entry):
 	#	entry_divs[entry].queue_free()
 	entries.erase(entry)
+	reset_entry_ids()
 	entry.queue_free()
 	list_changed.emit()
 
 
-func _on_mouse_input_mouse_entered() -> void:
+func _on_list_text_entry_remove_from_list(entry: ListTextEntry) -> void:
+	disconnect_list_text_entry(entry)
+	entries.erase(entry)
+	reset_entry_ids()
+	list_changed.emit()
+
+
+func _on_mouse_hover_mouse_entered() -> void:
 	_on_hover(true)
 
 
-func _on_mouse_input_mouse_exited() -> void:
+func _on_mouse_hover_mouse_exited() -> void:
 	_on_hover(false)
 
 
 func _on_resized() -> void:
-	mouse_input_shape.shape.size = size
-	mouse_input.position = size * 0.5
+	if !is_node_ready():
+		return
+	mouse_hover_shape.shape.size = size
+	mouse_hover.position = size * 0.5
 
 
 func _on_list_text_entry_text_changed() -> void:
 	list_changed.emit()
 
 
-func _on_list_text_entry_grabber_started_move(entry_id: int) -> void:
+func _on_list_text_entry_grabber_started_move(entry_id: int, event_pos: Vector2) -> void:
 	if entries.size() <= entry_id:
 		push_error("Entry ID %d Invalid!" % [entry_id])
 		return
-	dragger.start_drag(entry_id, entries)
+	dragger.start_drag(entry_id, entries, event_pos)
+	scroll_container.clip_contents = false
 
 
 func _on_list_text_entry_grabber_moved(event: InputEventMouseMotion, entry_id: int) -> void:
@@ -131,19 +199,11 @@ func _on_list_text_entry_grabber_ended_move(entry_id: int) -> void:
 		object_v_box.move_child(entries[entry_id], move_to)
 		sort_entries(entry_id, move_to)
 		list_changed.emit()
+	scroll_container.clip_contents = true
+	print("ENDED")
 
 
-func sort_entries(move_entry_id: int, to_id: int) -> void:
-	var reference: ListTextEntry = entries[move_entry_id]
-	if move_entry_id > to_id:	# Moving entry down
-		var idx: int = move_entry_id
-		while idx > to_id:
-			entries[idx] = entries[idx - 1]
-			idx -= 1
-	if move_entry_id < to_id:	# Moving entry up
-		for idx in range(move_entry_id, to_id):
-			entries[idx] = entries[idx + 1]
-	entries[to_id] = reference
-	# Set new IDs
-	for i in range(0, entries.size()):
-		entries[i].id = i
+func _on_gui_input(event: InputEvent) -> void:
+	if dragger.is_dragging:
+		return
+	filtered_gui_input.emit(event)

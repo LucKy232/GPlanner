@@ -12,6 +12,7 @@ grow_end = -5.0
 thickness = 2
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_553ya"]
+resource_local_to_scene = true
 size = Vector2(401, 303)
 
 [node name="ObjectList" type="Control" unique_id=1704557420]
@@ -54,12 +55,19 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Background/MarginContainer" unique_id=1005963005]
+[node name="ScrollContainer" type="ScrollContainer" parent="Background/MarginContainer" unique_id=1890732223]
+unique_name_in_owner = true
+layout_mode = 2
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Background/MarginContainer/ScrollContainer" unique_id=1005963005]
 light_mask = 8
 visibility_layer = 8
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
-[node name="ListName" type="TextEdit" parent="Background/MarginContainer/VBoxContainer" unique_id=259169265]
+[node name="ListName" type="TextEdit" parent="Background/MarginContainer/ScrollContainer/VBoxContainer" unique_id=259169265]
 light_mask = 8
 visibility_layer = 8
 layout_mode = 2
@@ -69,42 +77,43 @@ wrap_mode = 1
 scroll_fit_content_height = true
 scroll_fit_content_width = true
 
-[node name="div" parent="Background/MarginContainer/VBoxContainer" unique_id=1930850495 instance=ExtResource("3_qbj2a")]
+[node name="div" parent="Background/MarginContainer/ScrollContainer/VBoxContainer" unique_id=1930850495 instance=ExtResource("3_qbj2a")]
 light_mask = 8
 visibility_layer = 8
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxLine_qbj2a")
 
-[node name="ListVBox" type="VBoxContainer" parent="Background/MarginContainer/VBoxContainer" unique_id=1722893999]
+[node name="ListVBox" type="VBoxContainer" parent="Background/MarginContainer/ScrollContainer/VBoxContainer" unique_id=1722893999]
 light_mask = 8
 visibility_layer = 8
 layout_mode = 2
 
-[node name="ObjectVBox" type="VBoxContainer" parent="Background/MarginContainer/VBoxContainer/ListVBox" unique_id=1926439559]
+[node name="ObjectVBox" type="VBoxContainer" parent="Background/MarginContainer/ScrollContainer/VBoxContainer/ListVBox" unique_id=1926439559]
 unique_name_in_owner = true
 light_mask = 8
 visibility_layer = 8
 layout_mode = 2
 theme_override_constants/separation = 5
 
-[node name="AddButton" type="Button" parent="Background/MarginContainer/VBoxContainer/ListVBox" unique_id=718767195]
+[node name="AddButton" type="Button" parent="Background/MarginContainer/ScrollContainer/VBoxContainer/ListVBox" unique_id=718767195]
 unique_name_in_owner = true
 light_mask = 8
 visibility_layer = 8
 layout_mode = 2
 text = "+"
 
-[node name="MouseInput" type="Area2D" parent="." unique_id=1893935660]
+[node name="MouseHover" type="Area2D" parent="." unique_id=1893935660]
 light_mask = 8
 visibility_layer = 8
 position = Vector2(200.5, 151.5)
 
-[node name="MouseInputShape" type="CollisionShape2D" parent="MouseInput" unique_id=673877043]
+[node name="MouseHoverShape" type="CollisionShape2D" parent="MouseHover" unique_id=673877043]
 light_mask = 8
 visibility_layer = 8
 shape = SubResource("RectangleShape2D_553ya")
 
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="resized" from="." to="." method="_on_resized"]
-[connection signal="pressed" from="Background/MarginContainer/VBoxContainer/ListVBox/AddButton" to="." method="_on_add_button_pressed"]
-[connection signal="mouse_entered" from="MouseInput" to="." method="_on_mouse_input_mouse_entered"]
-[connection signal="mouse_exited" from="MouseInput" to="." method="_on_mouse_input_mouse_exited"]
+[connection signal="pressed" from="Background/MarginContainer/ScrollContainer/VBoxContainer/ListVBox/AddButton" to="." method="_on_add_button_pressed"]
+[connection signal="mouse_entered" from="MouseHover" to="." method="_on_mouse_hover_mouse_entered"]
+[connection signal="mouse_exited" from="MouseHover" to="." method="_on_mouse_hover_mouse_exited"]

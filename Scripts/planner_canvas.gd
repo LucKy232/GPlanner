@@ -74,6 +74,21 @@ func _process(_delta: float) -> void:
 		drawing_settings.toggle_draw_straight(false)
 
 
+func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
+	if data is ListTextEntry:
+		if (is_panning or is_resizing or is_adding_elements or is_dragging):
+			print("Drag onto canvas, busy", _at_position)
+			return false
+		else:
+			print("Drag onto canvas OK", _at_position)
+			selection_viewer.visible = true
+			selection_viewer.position = _at_position
+			selection_viewer.size = data.size
+			return true
+	else:
+		return false
+
+
 func new_canvas() -> void:
 	deselect_any()
 	if !get_viewport().size_changed.is_connected(_on_viewport_size_changed):
@@ -220,7 +235,7 @@ func add_object_list(at_position: Vector2, id_specified: int = -1) -> void:
 	new_list.name = "ObjectList"
 	new_list.position = at_position
 	new_list.canvas_scale = scale.x
-	new_list.gui_input.connect(_on_object_list_mouse_input.bind(list_id))
+	new_list.filtered_gui_input.connect(_on_object_list_mouse_input.bind(list_id))
 	new_list.list_changed.connect(_on_list_changed)
 
 

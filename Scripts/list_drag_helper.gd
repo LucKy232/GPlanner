@@ -5,29 +5,28 @@ var current: int	## Current position ID, where object_id will be
 var lowest: int		## Lowest position ID
 var highest: int	## Highest position ID
 var list: Array[ListTextEntry]
+var is_dragging: bool = false
 
 
-func start_drag(obj_id: int, _list: Array[ListTextEntry]) -> void:
+func start_drag(obj_id: int, _list: Array[ListTextEntry], _event_position: Vector2) -> void:
 	list = _list
 	object_id = obj_id
 	current = obj_id
 	lowest = obj_id
 	highest = obj_id
+	list[object_id].offset_transform_position = _event_position
+	is_dragging = true
 
 
 func end_drag() -> void:
 	for entry in list:
 		entry.offset_transform_position = Vector2.ZERO
-	sort_list()
 	list = []
 	object_id = 0
 	current = 0
 	lowest = 0
 	highest = 0
-
-
-func sort_list() -> void:
-	printt("ID %d TO %d LOW %d HIGH %d" % [object_id, current, lowest, highest])
+	is_dragging = false
 
 
 func drag() -> void:
