@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://hgn4pm0uqt3l" path="res://Scripts/planner_canvas.gd" id="1_jhfc7"]
 [ext_resource type="Script" uid="uid://c5qfp4llclgt" path="res://Scripts/background.gd" id="2_5b2e5"]
 [ext_resource type="Texture2D" uid="uid://cjir350kly5j8" path="res://Icons/connection_indicator.svg" id="2_jhfc7"]
+[ext_resource type="Theme" uid="uid://u70boqrojq3j" path="res://Themes/placeholder_visual_panel.tres" id="4_5b2e5"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jhfc7"]
 bg_color = Color(0, 0, 0, 1)
@@ -83,6 +84,7 @@ grow_vertical = 2
 mouse_filter = 2
 
 [node name="SelectionViewer" type="Panel" parent="." unique_id=96721590]
+unique_name_in_owner = true
 visible = false
 light_mask = 8
 visibility_layer = 8
@@ -94,6 +96,7 @@ mouse_filter = 2
 theme = SubResource("Theme_iacmt")
 
 [node name="ConnectionIndicator" type="Panel" parent="." unique_id=1136359325]
+unique_name_in_owner = true
 visible = false
 light_mask = 8
 visibility_layer = 8
@@ -103,5 +106,22 @@ offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 theme = SubResource("Theme_oyb3p")
+
+[node name="DropVisualIndicator" type="Panel" parent="." unique_id=2125715865]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_top = -12.5
+offset_bottom = 12.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("4_5b2e5")
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]

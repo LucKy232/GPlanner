@@ -3,13 +3,14 @@ class_name PlannerCanvas
 ## Manages a single file / tab
 
 @onready var connection_container: Control = $ConnectionContainer
-@onready var selection_viewer: Panel = $SelectionViewer
-@onready var connection_indicator: Panel = $ConnectionIndicator
+@onready var selection_viewer: Panel = %SelectionViewer
+@onready var connection_indicator: Panel = %ConnectionIndicator
 @onready var background: Panel = $Background
+@onready var drop_visual: Panel = %DropVisualIndicator
 
 var element_scene		## Passed by main.gd to be instantiated here
 var connection_scene	## Passed by main.gd to be instantiated here
-var list_scene			## Passed by main.gd to be instantiated here	# TODO object that keeps scene refs
+var list_scene			## Passed by main.gd to be instantiated here	# TODO class that keeps scene refs w/ errors
 var priority_colors: Array[Color]
 var elements: Dictionary[int, ElementLabel]
 var lists: Dictionary[int, ObjectList]
@@ -74,19 +75,31 @@ func _process(_delta: float) -> void:
 		drawing_settings.toggle_draw_straight(false)
 
 
-func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
+func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 	if data is ListTextEntry:
 		if (is_panning or is_resizing or is_adding_elements or is_dragging):
-			print("Drag onto canvas, busy", _at_position)
 			return false
 		else:
-			print("Drag onto canvas OK", _at_position)
-			selection_viewer.visible = true
-			selection_viewer.position = _at_position
-			selection_viewer.size = data.size
+			print("DRAG ON CANVAS")
+			#var drop_position: Vector2 = get_local_mouse_position()
+			#print(drop_position)
+			drop_visual.visible = true
+			drop_visual.size = data.size
+			drop_visual.position = at_position + data.position_in_list
 			return true
 	else:
 		return false
+
+
+func _drop_data(at_position: Vector2, data: Variant) -> void:
+	if data is ListTextEntry:
+		var new_elem_id: int = add_element_label(at_position + data.position_in_list)
+		elements[new_elem_id].set_text(data.get_text())
+		elements[new_elem_id].size = data.size
+		select_element(new_elem_id)
+		data.remove_from_list.emit()
+		data.queue_free()
+		drop_visual.visible = false
 
 
 func new_canvas() -> void:
@@ -235,11 +248,12 @@ func add_object_list(at_position: Vector2, id_specified: int = -1) -> void:
 	new_list.name = "ObjectList"
 	new_list.position = at_position
 	new_list.canvas_scale = scale.x
+	new_list.can_drop.connect(_on_object_list_can_drop)
 	new_list.filtered_gui_input.connect(_on_object_list_mouse_input.bind(list_id))
 	new_list.list_changed.connect(_on_list_changed)
 
 
-func add_element_label(at_position: Vector2, id_specified: int = -1) -> void:
+func add_element_label(at_position: Vector2, id_specified: int = -1) -> int:
 	canvas_changed()
 	var new_element: ElementLabel = load(element_scene).instantiate()
 	var elem_id: int
@@ -272,6 +286,7 @@ func add_element_label(at_position: Vector2, id_specified: int = -1) -> void:
 		select_element(elem_id)
 		new_element.enter_text_edit()
 		is_element_just_created = true
+	return elem_id
 
 
 func add_connection(id_specified: int = -1, arrow_1_enabled: bool = false, arrow_2_enabled: bool = false) -> void:
@@ -547,7 +562,7 @@ func rebuild_elements(json_elems: Dictionary) -> void:
 				var c: Color = Color(json_elems[i]["bgcolor.r"], json_elems[i]["bgcolor.g"], json_elems[i]["bgcolor.b"], json_elems[i]["bgcolor.a"])
 				elements[elem_id].set_bg_color(c)
 			elements[elem_id].manual_resize = false
-			elements[elem_id].text_edit.text = json_elems[i]["text"]
+			elements[elem_id].set_text(json_elems[i]["text"])
 			if completed:
 				elements[elem_id].toggle_completed()
 			if has_style and style_presets.has(style_id):
@@ -952,6 +967,10 @@ func _on_object_list_mouse_input(event: InputEvent, list_id: int) -> void:
 			lists[list_id].change_size(event.relative)
 			#update_connections(elem_id)
 			canvas_changed()
+
+
+func _on_object_list_can_drop() -> void:
+	drop_visual.visible = false
 
 
 func _on_element_text_box_active(elem_id: int) -> void:

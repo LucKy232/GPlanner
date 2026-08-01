@@ -29,8 +29,9 @@ size_flags_horizontal = 0
 size_flags_vertical = 4
 mouse_filter = 1
 script = ExtResource("2_30uiy")
-circle_radius = 7.0
-inner_circle_color = Color(0.36, 1, 0.82933336, 1)
+circle_radius = 4.0
+circle_thickness = 1.5
+inner_circle_color = Color(0, 0, 0, 0)
 
 [node name="GrabberMargin" type="MarginContainer" parent="." unique_id=1191081857]
 light_mask = 8

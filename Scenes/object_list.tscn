@@ -4,6 +4,7 @@
 [ext_resource type="StyleBox" uid="uid://cdui0dgu3vdrr" path="res://Themes/element_background_style_box.tres" id="1_hw88c"]
 [ext_resource type="Theme" uid="uid://dao6v8vx8h5ip" path="res://Themes/text_edit_theme.tres" id="2_qbj2a"]
 [ext_resource type="PackedScene" uid="uid://brbbmqwm6hpj4" path="res://Scenes/div.tscn" id="3_qbj2a"]
+[ext_resource type="Theme" uid="uid://u70boqrojq3j" path="res://Themes/placeholder_visual_panel.tres" id="5_01tnx"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_qbj2a"]
 color = Color(0.71, 0.71, 0.71, 0.717647)
@@ -67,7 +68,14 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="ListName" type="TextEdit" parent="Background/MarginContainer/ScrollContainer/VBoxContainer" unique_id=259169265]
+[node name="MarginContainer" type="MarginContainer" parent="Background/MarginContainer/ScrollContainer/VBoxContainer" unique_id=1069667618]
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+
+[node name="ListName" type="TextEdit" parent="Background/MarginContainer/ScrollContainer/VBoxContainer/MarginContainer" unique_id=259169265]
+unique_name_in_owner = true
 light_mask = 8
 visibility_layer = 8
 layout_mode = 2
@@ -84,6 +92,7 @@ layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxLine_qbj2a")
 
 [node name="ListVBox" type="VBoxContainer" parent="Background/MarginContainer/ScrollContainer/VBoxContainer" unique_id=1722893999]
+unique_name_in_owner = true
 light_mask = 8
 visibility_layer = 8
 layout_mode = 2
@@ -97,10 +106,28 @@ theme_override_constants/separation = 5
 
 [node name="AddButton" type="Button" parent="Background/MarginContainer/ScrollContainer/VBoxContainer/ListVBox" unique_id=718767195]
 unique_name_in_owner = true
+visible = false
 light_mask = 8
 visibility_layer = 8
 layout_mode = 2
 text = "+"
+
+[node name="DropVisualIndicator" type="Panel" parent="." unique_id=467728565]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_top = -12.5
+offset_bottom = 12.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("5_01tnx")
 
 [node name="MouseHover" type="Area2D" parent="." unique_id=1893935660]
 light_mask = 8

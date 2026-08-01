@@ -96,6 +96,10 @@ func set_priority_visible(toggled_on: bool) -> void:
 	priority.visible = toggled_on
 
 
+func set_text(text: String) -> void:
+	text_edit.text = text
+
+
 func toggle_priority_tool(toggle_on: bool) -> void:
 	if toggle_on and !hide_animation_timer.is_stopped():
 		hide_animation_timer.stop()

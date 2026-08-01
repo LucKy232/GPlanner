@@ -8,12 +8,14 @@ class_name ListTextEntry extends HBoxContainer
 @onready var mouse_hover: Area2D = $MouseHover
 @onready var mouse_hover_shape: CollisionShape2D = $MouseHover/MouseHoverShape
 var grabber_clicked: bool = false
+var position_in_list: Vector2 = Vector2.ZERO
 var id: int = -1
 
 signal text_changed
 signal grabber_moved
 signal grabber_started_move
 signal grabber_ended_move
+@warning_ignore("unused_signal")
 signal remove_from_list
 
 
@@ -50,6 +52,10 @@ func rebuild_from_dict(dict: Dictionary) -> void:
 	text_edit.text = dict["text"]
 
 
+func get_text() -> String:
+	return text_edit.text
+
+
 func to_json() -> Dictionary:
 	var dict: Dictionary = {
 		"text": text_edit.text,
@@ -68,7 +74,6 @@ func _on_hover(on: bool) -> void:
 
 func _on_grabber_margin_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
-		print("POS ", event.position)
 		grabber_started_move.emit(id, event.position)
 		grabber_clicked = true
 		complete_button.visible = false
