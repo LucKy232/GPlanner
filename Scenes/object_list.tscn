@@ -58,6 +58,8 @@ theme_override_constants/margin_bottom = 10
 
 [node name="ScrollContainer" type="ScrollContainer" parent="Background/MarginContainer" unique_id=1890732223]
 unique_name_in_owner = true
+light_mask = 8
+visibility_layer = 8
 layout_mode = 2
 horizontal_scroll_mode = 0
 
@@ -69,6 +71,8 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="MarginContainer" type="MarginContainer" parent="Background/MarginContainer/ScrollContainer/VBoxContainer" unique_id=1069667618]
+light_mask = 8
+visibility_layer = 8
 layout_mode = 2
 theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 6
@@ -115,6 +119,8 @@ text = "+"
 [node name="DropVisualIndicator" type="Panel" parent="." unique_id=467728565]
 unique_name_in_owner = true
 visible = false
+light_mask = 8
+visibility_layer = 8
 custom_minimum_size = Vector2(0, 25)
 layout_mode = 1
 anchors_preset = 8

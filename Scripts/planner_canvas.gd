@@ -2,7 +2,8 @@ extends Control
 class_name PlannerCanvas
 ## Manages a single file / tab
 
-@onready var connection_container: Control = $ConnectionContainer
+@onready var connection_container: Control = %ConnectionContainer
+@onready var object_container: Control = %ObjectContainer
 @onready var selection_viewer: Panel = %SelectionViewer
 @onready var connection_indicator: Panel = %ConnectionIndicator
 @onready var background: Panel = $Background
@@ -85,7 +86,7 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 			#print(drop_position)
 			drop_visual.visible = true
 			drop_visual.size = data.size
-			drop_visual.position = at_position + data.position_in_list
+			drop_visual.position = at_position
 			return true
 	else:
 		return false
@@ -93,7 +94,7 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 
 func _drop_data(at_position: Vector2, data: Variant) -> void:
 	if data is ListTextEntry:
-		var new_elem_id: int = add_element_label(at_position + data.position_in_list)
+		var new_elem_id: int = add_element_label(at_position)
 		elements[new_elem_id].set_text(data.get_text())
 		elements[new_elem_id].size = data.size
 		select_element(new_elem_id)
@@ -244,7 +245,7 @@ func add_object_list(at_position: Vector2, id_specified: int = -1) -> void:
 			list_id_counter = id_specified + 1
 	new_list.id = list_id
 	lists[list_id] = new_list
-	add_child(new_list)
+	object_container.add_child(new_list)
 	new_list.name = "ObjectList"
 	new_list.position = at_position
 	new_list.canvas_scale = scale.x
@@ -266,7 +267,7 @@ func add_element_label(at_position: Vector2, id_specified: int = -1) -> int:
 			element_id_counter = id_specified + 1
 	new_element.id = elem_id
 	elements[elem_id] = new_element
-	add_child(new_element)
+	object_container.add_child(new_element)
 	new_element.gui_input.connect(_on_element_label_gui_input.bind(elem_id))
 	new_element.resized.connect(_on_element_label_resized.bind(elem_id))
 	new_element.became_selected.connect(_on_element_text_box_active.bind(elem_id))
@@ -410,6 +411,7 @@ func select_element(elem_id: int) -> void:
 		change_selected_preset_style(elements[selected_element].style_preset_id)
 		has_selected_element.emit()
 	else:	# Deselect element if elem_id invalid
+		print(elem_id, " ???")
 		deselect_any()
 
 
@@ -761,7 +763,8 @@ func warp_mouse_to_other_size() -> void:
 		get_viewport().warp_mouse( Vector2(mouse_pos.x, 50.0) )
 
 
-func _on_gui_input(event: InputEvent) -> void:
+func _on_background_gui_input(event: InputEvent) -> void:
+	print("BG INPUT ")
 	if drawing_manager.is_taking_screenshots:
 		return
 	if event is InputEventMouseMotion and event.pressure > 0.0:
@@ -872,6 +875,8 @@ func _on_gui_input(event: InputEvent) -> void:
 
 
 func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
+	print("ELEMENT INPUT")
+	#get_viewport().set_input_as_handled()
 	if settings.app_mode == Enums.AppMode.DRAWING:
 		return
 	if drawing_manager.is_taking_screenshots:
@@ -892,6 +897,7 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 				remove_connections(elem_id)
 			if (tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS):
 				select_element(elem_id)
+				print(elem_id, " ???")
 				# Distance to bottom-right corner
 				if event.position.distance_to(elements[elem_id].size) < 17.0:
 					is_resizing = true
@@ -930,6 +936,9 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 
 
 func _on_object_list_mouse_input(event: InputEvent, list_id: int) -> void:
+	print("LIST INPUT")
+	# Especially set mouse scroll as handled
+	#get_viewport().set_input_as_handled()
 	if settings.app_mode == Enums.AppMode.DRAWING:
 		return
 	if drawing_manager.is_taking_screenshots:

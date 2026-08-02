@@ -50,19 +50,11 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 				return true
 			else:
 				return false
+	elif data is ElementLabel:
+		print("LABEL ON LIST AAAAA")
+		return false
 	else:
 		return false
-
-
-func position_drop_visual_on_entry(entry_id: int) -> void:
-	var after_entry_position: Vector2 = Vector2.ZERO
-	if entry_id >= 0:
-		after_entry_position = (entries[entry_id].position
-							+ Vector2(0.0, entries[entry_id].size.y)
-							+ Vector2(0.0, list_v_box.get_theme_constant("separation") * 0.5))
-	drop_visual.position = (after_entry_position
-						+ list_v_box.position
-						+ scroll_container.position)
 
 
 func _drop_data(_at_position: Vector2, data: Variant) -> void:
@@ -78,6 +70,17 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		mouse_filter = Control.MOUSE_FILTER_PASS
 		drop_visual.visible = false
 		dragger.end_drag()
+
+
+func position_drop_visual_on_entry(entry_id: int) -> void:
+	var after_entry_position: Vector2 = Vector2.ZERO
+	if entry_id >= 0:
+		after_entry_position = (entries[entry_id].position
+							+ Vector2(0.0, entries[entry_id].size.y)
+							+ Vector2(0.0, list_v_box.get_theme_constant("separation") * 0.5))
+	drop_visual.position = (after_entry_position
+						+ list_v_box.position
+						+ scroll_container.position)
 
 
 func add_text_entry(is_user_input: bool) -> void:
@@ -221,9 +224,9 @@ func _on_list_text_entry_grabber_started_move(entry_id: int, event_pos: Vector2)
 	dragger.start_drag_child(entry_id, entries, event_pos)
 	drop_visual.visible = true
 	drop_visual.size = entries[entry_id].size
-	entries[entry_id].position_in_list = (scroll_container.position
-										+ list_v_box.position)
 	scroll_container.clip_contents = false
+	#entries[entry_id].position_in_list = (scroll_container.position
+										#+ list_v_box.position)
 
 
 func _on_list_text_entry_grabber_moved(event: InputEventMouseMotion, entry_id: int) -> void:

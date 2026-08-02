@@ -62,7 +62,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
+mouse_filter = 1
 theme = SubResource("Theme_5b2e5")
 script = ExtResource("2_5b2e5")
 line_spacing_px = 50
@@ -73,8 +73,19 @@ drawing_region_limits_thickness = 4.0
 drawing_region_limits_color_alpha = 0.25
 
 [node name="ConnectionContainer" type="Control" parent="." unique_id=141045851]
+unique_name_in_owner = true
 light_mask = 8
 visibility_layer = 8
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="ObjectContainer" type="Control" parent="." unique_id=615168135]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -124,4 +135,4 @@ grow_vertical = 2
 mouse_filter = 2
 theme = ExtResource("4_5b2e5")
 
-[connection signal="gui_input" from="." to="." method="_on_gui_input"]
+[connection signal="gui_input" from="Background" to="." method="_on_background_gui_input"]

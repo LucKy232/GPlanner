@@ -8,7 +8,6 @@ class_name ListTextEntry extends HBoxContainer
 @onready var mouse_hover: Area2D = $MouseHover
 @onready var mouse_hover_shape: CollisionShape2D = $MouseHover/MouseHoverShape
 var grabber_clicked: bool = false
-var position_in_list: Vector2 = Vector2.ZERO
 var id: int = -1
 
 signal text_changed

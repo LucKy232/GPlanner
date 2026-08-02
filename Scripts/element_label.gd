@@ -50,6 +50,10 @@ func _ready() -> void:
 	total_vertical_margin = text_margin_container.get_theme_constant("margin_top") + text_margin_container.get_theme_constant("margin_bottom")
 
 
+func _get_drag_data(_at_position: Vector2) -> Variant:
+	return self
+
+
 func init_individual_style() -> void:
 	individual_style = ElementPresetStyle.new("individual")
 	individual_style.set_background_panel_style_box(background.get_theme_stylebox("panel").duplicate())
