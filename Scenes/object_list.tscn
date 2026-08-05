@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://0mgs2rfl4q7t" path="res://Scripts/object_list.gd" id="1_01tnx"]
 [ext_resource type="StyleBox" uid="uid://cdui0dgu3vdrr" path="res://Themes/element_background_style_box.tres" id="1_hw88c"]
+[ext_resource type="PackedScene" uid="uid://cytlmlx7kw2l2" path="res://Scenes/drag_and_resize_input.tscn" id="2_8suv5"]
 [ext_resource type="Theme" uid="uid://dao6v8vx8h5ip" path="res://Themes/text_edit_theme.tres" id="2_qbj2a"]
 [ext_resource type="PackedScene" uid="uid://brbbmqwm6hpj4" path="res://Scenes/div.tscn" id="3_qbj2a"]
 [ext_resource type="Theme" uid="uid://u70boqrojq3j" path="res://Themes/placeholder_visual_panel.tres" id="5_01tnx"]
@@ -29,6 +30,9 @@ mouse_default_cursor_shape = 2
 script = ExtResource("1_01tnx")
 list_text_entry_scene = "uid://q0me3hofnycc"
 div_scene = "uid://brbbmqwm6hpj4"
+
+[node name="DragAndResizeInput" parent="." unique_id=713311794 instance=ExtResource("2_8suv5")]
+layout_mode = 1
 
 [node name="Background" type="Panel" parent="." unique_id=972831401]
 light_mask = 8

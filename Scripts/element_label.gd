@@ -17,6 +17,7 @@ class_name ElementLabel extends Panel
 @onready var grab_indicator: Panel = %GrabIndicator
 @onready var resize_timer: Timer = $ResizeTimer
 @onready var hide_animation_timer: Timer = $HideAnimationTimer
+@onready var drag_and_resize_input: DragAndResizeInput = $DragAndResizeInput
 
 var individual_style: ElementPresetStyle
 var priority_stylebox: StyleBoxFlat
@@ -51,7 +52,27 @@ func _ready() -> void:
 
 
 func _get_drag_data(_at_position: Vector2) -> Variant:
-	return self
+	if drag_and_resize_input.is_being_dragged:
+		return self
+	else:
+		return null
+
+
+func start_dragging() -> void:
+	drag_and_resize_input.is_being_dragged = true
+	drag_and_resize_input.is_being_resized = false
+	set_default_cursor_shape(Control.CURSOR_DRAG)
+
+
+func start_resizing() -> void:
+	drag_and_resize_input.is_being_resized = true
+	drag_and_resize_input.is_being_dragged = false
+	set_default_cursor_shape(Control.CURSOR_FDIAGSIZE)
+
+
+func end_input() -> void:
+	drag_and_resize_input.end()
+	set_default_cursor_shape(Control.CURSOR_POINTING_HAND)
 
 
 func init_individual_style() -> void:
@@ -98,6 +119,10 @@ func set_priority_color(color: Color) -> void:
 func set_priority_visible(toggled_on: bool) -> void:
 	priority_enabled = toggled_on
 	priority.visible = toggled_on
+
+
+func get_text() -> String:
+	return text_edit.text
 
 
 func set_text(text: String) -> void:

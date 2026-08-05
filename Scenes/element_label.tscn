@@ -6,6 +6,7 @@
 [ext_resource type="Theme" uid="uid://dao6v8vx8h5ip" path="res://Themes/text_edit_theme.tres" id="4_id6lq"]
 [ext_resource type="StyleBox" uid="uid://b0l55wn2xggiw" path="res://Themes/none_priority_button_stylebox.tres" id="5_01as5"]
 [ext_resource type="Theme" uid="uid://dfkiu7dg1cfmm" path="res://Themes/text_edit_completed_theme.tres" id="5_562gy"]
+[ext_resource type="PackedScene" uid="uid://cytlmlx7kw2l2" path="res://Scenes/drag_and_resize_input.tscn" id="5_847go"]
 [ext_resource type="StyleBox" uid="uid://wrrl0mk4mdli" path="res://Themes/active_priority_button_stylebox.tres" id="5_y2cp5"]
 [ext_resource type="StyleBox" uid="uid://0m1wm66xknlk" path="res://Themes/high_priority_button_stylebox.tres" id="6_bfvbn"]
 [ext_resource type="StyleBox" uid="uid://dgq7v0gkqrpgf" path="res://Themes/medium_priority_button_stylebox.tres" id="7_y2cp5"]
@@ -63,6 +64,9 @@ line_wrap_limit = 5.0
 completed_stylebox = ExtResource("1_htelr")
 text_edit_theme = ExtResource("4_id6lq")
 text_edit_completed_theme = ExtResource("5_562gy")
+
+[node name="DragAndResizeInput" parent="." unique_id=713311794 instance=ExtResource("5_847go")]
+layout_mode = 1
 
 [node name="PanelContainer" type="PanelContainer" parent="." unique_id=931848533]
 layout_mode = 1
@@ -204,8 +208,8 @@ anchors_preset = 14
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_top = -14.0
-offset_bottom = 14.0
+offset_top = -12.0
+offset_bottom = 12.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 4

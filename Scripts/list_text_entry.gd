@@ -51,6 +51,10 @@ func rebuild_from_dict(dict: Dictionary) -> void:
 	text_edit.text = dict["text"]
 
 
+func set_text(text: String) -> void:
+	text_edit.text = text
+
+
 func get_text() -> String:
 	return text_edit.text
 

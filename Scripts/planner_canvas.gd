@@ -88,6 +88,8 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 			drop_visual.size = data.size
 			drop_visual.position = at_position
 			return true
+	elif data is ElementLabel:
+		return false
 	else:
 		return false
 
@@ -252,6 +254,9 @@ func add_object_list(at_position: Vector2, id_specified: int = -1) -> void:
 	new_list.can_drop.connect(_on_object_list_can_drop)
 	new_list.filtered_gui_input.connect(_on_object_list_mouse_input.bind(list_id))
 	new_list.list_changed.connect(_on_list_changed)
+	new_list.drag_and_resize_input.drag_requested.connect(_on_control_dragged.bind(new_list))
+	new_list.drag_and_resize_input.resize_requested.connect(_on_control_resized.bind(new_list))
+	new_list.drag_and_resize_input.input_ended.connect(_on_control_input_ended.bind(new_list))
 
 
 func add_element_label(at_position: Vector2, id_specified: int = -1) -> int:
@@ -273,6 +278,9 @@ func add_element_label(at_position: Vector2, id_specified: int = -1) -> int:
 	new_element.became_selected.connect(_on_element_text_box_active.bind(elem_id))
 	new_element.changed_priority.connect(_on_element_changed_priority.bind(elem_id))
 	new_element.text_changed.connect(_on_element_label_text_changed)
+	new_element.drag_and_resize_input.drag_requested.connect(_on_control_dragged.bind(new_element))
+	new_element.drag_and_resize_input.resize_requested.connect(_on_control_resized.bind(new_element))
+	new_element.drag_and_resize_input.input_ended.connect(_on_control_input_ended.bind(new_element))
 	new_element.name = "ElementLabel"
 	new_element.position = at_position
 	new_element.priority_id = Enums.Priority.NONE
@@ -411,7 +419,6 @@ func select_element(elem_id: int) -> void:
 		change_selected_preset_style(elements[selected_element].style_preset_id)
 		has_selected_element.emit()
 	else:	# Deselect element if elem_id invalid
-		print(elem_id, " ???")
 		deselect_any()
 
 
@@ -763,8 +770,45 @@ func warp_mouse_to_other_size() -> void:
 		get_viewport().warp_mouse( Vector2(mouse_pos.x, 50.0) )
 
 
+func _on_control_input_ended(control: Control) -> void:
+	if !control:
+		return
+	if control.has_method("end_input"):
+		control.end_input()
+	control = null
+	is_dragging = false
+	is_resizing = false
+
+
+func _on_control_dragged(event_relative: Vector2, control: Control) -> void:
+	if !control or !is_dragging:
+		return
+	if tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS:
+		control.position += event_relative / scale
+		selection_viewer.position = control.position
+		if control is ElementLabel:
+			update_connections(control.id)
+		canvas_changed()
+
+
+func _on_control_resized(event_relative: Vector2, control: Control) -> void:
+	if !control or !is_resizing:
+		return
+	if tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS:
+		if control.has_method("change_size"):
+			control.change_size(control.size + event_relative / scale)
+		else:
+			control.size += event_relative / scale
+		selection_viewer.size = control.size
+		if control is ElementLabel:
+			update_connections(control.id)
+		canvas_changed()
+
+
 func _on_background_gui_input(event: InputEvent) -> void:
-	print("BG INPUT ")
+	if is_dragging or is_resizing:
+		return
+	
 	if drawing_manager.is_taking_screenshots:
 		return
 	if event is InputEventMouseMotion and event.pressure > 0.0:
@@ -875,107 +919,65 @@ func _on_background_gui_input(event: InputEvent) -> void:
 
 
 func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
-	print("ELEMENT INPUT")
-	#get_viewport().set_input_as_handled()
-	if settings.app_mode == Enums.AppMode.DRAWING:
+	if settings.app_mode == Enums.AppMode.DRAWING or drawing_manager.is_taking_screenshots:
 		return
-	if drawing_manager.is_taking_screenshots:
+	if event is not InputEventMouseButton:
 		return
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
-			if tool_id == Enums.Tool.ADD_CONNECTION:
-				if connection_candidate_1 == -1:
-					connection_candidate_1 = elem_id
-					select_element(elem_id)
-					connection_indicator.visible = true
-					connection_indicator.position = elements[selected_element].position - Vector2(20.0, 20.0)
-					#print("FIRST ID CONFIRMED")
-				else:
-					connection_candidate_2 = elem_id
-					add_connection()
-			if tool_id == Enums.Tool.REMOVE_CONNECTIONS:
-				remove_connections(elem_id)
-			if (tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS):
+	if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
+		if tool_id == Enums.Tool.ADD_CONNECTION:
+			if connection_candidate_1 == -1:
+				connection_candidate_1 = elem_id
 				select_element(elem_id)
-				print(elem_id, " ???")
-				# Distance to bottom-right corner
-				if event.position.distance_to(elements[elem_id].size) < 17.0:
-					is_resizing = true
-					is_panning = false
-					elements[elem_id].set_default_cursor_shape(Control.CURSOR_FDIAGSIZE)
-				if !is_dragging and !is_resizing:
-					is_dragging = true
-					is_panning = false
-					elements[elem_id].set_default_cursor_shape(Control.CURSOR_DRAG)
-			if tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS:
-				select_element(elem_id)
-			if tool_id == Enums.Tool.MARK_COMPLETED:
-				canvas_changed()
-				elements[elem_id].toggle_completed()
-				toggle_element_and_connections(elem_id, settings.checkbox_data[Enums.Checkbox.SHOW_COMPLETED])
-		elif event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
-			if elements.has(elem_id):	# Rare bug? elem_id doesn't exist in elements
-				elements[elem_id].set_default_cursor_shape(Control.CURSOR_POINTING_HAND)
+				connection_indicator.visible = true
+				connection_indicator.position = elements[selected_element].position - Vector2(20.0, 20.0)
+				#print("FIRST ID CONFIRMED")
 			else:
-				printerr("Element doesn't exist at release mouse click")
-			if tool_id == Enums.Tool.REMOVE_ELEMENT:
-				remove_element_label(elem_id)
-			if is_dragging:
-				is_dragging = false
-			if is_resizing:
-				is_resizing = false
-	if event is InputEventMouseMotion and (tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS):
-		if is_dragging:
-			elements[elem_id].position += event.relative
-			selection_viewer.position = elements[elem_id].position
-			update_connections(elem_id)
-		if is_resizing:
-			elements[elem_id].change_size(elements[elem_id].size + event.relative)
-			update_connections(elem_id)
+				connection_candidate_2 = elem_id
+				add_connection()
+		if tool_id == Enums.Tool.REMOVE_CONNECTIONS:
+			remove_connections(elem_id)
+		if (tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS):
+			select_element(elem_id)
+			# Distance to bottom-right corner, start resizing
+			if event.position.distance_to(elements[elem_id].size) < 17.0:
+				is_resizing = true
+				is_panning = false
+				elements[elem_id].start_resizing()
+			# Start drag
+			if !is_dragging and !is_resizing:
+				is_dragging = true
+				is_panning = false
+				elements[elem_id].start_dragging()
+		if tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS:
+			select_element(elem_id)
+		if tool_id == Enums.Tool.MARK_COMPLETED:
 			canvas_changed()
+			elements[elem_id].toggle_completed()
+			toggle_element_and_connections(elem_id, settings.checkbox_data[Enums.Checkbox.SHOW_COMPLETED])
+	elif tool_id == Enums.Tool.REMOVE_ELEMENT and event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
+		remove_element_label(elem_id)
 
 
 func _on_object_list_mouse_input(event: InputEvent, list_id: int) -> void:
-	print("LIST INPUT")
-	# Especially set mouse scroll as handled
-	#get_viewport().set_input_as_handled()
-	if settings.app_mode == Enums.AppMode.DRAWING:
+	if settings.app_mode == Enums.AppMode.DRAWING or drawing_manager.is_taking_screenshots:
 		return
-	if drawing_manager.is_taking_screenshots:
+	if event is not InputEventMouseButton:
 		return
-	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
-			if (tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS):
-					#select_element(elem_id)
-				# Distance to bottom-right corner
-				if event.position.distance_to(lists[list_id].size) < 17.0:
-					is_resizing = true
-					is_panning = false
-					lists[list_id].set_default_cursor_shape(Control.CURSOR_FDIAGSIZE)
-				if !is_dragging and !is_resizing:
-					is_dragging = true
-					is_panning = false
-					lists[list_id].set_default_cursor_shape(Control.CURSOR_DRAG)
-		elif event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
-			if lists.has(list_id):	# Rare bug? elem_id doesn't exist in elements
-				lists[list_id].set_default_cursor_shape(Control.CURSOR_POINTING_HAND)
-			else:
-				printerr("Element doesn't exist at release mouse click")
-			if tool_id == Enums.Tool.REMOVE_ELEMENT:
-				remove_object_list(list_id)
-			if is_dragging:
-				is_dragging = false
-			if is_resizing:
-				is_resizing = false
-	if event is InputEventMouseMotion:
-		if is_dragging:
-			lists[list_id].position += event.relative
-			#selection_viewer.position = elements[elem_id].position
-			#update_connections(elem_id)
-		if is_resizing:
-			lists[list_id].change_size(event.relative)
-			#update_connections(elem_id)
-			canvas_changed()
+	if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
+		if (tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS):
+			#select_list(elem_id)
+			# Distance to bottom-right corner, start resizing
+			if event.position.distance_to(lists[list_id].size) < 18.0:
+				is_resizing = true
+				is_panning = false
+				lists[list_id].start_resizing()
+			# Start dragging
+			if !is_dragging and !is_resizing:
+				is_dragging = true
+				is_panning = false
+				lists[list_id].start_dragging()
+	elif tool_id == Enums.Tool.REMOVE_ELEMENT and event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
+		remove_object_list(list_id)
 
 
 func _on_object_list_can_drop() -> void:
@@ -1033,23 +1035,3 @@ func _on_connection_arrow_changed() -> void:
 func _on_viewport_size_changed() -> void:
 	position = pan_limits(position)
 	changed_position.emit()
-
-
-#func _on_temp_drawing_region_input(event: InputEvent, reg: TempDrawingAction) -> void:
-	#if settings.app_mode == Enums.AppMode.PLANNING or drawing_settings.selected_tool != Enums.DrawingTool.MOVE:
-		#return
-	#if drawing_manager.is_taking_screenshots:
-		#return
-	#if event is InputEventMouseButton:
-		#if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
-			#reg.set_default_cursor_shape(Control.CURSOR_DRAG)
-			#drag_start_mouse_pos = event.position
-			#is_drawing = true
-		#if event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
-			#reg.set_default_cursor_shape(Control.CURSOR_POINTING_HAND)
-			#is_dragging = false
-	#if event is InputEventMouseMotion and (tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS):
-		#var move = event.position - drag_start_mouse_pos
-		#if is_dragging:
-			#reg.position += move
-			#selection_viewer.position = reg.position

@@ -10,6 +10,7 @@ class_name ObjectList extends Control
 @onready var list_v_box: VBoxContainer = %ListVBox
 @onready var drop_visual: Panel = %DropVisualIndicator
 @onready var list_name: TextEdit = %ListName
+@onready var drag_and_resize_input: DragAndResizeInput = $DragAndResizeInput
 var id: int = -1
 var entries: Array[ListTextEntry]
 var dragger: ListDragHelper = ListDragHelper.new()
@@ -43,16 +44,29 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 				return true
 			# Continue drag from outside
 			elif dragger.is_dragging_outside:
-				dragger.drag_from_outside(at_position)
+				var position_in_list: Vector2 = (scroll_container.position + list_v_box.position)
+				dragger.drag_from_outside(at_position - position_in_list)
 				position_drop_visual_on_entry(dragger.current - 1)
-				can_drop.emit()
+				can_drop.emit()		# For visual on canvas
 				print("DRAG OUTSIDE LIST")
 				return true
 			else:
 				return false
 	elif data is ElementLabel:
-		print("LABEL ON LIST AAAAA")
-		return false
+		# Start drag from outside
+		if !dragger.is_dragging_outside:
+			dragger.start_drag_from_outside(entries)
+			drop_visual.visible = true
+			drop_visual.size.x = object_v_box.size.x
+			return true
+		# Continue drag from outside
+		elif dragger.is_dragging_outside:
+			var position_in_list: Vector2 = (scroll_container.position + list_v_box.position)
+			dragger.drag_from_outside(at_position - position_in_list)
+			position_drop_visual_on_entry(dragger.current - 1)
+			return true
+		else:
+			return false
 	else:
 		return false
 
@@ -70,6 +84,33 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		mouse_filter = Control.MOUSE_FILTER_PASS
 		drop_visual.visible = false
 		dragger.end_drag()
+	if data is ElementLabel:
+		add_text_entry(false)
+		entries[-1].set_text(data.get_text())
+		object_v_box.move_child(entries[-1], dragger.current)
+		sort_entries(entries.size() - 1, dragger.current)
+		reset_entry_ids()
+		mouse_filter = Control.MOUSE_FILTER_PASS
+		drop_visual.visible = false
+		dragger.end_drag()
+		# TODO canvas remove ElementLabel
+
+
+func start_dragging() -> void:
+	drag_and_resize_input.is_being_dragged = true
+	drag_and_resize_input.is_being_resized = false
+	set_default_cursor_shape(Control.CURSOR_DRAG)
+
+
+func start_resizing() -> void:
+	drag_and_resize_input.is_being_resized = true
+	drag_and_resize_input.is_being_dragged = false
+	set_default_cursor_shape(Control.CURSOR_FDIAGSIZE)
+
+
+func end_input() -> void:
+	drag_and_resize_input.end()
+	set_default_cursor_shape(Control.CURSOR_POINTING_HAND)
 
 
 func position_drop_visual_on_entry(entry_id: int) -> void:
@@ -85,9 +126,7 @@ func position_drop_visual_on_entry(entry_id: int) -> void:
 
 func add_text_entry(is_user_input: bool) -> void:
 	var new_list_text_entry: ListTextEntry = load(list_text_entry_scene).instantiate()
-	#var new_div: Panel = load(div_scene).instantiate()
 	object_v_box.add_child(new_list_text_entry)
-	#object_v_box.add_child(new_div)
 	new_list_text_entry.id = entries.size()
 	new_list_text_entry.name = "ListTextEntry"
 	entries.append(new_list_text_entry)
@@ -114,8 +153,8 @@ func disconnect_list_text_entry(entry: ListTextEntry) -> void:
 	entry.remove_from_list.disconnect(_on_list_text_entry_remove_from_list)
 
 
-func change_size(delta_size: Vector2) -> void:
-	size += delta_size
+func change_size(new_size: Vector2) -> void:
+	size = new_size
 
 
 func sort_entries(move_entry_id: int, to_id: int) -> void:
@@ -225,8 +264,6 @@ func _on_list_text_entry_grabber_started_move(entry_id: int, event_pos: Vector2)
 	drop_visual.visible = true
 	drop_visual.size = entries[entry_id].size
 	scroll_container.clip_contents = false
-	#entries[entry_id].position_in_list = (scroll_container.position
-										#+ list_v_box.position)
 
 
 func _on_list_text_entry_grabber_moved(event: InputEventMouseMotion, entry_id: int) -> void:
