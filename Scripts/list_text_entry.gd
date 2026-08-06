@@ -100,3 +100,11 @@ func _on_resized() -> void:
 		return
 	mouse_hover_shape.shape.size = size
 	mouse_hover.position = size * 0.5
+
+
+func _on_text_edit_focus_entered() -> void:
+	text_edit.mouse_filter = Control.MOUSE_FILTER_STOP
+
+
+func _on_text_edit_focus_exited() -> void:
+	text_edit.mouse_filter = Control.MOUSE_FILTER_PASS

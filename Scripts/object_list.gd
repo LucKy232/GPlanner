@@ -20,6 +20,7 @@ var mouse_inside: bool = false
 signal list_changed
 signal filtered_gui_input
 signal can_drop
+signal remove_element_request
 
 
 func _ready() -> void:
@@ -32,7 +33,6 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 		if dragger.is_dragging_child:
 			mouse_filter = Control.MOUSE_FILTER_STOP	# Stop the input going to canvas
 			can_drop.emit()
-			print("DRAG INSIDE LIST")
 			return false
 		else:
 			# Start drag from outside
@@ -40,7 +40,6 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 				dragger.start_drag_from_outside(entries)
 				drop_visual.visible = true
 				drop_visual.size.x = object_v_box.size.x
-				print("DRAG OUTSIDE START")
 				return true
 			# Continue drag from outside
 			elif dragger.is_dragging_outside:
@@ -48,7 +47,6 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 				dragger.drag_from_outside(at_position - position_in_list)
 				position_drop_visual_on_entry(dragger.current - 1)
 				can_drop.emit()		# For visual on canvas
-				print("DRAG OUTSIDE LIST")
 				return true
 			else:
 				return false
@@ -93,7 +91,7 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		mouse_filter = Control.MOUSE_FILTER_PASS
 		drop_visual.visible = false
 		dragger.end_drag()
-		# TODO canvas remove ElementLabel
+		remove_element_request.emit(data.id)
 
 
 func start_dragging() -> void:

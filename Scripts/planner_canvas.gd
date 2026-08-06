@@ -4,6 +4,9 @@ class_name PlannerCanvas
 
 @onready var connection_container: Control = %ConnectionContainer
 @onready var object_container: Control = %ObjectContainer
+#@onready var focused_container: Control = %FocusedContainer
+#@onready var list_container: Control = %ListContainer
+#@onready var element_container: Control = %ElementContainer
 @onready var selection_viewer: Panel = %SelectionViewer
 @onready var connection_indicator: Panel = %ConnectionIndicator
 @onready var background: Panel = $Background
@@ -257,6 +260,7 @@ func add_object_list(at_position: Vector2, id_specified: int = -1) -> void:
 	new_list.drag_and_resize_input.drag_requested.connect(_on_control_dragged.bind(new_list))
 	new_list.drag_and_resize_input.resize_requested.connect(_on_control_resized.bind(new_list))
 	new_list.drag_and_resize_input.input_ended.connect(_on_control_input_ended.bind(new_list))
+	new_list.remove_element_request.connect(_on_list_remove_element_request)
 
 
 func add_element_label(at_position: Vector2, id_specified: int = -1) -> int:
@@ -409,9 +413,11 @@ func select_element(elem_id: int) -> void:
 	if elem_id == selected_element:
 		return
 	if elements.has(selected_element):	# Deselect previous element
+		object_container.move_child(elements[selected_element], object_container.get_child_count() - 1)
 		elements[selected_element].deselect()
 	if elements.has(elem_id):
 		selected_element = elem_id
+		object_container.move_child(elements[selected_element], 0)
 		elements[selected_element].select()
 		selection_viewer.visible = true
 		selection_viewer.size = elements[elem_id].size
@@ -1014,6 +1020,14 @@ func _on_element_label_text_changed() -> void:
 
 func _on_list_changed() -> void:
 	canvas_changed()
+
+
+func _on_list_remove_element_request(elem_id: int) -> void:
+	if !elements.has(elem_id):
+		push_error("Wrong element id @ _on_list_remove_element_request")
+	remove_element_label(elem_id)
+	is_dragging = false
+	is_resizing = false
 
 
 func _on_element_label_resized(elem_id: int) -> void:
