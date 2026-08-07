@@ -151,6 +151,7 @@ shape = SubResource("RectangleShape2D_553ya")
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="resized" from="." to="." method="_on_resized"]
+[connection signal="focus_entered" from="Background/MarginContainer/ScrollContainer/VBoxContainer/MarginContainer/ListName" to="." method="_on_list_name_focus_entered"]
 [connection signal="pressed" from="Background/MarginContainer/ScrollContainer/VBoxContainer/ListVBox/AddButton" to="." method="_on_add_button_pressed"]
 [connection signal="mouse_entered" from="MouseHover" to="." method="_on_mouse_hover_mouse_entered"]
 [connection signal="mouse_exited" from="MouseHover" to="." method="_on_mouse_hover_mouse_exited"]

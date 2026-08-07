@@ -10,6 +10,7 @@ class_name ListTextEntry extends HBoxContainer
 var grabber_clicked: bool = false
 var id: int = -1
 
+signal text_edit_active
 signal text_changed
 signal grabber_moved
 signal grabber_started_move
@@ -59,6 +60,18 @@ func get_text() -> String:
 	return text_edit.text
 
 
+func enter_text_edit() -> void:
+	text_edit.grab_focus()
+
+
+func exit_text_edit() -> void:
+	text_edit.release_focus()
+
+
+func is_editing_text() -> bool:
+	return text_edit.has_focus()
+
+
 func to_json() -> Dictionary:
 	var dict: Dictionary = {
 		"text": text_edit.text,
@@ -104,6 +117,7 @@ func _on_resized() -> void:
 
 func _on_text_edit_focus_entered() -> void:
 	text_edit.mouse_filter = Control.MOUSE_FILTER_STOP
+	text_edit_active.emit(id)
 
 
 func _on_text_edit_focus_exited() -> void:

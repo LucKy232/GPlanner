@@ -13,6 +13,7 @@ class_name ObjectList extends Control
 @onready var drag_and_resize_input: DragAndResizeInput = $DragAndResizeInput
 var id: int = -1
 var entries: Array[ListTextEntry]
+var last_edited_entry_id: int = -1
 var dragger: ListDragHelper = ListDragHelper.new()
 var canvas_scale: float = 1.0
 var mouse_inside: bool = false
@@ -21,6 +22,7 @@ signal list_changed
 signal filtered_gui_input
 signal can_drop
 signal remove_element_request
+signal text_edit_active
 
 
 func _ready() -> void:
@@ -37,7 +39,7 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 		else:
 			# Start drag from outside
 			if !dragger.is_dragging_outside and !entries.has(data):
-				dragger.start_drag_from_outside(entries)
+				dragger.start_drag_from_outside(entries, drop_visual.size.y)
 				drop_visual.visible = true
 				drop_visual.size.x = object_v_box.size.x
 				return true
@@ -53,7 +55,7 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 	elif data is ElementLabel:
 		# Start drag from outside
 		if !dragger.is_dragging_outside:
-			dragger.start_drag_from_outside(entries)
+			dragger.start_drag_from_outside(entries, drop_visual.size.y)
 			drop_visual.visible = true
 			drop_visual.size.x = object_v_box.size.x
 			return true
@@ -94,6 +96,32 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		remove_element_request.emit(data.id)
 
 
+func select() -> void:
+	pass
+
+
+func deselect() -> void:
+	if list_name.has_focus():
+		list_name.release_focus()
+	exit_text_edit()
+
+
+func is_editing_text() -> bool:
+	if entries.size() > last_edited_entry_id and last_edited_entry_id >= 0:
+		return entries[last_edited_entry_id].is_editing_text()
+	return false
+
+
+func enter_text_edit() -> void:
+	if entries.size() > last_edited_entry_id and last_edited_entry_id >= 0:
+		entries[last_edited_entry_id].enter_text_edit()
+
+
+func exit_text_edit() -> void:
+	if entries.size() > last_edited_entry_id and last_edited_entry_id >= 0:
+		entries[last_edited_entry_id].exit_text_edit()
+
+
 func start_dragging() -> void:
 	drag_and_resize_input.is_being_dragged = true
 	drag_and_resize_input.is_being_resized = false
@@ -115,7 +143,7 @@ func position_drop_visual_on_entry(entry_id: int) -> void:
 	var after_entry_position: Vector2 = Vector2.ZERO
 	if entry_id >= 0:
 		after_entry_position = (entries[entry_id].position
-							+ Vector2(0.0, entries[entry_id].size.y)
+							+ Vector2(0.0, entries[entry_id+1].size.y)
 							+ Vector2(0.0, list_v_box.get_theme_constant("separation") * 0.5))
 	drop_visual.position = (after_entry_position
 						+ list_v_box.position
@@ -133,12 +161,22 @@ func add_text_entry(is_user_input: bool) -> void:
 		list_changed.emit()
 
 
+func remove_text_entry(entry: ListTextEntry) -> void:
+	disconnect_list_text_entry(entry)
+	entries.erase(entry)
+	if last_edited_entry_id > entries.size() - 1:
+		last_edited_entry_id = entries.size() - 1
+	reset_entry_ids()
+	list_changed.emit()
+
+
 func connect_list_text_entry(entry: ListTextEntry) -> void:
 	entry.erase_button.pressed.connect(_on_list_text_entry_erase.bind(entry))
 	entry.grabber_moved.connect(_on_list_text_entry_grabber_moved)
 	entry.grabber_started_move.connect(_on_list_text_entry_grabber_started_move)
 	entry.grabber_ended_move.connect(_on_list_text_entry_grabber_ended_move)
 	entry.text_changed.connect(_on_list_text_entry_text_changed)
+	entry.text_edit_active.connect(_on_list_text_entry_text_entry_active)
 	entry.remove_from_list.connect(_on_list_text_entry_remove_from_list.bind(entry))
 
 
@@ -229,10 +267,7 @@ func _on_list_text_entry_erase(entry: ListTextEntry) -> void:
 
 
 func _on_list_text_entry_remove_from_list(entry: ListTextEntry) -> void:
-	disconnect_list_text_entry(entry)
-	entries.erase(entry)
-	reset_entry_ids()
-	list_changed.emit()
+	remove_text_entry(entry)
 
 
 func _on_mouse_hover_mouse_entered() -> void:
@@ -258,7 +293,7 @@ func _on_list_text_entry_grabber_started_move(entry_id: int, event_pos: Vector2)
 	if entries.size() <= entry_id:
 		push_error("Entry ID %d Invalid!" % [entry_id])
 		return
-	dragger.start_drag_child(entry_id, entries, event_pos)
+	dragger.start_drag_child(entry_id, entries, event_pos, drop_visual.size.y)
 	drop_visual.visible = true
 	drop_visual.size = entries[entry_id].size
 	scroll_container.clip_contents = false
@@ -292,7 +327,16 @@ func _on_list_text_entry_grabber_ended_move(entry_id: int) -> void:
 	scroll_container.clip_contents = true
 
 
+func _on_list_text_entry_text_entry_active(entry_id: int) -> void:
+	last_edited_entry_id = entry_id
+	text_edit_active.emit(id)
+
+
 func _on_gui_input(event: InputEvent) -> void:
 	if dragger.is_dragging_child:
 		return
 	filtered_gui_input.emit(event)
+
+
+func _on_list_name_focus_entered() -> void:
+	text_edit_active.emit(id)

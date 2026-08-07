@@ -7,24 +7,27 @@ var highest: int	## Highest position ID
 var list: Array[ListTextEntry]
 var is_dragging_child: bool = false		## Dragging list child inside the list
 var is_dragging_outside: bool = false	## Dragging an entry from a different list to this list
+var indicator_size_y: float = 25.0
 
 
-func start_drag_child(obj_id: int, _list: Array[ListTextEntry], _event_position: Vector2) -> void:
+func start_drag_child(obj_id: int, _list: Array[ListTextEntry], _event_position: Vector2, indicator_size: float) -> void:
 	list = _list
 	object_id = obj_id
 	current = obj_id
 	lowest = obj_id
 	highest = obj_id
 	list[object_id].offset_transform_position = _event_position
+	indicator_size_y = indicator_size
 	is_dragging_child = true
 
 
-func start_drag_from_outside(_list: Array[ListTextEntry]) -> void:
+func start_drag_from_outside(_list: Array[ListTextEntry], indicator_size: float) -> void:
 	list = _list
 	object_id = 0
 	current = 0
 	lowest = 0
 	highest = 0
+	indicator_size_y = indicator_size
 	is_dragging_outside = true
 
 
@@ -73,8 +76,9 @@ func drag_from_outside(drag_pos: Vector2) -> void:
 
 func drag_from_outside_visual_offsets() -> void:
 	for entry in list:
+		#printt("%d %d" % [entry.id, current - 1])
 		if entry.id > (current - 1):
-			entry.offset_transform_position = Vector2(0.0, entry.size.y)
+			entry.offset_transform_position = Vector2(0.0, indicator_size_y)
 		else:
 			entry.offset_transform_position = Vector2.ZERO
 

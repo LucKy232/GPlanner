@@ -46,7 +46,7 @@ extends Control
 
 var draw_tool_keybinds: Dictionary[int, String] = {}
 var tool_keybinds: Dictionary[int, String] = {}
-var is_editing_element_text: bool = false
+var is_editing_text: bool = false
 var is_editing_preset_name: bool = false
 var is_saving_images: bool = false
 var app_version: String = ""
@@ -129,13 +129,13 @@ func scale_ui(factor: float) -> void:
 func _process(_delta):
 	if use_mouse_cursor_big_brush():
 		cursor_big_brush.position = get_local_mouse_position() - cursor_big_brush.size * 0.5
-	if selected_element_exists():		# If editing text, don't use shortcuts
-		if get_selected_element().is_editing_text():
-			is_editing_element_text = true
+	if selected_control_exists():		# If editing text, don't use shortcuts
+		if get_selected_control().is_editing_text():
+			is_editing_text = true
 		else:
-			is_editing_element_text = false
+			is_editing_text = false
 	else:
-		is_editing_element_text = false
+		is_editing_text = false
 	if Input.is_action_just_pressed("fullscreen_borderless") and !is_saving_images:
 		toggle_borderless_window()
 	if Input.is_action_just_pressed("exit_fullscreen_borderless") and get_window().mode == Window.MODE_FULLSCREEN and !is_saving_images:
@@ -143,8 +143,8 @@ func _process(_delta):
 	if Input.is_action_just_pressed("save_file") and !disable_input():
 		_on_save_button_pressed()
 	if Input.is_action_just_pressed("edit_element") and !tool_box.is_selected(Enums.Tool.MARK_COMPLETED):
-		if selected_element_exists() and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
-			get_selected_element().enter_text_edit()
+		if selected_control_exists() and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+			get_selected_control().enter_text_edit()
 	if Input.is_action_pressed("ui_undo", true) and !disable_input() and (input_repeat_timer.is_stopped() or first_input_repeat):
 		if drawing_manager.undo_drawing_action():	# Check + action
 			input_repeat_timer.start(0.5 if first_input_repeat else 0.1)
@@ -280,15 +280,15 @@ func toggle_borderless_window() -> void:
 		get_window().borderless = false
 
 
-func get_selected_element() -> ElementLabel:
-	if canvases.has(cc) and canvases[cc].elements.has(canvases[cc].selected_element):
-		return canvases[cc].elements[canvases[cc].selected_element]
+func get_selected_control() -> Control:
+	if selected_control_exists():
+		return canvases[cc].selected_control
 	else:
 		return null
 
 
-func selected_element_exists() -> bool:
-	return canvases.has(cc) and canvases[cc].elements.has(canvases[cc].selected_element)
+func selected_control_exists() -> bool:
+	return canvases.has(cc) and canvases[cc].selected_control
 
 
 func switch_main_canvas(id: int, force_load_same: bool = false) -> void:
@@ -365,8 +365,8 @@ func new_file(add_canvas: bool, show_status: bool = true) -> int:
 		new_canvas.changed_zoom.connect(_on_canvas_changed_zoom)
 		new_canvas.changed_position.connect(_on_canvas_changed_position)
 		new_canvas.has_changed.connect(_on_canvas_has_changed.bind(new_canvas.id))
-		new_canvas.has_selected_element.connect(_on_canvas_has_selected_element)
-		new_canvas.has_deselected_element.connect(_on_canvas_has_deselected_element)
+		new_canvas.has_selected_control.connect(_on_canvas_has_selected_control)
+		new_canvas.has_deselected_control.connect(_on_canvas_has_deselected_control)
 		new_canvas.element_scene = element_scene
 		new_canvas.list_scene = list_scene
 		new_canvas.connection_scene = connection_scene
@@ -723,7 +723,7 @@ func tab_from_canvas_id(c_id: int) -> int:
 
 func disable_input() -> bool:
 	var popup_visible: bool = file_dialog_load.visible or file_dialog_save.visible or new_file_confirmation.visible or load_file_confirmation.visible or close_tab_confirmation.visible or exit_tab_confirmation.visible
-	return is_editing_element_text or is_editing_preset_name or is_saving_images or popup_visible
+	return is_editing_text or is_editing_preset_name or is_saving_images or popup_visible
 
 
 # Cursor size limit 256x256, on web 128x128; Switching to a TextureRect based cursor beyond that
@@ -1100,12 +1100,12 @@ func _on_element_settings_preset_color_changed() -> void:
 	if !canvases.has(cc):
 		return
 	var style_preset: ElementPresetStyle = element_settings.get_selected_preset()
-	if style_preset.id == "individual":
-		var selected_elem: ElementLabel = get_selected_element()
-		if selected_elem != null:
-			canvases[cc].update_connection_color(selected_elem.id, style_preset.background_color)
+	var selected_control: Control = get_selected_control()
+	if style_preset.id == "individual" and selected_control is ElementLabel:
+		if selected_control:
+			canvases[cc].update_connection_color(selected_control.id, style_preset.background_color)
 		else:
-			printerr("Null element %d in canvas %d at main.gd:func _on_element_settings_preset_color_changed" % [selected_elem, cc])
+			push_error("Null element %d in canvas %d at main.gd:func _on_element_settings_preset_color_changed" % [selected_control.id, cc])
 	else:
 		canvases[cc].update_connection_color_by_preset(style_preset.id)
 
@@ -1121,39 +1121,37 @@ func _on_element_settings_preset_selected() -> void:
 	if !canvases.has(cc):
 		return
 	var style_preset: ElementPresetStyle = element_settings.get_selected_preset()
-	var selected_element: ElementLabel = get_selected_element()
+	var selected_control: Control = get_selected_control()
 	if element_settings.preset_options.selected > 0:
 		if canvases[cc].selected_preset_style != style_preset.id:
 			canvases[cc].change_selected_preset_style(style_preset.id)
-			if selected_element != null:
+			if selected_control and selected_control is ElementLabel:
 				canvases[cc].canvas_changed()
-				canvases[cc].update_connection_color(selected_element.id, style_preset.background_color)
-				selected_element.change_style_preset(style_preset)
+				canvases[cc].update_connection_color(selected_control.id, style_preset.background_color)
+				selected_control.change_style_preset(style_preset)
 	elif element_settings.preset_options.selected == 0:
 		canvases[cc].change_selected_preset_style("none")
-		if selected_element != null:
-			if selected_element.has_style_preset:
+		if selected_control and selected_control is ElementLabel:
+			if selected_control.has_style_preset:
 				canvases[cc].canvas_changed()
-				selected_element.unassign_preset_style()
-				canvases[cc].update_connection_color(selected_element.id, selected_element.get_bg_color())
-			element_settings.none_preset = selected_element.individual_style
+				selected_control.unassign_preset_style()
+				canvases[cc].update_connection_color(selected_control.id, selected_control.get_bg_color())
+			element_settings.none_preset = selected_control.individual_style
 		else:
 			element_settings.toggle_none_preset_inputs(false)
 
 
-func _on_canvas_has_selected_element() -> void:
-	#print("Selected element %d" % get_selected_element().id)
+func _on_canvas_has_selected_control() -> void:
 	if !canvases.has(cc):
 		return
-	if canvases[cc].selected_preset_style == "none":
-		var selected_element: ElementLabel = get_selected_element()
-		if selected_element != null:
-			element_settings.none_preset = selected_element.individual_style
+	var selected_control: Control = get_selected_control()
+	if selected_control and selected_control is ElementLabel and canvases[cc].selected_preset_style == "none":
+		element_settings.none_preset = selected_control.individual_style
 	element_settings.select_by_style_preset_id(canvases[cc].selected_preset_style)
 	element_settings.toggle_none_preset_inputs(true)
 
 
-func _on_canvas_has_deselected_element() -> void:
+func _on_canvas_has_deselected_control() -> void:
 	element_settings.toggle_none_preset_inputs(false)
 
 

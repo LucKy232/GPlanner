@@ -30,7 +30,7 @@ var id: int			## Not consistent between sessions because it isn't saved (no good
 var tool_id: Enums.Tool
 var opened_file_path: String = ""
 var file_name_short: String = ""
-var selected_element: int = -1
+var selected_control: Control
 var selected_preset_style: String = "none"
 var element_id_counter: int = 0
 var list_id_counter: int = 0
@@ -60,8 +60,8 @@ signal done_adding_elements
 signal changed_zoom
 signal changed_position
 signal has_changed
-signal has_selected_element
-signal has_deselected_element
+signal has_selected_control
+signal has_deselected_control
 
 
 func _init() -> void:
@@ -84,9 +84,6 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 		if (is_panning or is_resizing or is_adding_elements or is_dragging):
 			return false
 		else:
-			print("DRAG ON CANVAS")
-			#var drop_position: Vector2 = get_local_mouse_position()
-			#print(drop_position)
 			drop_visual.visible = true
 			drop_visual.size = data.size
 			drop_visual.position = at_position
@@ -261,6 +258,7 @@ func add_object_list(at_position: Vector2, id_specified: int = -1) -> void:
 	new_list.drag_and_resize_input.resize_requested.connect(_on_control_resized.bind(new_list))
 	new_list.drag_and_resize_input.input_ended.connect(_on_control_input_ended.bind(new_list))
 	new_list.remove_element_request.connect(_on_list_remove_element_request)
+	new_list.text_edit_active.connect(_on_list_text_edit_active)
 
 
 func add_element_label(at_position: Vector2, id_specified: int = -1) -> int:
@@ -410,28 +408,42 @@ func remove_connections(elem_id: int) -> void:
 
 
 func select_element(elem_id: int) -> void:
-	if elem_id == selected_element:
-		return
-	if elements.has(selected_element):	# Deselect previous element
-		object_container.move_child(elements[selected_element], object_container.get_child_count() - 1)
-		elements[selected_element].deselect()
+	if selected_control and selected_control is ElementLabel and elem_id == selected_control.id:
+		return			# Already selected
+	deselect_any()		# Deselect previous element
 	if elements.has(elem_id):
-		selected_element = elem_id
-		object_container.move_child(elements[selected_element], 0)
-		elements[selected_element].select()
+		selected_control = elements[elem_id]
+		object_container.move_child(selected_control, 0)
+		selected_control.select()
 		selection_viewer.visible = true
-		selection_viewer.size = elements[elem_id].size
-		selection_viewer.position = elements[elem_id].position
-		change_selected_preset_style(elements[selected_element].style_preset_id)
-		has_selected_element.emit()
-	else:	# Deselect element if elem_id invalid
-		deselect_any()
+		selection_viewer.size = selected_control.size
+		selection_viewer.position = selected_control.position
+		change_selected_preset_style(selected_control.style_preset_id)
+		has_selected_control.emit()
+
+
+func select_list(list_id: int) -> void:
+	if selected_control and selected_control is ObjectList and list_id == selected_control.id:
+		return			# Already selected
+	deselect_any()		# Deselect previous element
+	if lists.has(list_id):
+		selected_control = lists[list_id]
+		object_container.move_child(selected_control, 0)
+		selected_control.select()
+		selection_viewer.visible = true
+		selection_viewer.size = selected_control.size
+		selection_viewer.position = selected_control.position
+		#change_selected_preset_style(selected_control.style_preset_id)
+		has_selected_control.emit()
 
 
 func deselect_any() -> void:
-	selected_element = -1
+	if selected_control:
+		object_container.move_child(selected_control, object_container.get_child_count() - 1)
+		selected_control.deselect()
+	selected_control = null
 	selection_viewer.visible = false
-	has_deselected_element.emit()
+	has_deselected_control.emit()
 
 
 func reset_adding_connection() -> void:
@@ -656,7 +668,7 @@ func erase_everything() -> void:
 
 
 func toggle_element_and_connections(elem_id: int, state: bool) -> void:
-	if selected_element == elem_id:
+	if selected_control and selected_control is ElementLabel and selected_control.id == elem_id:
 		deselect_any()
 	elements[elem_id].visible = state
 	
@@ -669,7 +681,7 @@ func toggle_element_and_connections(elem_id: int, state: bool) -> void:
 
 
 func toggle_element(elem_id: int, state: bool) -> void:
-	if selected_element == elem_id:
+	if selected_control and selected_control is ElementLabel and selected_control.id == elem_id:
 		deselect_any()
 	elements[elem_id].visible = state
 
@@ -934,8 +946,9 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 			if connection_candidate_1 == -1:
 				connection_candidate_1 = elem_id
 				select_element(elem_id)
-				connection_indicator.visible = true
-				connection_indicator.position = elements[selected_element].position - Vector2(20.0, 20.0)
+				if selected_control:
+					connection_indicator.visible = true
+					connection_indicator.position = selected_control.position - Vector2(20.0, 20.0)
 				#print("FIRST ID CONFIRMED")
 			else:
 				connection_candidate_2 = elem_id
@@ -971,7 +984,7 @@ func _on_object_list_mouse_input(event: InputEvent, list_id: int) -> void:
 		return
 	if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
 		if (tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS):
-			#select_list(elem_id)
+			select_list(list_id)
 			# Distance to bottom-right corner, start resizing
 			if event.position.distance_to(lists[list_id].size) < 18.0:
 				is_resizing = true
@@ -1002,8 +1015,9 @@ func _on_element_text_box_active(elem_id: int) -> void:
 		if connection_candidate_1 == -1:
 			connection_candidate_1 = elem_id
 			select_element(elem_id)
-			connection_indicator.visible = true
-			connection_indicator.position = elements[selected_element].position - Vector2(20.0, 20.0)
+			if selected_control:
+				connection_indicator.visible = true
+				connection_indicator.position = selected_control.position - Vector2(20.0, 20.0)
 			#print("FIRST ID CONFIRMED")
 		else:
 			connection_candidate_2 = elem_id
@@ -1022,6 +1036,11 @@ func _on_list_changed() -> void:
 	canvas_changed()
 
 
+func _on_list_text_edit_active(list_id: int) -> void:
+	if lists.has(list_id):
+		select_list(list_id)
+
+
 func _on_list_remove_element_request(elem_id: int) -> void:
 	if !elements.has(elem_id):
 		push_error("Wrong element id @ _on_list_remove_element_request")
@@ -1031,7 +1050,7 @@ func _on_list_remove_element_request(elem_id: int) -> void:
 
 
 func _on_element_label_resized(elem_id: int) -> void:
-	if selected_element == elem_id:
+	if selected_control and selected_control is ElementLabel and selected_control.id == elem_id:
 		selection_viewer.size = elements[elem_id].size
 
 
