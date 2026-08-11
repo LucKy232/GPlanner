@@ -81,7 +81,7 @@ func _process(_delta: float) -> void:
 
 func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 	if data is ListTextEntry:
-		if (is_panning or is_resizing or is_adding_elements or is_dragging):
+		if (is_panning or is_resizing or is_adding_elements):	# is_dragging allowed
 			return false
 		else:
 			drop_visual.visible = true
@@ -252,8 +252,9 @@ func add_object_list(at_position: Vector2, id_specified: int = -1) -> void:
 	new_list.position = at_position
 	new_list.canvas_scale = scale.x
 	new_list.can_drop.connect(_on_object_list_can_drop)
-	new_list.filtered_gui_input.connect(_on_object_list_mouse_input.bind(list_id))
+	new_list.filtered_gui_input.connect(_on_object_list_mouse_input)
 	new_list.list_changed.connect(_on_list_changed)
+	new_list.dragging.connect(_on_list_dragging_toggled)
 	new_list.drag_and_resize_input.drag_requested.connect(_on_control_dragged.bind(new_list))
 	new_list.drag_and_resize_input.resize_requested.connect(_on_control_resized.bind(new_list))
 	new_list.drag_and_resize_input.input_ended.connect(_on_control_input_ended.bind(new_list))
@@ -275,6 +276,8 @@ func add_element_label(at_position: Vector2, id_specified: int = -1) -> int:
 	new_element.id = elem_id
 	elements[elem_id] = new_element
 	object_container.add_child(new_element)
+	# NOTE element IDs can't change after creation because they are bound to their signals
+	# if fix needed, emit these signals from element script with current IDs
 	new_element.gui_input.connect(_on_element_label_gui_input.bind(elem_id))
 	new_element.resized.connect(_on_element_label_resized.bind(elem_id))
 	new_element.became_selected.connect(_on_element_text_box_active.bind(elem_id))
@@ -307,12 +310,8 @@ func add_connection(id_specified: int = -1, arrow_1_enabled: bool = false, arrow
 		connection_candidate_2 = -1
 		connection_indicator.visible = false
 		return
-	if !elements_to_connection.has(Vector2i(connection_candidate_1, connection_candidate_2)) and !elements_to_connection.has(Vector2i(connection_candidate_2, connection_candidate_1)):
-		#print("ADDING CONNECTION")
-		#if connection_candidate_1 < connection_candidate_2:
-			#var t: int = connection_candidate_1
-			#connection_candidate_1 = connection_candidate_2
-			#connection_candidate_2 = t
+	if (!elements_to_connection.has(Vector2i(connection_candidate_1, connection_candidate_2)) 
+	and !elements_to_connection.has(Vector2i(connection_candidate_2, connection_candidate_1))):
 		var new_connection = load(connection_scene).instantiate() as Connection
 		var conn_id: int
 		if id_specified < 0:
@@ -364,7 +363,7 @@ func remove_element_label(elem_id: int) -> void:
 func remove_object_list(list_id: int) -> void:
 	canvas_changed()
 	deselect_any()
-	#remove_connections(elem_id)
+	#remove_connections(list_id)
 	lists[list_id].queue_free()
 	lists.erase(list_id)
 
@@ -834,17 +833,17 @@ func _on_background_gui_input(event: InputEvent) -> void:
 	
 	# Deselect any element on left click on background
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
-		if !is_element_just_created:	# Don't deselect if this event is the one that created an element
-			select_element(-1)
-		else:
+		if is_element_just_created:	# Don't deselect if this event is the one that created an element
 			is_element_just_created = false
+		else:
+			deselect_any()
 	
 	# Begin mouse pan
 	if event.is_action("pan") and event.is_pressed() and !is_drawing:
-		if !is_element_just_created:	# Don't deselect if this event is the one that created an element
-			select_element(-1)
-		else:
+		if is_element_just_created:	# Don't deselect if this event is the one that created an element
 			is_element_just_created = false
+		else:
+			deselect_any()
 		if !is_panning:
 			is_panning = true
 			set_default_cursor_shape(Control.CURSOR_DRAG)
@@ -958,7 +957,7 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 		if (tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS):
 			select_element(elem_id)
 			# Distance to bottom-right corner, start resizing
-			if event.position.distance_to(elements[elem_id].size) < 17.0:
+			if event.position.distance_to(elements[elem_id].size) < 18.0:
 				is_resizing = true
 				is_panning = false
 				elements[elem_id].start_resizing()
@@ -1034,6 +1033,10 @@ func _on_element_label_text_changed() -> void:
 
 func _on_list_changed() -> void:
 	canvas_changed()
+
+
+func _on_list_dragging_toggled(drag_on: bool) -> void:
+	is_dragging = drag_on
 
 
 func _on_list_text_edit_active(list_id: int) -> void:

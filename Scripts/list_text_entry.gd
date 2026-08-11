@@ -8,6 +8,7 @@ class_name ListTextEntry extends HBoxContainer
 @onready var mouse_hover: Area2D = $MouseHover
 @onready var mouse_hover_shape: CollisionShape2D = $MouseHover/MouseHoverShape
 var grabber_clicked: bool = false
+var can_hover: bool = true
 var id: int = -1
 
 signal text_edit_active
@@ -80,7 +81,7 @@ func to_json() -> Dictionary:
 
 
 func _on_hover(on: bool) -> void:
-	if grabber_clicked:
+	if grabber_clicked or !can_hover:
 		return
 	priority_idicator.visible = !on
 	grabber_margin.visible = on

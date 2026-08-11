@@ -13,9 +13,11 @@ grow_begin = -5.0
 grow_end = -5.0
 thickness = 2
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dvpmy"]
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_553ya"]
 resource_local_to_scene = true
-size = Vector2(401, 303)
+size = Vector2(180, 200)
 
 [node name="ObjectList" type="Control" unique_id=1704557420]
 light_mask = 8
@@ -23,8 +25,8 @@ visibility_layer = 8
 custom_minimum_size = Vector2(150, 150)
 layout_mode = 3
 anchors_preset = 0
-offset_right = 401.0
-offset_bottom = 303.0
+offset_right = 180.0
+offset_bottom = 200.0
 mouse_filter = 1
 mouse_default_cursor_shape = 2
 script = ExtResource("1_01tnx")
@@ -46,7 +48,8 @@ grow_vertical = 2
 mouse_filter = 1
 theme_override_styles/panel = ExtResource("1_hw88c")
 
-[node name="MarginContainer" type="MarginContainer" parent="Background" unique_id=980566324]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=980566324]
+unique_name_in_owner = true
 light_mask = 8
 visibility_layer = 8
 layout_mode = 1
@@ -55,34 +58,16 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 10
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 10
-theme_override_constants/margin_bottom = 10
-
-[node name="ScrollContainer" type="ScrollContainer" parent="Background/MarginContainer" unique_id=1890732223]
-unique_name_in_owner = true
-light_mask = 8
-visibility_layer = 8
-layout_mode = 2
-horizontal_scroll_mode = 0
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Background/MarginContainer/ScrollContainer" unique_id=1005963005]
-light_mask = 8
-visibility_layer = 8
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="Background/MarginContainer/ScrollContainer/VBoxContainer" unique_id=1069667618]
-light_mask = 8
-visibility_layer = 8
-layout_mode = 2
-theme_override_constants/margin_left = 6
+theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 6
 
-[node name="ListName" type="TextEdit" parent="Background/MarginContainer/ScrollContainer/VBoxContainer/MarginContainer" unique_id=259169265]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=695912831]
+layout_mode = 2
+theme_override_constants/separation = -2
+
+[node name="ListName" type="TextEdit" parent="MarginContainer/VBoxContainer" unique_id=259169265]
 unique_name_in_owner = true
 light_mask = 8
 visibility_layer = 8
@@ -93,32 +78,30 @@ wrap_mode = 1
 scroll_fit_content_height = true
 scroll_fit_content_width = true
 
-[node name="div" parent="Background/MarginContainer/ScrollContainer/VBoxContainer" unique_id=1930850495 instance=ExtResource("3_qbj2a")]
+[node name="div" parent="MarginContainer/VBoxContainer" unique_id=1930850495 instance=ExtResource("3_qbj2a")]
 light_mask = 8
 visibility_layer = 8
+custom_minimum_size = Vector2(0, 10)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxLine_qbj2a")
 
-[node name="ListVBox" type="VBoxContainer" parent="Background/MarginContainer/ScrollContainer/VBoxContainer" unique_id=1722893999]
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer" unique_id=1890732223]
 unique_name_in_owner = true
 light_mask = 8
 visibility_layer = 8
 layout_mode = 2
+size_flags_vertical = 3
+theme_override_styles/panel = SubResource("StyleBoxEmpty_dvpmy")
+horizontal_scroll_mode = 0
 
-[node name="ObjectVBox" type="VBoxContainer" parent="Background/MarginContainer/ScrollContainer/VBoxContainer/ListVBox" unique_id=1926439559]
+[node name="ObjectVBox" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer" unique_id=1926439559]
 unique_name_in_owner = true
 light_mask = 8
 visibility_layer = 8
 layout_mode = 2
-theme_override_constants/separation = 5
-
-[node name="AddButton" type="Button" parent="Background/MarginContainer/ScrollContainer/VBoxContainer/ListVBox" unique_id=718767195]
-unique_name_in_owner = true
-visible = false
-light_mask = 8
-visibility_layer = 8
-layout_mode = 2
-text = "+"
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 6
 
 [node name="DropVisualIndicator" type="Panel" parent="." unique_id=467728565]
 unique_name_in_owner = true
@@ -139,10 +122,23 @@ grow_vertical = 2
 mouse_filter = 2
 theme = ExtResource("5_01tnx")
 
+[node name="AddButton" type="Button" parent="." unique_id=718767195]
+unique_name_in_owner = true
+visible = false
+light_mask = 8
+visibility_layer = 8
+layout_mode = 0
+offset_left = 16.0
+offset_top = 43.0
+offset_right = 34.0
+offset_bottom = 71.0
+text = "+"
+
 [node name="MouseHover" type="Area2D" parent="." unique_id=1893935660]
 light_mask = 8
 visibility_layer = 8
-position = Vector2(200.5, 151.5)
+position = Vector2(90, 100)
+priority = 1
 
 [node name="MouseHoverShape" type="CollisionShape2D" parent="MouseHover" unique_id=673877043]
 light_mask = 8
@@ -151,7 +147,7 @@ shape = SubResource("RectangleShape2D_553ya")
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="resized" from="." to="." method="_on_resized"]
-[connection signal="focus_entered" from="Background/MarginContainer/ScrollContainer/VBoxContainer/MarginContainer/ListName" to="." method="_on_list_name_focus_entered"]
-[connection signal="pressed" from="Background/MarginContainer/ScrollContainer/VBoxContainer/ListVBox/AddButton" to="." method="_on_add_button_pressed"]
-[connection signal="mouse_entered" from="MouseHover" to="." method="_on_mouse_hover_mouse_entered"]
-[connection signal="mouse_exited" from="MouseHover" to="." method="_on_mouse_hover_mouse_exited"]
+[connection signal="focus_entered" from="MarginContainer/VBoxContainer/ListName" to="." method="_on_list_name_focus_entered"]
+[connection signal="mouse_entered" from="MarginContainer/VBoxContainer/ScrollContainer" to="." method="_on_scroll_mouse_entered"]
+[connection signal="mouse_exited" from="MarginContainer/VBoxContainer/ScrollContainer" to="." method="_on_scroll_mouse_exited"]
+[connection signal="pressed" from="AddButton" to="." method="_on_add_button_pressed"]

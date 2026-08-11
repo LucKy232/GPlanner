@@ -7,10 +7,13 @@ var highest: int	## Highest position ID
 var list: Array[ListTextEntry]
 var is_dragging_child: bool = false		## Dragging list child inside the list
 var is_dragging_outside: bool = false	## Dragging an entry from a different list to this list
+var initial_scroll_y: int = 0
 var indicator_size_y: float = 25.0
+var scroll_diff: Vector2 = Vector2.ZERO
+var offset: Vector2 = Vector2.ZERO
 
 
-func start_drag_child(obj_id: int, _list: Array[ListTextEntry], _event_position: Vector2, indicator_size: float) -> void:
+func start_drag_child(obj_id: int, _list: Array[ListTextEntry], _event_position: Vector2, indicator_size: float, init_scroll: int) -> void:
 	list = _list
 	object_id = obj_id
 	current = obj_id
@@ -18,22 +21,31 @@ func start_drag_child(obj_id: int, _list: Array[ListTextEntry], _event_position:
 	highest = obj_id
 	list[object_id].offset_transform_position = _event_position
 	indicator_size_y = indicator_size
+	initial_scroll_y = init_scroll
 	is_dragging_child = true
+	scroll_diff = Vector2.ZERO
+	offset = Vector2.ZERO
+	toggle_entry_hover(false)
 
 
-func start_drag_from_outside(_list: Array[ListTextEntry], indicator_size: float) -> void:
+func start_drag_from_outside(_list: Array[ListTextEntry], indicator_size: float, init_scroll: int) -> void:
 	list = _list
 	object_id = 0
 	current = 0
 	lowest = 0
 	highest = 0
 	indicator_size_y = indicator_size
+	initial_scroll_y = init_scroll
 	is_dragging_outside = true
+	scroll_diff = Vector2.ZERO
+	offset = Vector2.ZERO
+	toggle_entry_hover(false)
 
 
 func end_drag() -> void:
 	for entry in list:
 		entry.offset_transform_position = Vector2.ZERO
+	toggle_entry_hover(true)
 	list = []
 	object_id = 0
 	current = 0
@@ -45,7 +57,7 @@ func end_drag() -> void:
 
 func drag_child() -> void:
 	var drag_pos: Vector2 = list[object_id].offset_transform_position + list[object_id].position
-	if current - 1 >= 0 and drag_pos.y < list[current - 1].position.y:
+	if current - 1 >= 0 and drag_pos.y < list[current - 1].position.y + list[current - 1].size.y:
 		current -= 1
 		if lowest > current:
 			lowest = current
@@ -54,7 +66,7 @@ func drag_child() -> void:
 		if current < highest and highest != object_id:
 			list[highest].offset_transform_position = Vector2.ZERO
 			highest = current
-	elif current + 1 < list.size() and drag_pos.y > list[current + 1].position.y + list[current + 1].size.y * 0.5:
+	elif current + 1 < list.size() and drag_pos.y > list[current + 1].position.y:
 		current += 1
 		if highest < current:
 			highest = current
@@ -65,10 +77,22 @@ func drag_child() -> void:
 			lowest = current
 
 
-func drag_from_outside(drag_pos: Vector2) -> void:
+func accumulate_position(event_relative: Vector2, new_scroll_y: int) -> Vector2:
+	scroll_diff = Vector2(0.0, float(new_scroll_y - initial_scroll_y))
+	offset += event_relative
+	return offset + scroll_diff
+
+
+func drag_from_outside(drag_pos: Vector2, new_scroll_y: int) -> void:
+	scroll_diff = Vector2(0.0, float(new_scroll_y))
+	drag_pos += scroll_diff
 	for entry in list:
-		if drag_pos.y < 5.0:
+		# Before first entry
+		if drag_pos.y < 20.0:
 			current = 0
+		# After last entry
+		elif entry.id == list.size() - 1 and drag_pos.y > entry.position.y + entry.size.y * 0.4:
+			current = list.size()
 		elif drag_pos.y > entry.position.y + entry.size.y:
 			current = entry.id + 1
 	drag_from_outside_visual_offsets()
@@ -89,3 +113,8 @@ func drag_inside_visual_offsets(moving_entry_id: int) -> void:
 			entry.offset_transform_position = Vector2(0.0, list[moving_entry_id].size.y)
 		if entry.id <= current and entry.id > moving_entry_id:
 			entry.offset_transform_position = Vector2(0.0, -list[moving_entry_id].size.y)
+
+
+func toggle_entry_hover(on: bool) -> void:
+	for entry in list:
+		entry.can_hover = on
