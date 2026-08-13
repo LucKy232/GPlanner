@@ -2,7 +2,6 @@ class_name ObjectList extends Control
 
 @export_file("*.tscn") var list_text_entry_scene
 @export_file("*.tscn") var div_scene
-@onready var add_button: Button = %AddButton
 @onready var object_v_box: VBoxContainer = %ObjectVBox
 @onready var scroll_container: ScrollContainer = %ScrollContainer
 @onready var mouse_hover: Area2D = $MouseHover
@@ -18,6 +17,13 @@ var dragger: ListDragHelper = ListDragHelper.new()
 var canvas_scale: float = 1.0
 var mouse_inside: bool = false
 var top_left_margin: Vector2 = Vector2.ZERO
+# Tween add entry buttons on the bottom
+var tween_add_buttons: Tween
+var buttons_shown: bool = false
+@export var add_buttons_hide_delay: float = 1.5
+@export var add_buttons_animation_time: float = 0.5
+@onready var hide_animation_timer: Timer = $HideAnimationTimer
+@onready var add_buttons_margin: MarginContainer = %AddButtonsMargin
 
 signal list_changed
 signal filtered_gui_input
@@ -105,6 +111,32 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		remove_element_request.emit(data.id)
 
 
+func toggle_add_buttons(toggle_on: bool) -> void:
+	if toggle_on and !hide_animation_timer.is_stopped():
+		hide_animation_timer.stop()
+	if toggle_on and !buttons_shown:
+		if tween_add_buttons and tween_add_buttons.is_running():
+			tween_add_buttons.stop()
+		tween_add_buttons = create_tween()
+		tween_add_buttons.set_parallel().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+		var distance_mult: float = (add_buttons_margin.size.y - add_buttons_margin.offset_transform_position.y) / add_buttons_margin.size.y
+		add_buttons_margin.visible = true
+		tween_add_buttons.tween_property(add_buttons_margin, "offset_transform_position:y", add_buttons_margin.size.y, add_buttons_animation_time * distance_mult)
+		tween_add_buttons.tween_property(add_buttons_margin, "modulate:a", 1.0, 0.2)
+		buttons_shown = true
+	elif !toggle_on and buttons_shown:
+		if tween_add_buttons and tween_add_buttons.is_running():
+			tween_add_buttons.stop()
+		tween_add_buttons = create_tween()
+		tween_add_buttons.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
+		tween_add_buttons.tween_interval(add_buttons_hide_delay)
+		tween_add_buttons.tween_property(add_buttons_margin, "offset_transform_position:y", 0.0, add_buttons_animation_time)
+		tween_add_buttons.tween_property(add_buttons_margin, "modulate:a", 0.0, 0.2)
+		tween_add_buttons.tween_property(add_buttons_margin, "visible", true, 0.0)
+		buttons_shown = false
+
+
+# Will be called by Canvas when selecting list
 func select() -> void:
 	pass
 
@@ -153,8 +185,11 @@ func end_input() -> void:
 
 func position_drop_visual_on_entry(entry_id: int) -> void:
 	var after_entry_position: Vector2 = Vector2.ZERO
+	# Position on empty list
+	if entries.size() == 0:
+		after_entry_position = Vector2.ZERO
 	# Position on next entry if not after last
-	if entry_id >= 0 and entry_id < entries.size() - 1:
+	elif entry_id >= 0 and entry_id < entries.size() - 1:
 		after_entry_position = (entries[entry_id+1].position
 							- Vector2(0.0, object_v_box.get_theme_constant("separation") * 0.5))
 	# After last entry, position at last entry + its height
@@ -304,10 +339,6 @@ func _on_scroll_mouse_exited() -> void:
 	_on_scroll_hover(false)
 
 
-func _on_add_button_pressed() -> void:
-	add_text_entry(true)
-
-
 func _on_list_text_entry_erase(entry: ListTextEntry) -> void:
 	entries.erase(entry)
 	reset_entry_ids()
@@ -383,3 +414,19 @@ func _on_gui_input(event: InputEvent) -> void:
 
 func _on_list_name_focus_entered() -> void:
 	text_edit_active.emit(id)
+
+
+func _on_mouse_hover_mouse_entered() -> void:
+	toggle_add_buttons(true)
+
+
+func _on_mouse_hover_mouse_exited() -> void:
+	toggle_add_buttons(false)
+
+
+func _on_add_text_entry_button_pressed() -> void:
+	add_text_entry(true)
+
+
+func _on_add_link_entry_button_pressed() -> void:
+	pass # Replace with function body.

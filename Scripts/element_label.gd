@@ -1,7 +1,7 @@
 class_name ElementLabel extends Panel
 
 @export var priority_tool_animation_time: float = 1.0
-@export var priority_tool_hide_delay: float = 3.0
+@export var priority_tool_hide_delay: float = 1.5
 @export var line_wrap_limit: float = 4.0
 @export var completed_stylebox: StyleBoxFlat
 @export var text_edit_theme: Theme
@@ -9,7 +9,7 @@ class_name ElementLabel extends Panel
 @export var completed_z_index = 0
 @export var active_z_index = 1
 @onready var background: Panel = $PanelContainer/Background
-@onready var priority: Panel = $PanelContainer/Background/Priority
+@onready var priority_panel: Panel = $PanelContainer/Background/PriorityPanel
 @onready var text_edit: TextEdit = %TextEdit
 @onready var text_margin_container: MarginContainer = $PanelContainer/Background/TextMarginContainer
 @onready var priority_buttons_margin: Control = %PriorityButtonsMargin
@@ -45,8 +45,8 @@ func _ready() -> void:
 	init_individual_style()
 	background.add_theme_stylebox_override("panel", individual_style.background_panel_style_box)
 	text_edit.theme = individual_style.text_edit_theme
-	priority_stylebox = priority.get_theme_stylebox("panel").duplicate()
-	priority.add_theme_stylebox_override("panel", priority_stylebox)
+	priority_stylebox = priority_panel.get_theme_stylebox("panel").duplicate()
+	priority_panel.add_theme_stylebox_override("panel", priority_stylebox)
 	total_horizontal_margin = text_margin_container.get_theme_constant("margin_left") + text_margin_container.get_theme_constant("margin_right")
 	total_vertical_margin = text_margin_container.get_theme_constant("margin_top") + text_margin_container.get_theme_constant("margin_bottom")
 
@@ -85,7 +85,7 @@ func toggle_completed() -> void:
 	completed = !completed
 	if completed:
 		background.add_theme_stylebox_override("panel", completed_stylebox)
-		priority.visible = false
+		priority_panel.visible = false
 		text_edit.theme = text_edit_completed_theme
 		z_index = completed_z_index
 	else:
@@ -95,7 +95,7 @@ func toggle_completed() -> void:
 		else:
 			background.add_theme_stylebox_override("panel", individual_style.background_panel_style_box)
 			text_edit.theme = individual_style.text_edit_theme
-		priority.visible = true
+		priority_panel.visible = true
 		z_index = active_z_index
 
 
@@ -118,7 +118,7 @@ func set_priority_color(color: Color) -> void:
 
 func set_priority_visible(toggled_on: bool) -> void:
 	priority_enabled = toggled_on
-	priority.visible = toggled_on
+	priority_panel.visible = toggled_on
 
 
 func get_text() -> String:

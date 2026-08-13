@@ -59,7 +59,6 @@ mouse_default_cursor_shape = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_562gy")
 script = ExtResource("1_m3njf")
 priority_tool_animation_time = 0.3
-priority_tool_hide_delay = 1.5
 line_wrap_limit = 5.0
 completed_stylebox = ExtResource("1_htelr")
 text_edit_theme = ExtResource("4_id6lq")
@@ -149,7 +148,7 @@ size_flags_horizontal = 3
 mouse_filter = 1
 theme_override_styles/panel = ExtResource("1_1b4pp")
 
-[node name="Priority" type="Panel" parent="PanelContainer/Background" unique_id=1272237648]
+[node name="PriorityPanel" type="Panel" parent="PanelContainer/Background" unique_id=1272237648]
 custom_minimum_size = Vector2(15, 0)
 layout_mode = 1
 anchors_preset = 11
