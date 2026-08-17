@@ -117,4 +117,6 @@ func drag_inside_visual_offsets(moving_entry_id: int) -> void:
 
 func toggle_entry_hover(on: bool) -> void:
 	for entry in list:
+		#if !on and !entry.grabber_clicked:
+			#entry._on_hover(false)
 		entry.can_hover = on

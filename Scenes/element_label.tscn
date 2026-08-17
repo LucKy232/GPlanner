@@ -4,13 +4,13 @@
 [ext_resource type="StyleBox" uid="uid://8g7b3501cxjx" path="res://Themes/element_completed_style_box.tres" id="1_htelr"]
 [ext_resource type="Script" uid="uid://bdpfuamwhbk56" path="res://Scripts/element_label.gd" id="1_m3njf"]
 [ext_resource type="Theme" uid="uid://dao6v8vx8h5ip" path="res://Themes/text_edit_theme.tres" id="4_id6lq"]
-[ext_resource type="StyleBox" uid="uid://b0l55wn2xggiw" path="res://Themes/none_priority_button_stylebox.tres" id="5_01as5"]
+[ext_resource type="StyleBox" uid="uid://b0l55wn2xggiw" path="res://Themes/Buttons/none_priority_button_stylebox.tres" id="5_01as5"]
 [ext_resource type="Theme" uid="uid://dfkiu7dg1cfmm" path="res://Themes/text_edit_completed_theme.tres" id="5_562gy"]
 [ext_resource type="PackedScene" uid="uid://cytlmlx7kw2l2" path="res://Scenes/drag_and_resize_input.tscn" id="5_847go"]
-[ext_resource type="StyleBox" uid="uid://wrrl0mk4mdli" path="res://Themes/active_priority_button_stylebox.tres" id="5_y2cp5"]
-[ext_resource type="StyleBox" uid="uid://0m1wm66xknlk" path="res://Themes/high_priority_button_stylebox.tres" id="6_bfvbn"]
-[ext_resource type="StyleBox" uid="uid://dgq7v0gkqrpgf" path="res://Themes/medium_priority_button_stylebox.tres" id="7_y2cp5"]
-[ext_resource type="StyleBox" uid="uid://dga3kal7lipkl" path="res://Themes/low_priority_button_stylebox.tres" id="8_847go"]
+[ext_resource type="StyleBox" uid="uid://wrrl0mk4mdli" path="res://Themes/Buttons/active_priority_button_stylebox.tres" id="5_y2cp5"]
+[ext_resource type="StyleBox" uid="uid://0m1wm66xknlk" path="res://Themes/Buttons/high_priority_button_stylebox.tres" id="6_bfvbn"]
+[ext_resource type="StyleBox" uid="uid://dgq7v0gkqrpgf" path="res://Themes/Buttons/medium_priority_button_stylebox.tres" id="7_y2cp5"]
+[ext_resource type="StyleBox" uid="uid://dga3kal7lipkl" path="res://Themes/Buttons/low_priority_button_stylebox.tres" id="8_847go"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_562gy"]
 

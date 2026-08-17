@@ -4,6 +4,8 @@
 [ext_resource type="StyleBox" uid="uid://bmpbaolapvao" path="res://Themes/menu_spacing_style.tres" id="2_aoes5"]
 [ext_resource type="SystemFont" uid="uid://celycldjtwytq" path="res://Themes/tooltip_font.tres" id="3_y2m2o"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_64hbi"]
+
 [resource]
 Button/colors/font_color = Color(1, 1, 1, 1)
 Button/colors/font_focus_color = Color(1, 1, 1, 1)
@@ -17,7 +19,7 @@ Button/fonts/font = ExtResource("1_hg70x")
 Button/styles/disabled = ExtResource("2_aoes5")
 Button/styles/focus = ExtResource("2_aoes5")
 Button/styles/hover = ExtResource("2_aoes5")
-Button/styles/normal = ExtResource("2_aoes5")
+Button/styles/normal = SubResource("StyleBoxEmpty_64hbi")
 Button/styles/pressed = ExtResource("2_aoes5")
 Label/colors/font_color = Color(1, 1, 1, 1)
 Label/colors/font_outline_color = Color(0, 0, 0, 1)

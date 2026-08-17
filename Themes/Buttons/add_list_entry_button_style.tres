@@ -1,0 +1,55 @@
+[gd_resource type="Theme" format=3 uid="uid://dpl4vlya0ab44"]
+
+[ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_iovqn"]
+[ext_resource type="StyleBox" uid="uid://bmpbaolapvao" path="res://Themes/menu_spacing_style.tres" id="2_ykwnm"]
+[ext_resource type="SystemFont" uid="uid://celycldjtwytq" path="res://Themes/tooltip_font.tres" id="3_urmcs"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iovqn"]
+content_margin_top = 5.0
+content_margin_right = 15.0
+content_margin_bottom = 5.0
+bg_color = Color(0.8, 0.8, 0.8, 0.35686275)
+draw_center = false
+border_width_left = 2
+border_width_right = 2
+border_width_bottom = 2
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ykwnm"]
+content_margin_top = 5.0
+content_margin_right = 15.0
+content_margin_bottom = 5.0
+bg_color = Color(0.8, 0.8, 0.8, 0.22352941)
+border_width_left = 3
+border_width_right = 3
+border_width_bottom = 3
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+corner_detail = 1
+expand_margin_bottom = 2.0
+
+[resource]
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/colors/font_focus_color = Color(1, 1, 1, 1)
+Button/colors/font_hover_color = Color(0.85, 0.85, 0.85, 1)
+Button/colors/font_hover_pressed_color = Color(0.85, 0.85, 0.85, 1)
+Button/colors/font_outline_color = Color(0, 0, 0, 1)
+Button/colors/font_pressed_color = Color(1, 1, 1, 1)
+Button/constants/outline_size = 2
+Button/font_sizes/font_size = 16
+Button/fonts/font = ExtResource("1_iovqn")
+Button/styles/disabled = ExtResource("2_ykwnm")
+Button/styles/focus = ExtResource("2_ykwnm")
+Button/styles/hover = SubResource("StyleBoxFlat_iovqn")
+Button/styles/normal = SubResource("StyleBoxFlat_ykwnm")
+Button/styles/pressed = ExtResource("2_ykwnm")
+Label/colors/font_color = Color(1, 1, 1, 1)
+Label/colors/font_outline_color = Color(0, 0, 0, 1)
+Label/colors/font_shadow_color = Color(0, 0, 0, 0)
+Label/constants/outline_size = 2
+Label/font_sizes/font_size = 16
+Label/fonts/font = ExtResource("1_iovqn")
+TooltipLabel/font_sizes/font_size = 16
+TooltipLabel/fonts/font = ExtResource("3_urmcs")

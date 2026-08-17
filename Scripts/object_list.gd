@@ -22,7 +22,6 @@ var tween_add_buttons: Tween
 var buttons_shown: bool = false
 @export var add_buttons_hide_delay: float = 1.5
 @export var add_buttons_animation_time: float = 0.5
-@onready var hide_animation_timer: Timer = $HideAnimationTimer
 @onready var add_buttons_margin: MarginContainer = %AddButtonsMargin
 
 signal list_changed
@@ -47,27 +46,28 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 			mouse_filter = Control.MOUSE_FILTER_STOP	# Stop the input going to canvas
 			can_drop.emit()
 			return false
+		# Start drag from outside
+		elif !dragger.is_dragging_outside and !entries.has(data):
+			dragger.start_drag_from_outside(entries, drop_visual.size.y, scroll_container.scroll_vertical)
+			toggle_add_buttons(false, true)
+			drop_visual.visible = true
+			scroll_container.clip_contents = false
+			drop_visual.size = Vector2(object_v_box.size.x, 25.0)
+			return true
+		# Continue drag from outside
+		elif dragger.is_dragging_outside:
+			var position_in_list: Vector2 = scroll_container.position
+			dragger.drag_from_outside(at_position - position_in_list, scroll_container.scroll_vertical)
+			position_drop_visual_on_entry(dragger.current - 1)
+			can_drop.emit()		# For visual on canvas
+			return true
 		else:
-			# Start drag from outside
-			if !dragger.is_dragging_outside and !entries.has(data):
-				dragger.start_drag_from_outside(entries, drop_visual.size.y, scroll_container.scroll_vertical)
-				drop_visual.visible = true
-				scroll_container.clip_contents = false
-				drop_visual.size = Vector2(object_v_box.size.x, 25.0)
-				return true
-			# Continue drag from outside
-			elif dragger.is_dragging_outside:
-				var position_in_list: Vector2 = scroll_container.position
-				dragger.drag_from_outside(at_position - position_in_list, scroll_container.scroll_vertical)
-				position_drop_visual_on_entry(dragger.current - 1)
-				can_drop.emit()		# For visual on canvas
-				return true
-			else:
-				return false
+			return false
 	elif data is ElementLabel:
 		# Start drag from outside
 		if !dragger.is_dragging_outside and mouse_inside:
 			dragger.start_drag_from_outside(entries, drop_visual.size.y, scroll_container.scroll_vertical)
+			toggle_add_buttons(false, true)
 			drop_visual.visible = true
 			scroll_container.clip_contents = false
 			drop_visual.size = Vector2(object_v_box.size.x, 25.0)
@@ -98,6 +98,7 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		drop_visual.visible = false
 		scroll_container.clip_contents = true
 		dragger.end_drag()
+		toggle_add_buttons(true)
 	if data is ElementLabel:
 		add_text_entry(false)
 		entries[-1].set_text(data.get_text())
@@ -109,19 +110,27 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		scroll_container.clip_contents = true
 		dragger.end_drag()
 		remove_element_request.emit(data.id)
+		toggle_add_buttons(true)
 
 
-func toggle_add_buttons(toggle_on: bool) -> void:
-	if toggle_on and !hide_animation_timer.is_stopped():
-		hide_animation_timer.stop()
+func toggle_add_buttons(toggle_on: bool, immediate: bool = false) -> void:
+	#print("TOGGLE %s %s" % [str(toggle_on), "" if !immediate else " IMMEDIATELY"])
+	if dragger.is_dragging_child or dragger.is_dragging_outside:
+		if toggle_on:
+			return
+		else:
+			add_buttons_margin.visible = false
+	if !toggle_on and !immediate and mouse_inside:	# TEST getting stopped
+		return
 	if toggle_on and !buttons_shown:
 		if tween_add_buttons and tween_add_buttons.is_running():
 			tween_add_buttons.stop()
 		tween_add_buttons = create_tween()
 		tween_add_buttons.set_parallel().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
-		var distance_mult: float = (add_buttons_margin.size.y - add_buttons_margin.offset_transform_position.y) / add_buttons_margin.size.y
+		var size_scaled: float = add_buttons_margin.size.y / add_buttons_margin.scale.y
+		var distance_mult: float = (size_scaled - add_buttons_margin.offset_transform_position.y) / size_scaled
 		add_buttons_margin.visible = true
-		tween_add_buttons.tween_property(add_buttons_margin, "offset_transform_position:y", add_buttons_margin.size.y, add_buttons_animation_time * distance_mult)
+		tween_add_buttons.tween_property(add_buttons_margin, "offset_transform_position:y", size_scaled, add_buttons_animation_time * distance_mult)
 		tween_add_buttons.tween_property(add_buttons_margin, "modulate:a", 1.0, 0.2)
 		buttons_shown = true
 	elif !toggle_on and buttons_shown:
@@ -129,7 +138,8 @@ func toggle_add_buttons(toggle_on: bool) -> void:
 			tween_add_buttons.stop()
 		tween_add_buttons = create_tween()
 		tween_add_buttons.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
-		tween_add_buttons.tween_interval(add_buttons_hide_delay)
+		tween_add_buttons.tween_interval(0.0 if immediate else add_buttons_hide_delay)
+		add_buttons_margin.visible = false if immediate else true
 		tween_add_buttons.tween_property(add_buttons_margin, "offset_transform_position:y", 0.0, add_buttons_animation_time)
 		tween_add_buttons.tween_property(add_buttons_margin, "modulate:a", 0.0, 0.2)
 		tween_add_buttons.tween_property(add_buttons_margin, "visible", true, 0.0)
@@ -293,22 +303,8 @@ func rebuild_from_dict(dict: Dictionary) -> void:
 	# TODO sort in entry.id order if they don't get saved in order in the .json???
 
 
-# Map order to entry
-func to_json() -> Dictionary:
-	var dict: Dictionary
-	dict["entries"] = {}
-	for entry in entries:
-		var entry_id: int = entry.id
-		dict["entries"][entry_id] = entry.to_json()
-	dict["id"] = id
-	dict["pos.x"] = position.x
-	dict["pos.y"] = position.y
-	dict["size.x"] = size.x
-	dict["size.y"] = size.y
-	return dict
-
-
 func _on_scroll_hover(on: bool) -> void:
+	#print("SCROLL %s" % [str(on)])
 	mouse_inside = on
 	if !on and dragger.is_dragging_outside:
 		mouse_filter = Control.MOUSE_FILTER_PASS
@@ -322,6 +318,21 @@ func _on_scroll_hover(on: bool) -> void:
 		if !on:
 			mouse_filter = Control.MOUSE_FILTER_PASS
 			drop_visual.visible = on
+
+
+# Map order to entry
+func to_json() -> Dictionary:
+	var dict: Dictionary
+	dict["entries"] = {}
+	for entry in entries:
+		var entry_id: int = entry.id
+		dict["entries"][entry_id] = entry.to_json()
+	dict["id"] = id
+	dict["pos.x"] = position.x
+	dict["pos.y"] = position.y
+	dict["size.x"] = size.x
+	dict["size.y"] = size.y
+	return dict
 
 
 func _on_scroll() -> void:
@@ -366,6 +377,7 @@ func _on_list_text_entry_grabber_started_move(entry_id: int, event_pos: Vector2)
 		push_error("Entry ID %d Invalid!" % [entry_id])
 		return
 	dragger.start_drag_child(entry_id, entries, event_pos, drop_visual.size.y, scroll_container.scroll_vertical)
+	toggle_add_buttons(false, true)
 	dragging.emit(true)
 	drop_visual.visible = true
 	drop_visual.size = entries[entry_id].size
@@ -416,11 +428,21 @@ func _on_list_name_focus_entered() -> void:
 	text_edit_active.emit(id)
 
 
+func _on_add_buttons_gui_input(_event: InputEvent) -> void:
+	toggle_add_buttons(true)
+
+
 func _on_mouse_hover_mouse_entered() -> void:
+	mouse_inside = true
 	toggle_add_buttons(true)
 
 
 func _on_mouse_hover_mouse_exited() -> void:
+	toggle_add_buttons(false)
+	#mouse_inside = false
+
+
+func _on_add_buttons_mouse_exited() -> void:
 	toggle_add_buttons(false)
 
 

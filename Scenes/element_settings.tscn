@@ -14,10 +14,10 @@
 [ext_resource type="Theme" uid="uid://oh7uiqgv8si2" path="res://Themes/div_theme.tres" id="6_btr2c"]
 [ext_resource type="StyleBox" uid="uid://bmpbaolapvao" path="res://Themes/menu_spacing_style.tres" id="6_nvup7"]
 [ext_resource type="Theme" uid="uid://difn8r11pk3w" path="res://Themes/panel_theme.tres" id="8_btr2c"]
-[ext_resource type="Theme" uid="uid://bhx07jq36cjrb" path="res://Themes/option_button_theme.tres" id="8_vcnja"]
-[ext_resource type="Theme" uid="uid://baxthgpikfcos" path="res://Themes/color_picker_button_theme.tres" id="12_r7vyq"]
+[ext_resource type="Theme" uid="uid://bhx07jq36cjrb" path="res://Themes/Buttons/option_button_theme.tres" id="8_vcnja"]
+[ext_resource type="Theme" uid="uid://baxthgpikfcos" path="res://Themes/Buttons/color_picker_button_theme.tres" id="12_r7vyq"]
 [ext_resource type="Theme" uid="uid://cjbq8yvomvgbp" path="res://Themes/spin_box_elem_settings_theme.tres" id="13_nvup7"]
-[ext_resource type="Theme" uid="uid://c2dbtkfh88hkp" path="res://Themes/settings_category_toggle_button_theme.tres" id="15_rhtjl"]
+[ext_resource type="Theme" uid="uid://c2dbtkfh88hkp" path="res://Themes/Buttons/settings_category_toggle_button_theme.tres" id="15_rhtjl"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6vqs3"]
 

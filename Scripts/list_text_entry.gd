@@ -1,4 +1,4 @@
-class_name ListTextEntry extends HBoxContainer
+class_name ListTextEntry extends VBoxContainer
 
 @onready var priority_idicator: PriorityIndicatorDot = $PriorityIdicator
 @onready var text_edit: TextEdit = $TextEdit
@@ -25,7 +25,9 @@ func _ready() -> void:
 
 
 func _get_drag_data(_at_position: Vector2) -> Variant:
-	return self
+	if grabber_clicked:
+		return self
+	return null
 
 
 func _input(event: InputEvent) -> void:
