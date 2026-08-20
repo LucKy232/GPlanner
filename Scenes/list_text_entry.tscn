@@ -5,47 +5,25 @@
 [ext_resource type="Texture2D" uid="uid://bbpq8wbljm0dp" path="res://Icons/grabber.svg" id="3_1jr1i"]
 [ext_resource type="Theme" uid="uid://dao6v8vx8h5ip" path="res://Themes/text_edit_theme.tres" id="4_jvbgi"]
 [ext_resource type="Theme" uid="uid://cyvcgv6iv156i" path="res://Themes/Buttons/list_text_entry_buttons.tres" id="5_64hbi"]
-[ext_resource type="Texture2D" uid="uid://bpg0cl1gsdmyi" path="res://Icons/object_check.svg" id="6_upunm"]
 [ext_resource type="Texture2D" uid="uid://c2aisi4g5mld" path="res://Icons/object_delete.svg" id="7_lo4fr"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_553ya"]
 resource_local_to_scene = true
 
-[node name="VBoxContainer" type="VBoxContainer" unique_id=543502185]
+[node name="ListTextEntry" type="VBoxContainer" unique_id=543502185]
 offset_right = 175.0
-offset_bottom = 25.0
+offset_bottom = 53.0
 size_flags_horizontal = 3
-
-[node name="Buttons" type="HBoxContainer" parent="." unique_id=995811147]
-visible = false
-layout_mode = 2
-
-[node name="CompleteButton" type="Button" parent="Buttons" unique_id=1713152227]
-light_mask = 8
-visibility_layer = 8
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme = ExtResource("5_64hbi")
-icon = ExtResource("6_upunm")
-
-[node name="EraseButton" type="Button" parent="Buttons" unique_id=1258167089]
-light_mask = 8
-visibility_layer = 8
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme = ExtResource("5_64hbi")
-icon = ExtResource("7_lo4fr")
-
-[node name="ListTextEntry" type="HBoxContainer" parent="." unique_id=1590603649]
-light_mask = 8
-visibility_layer = 8
-layout_mode = 2
 offset_transform_enabled = true
 script = ExtResource("1_64hbi")
 
-[node name="PriorityIdicator" type="Control" parent="ListTextEntry" unique_id=1567381431]
+[node name="HBox" type="HBoxContainer" parent="." unique_id=1590603649]
+light_mask = 8
+visibility_layer = 8
+layout_mode = 2
+
+[node name="PriorityIdicator" type="Control" parent="HBox" unique_id=1567381431]
+unique_name_in_owner = true
 visible = false
 light_mask = 8
 visibility_layer = 8
@@ -59,7 +37,8 @@ circle_radius = 4.0
 circle_thickness = 1.5
 inner_circle_color = Color(0, 0, 0, 0)
 
-[node name="GrabberMargin" type="MarginContainer" parent="ListTextEntry" unique_id=1191081857]
+[node name="GrabberMargin" type="MarginContainer" parent="HBox" unique_id=1191081857]
+unique_name_in_owner = true
 light_mask = 8
 visibility_layer = 8
 layout_mode = 2
@@ -70,14 +49,15 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 2
 theme_override_constants/margin_bottom = 0
 
-[node name="Grabber" type="TextureRect" parent="ListTextEntry/GrabberMargin" unique_id=255095561]
+[node name="Grabber" type="TextureRect" parent="HBox/GrabberMargin" unique_id=255095561]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
 texture = ExtResource("3_1jr1i")
 stretch_mode = 3
 
-[node name="TextEdit" type="TextEdit" parent="ListTextEntry" unique_id=387839086]
+[node name="TextEdit" type="TextEdit" parent="HBox" unique_id=387839086]
+unique_name_in_owner = true
 light_mask = 8
 visibility_layer = 8
 layout_mode = 2
@@ -85,19 +65,37 @@ size_flags_horizontal = 3
 size_flags_vertical = 0
 mouse_filter = 1
 theme = ExtResource("4_jvbgi")
+theme_override_font_sizes/font_size = 12
 wrap_mode = 1
 scroll_fit_content_height = true
 
+[node name="Buttons" type="HBoxContainer" parent="." unique_id=995811147]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+
+[node name="EraseButton" type="Button" parent="Buttons" unique_id=1258167089]
+unique_name_in_owner = true
+light_mask = 8
+visibility_layer = 8
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 4
+theme = ExtResource("5_64hbi")
+icon = ExtResource("7_lo4fr")
+
 [node name="MouseHover" type="Area2D" parent="." unique_id=600296509]
+unique_name_in_owner = true
 position = Vector2(0, 28)
 
 [node name="MouseHoverShape" type="CollisionShape2D" parent="MouseHover" unique_id=509521195]
+unique_name_in_owner = true
 shape = SubResource("RectangleShape2D_553ya")
 
-[connection signal="resized" from="ListTextEntry" to="ListTextEntry" method="_on_resized"]
-[connection signal="gui_input" from="ListTextEntry/GrabberMargin" to="ListTextEntry" method="_on_grabber_margin_gui_input"]
-[connection signal="focus_entered" from="ListTextEntry/TextEdit" to="ListTextEntry" method="_on_text_edit_focus_entered"]
-[connection signal="focus_exited" from="ListTextEntry/TextEdit" to="ListTextEntry" method="_on_text_edit_focus_exited"]
-[connection signal="lines_edited_from" from="ListTextEntry/TextEdit" to="ListTextEntry" method="_on_text_edit_lines_edited_from"]
-[connection signal="mouse_entered" from="MouseHover" to="ListTextEntry" method="_on_mouse_hover_mouse_entered"]
-[connection signal="mouse_exited" from="MouseHover" to="ListTextEntry" method="_on_mouse_hover_mouse_exited"]
+[connection signal="resized" from="." to="." method="_on_resized"]
+[connection signal="gui_input" from="HBox/GrabberMargin" to="." method="_on_grabber_margin_gui_input"]
+[connection signal="focus_entered" from="HBox/TextEdit" to="." method="_on_text_edit_focus_entered"]
+[connection signal="focus_exited" from="HBox/TextEdit" to="." method="_on_text_edit_focus_exited"]
+[connection signal="lines_edited_from" from="HBox/TextEdit" to="." method="_on_text_edit_lines_edited_from"]
+[connection signal="mouse_entered" from="MouseHover" to="." method="_on_mouse_hover_mouse_entered"]
+[connection signal="mouse_exited" from="MouseHover" to="." method="_on_mouse_hover_mouse_exited"]

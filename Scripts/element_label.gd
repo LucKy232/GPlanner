@@ -1,7 +1,6 @@
 class_name ElementLabel extends Panel
 
 @export var priority_tool_animation_time: float = 1.0
-@export var priority_tool_hide_delay: float = 1.5
 @export var line_wrap_limit: float = 4.0
 @export var completed_stylebox: StyleBoxFlat
 @export var text_edit_theme: Theme
@@ -16,7 +15,6 @@ class_name ElementLabel extends Panel
 @onready var priority_buttons: VBoxContainer = %PriorityButtons
 @onready var grab_indicator: Panel = %GrabIndicator
 @onready var resize_timer: Timer = $ResizeTimer
-@onready var hide_animation_timer: Timer = $HideAnimationTimer
 @onready var drag_and_resize_input: DragAndResizeInput = $DragAndResizeInput
 
 var individual_style: ElementPresetStyle
@@ -24,7 +22,7 @@ var priority_stylebox: StyleBoxFlat
 var preset_text_edit_theme: Theme
 var preset_background_stylebox: StyleBoxFlat
 var id: int
-var priority_id: int
+var priority_id: Enums.Priority
 var style_preset_id: String = "none"
 var completed: bool = false
 var has_style_preset: bool = false
@@ -130,8 +128,6 @@ func set_text(text: String) -> void:
 
 
 func toggle_priority_tool(toggle_on: bool) -> void:
-	if toggle_on and !hide_animation_timer.is_stopped():
-		hide_animation_timer.stop()
 	if toggle_on and !priority_tool_shown and priority_tool_enabled:
 		priority_buttons_margin.visible = true
 		if tween_priority_buttons and tween_priority_buttons.is_running():
@@ -147,7 +143,6 @@ func toggle_priority_tool(toggle_on: bool) -> void:
 			tween_priority_buttons.stop()
 		tween_priority_buttons = create_tween()
 		tween_priority_buttons.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
-		tween_priority_buttons.tween_interval(priority_tool_hide_delay)
 		tween_priority_buttons.tween_property(priority_buttons_margin, "offset_transform_position:x", 0.0, priority_tool_animation_time)
 		tween_priority_buttons.tween_property(priority_buttons_margin, "modulate:a", 0.0, 0.2)
 		tween_priority_buttons.tween_property(priority_buttons_margin, "visible", true, 0.0)
@@ -205,6 +200,7 @@ func is_editing_text() -> bool:
 func select() -> void:
 	z_index = 2
 	grab_indicator.visible = true
+	toggle_priority_tool(true)
 
 
 func deselect() -> void:
@@ -212,6 +208,7 @@ func deselect() -> void:
 	z_index = completed_z_index if completed else active_z_index
 	exit_text_edit()
 	grab_indicator.visible = false
+	toggle_priority_tool(false)
 
 
 func to_json() -> Dictionary:
@@ -233,38 +230,28 @@ func to_json() -> Dictionary:
 
 
 func _on_priority_active_pressed() -> void:
-	priority_id = 0
+	priority_id = Enums.Priority.ACTIVE
 	changed_priority.emit()
 
 
 func _on_priority_high_pressed() -> void:
-	priority_id = 1
+	priority_id = Enums.Priority.HIGH
 	changed_priority.emit()
 
 
 func _on_priority_medium_pressed() -> void:
-	priority_id = 2
+	priority_id = Enums.Priority.MEDIUM
 	changed_priority.emit()
 
 
 func _on_priority_low_pressed() -> void:
-	priority_id = 3
+	priority_id = Enums.Priority.LOW
 	changed_priority.emit()
 
 
 func _on_priority_none_pressed() -> void:
-	priority_id = 4
+	priority_id = Enums.Priority.NONE
 	changed_priority.emit()
-
-
-func _on_priority_buttons_gui_input(_event: InputEvent) -> void:
-	if !completed and priority_enabled:
-		toggle_priority_tool(true)
-
-
-func _on_priority_buttons_mouse_exited() -> void:
-	if hide_animation_timer and hide_animation_timer.is_inside_tree():
-		hide_animation_timer.start()
 
 
 func _on_resize_timer_timeout() -> void:
@@ -281,12 +268,6 @@ func _on_text_edit_resized() -> void:
 		custom_minimum_size.y = text_edit.size.y + total_vertical_margin
 
 
-func _on_background_gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion and event.position.x > (size.x - 25.0):
-		if !manual_resize and !completed and priority_enabled:
-			toggle_priority_tool(true)
-
-
 func _on_text_edit_lines_edited_from(_from_line: int, _to_line: int) -> void:
 	text_changed.emit()
 
@@ -298,7 +279,3 @@ func _on_text_edit_gui_input(event: InputEvent) -> void:
 
 func _on_text_edit_focus_entered() -> void:
 	became_selected.emit()
-
-
-func _on_hide_animation_timer_timeout() -> void:
-	toggle_priority_tool(false)

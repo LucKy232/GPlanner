@@ -1,12 +1,8 @@
-extends Control
-class_name PlannerCanvas
+class_name PlannerCanvas extends Control
 ## Manages a single file / tab
 
 @onready var connection_container: Control = %ConnectionContainer
 @onready var object_container: Control = %ObjectContainer
-#@onready var focused_container: Control = %FocusedContainer
-#@onready var list_container: Control = %ListContainer
-#@onready var element_container: Control = %ElementContainer
 @onready var selection_viewer: Panel = %SelectionViewer
 @onready var connection_indicator: Panel = %ConnectionIndicator
 @onready var background: Panel = $Background
@@ -255,11 +251,12 @@ func add_object_list(at_position: Vector2, id_specified: int = -1) -> void:
 	new_list.filtered_gui_input.connect(_on_object_list_mouse_input)
 	new_list.list_changed.connect(_on_list_changed)
 	new_list.dragging.connect(_on_list_dragging_toggled)
+	new_list.remove_element_request.connect(_on_list_remove_element_request)
+	new_list.text_edit_active.connect(_on_list_text_edit_active)
+	new_list.select_request.connect(_on_list_select_requested)
 	new_list.drag_and_resize_input.drag_requested.connect(_on_control_dragged.bind(new_list))
 	new_list.drag_and_resize_input.resize_requested.connect(_on_control_resized.bind(new_list))
 	new_list.drag_and_resize_input.input_ended.connect(_on_control_input_ended.bind(new_list))
-	new_list.remove_element_request.connect(_on_list_remove_element_request)
-	new_list.text_edit_active.connect(_on_list_text_edit_active)
 
 
 func add_element_label(at_position: Vector2, id_specified: int = -1) -> int:
@@ -582,7 +579,7 @@ func rebuild_elements(json_elems: Dictionary) -> void:
 			if json_elems[i].has("style_preset_id"):
 				style_id = str(json_elems[i]["style_preset_id"])
 			elements[elem_id].change_size(Vector2(json_elems[i]["size.x"], json_elems[i]["size.y"]))
-			elements[elem_id].priority_id = priority_id
+			elements[elem_id].priority_id = priority_id as Enums.Priority
 			elements[elem_id].set_priority_color(priority_colors[priority_id])
 			if json_elems[i].has("bgcolor.r"):	# Backwards compatibility
 				var c: Color = Color(json_elems[i]["bgcolor.r"], json_elems[i]["bgcolor.g"], json_elems[i]["bgcolor.b"], json_elems[i]["bgcolor.a"])
@@ -1040,6 +1037,11 @@ func _on_list_dragging_toggled(drag_on: bool) -> void:
 
 
 func _on_list_text_edit_active(list_id: int) -> void:
+	if lists.has(list_id):
+		select_list(list_id)
+
+
+func _on_list_select_requested(list_id: int) -> void:
 	if lists.has(list_id):
 		select_list(list_id)
 

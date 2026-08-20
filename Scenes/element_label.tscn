@@ -222,30 +222,14 @@ scroll_fit_content_width = true
 wait_time = 0.25
 one_shot = true
 
-[node name="HideAnimationTimer" type="Timer" parent="." unique_id=358531202]
-wait_time = 0.5
-
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
-[connection signal="gui_input" from="PanelContainer/PriorityButtonsMargin/PriorityButtons/PriorityActive" to="." method="_on_priority_buttons_gui_input"]
-[connection signal="mouse_exited" from="PanelContainer/PriorityButtonsMargin/PriorityButtons/PriorityActive" to="." method="_on_priority_buttons_mouse_exited"]
 [connection signal="pressed" from="PanelContainer/PriorityButtonsMargin/PriorityButtons/PriorityActive" to="." method="_on_priority_active_pressed"]
-[connection signal="gui_input" from="PanelContainer/PriorityButtonsMargin/PriorityButtons/PriorityHigh" to="." method="_on_priority_buttons_gui_input"]
-[connection signal="mouse_exited" from="PanelContainer/PriorityButtonsMargin/PriorityButtons/PriorityHigh" to="." method="_on_priority_buttons_mouse_exited"]
 [connection signal="pressed" from="PanelContainer/PriorityButtonsMargin/PriorityButtons/PriorityHigh" to="." method="_on_priority_high_pressed"]
-[connection signal="gui_input" from="PanelContainer/PriorityButtonsMargin/PriorityButtons/PriorityMedium" to="." method="_on_priority_buttons_gui_input"]
-[connection signal="mouse_exited" from="PanelContainer/PriorityButtonsMargin/PriorityButtons/PriorityMedium" to="." method="_on_priority_buttons_mouse_exited"]
 [connection signal="pressed" from="PanelContainer/PriorityButtonsMargin/PriorityButtons/PriorityMedium" to="." method="_on_priority_medium_pressed"]
-[connection signal="gui_input" from="PanelContainer/PriorityButtonsMargin/PriorityButtons/PriorityLow" to="." method="_on_priority_buttons_gui_input"]
-[connection signal="mouse_exited" from="PanelContainer/PriorityButtonsMargin/PriorityButtons/PriorityLow" to="." method="_on_priority_buttons_mouse_exited"]
 [connection signal="pressed" from="PanelContainer/PriorityButtonsMargin/PriorityButtons/PriorityLow" to="." method="_on_priority_low_pressed"]
-[connection signal="gui_input" from="PanelContainer/PriorityButtonsMargin/PriorityButtons/PriorityNone" to="." method="_on_priority_buttons_gui_input"]
-[connection signal="mouse_exited" from="PanelContainer/PriorityButtonsMargin/PriorityButtons/PriorityNone" to="." method="_on_priority_buttons_mouse_exited"]
 [connection signal="pressed" from="PanelContainer/PriorityButtonsMargin/PriorityButtons/PriorityNone" to="." method="_on_priority_none_pressed"]
-[connection signal="gui_input" from="PanelContainer/Background" to="." method="_on_background_gui_input"]
-[connection signal="mouse_exited" from="PanelContainer/Background" to="." method="_on_priority_buttons_mouse_exited"]
 [connection signal="focus_entered" from="PanelContainer/Background/TextMarginContainer/InputBlocker/TextEdit" to="." method="_on_text_edit_focus_entered"]
 [connection signal="gui_input" from="PanelContainer/Background/TextMarginContainer/InputBlocker/TextEdit" to="." method="_on_text_edit_gui_input"]
 [connection signal="lines_edited_from" from="PanelContainer/Background/TextMarginContainer/InputBlocker/TextEdit" to="." method="_on_text_edit_lines_edited_from"]
 [connection signal="resized" from="PanelContainer/Background/TextMarginContainer/InputBlocker/TextEdit" to="." method="_on_text_edit_resized"]
 [connection signal="timeout" from="ResizeTimer" to="." method="_on_resize_timer_timeout"]
-[connection signal="timeout" from="HideAnimationTimer" to="." method="_on_hide_animation_timer_timeout"]

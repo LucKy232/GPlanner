@@ -20,7 +20,6 @@ var top_left_margin: Vector2 = Vector2.ZERO
 # Tween add entry buttons on the bottom
 var tween_add_buttons: Tween
 var buttons_shown: bool = false
-@export var add_buttons_hide_delay: float = 1.5
 @export var add_buttons_animation_time: float = 0.5
 @onready var add_buttons_margin: MarginContainer = %AddButtonsMargin
 
@@ -28,6 +27,7 @@ signal list_changed
 signal filtered_gui_input
 signal can_drop
 signal remove_element_request
+signal select_request
 signal text_edit_active
 signal dragging
 
@@ -49,7 +49,6 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 		# Start drag from outside
 		elif !dragger.is_dragging_outside and !entries.has(data):
 			dragger.start_drag_from_outside(entries, drop_visual.size.y, scroll_container.scroll_vertical)
-			toggle_add_buttons(false, true)
 			drop_visual.visible = true
 			scroll_container.clip_contents = false
 			drop_visual.size = Vector2(object_v_box.size.x, 25.0)
@@ -67,7 +66,6 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 		# Start drag from outside
 		if !dragger.is_dragging_outside and mouse_inside:
 			dragger.start_drag_from_outside(entries, drop_visual.size.y, scroll_container.scroll_vertical)
-			toggle_add_buttons(false, true)
 			drop_visual.visible = true
 			scroll_container.clip_contents = false
 			drop_visual.size = Vector2(object_v_box.size.x, 25.0)
@@ -98,7 +96,7 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		drop_visual.visible = false
 		scroll_container.clip_contents = true
 		dragger.end_drag()
-		toggle_add_buttons(true)
+		select_request.emit(id)
 	if data is ElementLabel:
 		add_text_entry(false)
 		entries[-1].set_text(data.get_text())
@@ -110,17 +108,11 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		scroll_container.clip_contents = true
 		dragger.end_drag()
 		remove_element_request.emit(data.id)
-		toggle_add_buttons(true)
+		select_request.emit(id)
 
 
-func toggle_add_buttons(toggle_on: bool, immediate: bool = false) -> void:
-	#print("TOGGLE %s %s" % [str(toggle_on), "" if !immediate else " IMMEDIATELY"])
-	if dragger.is_dragging_child or dragger.is_dragging_outside:
-		if toggle_on:
-			return
-		else:
-			add_buttons_margin.visible = false
-	if !toggle_on and !immediate and mouse_inside:	# TEST getting stopped
+func toggle_add_buttons(toggle_on: bool) -> void:
+	if (dragger.is_dragging_child or dragger.is_dragging_outside) and toggle_on:
 		return
 	if toggle_on and !buttons_shown:
 		if tween_add_buttons and tween_add_buttons.is_running():
@@ -138,23 +130,21 @@ func toggle_add_buttons(toggle_on: bool, immediate: bool = false) -> void:
 			tween_add_buttons.stop()
 		tween_add_buttons = create_tween()
 		tween_add_buttons.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
-		tween_add_buttons.tween_interval(0.0 if immediate else add_buttons_hide_delay)
-		add_buttons_margin.visible = false if immediate else true
 		tween_add_buttons.tween_property(add_buttons_margin, "offset_transform_position:y", 0.0, add_buttons_animation_time)
 		tween_add_buttons.tween_property(add_buttons_margin, "modulate:a", 0.0, 0.2)
 		tween_add_buttons.tween_property(add_buttons_margin, "visible", true, 0.0)
 		buttons_shown = false
 
 
-# Will be called by Canvas when selecting list
 func select() -> void:
-	pass
+	toggle_add_buttons(true)
 
 
 func deselect() -> void:
 	if list_name.has_focus():
 		list_name.release_focus()
 	exit_text_edit()
+	toggle_add_buttons(false)
 
 
 func is_editing_text() -> bool:
@@ -303,23 +293,6 @@ func rebuild_from_dict(dict: Dictionary) -> void:
 	# TODO sort in entry.id order if they don't get saved in order in the .json???
 
 
-func _on_scroll_hover(on: bool) -> void:
-	#print("SCROLL %s" % [str(on)])
-	mouse_inside = on
-	if !on and dragger.is_dragging_outside:
-		mouse_filter = Control.MOUSE_FILTER_PASS
-		drop_visual.visible = false
-		scroll_container.clip_contents = true
-		dragger.end_drag()
-	if dragger.is_dragging_child:
-		if on:
-			mouse_filter = Control.MOUSE_FILTER_STOP
-			drop_visual.visible = on
-		if !on:
-			mouse_filter = Control.MOUSE_FILTER_PASS
-			drop_visual.visible = on
-
-
 # Map order to entry
 func to_json() -> Dictionary:
 	var dict: Dictionary
@@ -335,6 +308,21 @@ func to_json() -> Dictionary:
 	return dict
 
 
+func _on_scroll_hover(inside: bool) -> void:
+	mouse_inside = inside
+	if dragger.is_dragging_outside and !inside:
+		mouse_filter = Control.MOUSE_FILTER_PASS
+		drop_visual.visible = false
+		scroll_container.clip_contents = true
+		dragger.end_drag()
+	if dragger.is_dragging_child and inside:
+		mouse_filter = Control.MOUSE_FILTER_STOP
+		drop_visual.visible = inside
+	if dragger.is_dragging_child and !inside:
+		mouse_filter = Control.MOUSE_FILTER_PASS
+		drop_visual.visible = inside
+
+
 func _on_scroll() -> void:
 	if dragger.is_dragging_child:
 		position_child_drop_visual(dragger.current, dragger.object_id)
@@ -348,6 +336,10 @@ func _on_scroll_mouse_entered() -> void:
 
 func _on_scroll_mouse_exited() -> void:
 	_on_scroll_hover(false)
+
+
+func _on_mouse_hover_mouse_entered() -> void:
+	mouse_inside = true
 
 
 func _on_list_text_entry_erase(entry: ListTextEntry) -> void:
@@ -377,7 +369,6 @@ func _on_list_text_entry_grabber_started_move(entry_id: int, event_pos: Vector2)
 		push_error("Entry ID %d Invalid!" % [entry_id])
 		return
 	dragger.start_drag_child(entry_id, entries, event_pos, drop_visual.size.y, scroll_container.scroll_vertical)
-	toggle_add_buttons(false, true)
 	dragging.emit(true)
 	drop_visual.visible = true
 	drop_visual.size = entries[entry_id].size
@@ -426,24 +417,6 @@ func _on_gui_input(event: InputEvent) -> void:
 
 func _on_list_name_focus_entered() -> void:
 	text_edit_active.emit(id)
-
-
-func _on_add_buttons_gui_input(_event: InputEvent) -> void:
-	toggle_add_buttons(true)
-
-
-func _on_mouse_hover_mouse_entered() -> void:
-	mouse_inside = true
-	toggle_add_buttons(true)
-
-
-func _on_mouse_hover_mouse_exited() -> void:
-	toggle_add_buttons(false)
-	#mouse_inside = false
-
-
-func _on_add_buttons_mouse_exited() -> void:
-	toggle_add_buttons(false)
 
 
 func _on_add_text_entry_button_pressed() -> void:
