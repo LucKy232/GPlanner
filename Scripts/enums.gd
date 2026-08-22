@@ -53,3 +53,10 @@ enum DrawingTool {
 	MOVE,
 	#BOX_SELECT,
 }
+
+enum Side {
+	LEFT,
+	RIGHT,
+	TOP,
+	BOTTOM,
+}

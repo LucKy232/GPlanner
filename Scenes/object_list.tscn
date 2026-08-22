@@ -6,6 +6,7 @@
 [ext_resource type="Theme" uid="uid://dao6v8vx8h5ip" path="res://Themes/text_edit_theme.tres" id="2_qbj2a"]
 [ext_resource type="PackedScene" uid="uid://brbbmqwm6hpj4" path="res://Scenes/div.tscn" id="3_qbj2a"]
 [ext_resource type="Theme" uid="uid://u70boqrojq3j" path="res://Themes/placeholder_visual_panel.tres" id="5_01tnx"]
+[ext_resource type="Script" uid="uid://b0ioikc1dokvh" path="res://AddonsOwn/tween_show_hide.gd" id="6_7y3jv"]
 [ext_resource type="Theme" uid="uid://dpl4vlya0ab44" path="res://Themes/Buttons/add_list_entry_button_style.tres" id="7_khfxa"]
 [ext_resource type="Texture2D" uid="uid://xj70o30q5but" path="res://Icons/add_text.svg" id="8_khfxa"]
 [ext_resource type="Texture2D" uid="uid://b34ikx2kfdvbg" path="res://Icons/add_link.svg" id="9_7y3jv"]
@@ -35,33 +36,45 @@ mouse_default_cursor_shape = 2
 script = ExtResource("1_01tnx")
 list_text_entry_scene = "uid://q0me3hofnycc"
 div_scene = "uid://brbbmqwm6hpj4"
-add_buttons_animation_time = 0.15
 
 [node name="DragAndResizeInput" parent="." unique_id=713311794 instance=ExtResource("2_8suv5")]
 layout_mode = 1
 
 [node name="AddButtonsMargin" type="MarginContainer" parent="." unique_id=2002850228]
 unique_name_in_owner = true
-visible = false
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -74.0
-offset_right = 250.0
+offset_right = 30.0
 grow_vertical = 0
 scale = Vector2(0.4, 0.4)
-offset_transform_enabled = true
-offset_transform_visual_only = false
 mouse_filter = 2
 theme_override_constants/margin_left = 15
 theme_override_constants/margin_right = 15
 
-[node name="AddButtonsVBox" type="HBoxContainer" parent="AddButtonsMargin" unique_id=342403256]
+[node name="AddButtonsTween" type="Control" parent="AddButtonsMargin" unique_id=1764684824 node_paths=PackedStringArray("target")]
+unique_name_in_owner = true
 layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+mouse_filter = 2
+script = ExtResource("6_7y3jv")
+target = NodePath("AddButtonsVBox")
+side = 3
+animation_time = 0.25
+transition_type = 7
+
+[node name="AddButtonsVBox" type="HBoxContainer" parent="AddButtonsMargin/AddButtonsTween" unique_id=342403256]
+visible = false
+layout_mode = 0
+offset_right = 167.0
+offset_bottom = 74.0
+offset_transform_enabled = true
+offset_transform_visual_only = false
 theme_override_constants/separation = 3
 
-[node name="AddTextEntryButton" type="Button" parent="AddButtonsMargin/AddButtonsVBox" unique_id=2005618136]
+[node name="AddTextEntryButton" type="Button" parent="AddButtonsMargin/AddButtonsTween/AddButtonsVBox" unique_id=2005618136]
 texture_filter = 2
 layout_mode = 2
 size_flags_horizontal = 3
@@ -71,7 +84,7 @@ theme = ExtResource("7_khfxa")
 icon = ExtResource("8_khfxa")
 icon_alignment = 1
 
-[node name="AddLinkEntryButton" type="Button" parent="AddButtonsMargin/AddButtonsVBox" unique_id=1349397655]
+[node name="AddLinkEntryButton" type="Button" parent="AddButtonsMargin/AddButtonsTween/AddButtonsVBox" unique_id=1349397655]
 texture_filter = 2
 layout_mode = 2
 size_flags_horizontal = 3
@@ -181,8 +194,8 @@ debug_color = Color(0, 0.5950001, 0.7, 0)
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="resized" from="." to="." method="_on_resized"]
-[connection signal="pressed" from="AddButtonsMargin/AddButtonsVBox/AddTextEntryButton" to="." method="_on_add_text_entry_button_pressed"]
-[connection signal="pressed" from="AddButtonsMargin/AddButtonsVBox/AddLinkEntryButton" to="." method="_on_add_link_entry_button_pressed"]
+[connection signal="pressed" from="AddButtonsMargin/AddButtonsTween/AddButtonsVBox/AddTextEntryButton" to="." method="_on_add_text_entry_button_pressed"]
+[connection signal="pressed" from="AddButtonsMargin/AddButtonsTween/AddButtonsVBox/AddLinkEntryButton" to="." method="_on_add_link_entry_button_pressed"]
 [connection signal="focus_entered" from="MarginContainer/VBoxContainer/ListName" to="." method="_on_list_name_focus_entered"]
 [connection signal="mouse_entered" from="MarginContainer/VBoxContainer/ScrollContainer" to="." method="_on_scroll_mouse_entered"]
 [connection signal="mouse_exited" from="MarginContainer/VBoxContainer/ScrollContainer" to="." method="_on_scroll_mouse_exited"]

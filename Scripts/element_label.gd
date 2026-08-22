@@ -1,21 +1,20 @@
 class_name ElementLabel extends Panel
 
-@export var priority_tool_animation_time: float = 1.0
 @export var line_wrap_limit: float = 4.0
 @export var completed_stylebox: StyleBoxFlat
 @export var text_edit_theme: Theme
 @export var text_edit_completed_theme: Theme
 @export var completed_z_index = 0
 @export var active_z_index = 1
-@onready var background: Panel = $PanelContainer/Background
-@onready var priority_panel: Panel = $PanelContainer/Background/PriorityPanel
+@onready var background: Panel = %Background
+@onready var priority_panel: Panel = %PriorityPanel
 @onready var text_edit: TextEdit = %TextEdit
-@onready var text_margin_container: MarginContainer = $PanelContainer/Background/TextMarginContainer
-@onready var priority_buttons_margin: Control = %PriorityButtonsMargin
+@onready var text_margin_container: MarginContainer = %TextMarginContainer
 @onready var priority_buttons: VBoxContainer = %PriorityButtons
 @onready var grab_indicator: Panel = %GrabIndicator
 @onready var resize_timer: Timer = $ResizeTimer
 @onready var drag_and_resize_input: DragAndResizeInput = $DragAndResizeInput
+@onready var priority_buttons_tween: TweenShowHide = %PriorityButtonsTween
 
 var individual_style: ElementPresetStyle
 var priority_stylebox: StyleBoxFlat
@@ -27,12 +26,10 @@ var style_preset_id: String = "none"
 var completed: bool = false
 var has_style_preset: bool = false
 var priority_enabled: bool = false
-var priority_tool_shown: bool = false
 var priority_tool_enabled: bool = true
 var manual_resize: bool = false
 var total_horizontal_margin: float
 var total_vertical_margin: float
-var tween_priority_buttons: Tween
 
 signal became_selected
 signal changed_priority
@@ -127,28 +124,6 @@ func set_text(text: String) -> void:
 	text_edit.text = text
 
 
-func toggle_priority_tool(toggle_on: bool) -> void:
-	if toggle_on and !priority_tool_shown and priority_tool_enabled:
-		priority_buttons_margin.visible = true
-		if tween_priority_buttons and tween_priority_buttons.is_running():
-			tween_priority_buttons.stop()
-		tween_priority_buttons = create_tween()
-		tween_priority_buttons.set_parallel().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
-		var distance_mult: float = (priority_buttons.size.x - priority_buttons_margin.offset_transform_position.x) / priority_buttons.size.x
-		tween_priority_buttons.tween_property(priority_buttons_margin, "offset_transform_position:x", priority_buttons.size.x, priority_tool_animation_time * distance_mult)
-		tween_priority_buttons.tween_property(priority_buttons_margin, "modulate:a", 1.0, 0.2)
-		priority_tool_shown = true
-	elif !toggle_on and priority_tool_shown:
-		if tween_priority_buttons and tween_priority_buttons.is_running():
-			tween_priority_buttons.stop()
-		tween_priority_buttons = create_tween()
-		tween_priority_buttons.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
-		tween_priority_buttons.tween_property(priority_buttons_margin, "offset_transform_position:x", 0.0, priority_tool_animation_time)
-		tween_priority_buttons.tween_property(priority_buttons_margin, "modulate:a", 0.0, 0.2)
-		tween_priority_buttons.tween_property(priority_buttons_margin, "visible", true, 0.0)
-		priority_tool_shown = false
-
-
 func change_size(new_size: Vector2) -> void:
 	manual_resize = true
 	var smaller: bool = true if new_size.x < size.x else false
@@ -200,7 +175,8 @@ func is_editing_text() -> bool:
 func select() -> void:
 	z_index = 2
 	grab_indicator.visible = true
-	toggle_priority_tool(true)
+	if priority_tool_enabled:
+		priority_buttons_tween.toggle(true)
 
 
 func deselect() -> void:
@@ -208,7 +184,7 @@ func deselect() -> void:
 	z_index = completed_z_index if completed else active_z_index
 	exit_text_edit()
 	grab_indicator.visible = false
-	toggle_priority_tool(false)
+	priority_buttons_tween.toggle(false)
 
 
 func to_json() -> Dictionary:

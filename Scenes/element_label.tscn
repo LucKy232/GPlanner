@@ -11,6 +11,7 @@
 [ext_resource type="StyleBox" uid="uid://0m1wm66xknlk" path="res://Themes/Buttons/high_priority_button_stylebox.tres" id="6_bfvbn"]
 [ext_resource type="StyleBox" uid="uid://dgq7v0gkqrpgf" path="res://Themes/Buttons/medium_priority_button_stylebox.tres" id="7_y2cp5"]
 [ext_resource type="StyleBox" uid="uid://dga3kal7lipkl" path="res://Themes/Buttons/low_priority_button_stylebox.tres" id="8_847go"]
+[ext_resource type="Script" uid="uid://b0ioikc1dokvh" path="res://AddonsOwn/tween_show_hide.gd" id="11_a3jml"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_562gy"]
 
@@ -58,7 +59,6 @@ mouse_force_pass_scroll_events = false
 mouse_default_cursor_shape = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_562gy")
 script = ExtResource("1_m3njf")
-priority_tool_animation_time = 0.3
 line_wrap_limit = 5.0
 completed_stylebox = ExtResource("1_htelr")
 text_edit_theme = ExtResource("4_id6lq")
@@ -77,30 +77,34 @@ grow_vertical = 2
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_y2cp5")
 
-[node name="PriorityButtonsMargin" type="Control" parent="PanelContainer" unique_id=1193896041]
+[node name="PriorityButtonsTween" type="Control" parent="PanelContainer" unique_id=1268397800 node_paths=PackedStringArray("target")]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
-offset_transform_enabled = true
-offset_transform_visual_only = false
-mouse_filter = 1
-
-[node name="PriorityButtons" type="VBoxContainer" parent="PanelContainer/PriorityButtonsMargin" unique_id=1231603066]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(20, 10)
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -30.0
-offset_bottom = 60.0
-grow_horizontal = 0
 size_flags_horizontal = 8
 size_flags_vertical = 0
+mouse_filter = 2
+script = ExtResource("11_a3jml")
+target = NodePath("PriorityButtons")
+side = 1
+animation_time = 0.25
+transition_type = 7
+metadata/_custom_type_script = "uid://b0ioikc1dokvh"
+
+[node name="PriorityButtons" type="VBoxContainer" parent="PanelContainer/PriorityButtonsTween" unique_id=1231603066]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(20, 10)
+layout_mode = 1
+offset_right = 30.0
+offset_bottom = 60.0
+size_flags_horizontal = 8
+size_flags_vertical = 0
+offset_transform_enabled = true
+offset_transform_visual_only = false
 theme_override_constants/separation = 0
 alignment = 1
 
-[node name="PriorityActive" type="Button" parent="PanelContainer/PriorityButtonsMargin/PriorityButtons" unique_id=457811591]
+[node name="PriorityActive" type="Button" parent="PanelContainer/PriorityButtonsTween/PriorityButtons" unique_id=457811591]
 custom_minimum_size = Vector2(30, 12)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -109,7 +113,7 @@ theme_override_styles/normal = ExtResource("5_y2cp5")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_y2cp5")
 action_mode = 0
 
-[node name="PriorityHigh" type="Button" parent="PanelContainer/PriorityButtonsMargin/PriorityButtons" unique_id=1999228504]
+[node name="PriorityHigh" type="Button" parent="PanelContainer/PriorityButtonsTween/PriorityButtons" unique_id=1999228504]
 custom_minimum_size = Vector2(30, 12)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -117,7 +121,7 @@ size_flags_vertical = 4
 theme_override_styles/normal = ExtResource("6_bfvbn")
 action_mode = 0
 
-[node name="PriorityMedium" type="Button" parent="PanelContainer/PriorityButtonsMargin/PriorityButtons" unique_id=843168330]
+[node name="PriorityMedium" type="Button" parent="PanelContainer/PriorityButtonsTween/PriorityButtons" unique_id=843168330]
 custom_minimum_size = Vector2(30, 12)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -125,7 +129,7 @@ size_flags_vertical = 4
 theme_override_styles/normal = ExtResource("7_y2cp5")
 action_mode = 0
 
-[node name="PriorityLow" type="Button" parent="PanelContainer/PriorityButtonsMargin/PriorityButtons" unique_id=159438004]
+[node name="PriorityLow" type="Button" parent="PanelContainer/PriorityButtonsTween/PriorityButtons" unique_id=159438004]
 custom_minimum_size = Vector2(30, 12)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -133,7 +137,7 @@ size_flags_vertical = 4
 theme_override_styles/normal = ExtResource("8_847go")
 action_mode = 0
 
-[node name="PriorityNone" type="Button" parent="PanelContainer/PriorityButtonsMargin/PriorityButtons" unique_id=1381010741]
+[node name="PriorityNone" type="Button" parent="PanelContainer/PriorityButtonsTween/PriorityButtons" unique_id=1381010741]
 custom_minimum_size = Vector2(30, 12)
 layout_mode = 2
 size_flags_horizontal = 0
@@ -142,6 +146,7 @@ theme_override_styles/normal = ExtResource("5_01as5")
 action_mode = 0
 
 [node name="Background" type="Panel" parent="PanelContainer" unique_id=656927497]
+unique_name_in_owner = true
 propagate_maximum_size = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -149,6 +154,7 @@ mouse_filter = 1
 theme_override_styles/panel = ExtResource("1_1b4pp")
 
 [node name="PriorityPanel" type="Panel" parent="PanelContainer/Background" unique_id=1272237648]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(15, 0)
 layout_mode = 1
 anchors_preset = 11
@@ -184,6 +190,7 @@ mouse_filter = 2
 theme = SubResource("Theme_dvpmy")
 
 [node name="TextMarginContainer" type="MarginContainer" parent="PanelContainer/Background" unique_id=628131232]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 14
 anchor_top = 0.5
@@ -223,11 +230,11 @@ wait_time = 0.25
 one_shot = true
 
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
-[connection signal="pressed" from="PanelContainer/PriorityButtonsMargin/PriorityButtons/PriorityActive" to="." method="_on_priority_active_pressed"]
-[connection signal="pressed" from="PanelContainer/PriorityButtonsMargin/PriorityButtons/PriorityHigh" to="." method="_on_priority_high_pressed"]
-[connection signal="pressed" from="PanelContainer/PriorityButtonsMargin/PriorityButtons/PriorityMedium" to="." method="_on_priority_medium_pressed"]
-[connection signal="pressed" from="PanelContainer/PriorityButtonsMargin/PriorityButtons/PriorityLow" to="." method="_on_priority_low_pressed"]
-[connection signal="pressed" from="PanelContainer/PriorityButtonsMargin/PriorityButtons/PriorityNone" to="." method="_on_priority_none_pressed"]
+[connection signal="pressed" from="PanelContainer/PriorityButtonsTween/PriorityButtons/PriorityActive" to="." method="_on_priority_active_pressed"]
+[connection signal="pressed" from="PanelContainer/PriorityButtonsTween/PriorityButtons/PriorityHigh" to="." method="_on_priority_high_pressed"]
+[connection signal="pressed" from="PanelContainer/PriorityButtonsTween/PriorityButtons/PriorityMedium" to="." method="_on_priority_medium_pressed"]
+[connection signal="pressed" from="PanelContainer/PriorityButtonsTween/PriorityButtons/PriorityLow" to="." method="_on_priority_low_pressed"]
+[connection signal="pressed" from="PanelContainer/PriorityButtonsTween/PriorityButtons/PriorityNone" to="." method="_on_priority_none_pressed"]
 [connection signal="focus_entered" from="PanelContainer/Background/TextMarginContainer/InputBlocker/TextEdit" to="." method="_on_text_edit_focus_entered"]
 [connection signal="gui_input" from="PanelContainer/Background/TextMarginContainer/InputBlocker/TextEdit" to="." method="_on_text_edit_gui_input"]
 [connection signal="lines_edited_from" from="PanelContainer/Background/TextMarginContainer/InputBlocker/TextEdit" to="." method="_on_text_edit_lines_edited_from"]

@@ -2,7 +2,6 @@ class_name ObjectList extends Control
 
 @export_file("*.tscn") var list_text_entry_scene
 @export_file("*.tscn") var div_scene
-@export var add_buttons_animation_time: float = 0.5
 @onready var object_v_box: VBoxContainer = %ObjectVBox
 @onready var scroll_container: ScrollContainer = %ScrollContainer
 @onready var mouse_hover: Area2D = $MouseHover
@@ -11,7 +10,7 @@ class_name ObjectList extends Control
 @onready var drop_visual: Panel = %DropVisualIndicator
 @onready var list_name: TextEdit = %ListName
 @onready var drag_and_resize_input: DragAndResizeInput = $DragAndResizeInput
-@onready var add_buttons_margin: MarginContainer = %AddButtonsMargin
+@onready var add_buttons_tween: TweenShowHide = %AddButtonsTween
 var id: int = -1
 var entries: Array[ListTextEntry]
 var last_edited_entry_id: int = -1
@@ -19,9 +18,6 @@ var dragger: ListDragHelper = ListDragHelper.new()
 var canvas_scale: float = 1.0
 var mouse_inside: bool = false
 var top_left_margin: Vector2 = Vector2.ZERO
-# Tween add entry buttons on the bottom
-var tween_add_buttons: Tween
-var buttons_shown: bool = false
 
 var state: State
 enum State {
@@ -130,40 +126,15 @@ func change_state(new_state: State) -> void:
 			drop_visual.visible = true
 
 
-func toggle_add_buttons(toggle_on: bool) -> void:
-	if (dragger.is_dragging_child or dragger.is_dragging_outside) and toggle_on:
-		return
-	if toggle_on and !buttons_shown:
-		if tween_add_buttons and tween_add_buttons.is_running():
-			tween_add_buttons.stop()
-		tween_add_buttons = create_tween()
-		tween_add_buttons.set_parallel().set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
-		var size_scaled: float = add_buttons_margin.size.y / add_buttons_margin.scale.y
-		var distance_mult: float = (size_scaled - add_buttons_margin.offset_transform_position.y) / size_scaled
-		add_buttons_margin.visible = true
-		tween_add_buttons.tween_property(add_buttons_margin, "offset_transform_position:y", size_scaled, add_buttons_animation_time * distance_mult)
-		tween_add_buttons.tween_property(add_buttons_margin, "modulate:a", 1.0, 0.2)
-		buttons_shown = true
-	elif !toggle_on and buttons_shown:
-		if tween_add_buttons and tween_add_buttons.is_running():
-			tween_add_buttons.stop()
-		tween_add_buttons = create_tween()
-		tween_add_buttons.set_ease(Tween.EASE_IN_OUT).set_trans(Tween.TRANS_CUBIC)
-		tween_add_buttons.tween_property(add_buttons_margin, "offset_transform_position:y", 0.0, add_buttons_animation_time)
-		tween_add_buttons.tween_property(add_buttons_margin, "modulate:a", 0.0, 0.2)
-		tween_add_buttons.tween_property(add_buttons_margin, "visible", true, 0.0)
-		buttons_shown = false
-
-
 func select() -> void:
-	toggle_add_buttons(true)
+	add_buttons_tween.toggle(true)
 
 
 func deselect() -> void:
 	if list_name.has_focus():
 		list_name.release_focus()
 	exit_text_edit()
-	toggle_add_buttons(false)
+	add_buttons_tween.toggle(false)
 
 
 func is_editing_text() -> bool:
