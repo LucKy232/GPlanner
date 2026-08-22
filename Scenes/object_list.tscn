@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://cytlmlx7kw2l2" path="res://Scenes/drag_and_resize_input.tscn" id="2_8suv5"]
 [ext_resource type="Theme" uid="uid://dao6v8vx8h5ip" path="res://Themes/text_edit_theme.tres" id="2_qbj2a"]
 [ext_resource type="PackedScene" uid="uid://brbbmqwm6hpj4" path="res://Scenes/div.tscn" id="3_qbj2a"]
+[ext_resource type="Theme" uid="uid://cc6sgahjvrord" path="res://Themes/Buttons/list_toggle_button.tres" id="4_4adj3"]
 [ext_resource type="Theme" uid="uid://u70boqrojq3j" path="res://Themes/placeholder_visual_panel.tres" id="5_01tnx"]
 [ext_resource type="Script" uid="uid://b0ioikc1dokvh" path="res://AddonsOwn/tween_show_hide.gd" id="6_7y3jv"]
 [ext_resource type="Theme" uid="uid://dpl4vlya0ab44" path="res://Themes/Buttons/add_list_entry_button_style.tres" id="7_khfxa"]
@@ -26,7 +27,7 @@ size = Vector2(180, 200)
 [node name="ObjectList" type="Control" unique_id=1704557420]
 light_mask = 8
 visibility_layer = 8
-custom_minimum_size = Vector2(150, 150)
+custom_minimum_size = Vector2(120, 75)
 layout_mode = 3
 anchors_preset = 0
 offset_right = 180.0
@@ -40,6 +41,37 @@ div_scene = "uid://brbbmqwm6hpj4"
 [node name="DragAndResizeInput" parent="." unique_id=713311794 instance=ExtResource("2_8suv5")]
 layout_mode = 1
 
+[node name="ToggleTitleButtonMargin" type="MarginContainer" parent="." unique_id=1557057234]
+layout_mode = 1
+offset_right = 8.0
+offset_bottom = 8.0
+mouse_filter = 2
+
+[node name="ToggleTitleTween" type="Control" parent="ToggleTitleButtonMargin" unique_id=281040917 node_paths=PackedStringArray("target")]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("6_7y3jv")
+target = NodePath("ToggleTitleButton")
+side = 2
+animation_time = 0.25
+transition_type = 7
+default_hidden_behind = true
+offset_show = -4.0
+offset_hide = 4.0
+metadata/_custom_type_script = "uid://b0ioikc1dokvh"
+
+[node name="ToggleTitleButton" type="CheckBox" parent="ToggleTitleButtonMargin/ToggleTitleTween" unique_id=2022363640]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+offset_right = 64.0
+offset_bottom = 22.0
+offset_transform_enabled = true
+offset_transform_visual_only = false
+theme = ExtResource("4_4adj3")
+text = " Title"
+
 [node name="AddButtonsMargin" type="MarginContainer" parent="." unique_id=2002850228]
 unique_name_in_owner = true
 layout_mode = 1
@@ -50,8 +82,6 @@ offset_right = 30.0
 grow_vertical = 0
 scale = Vector2(0.4, 0.4)
 mouse_filter = 2
-theme_override_constants/margin_left = 15
-theme_override_constants/margin_right = 15
 
 [node name="AddButtonsTween" type="Control" parent="AddButtonsMargin" unique_id=1764684824 node_paths=PackedStringArray("target")]
 unique_name_in_owner = true
@@ -64,6 +94,8 @@ target = NodePath("AddButtonsVBox")
 side = 3
 animation_time = 0.25
 transition_type = 7
+offset_show = 10.5
+offset_hide = -2.0
 
 [node name="AddButtonsVBox" type="HBoxContainer" parent="AddButtonsMargin/AddButtonsTween" unique_id=342403256]
 visible = false
@@ -117,16 +149,17 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 8
-theme_override_constants/margin_top = 6
+theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
-theme_override_constants/margin_bottom = 6
+theme_override_constants/margin_bottom = 8
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=695912831]
 layout_mode = 2
 theme_override_constants/separation = -2
 
-[node name="ListName" type="TextEdit" parent="MarginContainer/VBoxContainer" unique_id=259169265]
+[node name="ListTitle" type="TextEdit" parent="MarginContainer/VBoxContainer" unique_id=259169265]
 unique_name_in_owner = true
+visible = false
 light_mask = 8
 visibility_layer = 8
 layout_mode = 2
@@ -136,7 +169,9 @@ wrap_mode = 1
 scroll_fit_content_height = true
 scroll_fit_content_width = true
 
-[node name="div" parent="MarginContainer/VBoxContainer" unique_id=1930850495 instance=ExtResource("3_qbj2a")]
+[node name="ListTitleDiv" parent="MarginContainer/VBoxContainer" unique_id=1930850495 instance=ExtResource("3_qbj2a")]
+unique_name_in_owner = true
+visible = false
 light_mask = 8
 visibility_layer = 8
 custom_minimum_size = Vector2(0, 10)
@@ -194,9 +229,10 @@ debug_color = Color(0, 0.5950001, 0.7, 0)
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="resized" from="." to="." method="_on_resized"]
+[connection signal="toggled" from="ToggleTitleButtonMargin/ToggleTitleTween/ToggleTitleButton" to="." method="_on_toggle_title_button_toggled"]
 [connection signal="pressed" from="AddButtonsMargin/AddButtonsTween/AddButtonsVBox/AddTextEntryButton" to="." method="_on_add_text_entry_button_pressed"]
 [connection signal="pressed" from="AddButtonsMargin/AddButtonsTween/AddButtonsVBox/AddLinkEntryButton" to="." method="_on_add_link_entry_button_pressed"]
-[connection signal="focus_entered" from="MarginContainer/VBoxContainer/ListName" to="." method="_on_list_name_focus_entered"]
+[connection signal="focus_entered" from="MarginContainer/VBoxContainer/ListTitle" to="." method="_on_list_name_focus_entered"]
 [connection signal="mouse_entered" from="MarginContainer/VBoxContainer/ScrollContainer" to="." method="_on_scroll_mouse_entered"]
 [connection signal="mouse_exited" from="MarginContainer/VBoxContainer/ScrollContainer" to="." method="_on_scroll_mouse_exited"]
 [connection signal="mouse_entered" from="MouseHover" to="." method="_on_mouse_hover_mouse_entered"]

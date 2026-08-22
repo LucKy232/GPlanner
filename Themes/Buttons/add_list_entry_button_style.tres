@@ -3,32 +3,22 @@
 [ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_iovqn"]
 [ext_resource type="StyleBox" uid="uid://bmpbaolapvao" path="res://Themes/menu_spacing_style.tres" id="2_ykwnm"]
 [ext_resource type="SystemFont" uid="uid://celycldjtwytq" path="res://Themes/tooltip_font.tres" id="3_urmcs"]
+[ext_resource type="StyleBox" uid="uid://be3pxyjl7mxe8" path="res://Themes/Buttons/add_list_entry_button_stylebox.tres" id="3_ykwnm"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iovqn"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_urmcs"]
 content_margin_top = 5.0
 content_margin_right = 15.0
 content_margin_bottom = 5.0
-bg_color = Color(0.8, 0.8, 0.8, 0.35686275)
-draw_center = false
-border_width_left = 2
-border_width_right = 2
-border_width_bottom = 2
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-corner_detail = 1
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ykwnm"]
-content_margin_top = 5.0
-content_margin_right = 15.0
-content_margin_bottom = 5.0
-bg_color = Color(0.8, 0.8, 0.8, 0.22352941)
-border_width_left = 3
-border_width_right = 3
-border_width_bottom = 3
+bg_color = Color(0.8, 0.8, 0.8, 0)
+border_width_left = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(1, 1, 1, 0.49803922)
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 corner_detail = 1
 expand_margin_bottom = 2.0
+anti_aliasing = false
 
 [resource]
 Button/colors/font_color = Color(1, 1, 1, 1)
@@ -42,8 +32,8 @@ Button/font_sizes/font_size = 16
 Button/fonts/font = ExtResource("1_iovqn")
 Button/styles/disabled = ExtResource("2_ykwnm")
 Button/styles/focus = ExtResource("2_ykwnm")
-Button/styles/hover = SubResource("StyleBoxFlat_iovqn")
-Button/styles/normal = SubResource("StyleBoxFlat_ykwnm")
+Button/styles/hover = SubResource("StyleBoxFlat_urmcs")
+Button/styles/normal = ExtResource("3_ykwnm")
 Button/styles/pressed = ExtResource("2_ykwnm")
 Label/colors/font_color = Color(1, 1, 1, 1)
 Label/colors/font_outline_color = Color(0, 0, 0, 1)

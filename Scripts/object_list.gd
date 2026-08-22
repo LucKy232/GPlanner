@@ -8,9 +8,13 @@ class_name ObjectList extends Control
 @onready var mouse_hover_shape: CollisionShape2D = $MouseHover/MouseHoverShape
 @onready var margin_container: MarginContainer = %MarginContainer
 @onready var drop_visual: Panel = %DropVisualIndicator
-@onready var list_name: TextEdit = %ListName
+@onready var list_title: TextEdit = %ListTitle
+@onready var list_title_div: Panel = %ListTitleDiv
 @onready var drag_and_resize_input: DragAndResizeInput = $DragAndResizeInput
 @onready var add_buttons_tween: TweenShowHide = %AddButtonsTween
+@onready var toggle_title_tween: TweenShowHide = %ToggleTitleTween
+@onready var toggle_title_button: CheckBox = %ToggleTitleButton
+
 var id: int = -1
 var entries: Array[ListTextEntry]
 var last_edited_entry_id: int = -1
@@ -18,6 +22,7 @@ var dragger: ListDragHelper = ListDragHelper.new()
 var canvas_scale: float = 1.0
 var mouse_inside: bool = false
 var top_left_margin: Vector2 = Vector2.ZERO
+var show_title: bool = true
 
 var state: State
 enum State {
@@ -126,15 +131,22 @@ func change_state(new_state: State) -> void:
 			drop_visual.visible = true
 
 
+func toggle_title(toggled_on: bool) -> void:
+	list_title.visible = toggled_on
+	list_title_div.visible = toggled_on
+
+
 func select() -> void:
 	add_buttons_tween.toggle(true)
+	toggle_title_tween.toggle(true)
 
 
 func deselect() -> void:
-	if list_name.has_focus():
-		list_name.release_focus()
+	if list_title.has_focus():
+		list_title.release_focus()
 	exit_text_edit()
 	add_buttons_tween.toggle(false)
+	toggle_title_tween.toggle(false)
 
 
 func is_editing_text() -> bool:
@@ -276,6 +288,11 @@ func rebuild_from_dict(dict: Dictionary) -> void:
 	id = dict["id"]
 	size = Vector2(dict["size.x"], dict["size.y"])
 	position = Vector2(dict["pos.x"], dict["pos.y"])
+	if dict.has("title"):
+		list_title.text = dict["title"]
+	if dict.has("show_title"):
+		_on_toggle_title_button_toggled(bool(dict["show_title"]))
+		toggle_title_button.set_pressed_no_signal(show_title)
 	for entry_id in dict["entries"]:
 		add_text_entry(false)
 		entries[-1].rebuild_from_dict(dict["entries"][entry_id])
@@ -295,6 +312,8 @@ func to_json() -> Dictionary:
 	dict["pos.y"] = position.y
 	dict["size.x"] = size.x
 	dict["size.y"] = size.y
+	dict["title"] = list_title.text
+	dict["show_title"] = show_title
 	return dict
 
 
@@ -408,3 +427,8 @@ func _on_add_text_entry_button_pressed() -> void:
 
 func _on_add_link_entry_button_pressed() -> void:
 	pass # Replace with function body.
+
+
+func _on_toggle_title_button_toggled(toggled_on: bool) -> void:
+	show_title = toggled_on
+	toggle_title(toggled_on)
