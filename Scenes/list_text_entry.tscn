@@ -10,9 +10,9 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_553ya"]
 resource_local_to_scene = true
 
-[node name="ListTextEntry" type="VBoxContainer" unique_id=543502185]
-offset_right = 175.0
-offset_bottom = 53.0
+[node name="ListTextEntry" type="MarginContainer" unique_id=702988607]
+offset_right = 49.0
+offset_bottom = 25.0
 size_flags_horizontal = 3
 offset_transform_enabled = true
 script = ExtResource("1_64hbi")
@@ -24,7 +24,6 @@ layout_mode = 2
 
 [node name="PriorityIdicator" type="Control" parent="HBox" unique_id=1567381431]
 unique_name_in_owner = true
-visible = false
 light_mask = 8
 visibility_layer = 8
 custom_minimum_size = Vector2(20, 0)
@@ -33,8 +32,7 @@ size_flags_horizontal = 0
 size_flags_vertical = 4
 mouse_filter = 1
 script = ExtResource("2_30uiy")
-circle_radius = 4.0
-circle_thickness = 1.5
+circle_radius = 2.0
 inner_circle_color = Color(0, 0, 0, 0)
 
 [node name="GrabberMargin" type="MarginContainer" parent="HBox" unique_id=1191081857]
@@ -69,18 +67,20 @@ theme_override_font_sizes/font_size = 12
 wrap_mode = 1
 scroll_fit_content_height = true
 
-[node name="Buttons" type="HBoxContainer" parent="." unique_id=995811147]
+[node name="ButtonPopup" type="Control" parent="." unique_id=230738134]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 8
 
-[node name="EraseButton" type="Button" parent="Buttons" unique_id=1258167089]
+[node name="EraseButton" type="Button" parent="ButtonPopup" unique_id=1258167089]
 unique_name_in_owner = true
 light_mask = 8
 visibility_layer = 8
-layout_mode = 2
-size_flags_horizontal = 10
-size_flags_vertical = 4
+layout_mode = 1
+offset_right = 24.0
+offset_bottom = 24.0
+size_flags_horizontal = 2
+size_flags_vertical = 0
 theme = ExtResource("5_64hbi")
 icon = ExtResource("7_lo4fr")
 

@@ -9,4 +9,4 @@ class_name PriorityIndicatorDot extends Control
 
 func _draw() -> void:
 	draw_circle(size * 0.5, circle_radius, outer_circle_color, false, circle_thickness, true)
-	draw_circle(size * 0.5, circle_radius - circle_thickness * 0.5, inner_circle_color, true, -1.0, true)
+	draw_circle(size * 0.5, circle_radius - circle_thickness * 0.5, inner_circle_color, true, -1.0, false)

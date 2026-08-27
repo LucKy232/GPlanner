@@ -257,6 +257,7 @@ func disconnect_list_text_entry(entry: ListTextEntry) -> void:
 	entry.grabber_started_move.disconnect(_on_list_text_entry_grabber_started_move)
 	entry.grabber_ended_move.disconnect(_on_list_text_entry_grabber_ended_move)
 	entry.text_changed.disconnect(_on_list_text_entry_text_changed)
+	entry.text_edit_active.disconnect(_on_list_text_entry_text_entry_active)
 	entry.remove_from_list.disconnect(_on_list_text_entry_remove_from_list)
 
 
