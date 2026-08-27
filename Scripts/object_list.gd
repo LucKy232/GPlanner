@@ -6,7 +6,7 @@ class_name ObjectList extends Control
 @onready var scroll_container: ScrollContainer = %ScrollContainer
 @onready var mouse_hover: Area2D = $MouseHover
 @onready var mouse_hover_shape: CollisionShape2D = $MouseHover/MouseHoverShape
-@onready var margin_container: MarginContainer = %MarginContainer
+@onready var margin_container: MarginContainer = %ListMarginContainer
 @onready var drop_visual: Panel = %DropVisualIndicator
 @onready var list_title: TextEdit = %ListTitle
 @onready var list_title_div: Panel = %ListTitleDiv
@@ -14,6 +14,9 @@ class_name ObjectList extends Control
 @onready var add_buttons_tween: TweenShowHide = %AddButtonsTween
 @onready var toggle_title_tween: TweenShowHide = %ToggleTitleTween
 @onready var toggle_title_button: CheckBox = %ToggleTitleButton
+@onready var erase_entry_control: Control = %EraseEntryControl
+@onready var erase_button: Button = %EraseButton
+@onready var erase_entry_tween: TweenShowHide = %EraseEntryTween
 
 var id: int = -1
 var entries: Array[ListTextEntry]
@@ -247,7 +250,7 @@ func connect_list_text_entry(entry: ListTextEntry) -> void:
 	entry.grabber_started_move.connect(_on_list_text_entry_grabber_started_move)
 	entry.grabber_ended_move.connect(_on_list_text_entry_grabber_ended_move)
 	entry.text_changed.connect(_on_list_text_entry_text_changed)
-	entry.text_edit_active.connect(_on_list_text_entry_text_entry_active)
+	entry.text_edit_toggled.connect(_on_list_text_entry_text_entry_toggled)
 	entry.remove_from_list.connect(_on_list_text_entry_remove_from_list.bind(entry))
 
 
@@ -257,7 +260,7 @@ func disconnect_list_text_entry(entry: ListTextEntry) -> void:
 	entry.grabber_started_move.disconnect(_on_list_text_entry_grabber_started_move)
 	entry.grabber_ended_move.disconnect(_on_list_text_entry_grabber_ended_move)
 	entry.text_changed.disconnect(_on_list_text_entry_text_changed)
-	entry.text_edit_active.disconnect(_on_list_text_entry_text_entry_active)
+	entry.text_edit_toggled.disconnect(_on_list_text_entry_text_entry_toggled)
 	entry.remove_from_list.disconnect(_on_list_text_entry_remove_from_list)
 
 
@@ -334,6 +337,10 @@ func _on_scroll() -> void:
 		position_child_drop_visual(dragger.current, dragger.object_id)
 	if dragger.is_dragging_outside:
 		position_drop_visual_on_entry(dragger.current - 1)
+	if is_editing_text():
+		erase_entry_control.position.y = (entries[last_edited_entry_id].position.y
+										+ scroll_container.position.y
+										- scroll_container.scroll_vertical)
 
 
 func _on_scroll_mouse_entered() -> void:
@@ -364,6 +371,10 @@ func _on_resized() -> void:
 		return
 	mouse_hover_shape.shape.size = size
 	mouse_hover.position = size * 0.5
+	if is_editing_text():
+		erase_entry_control.position.y = (entries[last_edited_entry_id].position.y
+										+ scroll_container.position.y
+										- scroll_container.scroll_vertical)
 
 
 func _on_list_text_entry_text_changed() -> void:
@@ -407,9 +418,16 @@ func _on_list_text_entry_grabber_ended_move(entry_id: int) -> void:
 		list_changed.emit()
 
 
-func _on_list_text_entry_text_entry_active(entry_id: int) -> void:
-	last_edited_entry_id = entry_id
-	text_edit_active.emit(id)
+func _on_list_text_entry_text_entry_toggled(entry_id: int, toggled: bool) -> void:
+	if toggled:
+		last_edited_entry_id = entry_id
+		text_edit_active.emit(id)
+		erase_entry_tween.toggle(true)
+		erase_entry_control.position.y = (entries[entry_id].position.y
+										+ scroll_container.position.y
+										- scroll_container.scroll_vertical)
+	else:
+		erase_entry_tween.toggle(false)
 
 
 func _on_gui_input(event: InputEvent) -> void:
@@ -433,3 +451,13 @@ func _on_add_link_entry_button_pressed() -> void:
 func _on_toggle_title_button_toggled(toggled_on: bool) -> void:
 	show_title = toggled_on
 	toggle_title(toggled_on)
+
+
+func _on_erase_button_pressed() -> void:
+	if entries.size() == 0 or last_edited_entry_id < 0 or last_edited_entry_id > entries.size() - 1:
+		return
+	var entry: ListTextEntry = entries[last_edited_entry_id] # TODO generic entry
+	entries.erase(entry)
+	reset_entry_ids()
+	entry.queue_free()
+	list_changed.emit()

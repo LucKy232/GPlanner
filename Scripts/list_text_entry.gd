@@ -15,7 +15,7 @@ var id: int = -1
 
 @warning_ignore("unused_signal")
 signal remove_from_list
-signal text_edit_active
+signal text_edit_toggled
 signal text_changed
 signal grabber_moved
 signal grabber_started_move
@@ -119,8 +119,9 @@ func _on_resized() -> void:
 
 func _on_text_edit_focus_entered() -> void:
 	text_edit.mouse_filter = Control.MOUSE_FILTER_STOP
-	text_edit_active.emit(id)
+	text_edit_toggled.emit(id, true)
 
 
 func _on_text_edit_focus_exited() -> void:
 	text_edit.mouse_filter = Control.MOUSE_FILTER_PASS
+	text_edit_toggled.emit(id, false)

@@ -1,0 +1,67 @@
+{
+	"Connections": {},
+	"DrawingRegions": {},
+	"DrawingSettings": {
+		"BrushSettings": {
+			"color.a": 1.0,
+			"color.b": 1.0,
+			"color.g": 1.0,
+			"color.r": 1.0,
+			"pressure": 1.0,
+			"size": 10.0
+		},
+		"EraserBrushSettings": {
+			"pressure": 0.1,
+			"size": 30.0
+		},
+		"EraserPencilSettings": {
+			"size": 4
+		},
+		"PencilSettings": {
+			"color.a": 1.0,
+			"color.b": 1.0,
+			"color.g": 1.0,
+			"color.r": 1.0,
+			"size": 0
+		},
+		"SelectedTool": 1
+	},
+	"Elements": {},
+	"Lists": {
+		"0": {
+			"entries": {
+				"0": {
+					"text": "Help"
+				},
+				"1": {
+					"text": "With"
+				},
+				"2": {
+					"text": "This"
+				}
+			},
+			"id": 0,
+			"pos.x": 10078.0,
+			"pos.y": 4848.0,
+			"show_title": true,
+			"size.x": 180.0,
+			"size.y": 200.0,
+			"title": ""
+		}
+	},
+	"State": {
+		"app_mode": 0,
+		"drawing_folder_path": "",
+		"position.x": -9360.0,
+		"position.y": -4640.0,
+		"priority_filter_value": 4,
+		"scale.x": 1.0,
+		"scale.y": 1.0,
+		"show_completed": false,
+		"show_priorities": false,
+		"show_priority_tool": false,
+		"zoom_level": 1.0
+	},
+	"StylePresets": {},
+	"Swatches": {}
+}
