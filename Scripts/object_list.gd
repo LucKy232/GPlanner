@@ -153,6 +153,8 @@ func deselect() -> void:
 
 
 func is_editing_text() -> bool:
+	if list_title.has_focus():
+		return true
 	if entries.size() > last_edited_entry_id and last_edited_entry_id >= 0:
 		return entries[last_edited_entry_id].is_editing_text()
 	return false
@@ -245,7 +247,6 @@ func remove_text_entry(entry: ListTextEntry) -> void:
 
 
 func connect_list_text_entry(entry: ListTextEntry) -> void:
-	entry.erase_button.pressed.connect(_on_list_text_entry_erase.bind(entry))
 	entry.grabber_moved.connect(_on_list_text_entry_grabber_moved)
 	entry.grabber_started_move.connect(_on_list_text_entry_grabber_started_move)
 	entry.grabber_ended_move.connect(_on_list_text_entry_grabber_ended_move)
@@ -255,7 +256,6 @@ func connect_list_text_entry(entry: ListTextEntry) -> void:
 
 
 func disconnect_list_text_entry(entry: ListTextEntry) -> void:
-	entry.erase_button.pressed.disconnect(_on_list_text_entry_erase)
 	entry.grabber_moved.disconnect(_on_list_text_entry_grabber_moved)
 	entry.grabber_started_move.disconnect(_on_list_text_entry_grabber_started_move)
 	entry.grabber_ended_move.disconnect(_on_list_text_entry_grabber_ended_move)
@@ -321,6 +321,15 @@ func to_json() -> Dictionary:
 	return dict
 
 
+func line_up_entry_erase_button() -> void:
+	if is_editing_text():
+		erase_entry_control.position.y = (entries[last_edited_entry_id].position.y
+										+ scroll_container.position.y
+										- scroll_container.scroll_vertical
+										- erase_entry_control.size.y * erase_entry_control.scale.y * 0.5)
+
+
+
 func _on_scroll_hover(inside: bool) -> void:
 	mouse_inside = inside
 	if dragger.is_dragging_outside and !inside:
@@ -337,10 +346,7 @@ func _on_scroll() -> void:
 		position_child_drop_visual(dragger.current, dragger.object_id)
 	if dragger.is_dragging_outside:
 		position_drop_visual_on_entry(dragger.current - 1)
-	if is_editing_text():
-		erase_entry_control.position.y = (entries[last_edited_entry_id].position.y
-										+ scroll_container.position.y
-										- scroll_container.scroll_vertical)
+	line_up_entry_erase_button()
 
 
 func _on_scroll_mouse_entered() -> void:
@@ -371,10 +377,7 @@ func _on_resized() -> void:
 		return
 	mouse_hover_shape.shape.size = size
 	mouse_hover.position = size * 0.5
-	if is_editing_text():
-		erase_entry_control.position.y = (entries[last_edited_entry_id].position.y
-										+ scroll_container.position.y
-										- scroll_container.scroll_vertical)
+	line_up_entry_erase_button()
 
 
 func _on_list_text_entry_text_changed() -> void:
@@ -423,9 +426,7 @@ func _on_list_text_entry_text_entry_toggled(entry_id: int, toggled: bool) -> voi
 		last_edited_entry_id = entry_id
 		text_edit_active.emit(id)
 		erase_entry_tween.toggle(true)
-		erase_entry_control.position.y = (entries[entry_id].position.y
-										+ scroll_container.position.y
-										- scroll_container.scroll_vertical)
+		line_up_entry_erase_button()
 	else:
 		erase_entry_tween.toggle(false)
 

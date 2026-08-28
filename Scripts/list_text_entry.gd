@@ -3,11 +3,8 @@ class_name ListTextEntry extends Control
 @onready var priority_idicator: PriorityIndicatorDot = %PriorityIdicator
 @onready var grabber_margin: MarginContainer = %GrabberMargin
 @onready var text_edit: TextEdit = %TextEdit
-@onready var erase_button: Button = %EraseButton
 @onready var mouse_hover: Area2D = %MouseHover
 @onready var mouse_hover_shape: CollisionShape2D = %MouseHoverShape
-@onready var button_popup: Control = %ButtonPopup
-#@onready var buttons: Control = %Buttons
 
 var grabber_clicked: bool = false
 var can_hover: bool = true
@@ -36,7 +33,6 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
 		if grabber_clicked:
 			grabber_clicked = false
-			button_popup.visible = true
 			grabber_ended_move.emit(id)
 			_on_hover(false)
 	if grabber_clicked and event is InputEventMouseMotion:
@@ -88,14 +84,12 @@ func _on_hover(on: bool) -> void:
 		return
 	priority_idicator.visible = !on
 	grabber_margin.visible = on
-	button_popup.visible = on
 
 
 func _on_grabber_margin_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
 		grabber_started_move.emit(id, event.position)
 		grabber_clicked = true
-		button_popup.visible = false
 
 
 func _on_text_edit_lines_edited_from(_from_line: int, _to_line: int) -> void:

@@ -4,14 +4,12 @@
 [ext_resource type="Script" uid="uid://cukyivuw2svdj" path="res://Scripts/priority_idicator_dot.gd" id="2_30uiy"]
 [ext_resource type="Texture2D" uid="uid://bbpq8wbljm0dp" path="res://Icons/grabber.svg" id="3_1jr1i"]
 [ext_resource type="Theme" uid="uid://dao6v8vx8h5ip" path="res://Themes/text_edit_theme.tres" id="4_jvbgi"]
-[ext_resource type="Theme" uid="uid://cyvcgv6iv156i" path="res://Themes/Buttons/list_text_entry_buttons.tres" id="5_64hbi"]
-[ext_resource type="Texture2D" uid="uid://c2aisi4g5mld" path="res://Icons/object_delete.svg" id="7_lo4fr"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_553ya"]
 resource_local_to_scene = true
 
 [node name="ListTextEntry" type="MarginContainer" unique_id=702988607]
-offset_right = 49.0
+offset_right = 183.0
 offset_bottom = 25.0
 size_flags_horizontal = 3
 offset_transform_enabled = true
@@ -29,7 +27,7 @@ visibility_layer = 8
 custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 size_flags_horizontal = 0
-size_flags_vertical = 0
+size_flags_vertical = 4
 mouse_filter = 1
 script = ExtResource("2_30uiy")
 circle_radius = 2.0
@@ -48,6 +46,7 @@ theme_override_constants/margin_right = 2
 theme_override_constants/margin_bottom = 0
 
 [node name="Grabber" type="TextureRect" parent="HBox/GrabberMargin" unique_id=255095561]
+texture_filter = 2
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
@@ -66,23 +65,6 @@ theme = ExtResource("4_jvbgi")
 theme_override_font_sizes/font_size = 12
 wrap_mode = 1
 scroll_fit_content_height = true
-
-[node name="ButtonPopup" type="Control" parent="." unique_id=230738134]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 8
-
-[node name="EraseButton" type="Button" parent="ButtonPopup" unique_id=1258167089]
-unique_name_in_owner = true
-light_mask = 8
-visibility_layer = 8
-layout_mode = 1
-offset_right = 24.0
-offset_bottom = 24.0
-size_flags_horizontal = 2
-size_flags_vertical = 0
-theme = ExtResource("5_64hbi")
-icon = ExtResource("7_lo4fr")
 
 [node name="MouseHover" type="Area2D" parent="." unique_id=600296509]
 unique_name_in_owner = true

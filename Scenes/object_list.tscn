@@ -9,7 +9,7 @@
 [ext_resource type="Theme" uid="uid://u70boqrojq3j" path="res://Themes/placeholder_visual_panel.tres" id="5_01tnx"]
 [ext_resource type="Script" uid="uid://b0ioikc1dokvh" path="res://AddonsOwn/tween_show_hide.gd" id="6_7y3jv"]
 [ext_resource type="Theme" uid="uid://dpl4vlya0ab44" path="res://Themes/Buttons/add_list_entry_button_style.tres" id="7_khfxa"]
-[ext_resource type="Theme" uid="uid://cyvcgv6iv156i" path="res://Themes/Buttons/list_text_entry_buttons.tres" id="8_g5dxn"]
+[ext_resource type="Theme" uid="uid://db8htehhdju2h" path="res://Themes/Buttons/object_list_erase_entry_button_style.tres" id="8_g5dxn"]
 [ext_resource type="Texture2D" uid="uid://xj70o30q5but" path="res://Icons/add_text.svg" id="8_khfxa"]
 [ext_resource type="Texture2D" uid="uid://b34ikx2kfdvbg" path="res://Icons/add_link.svg" id="9_7y3jv"]
 [ext_resource type="Texture2D" uid="uid://c2aisi4g5mld" path="res://Icons/object_delete.svg" id="9_tej6j"]
@@ -65,7 +65,6 @@ metadata/_custom_type_script = "uid://b0ioikc1dokvh"
 
 [node name="ToggleTitleButton" type="CheckBox" parent="ToggleTitleButtonMargin/ToggleTitleTween" unique_id=2022363640]
 unique_name_in_owner = true
-visible = false
 layout_mode = 1
 offset_right = 64.0
 offset_bottom = 22.0
@@ -100,7 +99,6 @@ offset_show = 10.5
 offset_hide = -2.0
 
 [node name="AddButtonsVBox" type="HBoxContainer" parent="AddButtonsMargin/AddButtonsTween" unique_id=342403256]
-visible = false
 layout_mode = 0
 offset_right = 167.0
 offset_bottom = 74.0
@@ -136,11 +134,13 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -24.0
-offset_top = -17.0
-offset_bottom = 17.0
+offset_left = -43.0
+offset_top = -22.0
+offset_bottom = 22.0
 grow_horizontal = 0
 grow_vertical = 2
+scale = Vector2(0.5, 0.5)
+pivot_offset_ratio = Vector2(1, 0.5)
 mouse_filter = 2
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_bottom = 5
@@ -149,6 +149,7 @@ theme_override_constants/margin_bottom = 5
 unique_name_in_owner = true
 light_mask = 8
 visibility_layer = 8
+texture_filter = 2
 layout_mode = 2
 size_flags_horizontal = 2
 size_flags_vertical = 0
@@ -167,7 +168,7 @@ side = 1
 animation_time = 0.25
 transition_type = 7
 default_hidden_behind = true
-offset_show = 6.0
+offset_show = 14.5
 metadata/_custom_type_script = "uid://b0ioikc1dokvh"
 
 [node name="Background" type="Panel" parent="." unique_id=972831401]
@@ -181,6 +182,25 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 theme_override_styles/panel = ExtResource("1_hw88c")
+
+[node name="DropVisualIndicator" type="Panel" parent="." unique_id=467728565]
+unique_name_in_owner = true
+visible = false
+light_mask = 8
+visibility_layer = 8
+custom_minimum_size = Vector2(0, 25)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_top = -12.5
+offset_bottom = 12.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("5_01tnx")
 
 [node name="ListMarginContainer" type="MarginContainer" parent="." unique_id=980566324]
 unique_name_in_owner = true
@@ -238,26 +258,7 @@ visibility_layer = 8
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/separation = 6
-
-[node name="DropVisualIndicator" type="Panel" parent="." unique_id=467728565]
-unique_name_in_owner = true
-visible = false
-light_mask = 8
-visibility_layer = 8
-custom_minimum_size = Vector2(0, 25)
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_top = -12.5
-offset_bottom = 12.5
-grow_horizontal = 2
-grow_vertical = 2
-mouse_filter = 2
-theme = ExtResource("5_01tnx")
+theme_override_constants/separation = 0
 
 [node name="MouseHover" type="Area2D" parent="." unique_id=1893935660]
 light_mask = 8

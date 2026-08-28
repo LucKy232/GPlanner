@@ -1935,7 +1935,7 @@
 			"pos.y": 1549.09045410156,
 			"priority_id": 0,
 			"size.x": 354.0,
-			"size.y": 879.0,
+			"size.y": 878.999877929688,
 			"style_preset_id": "none",
 			"text": "Resize element if text overflow"
 		},
@@ -2771,7 +2771,7 @@
 			"pos.y": 1152.52990722656,
 			"priority_id": 4,
 			"size.x": 476.0,
-			"size.y": 1169.0,
+			"size.y": 1168.99987792969,
 			"style_preset_id": "none",
 			"text": "Can select element when picking BG color"
 		},
@@ -4072,7 +4072,7 @@
 			"pos.y": 992.859924316406,
 			"priority_id": 0,
 			"size.x": 151.0,
-			"size.y": 328.0,
+			"size.y": 327.999938964844,
 			"style_preset_id": "none",
 			"text": "Toggle Tool"
 		},
@@ -4271,7 +4271,7 @@
 			"pos.y": 1216.68322753906,
 			"priority_id": 0,
 			"size.x": 346.0,
-			"size.y": 850.0,
+			"size.y": 849.999877929688,
 			"style_preset_id": "none",
 			"text": "On different element selected"
 		},
@@ -4892,7 +4892,7 @@
 			"pos.y": 1235.49865722656,
 			"priority_id": 0,
 			"size.x": 387.0,
-			"size.y": 1024.0,
+			"size.y": 1023.99987792969,
 			"style_preset_id": "none",
 			"text": "Save unsaved file on exit in user://"
 		},
@@ -5044,7 +5044,7 @@
 			"pos.y": 1793.26477050781,
 			"priority_id": 0,
 			"size.x": 558.0,
-			"size.y": 1459.0,
+			"size.y": 1458.99987792969,
 			"style_preset_id": "none",
 			"text": "Gradient color going from 1st element color to 2nd"
 		},
@@ -5465,7 +5465,7 @@
 			"pos.y": 1875.53039550781,
 			"priority_id": 0,
 			"size.x": 192.0,
-			"size.y": 386.0,
+			"size.y": 385.999877929688,
 			"style_preset_id": "none",
 			"text": "Show file name"
 		},
@@ -5512,7 +5512,7 @@
 			"pos.y": 934.220031738281,
 			"priority_id": 0,
 			"size.x": 369.0,
-			"size.y": 937.0,
+			"size.y": 936.999938964844,
 			"style_preset_id": "2025-05-11T11:48:44 762479",
 			"text": "Connection line from top to side"
 		},
@@ -6146,7 +6146,7 @@
 			"pos.y": 1636.29064941406,
 			"priority_id": 1,
 			"size.x": 271.0,
-			"size.y": 647.0,
+			"size.y": 646.999877929688,
 			"style_preset_id": "none",
 			"text": "Update on select elem."
 		},
@@ -6940,7 +6940,7 @@
 			"pos.y": 856.791625976563,
 			"priority_id": 0,
 			"size.x": 602.0,
-			"size.y": 1546.0,
+			"size.y": 1545.99987792969,
 			"style_preset_id": "2025-05-11T11:50:57 22823",
 			"text": "Default pointing hand cursor for buttons / checkboxes"
 		},
@@ -7420,7 +7420,7 @@
 			"pos.y": 440.215393066406,
 			"priority_id": 0,
 			"size.x": 367.0,
-			"size.y": 908.0,
+			"size.y": 907.999938964844,
 			"style_preset_id": "2025-05-11T11:29:11 421463",
 			"text": "Fonts broken on android & linux"
 		},
@@ -7658,23 +7658,23 @@
 			"pos.x": 3195.36352539063,
 			"pos.y": 598.58349609375,
 			"show_title": true,
-			"size.x": 158.502197265625,
-			"size.y": 348.93359375,
+			"size.x": 319.502197265625,
+			"size.y": 360.93359375,
 			"title": "QoL"
 		}
 	},
 	"State": {
 		"app_mode": 0,
 		"drawing_folder_path": "plannerplanner 2025-08-31T215146",
-		"position.x": -2459.1708984375,
-		"position.y": -336.226684570313,
+		"position.x": -854.66845703125,
+		"position.y": 0.0,
 		"priority_filter_value": 4,
-		"scale.x": 1.0,
-		"scale.y": 1.0,
+		"scale.x": 0.439359456300735,
+		"scale.y": 0.439359456300735,
 		"show_completed": false,
 		"show_priorities": true,
 		"show_priority_tool": true,
-		"zoom_level": 1.02065718780356
+		"zoom_level": 0.439359452000244
 	},
 	"StylePresets": {
 		"1": {
