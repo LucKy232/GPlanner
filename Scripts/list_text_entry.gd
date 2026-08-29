@@ -119,3 +119,8 @@ func _on_text_edit_focus_entered() -> void:
 func _on_text_edit_focus_exited() -> void:
 	text_edit.mouse_filter = Control.MOUSE_FILTER_PASS
 	text_edit_toggled.emit(id, false)
+
+
+func _on_text_edit_gui_input(event: InputEvent) -> void:
+	if event.is_action_pressed("exit_text_edit", false, true):
+		exit_text_edit()

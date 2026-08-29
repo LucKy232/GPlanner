@@ -78,6 +78,7 @@ shape = SubResource("RectangleShape2D_553ya")
 [connection signal="gui_input" from="HBox/GrabberMargin" to="." method="_on_grabber_margin_gui_input"]
 [connection signal="focus_entered" from="HBox/TextEdit" to="." method="_on_text_edit_focus_entered"]
 [connection signal="focus_exited" from="HBox/TextEdit" to="." method="_on_text_edit_focus_exited"]
+[connection signal="gui_input" from="HBox/TextEdit" to="." method="_on_text_edit_gui_input"]
 [connection signal="lines_edited_from" from="HBox/TextEdit" to="." method="_on_text_edit_lines_edited_from"]
 [connection signal="mouse_entered" from="MouseHover" to="." method="_on_mouse_hover_mouse_entered"]
 [connection signal="mouse_exited" from="MouseHover" to="." method="_on_mouse_hover_mouse_exited"]

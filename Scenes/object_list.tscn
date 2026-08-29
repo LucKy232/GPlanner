@@ -20,6 +20,27 @@ grow_begin = -5.0
 grow_end = -5.0
 thickness = 2
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_g5dxn"]
+bg_color = Color(1, 1, 1, 0.5176471)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tej6j"]
+content_margin_left = 4.0
+bg_color = Color(0, 0, 0, 0.2627451)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 1
+
+[sub_resource type="Theme" id="Theme_g5dxn"]
+VScrollBar/styles/grabber = SubResource("StyleBoxFlat_g5dxn")
+VScrollBar/styles/scroll = SubResource("StyleBoxFlat_tej6j")
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_dvpmy"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_553ya"]
@@ -65,6 +86,7 @@ metadata/_custom_type_script = "uid://b0ioikc1dokvh"
 
 [node name="ToggleTitleButton" type="CheckBox" parent="ToggleTitleButtonMargin/ToggleTitleTween" unique_id=2022363640]
 unique_name_in_owner = true
+visible = false
 layout_mode = 1
 offset_right = 64.0
 offset_bottom = 22.0
@@ -99,6 +121,7 @@ offset_show = 10.5
 offset_hide = -2.0
 
 [node name="AddButtonsVBox" type="HBoxContainer" parent="AddButtonsMargin/AddButtonsTween" unique_id=342403256]
+visible = false
 layout_mode = 0
 offset_right = 167.0
 offset_bottom = 74.0
@@ -147,6 +170,7 @@ theme_override_constants/margin_bottom = 5
 
 [node name="EraseButton" type="Button" parent="EraseEntryControl" unique_id=1456070977]
 unique_name_in_owner = true
+visible = false
 light_mask = 8
 visibility_layer = 8
 texture_filter = 2
@@ -248,6 +272,7 @@ light_mask = 8
 visibility_layer = 8
 layout_mode = 2
 size_flags_vertical = 3
+theme = SubResource("Theme_g5dxn")
 theme_override_styles/panel = SubResource("StyleBoxEmpty_dvpmy")
 horizontal_scroll_mode = 0
 
@@ -279,6 +304,7 @@ debug_color = Color(0, 0.5950001, 0.7, 0)
 [connection signal="pressed" from="AddButtonsMargin/AddButtonsTween/AddButtonsVBox/AddLinkEntryButton" to="." method="_on_add_link_entry_button_pressed"]
 [connection signal="pressed" from="EraseEntryControl/EraseButton" to="." method="_on_erase_button_pressed"]
 [connection signal="focus_entered" from="ListMarginContainer/VBoxContainer/ListTitle" to="." method="_on_list_name_focus_entered"]
+[connection signal="gui_input" from="ListMarginContainer/VBoxContainer/ListTitle" to="." method="_on_list_title_gui_input"]
 [connection signal="mouse_entered" from="ListMarginContainer/VBoxContainer/ScrollContainer" to="." method="_on_scroll_mouse_entered"]
 [connection signal="mouse_exited" from="ListMarginContainer/VBoxContainer/ScrollContainer" to="." method="_on_scroll_mouse_exited"]
 [connection signal="mouse_entered" from="MouseHover" to="." method="_on_mouse_hover_mouse_entered"]

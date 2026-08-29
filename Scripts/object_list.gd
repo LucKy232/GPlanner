@@ -26,6 +26,7 @@ var canvas_scale: float = 1.0
 var mouse_inside: bool = false
 var top_left_margin: Vector2 = Vector2.ZERO
 var show_title: bool = true
+var selected: bool = false
 
 var state: State
 enum State {
@@ -116,6 +117,23 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		select_request.emit(id)
 
 
+func _input(event: InputEvent) -> void:
+	if !selected or entries.size() == 0:
+		return
+	if event.is_action_pressed("edit_previous_in_list", true, true):
+		last_edited_entry_id -= 1
+		if last_edited_entry_id < 0:
+			last_edited_entry_id = entries.size() - 1
+		enter_text_edit()
+	if event.is_action_pressed("edit_next_in_list", true, true):
+		last_edited_entry_id += 1
+		if last_edited_entry_id > entries.size() - 1:
+			last_edited_entry_id = 0
+		enter_text_edit()
+	if is_editing_text() and event.is_action_pressed("erase_selected_list_entry", false, true):
+		_on_erase_button_pressed()
+
+
 func change_state(new_state: State) -> void:
 	state = new_state
 	match state:
@@ -142,6 +160,7 @@ func toggle_title(toggled_on: bool) -> void:
 func select() -> void:
 	add_buttons_tween.toggle(true)
 	toggle_title_tween.toggle(true)
+	selected = true
 
 
 func deselect() -> void:
@@ -150,6 +169,7 @@ func deselect() -> void:
 	exit_text_edit()
 	add_buttons_tween.toggle(false)
 	toggle_title_tween.toggle(false)
+	selected = false
 
 
 func is_editing_text() -> bool:
@@ -327,7 +347,12 @@ func line_up_entry_erase_button() -> void:
 										+ scroll_container.position.y
 										- scroll_container.scroll_vertical
 										- erase_entry_control.size.y * erase_entry_control.scale.y * 0.5)
-
+		if erase_entry_control.position.y < scroll_container.position.y - 40.0:
+			erase_entry_control.visible = false
+		elif erase_entry_control.position.y > scroll_container.size.y:
+			erase_entry_control.visible = false
+		else:
+			erase_entry_control.visible = true
 
 
 func _on_scroll_hover(inside: bool) -> void:
@@ -462,3 +487,8 @@ func _on_erase_button_pressed() -> void:
 	reset_entry_ids()
 	entry.queue_free()
 	list_changed.emit()
+
+
+func _on_list_title_gui_input(event: InputEvent) -> void:
+	if list_title.has_focus() and event.is_action_pressed("exit_text_edit", false, true):
+		list_title.release_focus()
