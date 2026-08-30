@@ -132,7 +132,7 @@ func _input(event: InputEvent) -> void:
 		enter_text_edit()
 	if list_title.visible and event.is_action_pressed("edit_list_title", false, true):
 		list_title.grab_focus()
-	if is_editing_text() and event.is_action_pressed("erase_selected_list_entry", false, true):
+	if is_editing_text(false) and event.is_action_pressed("erase_selected_list_entry", false, true):
 		_on_erase_button_pressed()
 	if event.is_action_pressed("add_list_text_entry"):
 		add_text_entry(true)
@@ -178,8 +178,8 @@ func deselect() -> void:
 	selected = false
 
 
-func is_editing_text() -> bool:
-	if list_title.has_focus():
+func is_editing_text(include_title: bool = true) -> bool:
+	if include_title and list_title.has_focus():
 		return true
 	if entries.size() > last_edited_entry_id and last_edited_entry_id >= 0:
 		return entries[last_edited_entry_id].is_editing_text()
@@ -188,7 +188,15 @@ func is_editing_text() -> bool:
 
 func enter_text_edit() -> void:
 	if entries.size() > last_edited_entry_id and last_edited_entry_id >= 0:
-		entries[last_edited_entry_id].enter_text_edit()
+		var entry: ListTextEntry = entries[last_edited_entry_id]
+		entry.enter_text_edit()
+		# Scroll to entry if entry is out of visible scroll range
+		if entry.position.y < scroll_container.scroll_vertical:		# go up
+			var diff: int = int(entry.position.y) - scroll_container.scroll_vertical - 5
+			scroll_container.scroll_vertical += diff
+		if entry.position.y + entry.size.y > scroll_container.scroll_vertical + scroll_container.size.y:	# go down
+			var diff: int = int(entry.position.y + entry.size.y) - (scroll_container.scroll_vertical + int(scroll_container.size.y))
+			scroll_container.scroll_vertical += diff
 
 
 func exit_text_edit() -> void:
@@ -196,14 +204,14 @@ func exit_text_edit() -> void:
 		entries[last_edited_entry_id].exit_text_edit()
 
 
-# moving the entire list
+# Moving the entire list
 func start_dragging() -> void:
 	drag_and_resize_input.is_being_dragged = true
 	drag_and_resize_input.is_being_resized = false
 	set_default_cursor_shape(Control.CURSOR_DRAG)
 
 
-# resizing the entire list
+# Resizing the entire list
 func start_resizing() -> void:
 	drag_and_resize_input.is_being_resized = true
 	drag_and_resize_input.is_being_dragged = false
@@ -263,7 +271,7 @@ func add_text_entry(is_user_input: bool) -> void:
 		list_changed.emit()
 
 
-func add_link_entry(is_user_input: bool) -> void:
+func add_link_entry(_is_user_input: bool) -> void:
 	pass
 	#var new_list_text_entry: ListTextEntry = load(list_text_entry_scene).instantiate()
 	#object_v_box.add_child(new_list_text_entry)
