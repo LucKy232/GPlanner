@@ -130,8 +130,14 @@ func _input(event: InputEvent) -> void:
 		if last_edited_entry_id > entries.size() - 1:
 			last_edited_entry_id = 0
 		enter_text_edit()
+	if list_title.visible and event.is_action_pressed("edit_list_title", false, true):
+		list_title.grab_focus()
 	if is_editing_text() and event.is_action_pressed("erase_selected_list_entry", false, true):
 		_on_erase_button_pressed()
+	if event.is_action_pressed("add_list_text_entry"):
+		add_text_entry(true)
+	if event.is_action_pressed("add_list_link_entry"):
+		add_link_entry(true)
 
 
 func change_state(new_state: State) -> void:
@@ -257,6 +263,18 @@ func add_text_entry(is_user_input: bool) -> void:
 		list_changed.emit()
 
 
+func add_link_entry(is_user_input: bool) -> void:
+	pass
+	#var new_list_text_entry: ListTextEntry = load(list_text_entry_scene).instantiate()
+	#object_v_box.add_child(new_list_text_entry)
+	#new_list_text_entry.id = entries.size()
+	#new_list_text_entry.name = "ListTextEntry"
+	#entries.append(new_list_text_entry)
+	#connect_list_text_entry(new_list_text_entry)
+	#if is_user_input:
+		#list_changed.emit()
+
+
 func remove_text_entry(entry: ListTextEntry) -> void:
 	disconnect_list_text_entry(entry)
 	entries.erase(entry)
@@ -321,7 +339,7 @@ func rebuild_from_dict(dict: Dictionary) -> void:
 		add_text_entry(false)
 		entries[-1].rebuild_from_dict(dict["entries"][entry_id])
 		#print("Added ", entry_id)
-	# NOTE sort in entry.id order if they don't get saved in order in the .json???
+	# NOTE doesn't need to be sorted in entry.id order because they get saved / read in alphabetical / numerical order to the .json
 
 
 # Map order to entry
@@ -471,7 +489,7 @@ func _on_add_text_entry_button_pressed() -> void:
 
 
 func _on_add_link_entry_button_pressed() -> void:
-	pass # Replace with function body.
+	add_link_entry(true)
 
 
 func _on_toggle_title_button_toggled(toggled_on: bool) -> void:
