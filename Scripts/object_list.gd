@@ -125,7 +125,14 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if !selected or entries.size() == 0:
+	if !selected:
+		return
+	if event.is_action_pressed("add_list_text_entry"):
+		add_text_entry(true)
+	if event.is_action_pressed("add_list_link_entry"):
+		add_link_entry(true)
+		
+	if entries.size() == 0:
 		return
 	if event.is_action_pressed("edit_previous_in_list", true, true):
 		last_edited_entry_id -= 1
@@ -139,12 +146,25 @@ func _input(event: InputEvent) -> void:
 		enter_text_edit()
 	if list_title.visible and event.is_action_pressed("edit_list_title", false, true):
 		list_title.grab_focus()
-	if is_editing_text(false) and event.is_action_pressed("erase_selected_list_entry", false, true):
+	
+	if !is_editing_text(false):	# Not editing an entry
+		return
+	if event.is_action_pressed("erase_selected_list_entry", false, true):
 		_on_erase_button_pressed()
-	if event.is_action_pressed("add_list_text_entry"):
-		add_text_entry(true)
-	if event.is_action_pressed("add_list_link_entry"):
-		add_link_entry(true)
+	if event.is_action_pressed("move_list_entry_up", true, true):
+		if last_edited_entry_id == entries.size() - 1:
+			return
+		object_v_box.move_child(entries[last_edited_entry_id], last_edited_entry_id + 1)
+		sort_entries(last_edited_entry_id, last_edited_entry_id + 1)
+		last_edited_entry_id += 1
+		list_changed.emit()
+	if event.is_action_pressed("move_list_entry_down", true, true):
+		if last_edited_entry_id == 0:
+			return
+		object_v_box.move_child(entries[last_edited_entry_id], last_edited_entry_id - 1)
+		sort_entries(last_edited_entry_id, last_edited_entry_id - 1)
+		last_edited_entry_id -= 1
+		list_changed.emit()
 
 
 func change_state(new_state: State) -> void:

@@ -745,7 +745,7 @@ func toggle_show_priority_tool(toggled_on: bool, update_state: bool = true) -> v
 	if update_state:
 		settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL] = toggled_on
 	for i in elements:
-		elements[i].priority_tool_enabled = toggled_on
+		elements[i].set_priority_tool_enabled(toggled_on)
 
 
 func change_priority_filter(value: int) -> void:

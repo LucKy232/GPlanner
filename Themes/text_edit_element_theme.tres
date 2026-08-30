@@ -1,0 +1,49 @@
+[gd_resource type="Theme" format=3 uid="uid://bw15nbn335862"]
+
+[ext_resource type="SystemFont" uid="uid://dhj4uuya6elb5" path="res://Themes/element_font.tres" id="1_7rk3r"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5qfk8"]
+bg_color = Color(1, 1, 1, 0.22352941)
+draw_center = false
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+corner_detail = 1
+expand_margin_left = 4.0
+expand_margin_top = 4.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jq8s4"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+draw_center = false
+
+[resource]
+LineEdit/colors/caret_color = Color(0.954911, 0.954911, 0.954911, 0.862745)
+LineEdit/colors/font_color = Color(1, 1, 1, 1)
+LineEdit/colors/font_outline_color = Color(0, 0, 0, 1)
+LineEdit/colors/font_placeholder_color = Color(0.64603, 0.646029, 0.646029, 1)
+LineEdit/colors/font_selected_color = Color(1, 1, 1, 1)
+LineEdit/colors/selection_color = Color(0.5, 0.5, 0.5, 1)
+LineEdit/constants/caret_width = 2
+LineEdit/constants/minimum_character_width = 4
+LineEdit/constants/outline_size = 8
+LineEdit/font_sizes/font_size = 20
+LineEdit/fonts/font = ExtResource("1_7rk3r")
+LineEdit/styles/focus = null
+LineEdit/styles/normal = null
+LineEdit/styles/read_only = null
+TextEdit/colors/caret_color = Color(0.954911, 0.954911, 0.954911, 0.862745)
+TextEdit/colors/font_color = Color(1, 1, 1, 1)
+TextEdit/colors/font_outline_color = Color(0, 0, 0, 1)
+TextEdit/colors/font_placeholder_color = Color(0.64603, 0.646029, 0.646029, 1)
+TextEdit/colors/font_selected_color = Color(1, 1, 1, 1)
+TextEdit/colors/selection_color = Color(0.5, 0.5, 0.5, 1)
+TextEdit/constants/caret_width = 2
+TextEdit/constants/line_spacing = 0
+TextEdit/constants/outline_size = 8
+TextEdit/constants/wrap_offset = 10
+TextEdit/font_sizes/font_size = 20
+TextEdit/fonts/font = ExtResource("1_7rk3r")
+TextEdit/styles/focus = SubResource("StyleBoxFlat_5qfk8")
+TextEdit/styles/normal = SubResource("StyleBoxFlat_jq8s4")
+TextEdit/styles/read_only = null

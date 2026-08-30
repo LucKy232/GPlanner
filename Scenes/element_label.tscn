@@ -3,7 +3,6 @@
 [ext_resource type="StyleBox" uid="uid://cdui0dgu3vdrr" path="res://Themes/element_background_style_box.tres" id="1_1b4pp"]
 [ext_resource type="StyleBox" uid="uid://8g7b3501cxjx" path="res://Themes/element_completed_style_box.tres" id="1_htelr"]
 [ext_resource type="Script" uid="uid://bdpfuamwhbk56" path="res://Scripts/element_label.gd" id="1_m3njf"]
-[ext_resource type="Theme" uid="uid://dao6v8vx8h5ip" path="res://Themes/text_edit_theme.tres" id="4_id6lq"]
 [ext_resource type="StyleBox" uid="uid://b0l55wn2xggiw" path="res://Themes/Buttons/none_priority_button_stylebox.tres" id="5_01as5"]
 [ext_resource type="Theme" uid="uid://dfkiu7dg1cfmm" path="res://Themes/text_edit_completed_theme.tres" id="5_562gy"]
 [ext_resource type="PackedScene" uid="uid://cytlmlx7kw2l2" path="res://Scenes/drag_and_resize_input.tscn" id="5_847go"]
@@ -12,6 +11,7 @@
 [ext_resource type="StyleBox" uid="uid://dgq7v0gkqrpgf" path="res://Themes/Buttons/medium_priority_button_stylebox.tres" id="7_y2cp5"]
 [ext_resource type="StyleBox" uid="uid://dga3kal7lipkl" path="res://Themes/Buttons/low_priority_button_stylebox.tres" id="8_847go"]
 [ext_resource type="Script" uid="uid://b0ioikc1dokvh" path="res://AddonsOwn/tween_show_hide.gd" id="11_a3jml"]
+[ext_resource type="Theme" uid="uid://bw15nbn335862" path="res://Themes/text_edit_element_theme.tres" id="13_46tma"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_562gy"]
 
@@ -45,8 +45,8 @@ Panel/styles/panel = SubResource("StyleBoxFlat_4eiuu")
 [sub_resource type="Theme" id="Theme_id6lq"]
 MarginContainer/constants/margin_bottom = 0
 MarginContainer/constants/margin_left = 15
-MarginContainer/constants/margin_right = 15
-MarginContainer/constants/margin_top = 1
+MarginContainer/constants/margin_right = 5
+MarginContainer/constants/margin_top = 0
 
 [node name="Element" type="Panel" unique_id=655691787]
 light_mask = 8
@@ -61,7 +61,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_562gy")
 script = ExtResource("1_m3njf")
 line_wrap_limit = 5.0
 completed_stylebox = ExtResource("1_htelr")
-text_edit_theme = ExtResource("4_id6lq")
+text_edit_theme = ExtResource("13_46tma")
 text_edit_completed_theme = ExtResource("5_562gy")
 
 [node name="DragAndResizeInput" parent="." unique_id=713311794 instance=ExtResource("5_847go")]
@@ -219,7 +219,7 @@ offset_bottom = 12.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 4
-theme = ExtResource("4_id6lq")
+theme = ExtResource("13_46tma")
 placeholder_text = "..."
 wrap_mode = 1
 scroll_fit_content_height = true

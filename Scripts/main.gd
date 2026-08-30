@@ -185,6 +185,9 @@ func _process(_delta):
 		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.ADD_ELEMENT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
 			tool_box.select(Enums.Tool.ADD_ELEMENT)
 			_on_tool_box_item_selected(Enums.Tool.ADD_ELEMENT)
+		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.ADD_LIST]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+			tool_box.select(Enums.Tool.ADD_LIST)
+			_on_tool_box_item_selected(Enums.Tool.ADD_LIST)
 		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.REMOVE_ELEMENT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
 			tool_box.select(Enums.Tool.REMOVE_ELEMENT)
 			_on_tool_box_item_selected(Enums.Tool.REMOVE_ELEMENT)
@@ -231,13 +234,14 @@ func connect_signals() -> void:
 
 
 func create_tool_keybinds() -> void:
-	tool_keybinds[Enums.Tool.SELECT] = "select_element"
-	tool_keybinds[Enums.Tool.ADD_ELEMENT] = "add_element"
-	tool_keybinds[Enums.Tool.REMOVE_ELEMENT] = "remove_element"
-	tool_keybinds[Enums.Tool.ELEMENT_STYLE_SETTINGS] = "element_style_settings"
-	tool_keybinds[Enums.Tool.ADD_CONNECTION] = "add_connection"
-	tool_keybinds[Enums.Tool.REMOVE_CONNECTIONS] = "remove_connections"
-	tool_keybinds[Enums.Tool.MARK_COMPLETED] = "mark_completed"
+	tool_keybinds[Enums.Tool.SELECT] = "select_element_tool"
+	tool_keybinds[Enums.Tool.ADD_ELEMENT] = "add_element_text_tool"
+	tool_keybinds[Enums.Tool.ADD_LIST] = "add_list_tool"
+	tool_keybinds[Enums.Tool.REMOVE_ELEMENT] = "remove_tool"
+	tool_keybinds[Enums.Tool.ELEMENT_STYLE_SETTINGS] = "element_style_settings_tool"
+	tool_keybinds[Enums.Tool.ADD_CONNECTION] = "add_connection_tool"
+	tool_keybinds[Enums.Tool.REMOVE_CONNECTIONS] = "remove_connection_tool"
+	tool_keybinds[Enums.Tool.MARK_COMPLETED] = "mark_completed_tool"
 	for tool in tool_keybinds:
 		for event in InputMap.action_get_events(tool_keybinds[tool]):
 			tool_box.set_item_text(tool, ("%s (%s)") % [tool_box.get_item_text(tool), event.as_text().split(" ")[0]])

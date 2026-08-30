@@ -23,6 +23,7 @@
 [ext_resource type="Texture2D" uid="uid://ck2luoi8jg6g" path="res://Icons/pencil.svg" id="15_5oxhp"]
 [ext_resource type="PackedScene" uid="uid://cg3drsp3kg5hm" path="res://Scenes/drawing_manager.tscn" id="17_b48ew"]
 [ext_resource type="PackedScene" uid="uid://cwbooma1lih12" path="res://Scenes/element_settings.tscn" id="17_oyb3p"]
+[ext_resource type="Texture2D" uid="uid://dm4iakddsl5ew" path="res://Icons/add_text_small.svg" id="17_urcnp"]
 [ext_resource type="Texture2D" uid="uid://dvj0rxvoc7005" path="res://Icons/brush.svg" id="17_xle81"]
 [ext_resource type="Theme" uid="uid://nujp3orsr2ol" path="res://Themes/popup_dialog_theme.tres" id="18_2ebs2"]
 [ext_resource type="Texture2D" uid="uid://dm7n0ravddpec" path="res://Icons/add_list.svg" id="18_b00ha"]
@@ -207,7 +208,7 @@ icon_mode = 0
 item_0/text = "Select & Move Elements, Pan & Zoom"
 item_0/icon = ExtResource("8_76v2p")
 item_1/text = "Add Element"
-item_1/icon = ExtResource("9_7ewk0")
+item_1/icon = ExtResource("17_urcnp")
 item_2/text = "Add List"
 item_2/icon = ExtResource("18_b00ha")
 item_3/text = "Remove Element"

@@ -116,6 +116,10 @@ func set_priority_visible(toggled_on: bool) -> void:
 	priority_panel.visible = toggled_on
 
 
+func set_priority_tool_enabled(toggled_on: bool) -> void:
+	priority_tool_enabled = toggled_on
+
+
 func get_text() -> String:
 	return text_edit.text
 
@@ -175,7 +179,7 @@ func is_editing_text() -> bool:
 func select() -> void:
 	z_index = 2
 	grab_indicator.visible = true
-	if priority_tool_enabled:
+	if priority_tool_enabled and priority_enabled:
 		priority_buttons_tween.toggle(true)
 
 
@@ -240,7 +244,7 @@ func _on_visibility_changed() -> void:
 
 
 func _on_text_edit_resized() -> void:
-	if text_edit :
+	if text_edit:
 		custom_minimum_size.y = text_edit.size.y + total_vertical_margin
 
 
