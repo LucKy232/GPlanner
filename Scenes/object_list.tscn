@@ -212,7 +212,6 @@ unique_name_in_owner = true
 visible = false
 light_mask = 8
 visibility_layer = 8
-custom_minimum_size = Vector2(0, 25)
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5

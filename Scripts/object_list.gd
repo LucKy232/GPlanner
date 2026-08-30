@@ -62,7 +62,7 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 		elif !dragger.is_dragging_outside and !entries.has(data):
 			dragger.start_drag_from_outside(entries, drop_visual.size.y, scroll_container.scroll_vertical)
 			change_state(State.DRAGGING_FROM_OUTSIDE)
-			drop_visual.size = Vector2(object_v_box.size.x, 25.0)
+			drop_visual.size = Vector2(object_v_box.size.x, get_font_size() + 4.0)
 			return true
 		# Continue drag from outside
 		elif dragger.is_dragging_outside:
@@ -78,7 +78,7 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 		if !dragger.is_dragging_outside and mouse_inside:
 			dragger.start_drag_from_outside(entries, drop_visual.size.y, scroll_container.scroll_vertical)
 			change_state(State.DRAGGING_FROM_OUTSIDE)
-			drop_visual.size = Vector2(object_v_box.size.x, 25.0)
+			drop_visual.size = Vector2(object_v_box.size.x, get_font_size() + 4.0)
 			return true
 		# Continue drag from outside
 		elif dragger.is_dragging_outside:
@@ -90,6 +90,13 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 			return false
 	else:
 		return false
+
+
+# TODO will be replaced by style settings
+func get_font_size() -> float:
+	if entries.size() > 0:
+		return entries[0].get_font_size()
+	return 20.0
 
 
 func _drop_data(_at_position: Vector2, data: Variant) -> void:
@@ -369,13 +376,14 @@ func to_json() -> Dictionary:
 
 func line_up_entry_erase_button() -> void:
 	if is_editing_text():
-		erase_entry_control.position.y = (entries[last_edited_entry_id].position.y
-										+ scroll_container.position.y
-										- scroll_container.scroll_vertical
-										- erase_entry_control.size.y * erase_entry_control.scale.y * 0.5)
-		if erase_entry_control.position.y < scroll_container.position.y - 40.0:
+		var new_y_position: float = (entries[last_edited_entry_id].position.y
+									+ scroll_container.position.y
+									- scroll_container.scroll_vertical
+									- erase_entry_control.size.y * erase_entry_control.scale.y * 0.5)
+		erase_entry_control.position.y = new_y_position
+		if new_y_position < scroll_container.position.y - 40.0:
 			erase_entry_control.visible = false
-		elif erase_entry_control.position.y > scroll_container.size.y:
+		elif new_y_position > scroll_container.size.y:
 			erase_entry_control.visible = false
 		else:
 			erase_entry_control.visible = true
@@ -397,7 +405,7 @@ func _on_scroll() -> void:
 		position_child_drop_visual(dragger.current, dragger.object_id)
 	if dragger.is_dragging_outside:
 		position_drop_visual_on_entry(dragger.current - 1)
-	line_up_entry_erase_button()
+	line_up_entry_erase_button.call_deferred()
 
 
 func _on_scroll_mouse_entered() -> void:
@@ -428,7 +436,7 @@ func _on_resized() -> void:
 		return
 	mouse_hover_shape.shape.size = size
 	mouse_hover.position = size * 0.5
-	line_up_entry_erase_button()
+	line_up_entry_erase_button.call_deferred()
 
 
 func _on_list_text_entry_text_changed() -> void:
@@ -477,7 +485,7 @@ func _on_list_text_entry_text_entry_toggled(entry_id: int, toggled: bool) -> voi
 		last_edited_entry_id = entry_id
 		text_edit_active.emit(id)
 		erase_entry_tween.toggle(true)
-		line_up_entry_erase_button()
+		line_up_entry_erase_button.call_deferred()
 	else:
 		erase_entry_tween.toggle(false)
 
