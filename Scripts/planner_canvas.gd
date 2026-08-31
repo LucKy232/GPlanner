@@ -8,11 +8,11 @@ class_name PlannerCanvas extends Control
 @onready var background: Panel = $Background
 @onready var drop_visual: Panel = %DropVisualIndicator
 
-var element_scene		## Passed by main.gd to be instantiated here
+var text_element_scene		## Passed by main.gd to be instantiated here
 var connection_scene	## Passed by main.gd to be instantiated here
 var list_scene			## Passed by main.gd to be instantiated here	# TODO class that keeps scene refs w/ errors
 var priority_colors: Array[Color]
-var elements: Dictionary[int, ElementLabel]
+var elements: Dictionary[int, TextElement]
 var lists: Dictionary[int, ObjectList]
 var connections: Dictionary[int, Connection]
 var connections_p1: Dictionary[int, PackedInt32Array]	## ELEMENT ID key, Array of CONNECTION ID value
@@ -37,7 +37,7 @@ var is_dragging: bool = false
 var is_resizing: bool = false
 var is_panning: bool = false
 var is_adding_elements: bool = false		## For continuing to add when holding CTRL (not auto change tools)
-var is_element_just_created: bool = false	## Cuts down on calling deselect_any() when creating an ElementLabel by not registering the click that created the element as a deselect
+var is_element_just_created: bool = false	## Cuts down on calling deselect_any() when creating an TextElement by not registering the click that created the element as a deselect
 var is_drawing: bool = false
 var is_color_picker_visible = false
 var is_user_input: bool = true
@@ -84,7 +84,7 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 			drop_visual.size = data.size
 			drop_visual.position = at_position
 			return true
-	elif data is ElementLabel:
+	elif data is TextElement:
 		return false
 	else:
 		return false
@@ -92,7 +92,7 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 
 func _drop_data(at_position: Vector2, data: Variant) -> void:
 	if data is ListTextEntry:
-		var new_elem_id: int = add_element_label(at_position)
+		var new_elem_id: int = add_text_element(at_position)
 		elements[new_elem_id].set_text(data.get_text())
 		elements[new_elem_id].size = data.size
 		select_element(new_elem_id)
@@ -259,9 +259,9 @@ func add_object_list(at_position: Vector2, id_specified: int = -1) -> void:
 	new_list.drag_and_resize_input.input_ended.connect(_on_control_input_ended.bind(new_list))
 
 
-func add_element_label(at_position: Vector2, id_specified: int = -1) -> int:
+func add_text_element(at_position: Vector2, id_specified: int = -1) -> int:
 	canvas_changed()
-	var new_element: ElementLabel = load(element_scene).instantiate()
+	var new_element: TextElement = load(text_element_scene).instantiate()
 	var elem_id: int
 	if id_specified < 0:
 		elem_id = element_id_counter
@@ -275,15 +275,15 @@ func add_element_label(at_position: Vector2, id_specified: int = -1) -> int:
 	object_container.add_child(new_element)
 	# NOTE element IDs can't change after creation because they are bound to their signals
 	# if fix needed, emit these signals from element script with current IDs
-	new_element.gui_input.connect(_on_element_label_gui_input.bind(elem_id))
-	new_element.resized.connect(_on_element_label_resized.bind(elem_id))
+	new_element.gui_input.connect(_on_text_element_gui_input.bind(elem_id))
+	new_element.resized.connect(_on_text_element_resized.bind(elem_id))
 	new_element.became_selected.connect(_on_element_text_box_active.bind(elem_id))
 	new_element.changed_priority.connect(_on_element_changed_priority.bind(elem_id))
-	new_element.text_changed.connect(_on_element_label_text_changed)
+	new_element.text_changed.connect(_on_text_element_text_changed)
 	new_element.drag_and_resize_input.drag_requested.connect(_on_control_dragged.bind(new_element))
 	new_element.drag_and_resize_input.resize_requested.connect(_on_control_resized.bind(new_element))
 	new_element.drag_and_resize_input.input_ended.connect(_on_control_input_ended.bind(new_element))
-	new_element.name = "ElementLabel"
+	new_element.name = "TextElement"
 	new_element.position = at_position
 	new_element.priority_id = Enums.Priority.NONE
 	new_element.priority_tool_enabled = settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL]
@@ -349,7 +349,7 @@ func add_connection(id_specified: int = -1, arrow_1_enabled: bool = false, arrow
 	connection_indicator.visible = false
 
 
-func remove_element_label(elem_id: int) -> void:
+func remove_text_element(elem_id: int) -> void:
 	canvas_changed()
 	deselect_any()
 	remove_connections(elem_id)
@@ -404,7 +404,7 @@ func remove_connections(elem_id: int) -> void:
 
 
 func select_element(elem_id: int) -> void:
-	if selected_control and selected_control is ElementLabel and elem_id == selected_control.id:
+	if selected_control and selected_control is TextElement and elem_id == selected_control.id:
 		return			# Already selected
 	deselect_any()		# Deselect previous element
 	if elements.has(elem_id):
@@ -563,7 +563,7 @@ func rebuild_elements(json_elems: Dictionary) -> void:
 		if !json_elems[i].is_empty():
 			var elem_id: int = int(json_elems[i]["id"])
 			var pos: Vector2 = Vector2(json_elems[i]["pos.x"], json_elems[i]["pos.y"])
-			add_element_label(pos, elem_id)
+			add_text_element(pos, elem_id)
 			var style_id: String = "none"
 			var completed: bool = false
 			var has_style: bool = false
@@ -664,7 +664,7 @@ func erase_everything() -> void:
 
 
 func toggle_element_and_connections(elem_id: int, state: bool) -> void:
-	if selected_control and selected_control is ElementLabel and selected_control.id == elem_id:
+	if selected_control and selected_control is TextElement and selected_control.id == elem_id:
 		deselect_any()
 	elements[elem_id].visible = state
 	
@@ -677,7 +677,7 @@ func toggle_element_and_connections(elem_id: int, state: bool) -> void:
 
 
 func toggle_element(elem_id: int, state: bool) -> void:
-	if selected_control and selected_control is ElementLabel and selected_control.id == elem_id:
+	if selected_control and selected_control is TextElement and selected_control.id == elem_id:
 		deselect_any()
 	elements[elem_id].visible = state
 
@@ -759,7 +759,7 @@ func change_priority_filter(value: int) -> void:
 		toggle_connections(i)
 
 
-func toggle_element_label_mouse_inputs(toggled_on: bool) -> void:
+func toggle_text_element_mouse_inputs(toggled_on: bool) -> void:
 	for e in elements:
 		if toggled_on:
 			elements[e].text_edit.mouse_filter = Control.MOUSE_FILTER_PASS
@@ -800,7 +800,7 @@ func _on_control_dragged(event_relative: Vector2, control: Control) -> void:
 	if tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS:
 		control.position += event_relative / scale
 		selection_viewer.position = control.position
-		if control is ElementLabel:
+		if control is TextElement:
 			update_connections(control.id)
 		canvas_changed()
 
@@ -814,7 +814,7 @@ func _on_control_resized(event_relative: Vector2, control: Control) -> void:
 		else:
 			control.size += event_relative / scale
 		selection_viewer.size = control.size
-		if control is ElementLabel:
+		if control is TextElement:
 			update_connections(control.id)
 		canvas_changed()
 
@@ -898,8 +898,8 @@ func _on_background_gui_input(event: InputEvent) -> void:
 		handle_zoom(old_zoom, get_window().get_mouse_position())
 	
 	if settings.app_mode == Enums.AppMode.PLANNING and event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed() and tool_id == Enums.Tool.ADD_ELEMENT:
-			add_element_label(event.position)
+		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed() and tool_id == Enums.Tool.ADD_TEXT_ELEMENT:
+			add_text_element(event.position)
 			is_adding_elements = true
 		if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed() and tool_id == Enums.Tool.ADD_LIST:
 			add_object_list(event.position)
@@ -932,7 +932,7 @@ func _on_background_gui_input(event: InputEvent) -> void:
 			last_draw_event_position = currrent_draw_event_position
 
 
-func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
+func _on_text_element_gui_input(event: InputEvent, elem_id: int) -> void:
 	if settings.app_mode == Enums.AppMode.DRAWING or drawing_manager.is_taking_screenshots:
 		return
 	if event is not InputEventMouseButton:
@@ -970,7 +970,7 @@ func _on_element_label_gui_input(event: InputEvent, elem_id: int) -> void:
 			elements[elem_id].toggle_completed()
 			toggle_element_and_connections(elem_id, settings.checkbox_data[Enums.Checkbox.SHOW_COMPLETED])
 	elif tool_id == Enums.Tool.REMOVE_ELEMENT and event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
-		remove_element_label(elem_id)
+		remove_text_element(elem_id)
 
 
 func _on_object_list_mouse_input(event: InputEvent, list_id: int) -> void:
@@ -1019,12 +1019,12 @@ func _on_element_text_box_active(elem_id: int) -> void:
 			connection_candidate_2 = elem_id
 			add_connection()
 	if tool_id == Enums.Tool.REMOVE_ELEMENT:
-		remove_element_label(elem_id)
+		remove_text_element(elem_id)
 	if tool_id == Enums.Tool.REMOVE_CONNECTIONS:
 		remove_connections(elem_id)
 
 
-func _on_element_label_text_changed() -> void:
+func _on_text_element_text_changed() -> void:
 	canvas_changed()
 
 
@@ -1049,13 +1049,13 @@ func _on_list_select_requested(list_id: int) -> void:
 func _on_list_remove_element_request(elem_id: int) -> void:
 	if !elements.has(elem_id):
 		push_error("Wrong element id @ _on_list_remove_element_request")
-	remove_element_label(elem_id)
+	remove_text_element(elem_id)
 	is_dragging = false
 	is_resizing = false
 
 
-func _on_element_label_resized(elem_id: int) -> void:
-	if selected_control and selected_control is ElementLabel and selected_control.id == elem_id:
+func _on_text_element_resized(elem_id: int) -> void:
+	if selected_control and selected_control is TextElement and selected_control.id == elem_id:
 		selection_viewer.size = elements[elem_id].size
 
 

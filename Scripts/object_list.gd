@@ -73,7 +73,7 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 			return true
 		else:
 			return false
-	elif data is ElementLabel:
+	elif data is TextElement:
 		# Start drag from outside
 		if !dragger.is_dragging_outside and mouse_inside:
 			dragger.start_drag_from_outside(entries, drop_visual.size.y, scroll_container.scroll_vertical)
@@ -112,7 +112,7 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		change_state(State.DEFAULT)
 		dragger.end_drag()
 		select_request.emit(id)
-	if data is ElementLabel:
+	if data is TextElement:
 		add_text_entry(false)
 		entries[-1].set_text(data.get_text())
 		object_v_box.move_child(entries[-1], dragger.current)
@@ -157,6 +157,7 @@ func _input(event: InputEvent) -> void:
 		object_v_box.move_child(entries[last_edited_entry_id], last_edited_entry_id + 1)
 		sort_entries(last_edited_entry_id, last_edited_entry_id + 1)
 		last_edited_entry_id += 1
+		go_to_last_edited_entry.call_deferred()
 		list_changed.emit()
 	if event.is_action_pressed("move_list_entry_down", true, true):
 		if last_edited_entry_id == 0:
@@ -164,6 +165,7 @@ func _input(event: InputEvent) -> void:
 		object_v_box.move_child(entries[last_edited_entry_id], last_edited_entry_id - 1)
 		sort_entries(last_edited_entry_id, last_edited_entry_id - 1)
 		last_edited_entry_id -= 1
+		go_to_last_edited_entry.call_deferred()
 		list_changed.emit()
 
 
@@ -215,15 +217,19 @@ func is_editing_text(include_title: bool = true) -> bool:
 
 func enter_text_edit() -> void:
 	if entries.size() > last_edited_entry_id and last_edited_entry_id >= 0:
-		var entry: ListTextEntry = entries[last_edited_entry_id]
-		entry.enter_text_edit()
-		# Scroll to entry if entry is out of visible scroll range
-		if entry.position.y < scroll_container.scroll_vertical:		# go up
-			var diff: int = int(entry.position.y) - scroll_container.scroll_vertical - 5
-			scroll_container.scroll_vertical += diff
-		if entry.position.y + entry.size.y > scroll_container.scroll_vertical + scroll_container.size.y:	# go down
-			var diff: int = int(entry.position.y + entry.size.y) - (scroll_container.scroll_vertical + int(scroll_container.size.y))
-			scroll_container.scroll_vertical += diff
+		entries[last_edited_entry_id].enter_text_edit()
+		go_to_last_edited_entry.call_deferred()
+
+
+# Scroll to entry if entry is out of visible scroll range
+func go_to_last_edited_entry() -> void:
+	var entry: ListTextEntry = entries[last_edited_entry_id]
+	if entry.position.y < scroll_container.scroll_vertical:		# go up
+		var diff: int = int(entry.position.y) - scroll_container.scroll_vertical - 5
+		scroll_container.scroll_vertical += diff
+	if entry.position.y + entry.size.y > scroll_container.scroll_vertical + scroll_container.size.y:	# go down
+		var diff: int = int(entry.position.y + entry.size.y) - (scroll_container.scroll_vertical + int(scroll_container.size.y))
+		scroll_container.scroll_vertical += diff
 
 
 func exit_text_edit() -> void:

@@ -1,17 +1,17 @@
-[gd_scene format=3 uid="uid://lufadl7u0ek3"]
+[gd_scene format=3 uid="uid://cdn8513i3j0ns"]
 
-[ext_resource type="StyleBox" uid="uid://cdui0dgu3vdrr" path="res://Themes/element_background_style_box.tres" id="1_1b4pp"]
-[ext_resource type="StyleBox" uid="uid://8g7b3501cxjx" path="res://Themes/element_completed_style_box.tres" id="1_htelr"]
-[ext_resource type="Script" uid="uid://bdpfuamwhbk56" path="res://Scripts/element_label.gd" id="1_m3njf"]
-[ext_resource type="StyleBox" uid="uid://b0l55wn2xggiw" path="res://Themes/Buttons/none_priority_button_stylebox.tres" id="5_01as5"]
-[ext_resource type="Theme" uid="uid://dfkiu7dg1cfmm" path="res://Themes/text_edit_completed_theme.tres" id="5_562gy"]
-[ext_resource type="PackedScene" uid="uid://cytlmlx7kw2l2" path="res://Scenes/drag_and_resize_input.tscn" id="5_847go"]
-[ext_resource type="StyleBox" uid="uid://wrrl0mk4mdli" path="res://Themes/Buttons/active_priority_button_stylebox.tres" id="5_y2cp5"]
-[ext_resource type="StyleBox" uid="uid://0m1wm66xknlk" path="res://Themes/Buttons/high_priority_button_stylebox.tres" id="6_bfvbn"]
-[ext_resource type="StyleBox" uid="uid://dgq7v0gkqrpgf" path="res://Themes/Buttons/medium_priority_button_stylebox.tres" id="7_y2cp5"]
-[ext_resource type="StyleBox" uid="uid://dga3kal7lipkl" path="res://Themes/Buttons/low_priority_button_stylebox.tres" id="8_847go"]
-[ext_resource type="Script" uid="uid://b0ioikc1dokvh" path="res://AddonsOwn/tween_show_hide.gd" id="11_a3jml"]
-[ext_resource type="Theme" uid="uid://bw15nbn335862" path="res://Themes/text_edit_element_theme.tres" id="13_46tma"]
+[ext_resource type="Script" uid="uid://b1m6wqoq2yo38" path="res://Scripts/text_element.gd" id="1_87eqm"]
+[ext_resource type="StyleBox" uid="uid://8g7b3501cxjx" path="res://Themes/element_completed_style_box.tres" id="2_fxdsv"]
+[ext_resource type="Theme" uid="uid://bw15nbn335862" path="res://Themes/text_edit_element_theme.tres" id="3_47qi8"]
+[ext_resource type="Theme" uid="uid://dfkiu7dg1cfmm" path="res://Themes/text_edit_completed_theme.tres" id="4_2a0l0"]
+[ext_resource type="PackedScene" uid="uid://cytlmlx7kw2l2" path="res://Scenes/drag_and_resize_input.tscn" id="5_6l5lr"]
+[ext_resource type="Script" uid="uid://b0ioikc1dokvh" path="res://AddonsOwn/tween_show_hide.gd" id="6_konn6"]
+[ext_resource type="StyleBox" uid="uid://wrrl0mk4mdli" path="res://Themes/Buttons/active_priority_button_stylebox.tres" id="7_bnxrp"]
+[ext_resource type="StyleBox" uid="uid://0m1wm66xknlk" path="res://Themes/Buttons/high_priority_button_stylebox.tres" id="8_60qy3"]
+[ext_resource type="StyleBox" uid="uid://dgq7v0gkqrpgf" path="res://Themes/Buttons/medium_priority_button_stylebox.tres" id="9_m5dkd"]
+[ext_resource type="StyleBox" uid="uid://dga3kal7lipkl" path="res://Themes/Buttons/low_priority_button_stylebox.tres" id="10_pxswx"]
+[ext_resource type="StyleBox" uid="uid://b0l55wn2xggiw" path="res://Themes/Buttons/none_priority_button_stylebox.tres" id="11_pnn6i"]
+[ext_resource type="StyleBox" uid="uid://cdui0dgu3vdrr" path="res://Themes/element_background_style_box.tres" id="12_60onh"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_562gy"]
 
@@ -48,7 +48,7 @@ MarginContainer/constants/margin_left = 15
 MarginContainer/constants/margin_right = 5
 MarginContainer/constants/margin_top = 0
 
-[node name="Element" type="Panel" unique_id=655691787]
+[node name="TextElement" type="Panel" unique_id=655691787]
 light_mask = 8
 visibility_layer = 8
 custom_minimum_size = Vector2(64, 32)
@@ -58,13 +58,13 @@ pivot_offset = Vector2(0.5, 0.5)
 mouse_force_pass_scroll_events = false
 mouse_default_cursor_shape = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_562gy")
-script = ExtResource("1_m3njf")
+script = ExtResource("1_87eqm")
 line_wrap_limit = 5.0
-completed_stylebox = ExtResource("1_htelr")
-text_edit_theme = ExtResource("13_46tma")
-text_edit_completed_theme = ExtResource("5_562gy")
+completed_stylebox = ExtResource("2_fxdsv")
+text_edit_theme = ExtResource("3_47qi8")
+text_edit_completed_theme = ExtResource("4_2a0l0")
 
-[node name="DragAndResizeInput" parent="." unique_id=713311794 instance=ExtResource("5_847go")]
+[node name="DragAndResizeInput" parent="." unique_id=713311794 instance=ExtResource("5_6l5lr")]
 layout_mode = 1
 
 [node name="PanelContainer" type="PanelContainer" parent="." unique_id=931848533]
@@ -83,7 +83,7 @@ layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
 mouse_filter = 2
-script = ExtResource("11_a3jml")
+script = ExtResource("6_konn6")
 target = NodePath("PriorityButtons")
 side = 1
 animation_time = 0.25
@@ -109,7 +109,7 @@ custom_minimum_size = Vector2(30, 12)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
-theme_override_styles/normal = ExtResource("5_y2cp5")
+theme_override_styles/normal = ExtResource("7_bnxrp")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_y2cp5")
 action_mode = 0
 
@@ -118,7 +118,7 @@ custom_minimum_size = Vector2(30, 12)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
-theme_override_styles/normal = ExtResource("6_bfvbn")
+theme_override_styles/normal = ExtResource("8_60qy3")
 action_mode = 0
 
 [node name="PriorityMedium" type="Button" parent="PanelContainer/PriorityButtonsTween/PriorityButtons" unique_id=843168330]
@@ -126,7 +126,7 @@ custom_minimum_size = Vector2(30, 12)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
-theme_override_styles/normal = ExtResource("7_y2cp5")
+theme_override_styles/normal = ExtResource("9_m5dkd")
 action_mode = 0
 
 [node name="PriorityLow" type="Button" parent="PanelContainer/PriorityButtonsTween/PriorityButtons" unique_id=159438004]
@@ -134,7 +134,7 @@ custom_minimum_size = Vector2(30, 12)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
-theme_override_styles/normal = ExtResource("8_847go")
+theme_override_styles/normal = ExtResource("10_pxswx")
 action_mode = 0
 
 [node name="PriorityNone" type="Button" parent="PanelContainer/PriorityButtonsTween/PriorityButtons" unique_id=1381010741]
@@ -142,7 +142,7 @@ custom_minimum_size = Vector2(30, 12)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
-theme_override_styles/normal = ExtResource("5_01as5")
+theme_override_styles/normal = ExtResource("11_pnn6i")
 action_mode = 0
 
 [node name="Background" type="Panel" parent="PanelContainer" unique_id=656927497]
@@ -151,7 +151,7 @@ propagate_maximum_size = true
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_filter = 1
-theme_override_styles/panel = ExtResource("1_1b4pp")
+theme_override_styles/panel = ExtResource("12_60onh")
 
 [node name="PriorityPanel" type="Panel" parent="PanelContainer/Background" unique_id=1272237648]
 unique_name_in_owner = true
@@ -219,7 +219,7 @@ offset_bottom = 12.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 4
-theme = ExtResource("13_46tma")
+theme = ExtResource("3_47qi8")
 placeholder_text = "..."
 wrap_mode = 1
 scroll_fit_content_height = true

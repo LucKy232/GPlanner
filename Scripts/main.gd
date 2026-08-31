@@ -24,7 +24,7 @@ extends Control
 
 @export var android_build: bool = false
 @export_category("Scenes")
-@export_file("*.tscn") var element_scene
+@export_file("*.tscn") var text_element_scene
 @export_file("*.tscn") var list_scene
 @export_file("*.tscn") var connection_scene
 @export_file("*.tscn") var canvas_scene
@@ -182,9 +182,9 @@ func _process(_delta):
 		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.SELECT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
 			tool_box.select(Enums.Tool.SELECT)
 			_on_tool_box_item_selected(Enums.Tool.SELECT)
-		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.ADD_ELEMENT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
-			tool_box.select(Enums.Tool.ADD_ELEMENT)
-			_on_tool_box_item_selected(Enums.Tool.ADD_ELEMENT)
+		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.ADD_TEXT_ELEMENT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+			tool_box.select(Enums.Tool.ADD_TEXT_ELEMENT)
+			_on_tool_box_item_selected(Enums.Tool.ADD_TEXT_ELEMENT)
 		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.ADD_LIST]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
 			tool_box.select(Enums.Tool.ADD_LIST)
 			_on_tool_box_item_selected(Enums.Tool.ADD_LIST)
@@ -235,7 +235,7 @@ func connect_signals() -> void:
 
 func create_tool_keybinds() -> void:
 	tool_keybinds[Enums.Tool.SELECT] = "select_element_tool"
-	tool_keybinds[Enums.Tool.ADD_ELEMENT] = "add_element_text_tool"
+	tool_keybinds[Enums.Tool.ADD_TEXT_ELEMENT] = "add_text_element_tool"
 	tool_keybinds[Enums.Tool.ADD_LIST] = "add_list_tool"
 	tool_keybinds[Enums.Tool.REMOVE_ELEMENT] = "remove_tool"
 	tool_keybinds[Enums.Tool.ELEMENT_STYLE_SETTINGS] = "element_style_settings_tool"
@@ -371,7 +371,7 @@ func new_file(add_canvas: bool, show_status: bool = true) -> int:
 		new_canvas.has_changed.connect(_on_canvas_has_changed.bind(new_canvas.id))
 		new_canvas.has_selected_control.connect(_on_canvas_has_selected_control)
 		new_canvas.has_deselected_control.connect(_on_canvas_has_deselected_control)
-		new_canvas.element_scene = element_scene
+		new_canvas.text_element_scene = text_element_scene
 		new_canvas.list_scene = list_scene
 		new_canvas.connection_scene = connection_scene
 		new_canvas.priority_colors = priority_colors
@@ -1105,7 +1105,7 @@ func _on_element_settings_preset_color_changed() -> void:
 		return
 	var style_preset: ElementPresetStyle = element_settings.get_selected_preset()
 	var selected_control: Control = get_selected_control()
-	if style_preset.id == "individual" and selected_control is ElementLabel:
+	if style_preset.id == "individual" and selected_control is TextElement:
 		if selected_control:
 			canvases[cc].update_connection_color(selected_control.id, style_preset.background_color)
 		else:
@@ -1129,13 +1129,13 @@ func _on_element_settings_preset_selected() -> void:
 	if element_settings.preset_options.selected > 0:
 		if canvases[cc].selected_preset_style != style_preset.id:
 			canvases[cc].change_selected_preset_style(style_preset.id)
-			if selected_control and selected_control is ElementLabel:
+			if selected_control and selected_control is TextElement:
 				canvases[cc].canvas_changed()
 				canvases[cc].update_connection_color(selected_control.id, style_preset.background_color)
 				selected_control.change_style_preset(style_preset)
 	elif element_settings.preset_options.selected == 0:
 		canvases[cc].change_selected_preset_style("none")
-		if selected_control and selected_control is ElementLabel:
+		if selected_control and selected_control is TextElement:
 			if selected_control.has_style_preset:
 				canvases[cc].canvas_changed()
 				selected_control.unassign_preset_style()
@@ -1149,7 +1149,7 @@ func _on_canvas_has_selected_control() -> void:
 	if !canvases.has(cc):
 		return
 	var selected_control: Control = get_selected_control()
-	if selected_control and selected_control is ElementLabel and canvases[cc].selected_preset_style == "none":
+	if selected_control and selected_control is TextElement and canvases[cc].selected_preset_style == "none":
 		element_settings.none_preset = selected_control.individual_style
 	element_settings.select_by_style_preset_id(canvases[cc].selected_preset_style)
 	element_settings.toggle_none_preset_inputs(true)
@@ -1222,7 +1222,7 @@ func _on_toggle_mode_toggled(toggled_on: bool) -> void:
 	
 	if toggled_on:
 		canvases[cc].settings.app_mode = Enums.AppMode.DRAWING
-		canvases[cc].toggle_element_label_mouse_inputs(false)
+		canvases[cc].toggle_text_element_mouse_inputs(false)
 		canvases[cc].toggle_show_priority_tool(false, false)		# Hide priority tool popup while drawing
 		canvases[cc].set_default_cursor_shape(Control.CURSOR_HELP)	# To be replaced by custom mouse cursor
 		tool_box.visible = false
@@ -1237,7 +1237,7 @@ func _on_toggle_mode_toggled(toggled_on: bool) -> void:
 	else:
 		drawing_manager.end_stroke()
 		canvases[cc].settings.app_mode = Enums.AppMode.PLANNING
-		canvases[cc].toggle_element_label_mouse_inputs(true)
+		canvases[cc].toggle_text_element_mouse_inputs(true)
 		# Restore priority tool popup enabled state
 		canvases[cc].toggle_show_priority_tool(canvases[cc].settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL], false)
 		canvases[cc].set_default_cursor_shape(Control.CURSOR_ARROW)	# Default

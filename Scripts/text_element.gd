@@ -1,4 +1,4 @@
-class_name ElementLabel extends Panel
+class_name TextElement extends Panel
 
 @export var line_wrap_limit: float = 4.0
 @export var completed_stylebox: StyleBoxFlat

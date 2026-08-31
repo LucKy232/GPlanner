@@ -10,7 +10,7 @@ enum AppMode {
 ## Corresponds to the PlannerToolBox's Items from main_scene
 enum Tool {
 	SELECT,
-	ADD_ELEMENT,
+	ADD_TEXT_ELEMENT,
 	ADD_LIST,
 	REMOVE_ELEMENT,
 	ELEMENT_STYLE_SETTINGS,
@@ -27,7 +27,7 @@ enum RequestedActionType {
 	CONFIRMATION_TAB,
 }
 
-## Corresponds to the priority types that can be assigned to an ElementLabel
+## Corresponds to the priority types that can be assigned to a TextElement
 enum Priority {
 	ACTIVE,
 	HIGH,
