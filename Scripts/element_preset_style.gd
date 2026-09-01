@@ -82,10 +82,22 @@ func rebuild_from_json_dict(dict: Dictionary) -> void:
 	id = p_id
 	name = p_name
 	
-	var bgc: Color = Color(dict["background_color.r"], dict["background_color.g"], dict["background_color.b"], dict["background_color.a"])
-	var fc: Color = Color(dict["font_color.r"], dict["font_color.g"], dict["font_color.b"], dict["font_color.a"])
-	var oc: Color = Color(dict["outline_color.r"], dict["outline_color.g"], dict["outline_color.b"], dict["outline_color.a"])
-	var bc: Color = Color(dict["border_color.r"], dict["border_color.g"], dict["border_color.b"], dict["border_color.a"])
+	var bgc: Color = Color(dict["background_color.r"],
+						dict["background_color.g"],
+						dict["background_color.b"],
+						dict["background_color.a"])
+	var fc: Color = Color(dict["font_color.r"],
+						dict["font_color.g"],
+						dict["font_color.b"],
+						dict["font_color.a"])
+	var oc: Color = Color(dict["outline_color.r"],
+						dict["outline_color.g"],
+						dict["outline_color.b"],
+						dict["outline_color.a"])
+	var bc: Color = Color(dict["border_color.r"],
+						dict["border_color.g"],
+						dict["border_color.b"],
+						dict["border_color.a"])
 	set_background_color(bgc)
 	set_font_size(int(dict["font_size"]))
 	set_font_color(fc)

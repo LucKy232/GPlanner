@@ -1,28 +1,31 @@
 extends Control
 
-@onready var toggle_mode_button: CheckButton = $MarginContainer/ToolVBox/ToolArea/ToggleMode
-@onready var tool_box: ItemList = $MarginContainer/ToolVBox/ToolArea/PlannerToolBox
-@onready var drawing_tool_box: ItemList = $MarginContainer/ToolVBox/ToolArea/DrawingToolBox
-@onready var drawing_tool_bar: DrawingToolBar = $MarginContainer/ToolVBox/DrawingToolBar
-@onready var settings_drawer: SettingsDrawer = $SettingsDrawer
-@onready var element_settings: ElementSettings = $MarginContainer/ElementSettings
-@onready var zoom_indicator: ZoomIndicator = $MarginContainer/ZoomIndicator
-@onready var pan_indicator_camera: PanIndicatorCamera = $MarginContainer/PanIndicatorCamera
-@onready var status_bar: Label = $StatusBar
-@onready var margin_container: MarginContainer = $MarginContainer
-@onready var file_dialog_save: FileDialog = $FileDialogSave
-@onready var file_dialog_load: FileDialog = $FileDialogLoad
-@onready var new_file_confirmation: AcceptDialog = $NewFileConfirmation
-@onready var load_file_confirmation: AcceptDialog = $LoadFileConfirmation
-@onready var close_tab_confirmation: AcceptDialog = $CloseTabConfirmation
-@onready var exit_tab_confirmation: AcceptDialog = $ExitTabConfirmation
-@onready var bottom_bar: ScrollContainer = $BottomBar
-@onready var file_tab_bar: TabBar = $BottomBar/HBoxContainer/FileTabBar
-@onready var drawing_manager: DrawingManager = $DrawingManager
-@onready var input_repeat_timer: Timer = $InputRepeatTimer
-@onready var cursor_big_brush: TextureRect = $CursorBigBrush
+@onready var file_buttons: HBoxContainer = %FileButtons
+@onready var toggle_mode_button: CheckButton = %ToggleMode
+@onready var tool_box: ItemList = %PlannerToolBox
+@onready var drawing_tool_box: ItemList = %DrawingToolBox
+@onready var drawing_tool_bar: DrawingToolBar = %DrawingToolBar
+@onready var settings_drawer: SettingsDrawer = %SettingsDrawer
+@onready var element_settings: ElementSettings = %ElementSettings
+@onready var zoom_indicator: ZoomIndicator = %ZoomIndicator
+@onready var pan_indicator_camera: PanIndicatorCamera = %PanIndicatorCamera
+@onready var status_bar: StatusBar = %StatusBar
+@onready var margin_container: MarginContainer = %MarginContainer
+@onready var file_dialog_save: FileDialog = %FileDialogSave
+@onready var file_dialog_load: FileDialog = %FileDialogLoad
+@onready var new_file_confirmation: AcceptDialog = %NewFileConfirmation
+@onready var load_file_confirmation: AcceptDialog = %LoadFileConfirmation
+@onready var close_tab_confirmation: AcceptDialog = %CloseTabConfirmation
+@onready var exit_tab_confirmation: AcceptDialog = %ExitTabConfirmation
+@onready var bottom_bar: ScrollContainer = %BottomBar
+@onready var file_tab_bar: TabBar = %FileTabBar
+@onready var drawing_manager: DrawingManager = %DrawingManager
+@onready var input_repeat_timer: Timer = %InputRepeatTimer
+@onready var cursor_big_brush: TextureRect = %CursorBigBrush
 
 @export var android_build: bool = false
+@export var auto_ui_scale: bool = true
+@export var ui_scale: float = 1.0
 @export_category("Scenes")
 @export_file("*.tscn") var text_element_scene
 @export_file("*.tscn") var list_scene
@@ -85,9 +88,11 @@ func _ready() -> void:
 	close_tab_confirmation.add_cancel_button(" Cancel ")
 	exit_tab_confirmation.add_button("     No     ", true, "no_save")
 	exit_tab_confirmation.add_cancel_button(" Cancel ")
+	# Before reading files, ask for read / write permissions
 	if android_build:
 		OS.request_permissions()
-		scale_ui(2.4)
+	if auto_ui_scale:
+		auto_scale_ui()
 	# Load files
 	var active_id: int = load_opened_file_paths(opened_files_file_name)
 	is_at_startup = false
@@ -96,37 +101,49 @@ func _ready() -> void:
 	post_load_select_active_canvas(active_id)
 
 
+func auto_scale_ui() -> void:
+	var dpi: int = DisplayServer.screen_get_dpi(DisplayServer.SCREEN_OF_MAIN_WINDOW)
+	var auto_scale: float = clampf(float(dpi) / 96.0, 0.5, 2.0)
+	scale_ui(auto_scale)
+	print("Auto UI Scale: %0.0f%%" % [auto_scale * 100.0])
+
+
 func scale_ui(factor: float) -> void:
-	var new_scale := Vector2(factor, factor)
+	var new_scale: Vector2 = Vector2.ONE * factor
 	margin_container.scale = new_scale
 	margin_container.anchor_right = 1.0 / factor
 	margin_container.anchor_bottom = 1.0 / factor
-	margin_container.theme.set_constant("margin_bottom", "MarginContainer", int(18.0 + 10.0 * factor))
-	margin_container.theme.set_constant("margin_left", "MarginContainer", int(10.0 * factor))
-	margin_container.theme.set_constant("margin_right", "MarginContainer", int(10.0 * factor))
-	margin_container.theme.set_constant("margin_top", "MarginContainer", int(10.0 * factor))
+	pan_indicator_camera.offset_transform_scale = Vector2.ONE / new_scale
+	margin_container.theme.set_constant("margin_bottom", "MarginContainer", int(28.0 + 10.0 * factor))
+	margin_container.theme.set_constant("margin_left", "MarginContainer", int(10.0 + 10.0 * factor))
+	margin_container.theme.set_constant("margin_right", "MarginContainer", int(10.0 + 10.0 * factor))
+	margin_container.theme.set_constant("margin_top", "MarginContainer", int(10.0 + 10.0 * factor))
 	status_bar.scale = new_scale
-	status_bar.position.x -= factor * 200.0
 	settings_drawer.scale = new_scale
-	settings_drawer.position.y -= factor * 100.0
+	settings_drawer.pivot_offset.y = (factor - 1.0) * 150.0 if factor >= 1.0 else 0.0
 	bottom_bar.scale = new_scale
-	bottom_bar.position.x += factor * 10.0
-	bottom_bar.position.y -= factor * 20.0
+	bottom_bar.pivot_offset.y = bottom_bar.size.y
+	var old_factor: float = file_dialog_save.content_scale_factor
 	file_dialog_save.content_scale_factor = factor
 	file_dialog_load.content_scale_factor = factor
 	new_file_confirmation.content_scale_factor = factor
 	load_file_confirmation.content_scale_factor = factor
 	close_tab_confirmation.content_scale_factor = factor
 	exit_tab_confirmation.content_scale_factor = factor
-	file_dialog_save.size *= factor
-	file_dialog_load.size *= factor
-	new_file_confirmation.size *= factor
-	load_file_confirmation.size *= factor
-	close_tab_confirmation.size *= factor
-	exit_tab_confirmation.size *= factor
+	# Same Theme for all 6 popups
+	file_dialog_save.theme.set_font_size("title_font_size", "FileDialog", int(16.0 * factor))
+	file_dialog_save.theme.set_font_size("title_font_size", "AcceptDialog", int(16.0 * factor))
+	file_dialog_save.size *= (factor / old_factor)
+	file_dialog_load.size *= (factor / old_factor)
+	new_file_confirmation.size *= (factor / old_factor)
+	load_file_confirmation.size *= (factor / old_factor)
+	close_tab_confirmation.size *= (factor / old_factor)
+	exit_tab_confirmation.size *= (factor / old_factor)
 
 
 func _process(_delta):
+	if Input.is_action_just_pressed("test_mult"):
+		scale_ui(ui_scale)
 	if use_mouse_cursor_big_brush():
 		cursor_big_brush.position = get_local_mouse_position() - cursor_big_brush.size * 0.5
 	if selected_control_exists():		# If editing text, don't use shortcuts
@@ -248,12 +265,12 @@ func create_tool_keybinds() -> void:
 
 
 func create_drawing_tool_keybinds() -> void:
-	draw_tool_keybinds[Enums.DrawingTool.PENCIL] = "pencil"
-	draw_tool_keybinds[Enums.DrawingTool.BRUSH] = "brush"
-	draw_tool_keybinds[Enums.DrawingTool.ERASER_PENCIL] = "eraser_pencil"
-	draw_tool_keybinds[Enums.DrawingTool.ERASER_BRUSH] = "eraser_brush"
-	draw_tool_keybinds[Enums.DrawingTool.MOVE] = "drawing_move"
-	#draw_tool_keybinds[Enums.DrawingTool.BOX_SELECT] = "drawing_box_select"
+	draw_tool_keybinds[Enums.DrawingTool.PENCIL] = "pencil_tool"
+	draw_tool_keybinds[Enums.DrawingTool.BRUSH] = "brush_tool"
+	draw_tool_keybinds[Enums.DrawingTool.ERASER_PENCIL] = "eraser_pencil_tool"
+	draw_tool_keybinds[Enums.DrawingTool.ERASER_BRUSH] = "eraser_brush_tool"
+	draw_tool_keybinds[Enums.DrawingTool.MOVE] = "drawing_move_tool"
+	#draw_tool_keybinds[Enums.DrawingTool.BOX_SELECT] = "drawing_box_select_tool"
 	
 	for tool in draw_tool_keybinds:
 		for event in InputMap.action_get_events(draw_tool_keybinds[tool]):

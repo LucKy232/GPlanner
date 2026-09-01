@@ -40,8 +40,6 @@ func _input(event: InputEvent) -> void:
 			_on_hover(false)
 	if grabber_clicked and event is InputEventMouseMotion:
 		grabber_moved.emit(event, id)
-	if event.is_action_pressed("test_mult"):
-		reset_item_sizes()
 
 
 func change_priority_color(c: Color) -> void:

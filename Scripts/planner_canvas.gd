@@ -5,7 +5,7 @@ class_name PlannerCanvas extends Control
 @onready var object_container: Control = %ObjectContainer
 @onready var selection_viewer: Panel = %SelectionViewer
 @onready var connection_indicator: Panel = %ConnectionIndicator
-@onready var background: Panel = $Background
+@onready var background: CanvasBackground = %Background
 @onready var drop_visual: Panel = %DropVisualIndicator
 
 var text_element_scene		## Passed by main.gd to be instantiated here

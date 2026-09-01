@@ -1,5 +1,4 @@
-extends Label
-class_name StatusBar
+class_name StatusBar extends Label
 
 @onready var hide_timer: Timer = $HideTimer
 @onready var animation_player: AnimationPlayer = $AnimationPlayer

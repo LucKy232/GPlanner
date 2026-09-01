@@ -67,7 +67,7 @@ border_color = Color(0.188235, 0.701961, 1, 1)
 corner_detail = 1
 
 [resource]
-AcceptDialog/font_sizes/title_font_size = 18
+AcceptDialog/font_sizes/title_font_size = 16
 AcceptDialog/fonts/title_font = ExtResource("1_dird1")
 AcceptDialog/styles/embedded_border = SubResource("StyleBoxFlat_l5lmn")
 AcceptDialog/styles/embedded_unfocused_border = SubResource("StyleBoxFlat_hrmln")

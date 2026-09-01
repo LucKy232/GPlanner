@@ -7666,12 +7666,12 @@
 	"State": {
 		"app_mode": 0,
 		"drawing_folder_path": "plannerplanner 2025-08-31T215146",
-		"position.x": -924.067504882813,
+		"position.x": -904.067504882813,
 		"position.y": 0.0,
 		"priority_filter_value": 4,
 		"scale.x": 0.471224308013916,
 		"scale.y": 0.471224308013916,
-		"show_completed": true,
+		"show_completed": false,
 		"show_priorities": true,
 		"show_priority_tool": true,
 		"zoom_level": 0.471224301513191

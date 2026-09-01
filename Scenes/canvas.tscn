@@ -39,7 +39,7 @@ texture = ExtResource("2_jhfc7")
 [sub_resource type="Theme" id="Theme_oyb3p"]
 Panel/styles/panel = SubResource("StyleBoxTexture_2ebs2")
 
-[node name="Canvas" type="Control" unique_id=1797660968]
+[node name="PlannerCanvas" type="Control" unique_id=1797660968]
 light_mask = 8
 visibility_layer = 8
 layout_mode = 3
@@ -52,6 +52,7 @@ mouse_filter = 1
 script = ExtResource("1_jhfc7")
 
 [node name="Background" type="Panel" parent="." unique_id=1824417758]
+unique_name_in_owner = true
 light_mask = 16
 visibility_layer = 16
 z_index = -5

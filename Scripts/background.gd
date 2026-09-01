@@ -1,4 +1,4 @@
-extends Panel
+class_name CanvasBackground extends Panel
 @export_category("Grid Lines")
 @export var toggle_grid_lines: bool = true
 @export var line_spacing_px: int = 40	## Including the line_width

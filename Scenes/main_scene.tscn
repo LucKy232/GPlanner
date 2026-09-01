@@ -133,6 +133,7 @@ hand_cursor = ExtResource("8_76v2p")
 metadata/_edit_horizontal_guides_ = [24.0, 48.0]
 
 [node name="CursorBigBrush" type="TextureRect" parent="." unique_id=13884809]
+unique_name_in_owner = true
 visible = false
 light_mask = 2
 visibility_layer = 2
@@ -143,11 +144,13 @@ offset_bottom = 40.0
 texture = ExtResource("17_xle81")
 
 [node name="DrawingManager" parent="." unique_id=1258800598 instance=ExtResource("17_b48ew")]
+unique_name_in_owner = true
 layout_mode = 1
 mouse_filter = 1
 clipboard_image_scene = "uid://cph01rtbsrwne"
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=34683489]
+unique_name_in_owner = true
 light_mask = 3
 visibility_layer = 3
 layout_mode = 1
@@ -176,6 +179,7 @@ size_flags_horizontal = 4
 size_flags_vertical = 0
 
 [node name="ToggleMode" type="CheckButton" parent="MarginContainer/ToolVBox/ToolArea" unique_id=961536416]
+unique_name_in_owner = true
 light_mask = 2
 visibility_layer = 2
 custom_minimum_size = Vector2(32, 32)
@@ -191,6 +195,7 @@ alignment = 1
 icon_alignment = 1
 
 [node name="PlannerToolBox" type="ItemList" parent="MarginContainer/ToolVBox/ToolArea" unique_id=1914868989]
+unique_name_in_owner = true
 light_mask = 2
 visibility_layer = 2
 layout_mode = 2
@@ -223,6 +228,7 @@ item_7/text = "Mark Text As Complete"
 item_7/icon = ExtResource("15_2ebs2")
 
 [node name="DrawingToolBox" type="ItemList" parent="MarginContainer/ToolVBox/ToolArea" unique_id=879489576]
+unique_name_in_owner = true
 light_mask = 2
 visibility_layer = 2
 layout_mode = 2
@@ -249,16 +255,19 @@ item_4/text = "Move"
 item_4/icon = ExtResource("23_viu5a")
 
 [node name="DrawingToolBar" parent="MarginContainer/ToolVBox" unique_id=277649483 instance=ExtResource("22_s8qe6")]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 4
 
 [node name="ZoomIndicator" parent="MarginContainer" unique_id=1757204088 instance=ExtResource("3_jv6wh")]
+unique_name_in_owner = true
 light_mask = 2
 visibility_layer = 2
 z_index = 5
 layout_mode = 2
 
 [node name="FileButtons" type="HBoxContainer" parent="MarginContainer" unique_id=1424853175]
+unique_name_in_owner = true
 light_mask = 2
 visibility_layer = 2
 z_index = 5
@@ -291,11 +300,15 @@ theme = ExtResource("4_x6ack")
 text = " Load "
 
 [node name="PanIndicatorCamera" parent="MarginContainer" unique_id=350764591 instance=ExtResource("19_jvnna")]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(300, 150)
 layout_mode = 2
 size_flags_vertical = 4
+offset_transform_enabled = true
+offset_transform_pivot_ratio = Vector2(0, 0.5)
 
 [node name="ElementSettings" parent="MarginContainer" unique_id=295076756 instance=ExtResource("17_oyb3p")]
+unique_name_in_owner = true
 light_mask = 2
 visibility_layer = 2
 layout_mode = 2
@@ -303,6 +316,7 @@ size_flags_horizontal = 8
 size_flags_vertical = 0
 
 [node name="SettingsDrawer" parent="." unique_id=362310462 instance=ExtResource("8_2ebs2")]
+unique_name_in_owner = true
 light_mask = 2
 visibility_layer = 2
 layout_mode = 1
@@ -315,6 +329,7 @@ grow_vertical = 0
 priority_filter_text = Array[String](["Only Active", "Active & High", "Medium and higher", "Low and higher", "All"])
 
 [node name="StatusBar" parent="." unique_id=643302700 instance=ExtResource("5_iacmt")]
+unique_name_in_owner = true
 light_mask = 2
 visibility_layer = 2
 z_index = 5
@@ -331,9 +346,9 @@ size_flags_vertical = 1
 horizontal_alignment = 1
 
 [node name="BottomBar" type="ScrollContainer" parent="." unique_id=175409071]
+unique_name_in_owner = true
 light_mask = 2
 visibility_layer = 2
-custom_minimum_size = Vector2(0, 31)
 layout_mode = 1
 anchors_preset = 12
 anchor_top = 1.0
@@ -342,6 +357,7 @@ anchor_bottom = 1.0
 offset_top = -31.0
 grow_horizontal = 2
 grow_vertical = 0
+pivot_offset = Vector2(0, 31)
 scroll_horizontal_custom_step = 300.0
 vertical_scroll_mode = 0
 
@@ -353,6 +369,7 @@ mouse_filter = 0
 theme = SubResource("Theme_2ebs2")
 
 [node name="FileTabBar" type="TabBar" parent="BottomBar/HBoxContainer" unique_id=1443600498]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 mouse_force_pass_scroll_events = false
@@ -373,6 +390,8 @@ theme = SubResource("Theme_jvnna")
 icon = ExtResource("9_7ewk0")
 
 [node name="FileDialogSave" type="FileDialog" parent="." unique_id=2085100281]
+unique_name_in_owner = true
+oversampling_override = 1.0
 title = "Save canvas"
 initial_position = 2
 theme = ExtResource("18_2ebs2")
@@ -380,7 +399,9 @@ access = 2
 filters = PackedStringArray("*.json")
 
 [node name="FileDialogLoad" type="FileDialog" parent="." unique_id=2041459749]
+unique_name_in_owner = true
 auto_translate_mode = 1
+oversampling_override = 1.0
 title = "Open a File"
 initial_position = 2
 size = Vector2i(640, 400)
@@ -391,9 +412,11 @@ access = 2
 filters = PackedStringArray("*.json")
 
 [node name="NewFileConfirmation" type="AcceptDialog" parent="." unique_id=2101125233]
+unique_name_in_owner = true
+oversampling_override = 1.0
 title = "Save current file?"
 initial_position = 2
-size = Vector2i(315, 100)
+size = Vector2i(377, 100)
 unresizable = true
 popup_window = true
 theme = ExtResource("18_2ebs2")
@@ -401,6 +424,8 @@ ok_button_text = "    Yes    "
 dialog_text = "This will erase any unsaved changes."
 
 [node name="LoadFileConfirmation" type="AcceptDialog" parent="." unique_id=1859361147]
+unique_name_in_owner = true
+oversampling_override = 1.0
 title = "Save current file?"
 initial_position = 2
 size = Vector2i(303, 100)
@@ -410,6 +435,8 @@ theme = ExtResource("18_2ebs2")
 ok_button_text = "    Yes    "
 
 [node name="CloseTabConfirmation" type="AcceptDialog" parent="." unique_id=1654516808]
+unique_name_in_owner = true
+oversampling_override = 1.0
 title = "Save current file?"
 initial_position = 2
 size = Vector2i(303, 100)
@@ -419,7 +446,9 @@ theme = ExtResource("18_2ebs2")
 ok_button_text = "    Yes    "
 
 [node name="ExitTabConfirmation" type="AcceptDialog" parent="." unique_id=2893431]
+unique_name_in_owner = true
 auto_translate_mode = 1
+oversampling_override = 1.0
 title = "Save file?"
 initial_position = 2
 size = Vector2i(300, 100)
@@ -429,6 +458,7 @@ theme = ExtResource("18_2ebs2")
 ok_button_text = "    Yes    "
 
 [node name="InputRepeatTimer" type="Timer" parent="." unique_id=2025151448]
+unique_name_in_owner = true
 one_shot = true
 
 [connection signal="resized" from="." to="." method="_on_resized"]
