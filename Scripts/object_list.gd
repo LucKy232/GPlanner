@@ -157,7 +157,7 @@ func _input(event: InputEvent) -> void:
 		object_v_box.move_child(entries[last_edited_entry_id], last_edited_entry_id + 1)
 		sort_entries(last_edited_entry_id, last_edited_entry_id + 1)
 		last_edited_entry_id += 1
-		go_to_last_edited_entry.call_deferred()
+		ensure_entry_visible.call_deferred()
 		list_changed.emit()
 	if event.is_action_pressed("move_list_entry_down", true, true):
 		if last_edited_entry_id == 0:
@@ -165,7 +165,7 @@ func _input(event: InputEvent) -> void:
 		object_v_box.move_child(entries[last_edited_entry_id], last_edited_entry_id - 1)
 		sort_entries(last_edited_entry_id, last_edited_entry_id - 1)
 		last_edited_entry_id -= 1
-		go_to_last_edited_entry.call_deferred()
+		ensure_entry_visible.call_deferred()
 		list_changed.emit()
 
 
@@ -218,18 +218,7 @@ func is_editing_text(include_title: bool = true) -> bool:
 func enter_text_edit() -> void:
 	if entries.size() > last_edited_entry_id and last_edited_entry_id >= 0:
 		entries[last_edited_entry_id].enter_text_edit()
-		go_to_last_edited_entry.call_deferred()
-
-
-# Scroll to entry if entry is out of visible scroll range
-func go_to_last_edited_entry() -> void:
-	var entry: ListTextEntry = entries[last_edited_entry_id]
-	if entry.position.y < scroll_container.scroll_vertical:		# go up
-		var diff: int = int(entry.position.y) - scroll_container.scroll_vertical - 5
-		scroll_container.scroll_vertical += diff
-	if entry.position.y + entry.size.y > scroll_container.scroll_vertical + scroll_container.size.y:	# go down
-		var diff: int = int(entry.position.y + entry.size.y) - (scroll_container.scroll_vertical + int(scroll_container.size.y))
-		scroll_container.scroll_vertical += diff
+		ensure_entry_visible()
 
 
 func exit_text_edit() -> void:
@@ -332,6 +321,7 @@ func connect_list_text_entry(entry: ListTextEntry) -> void:
 	entry.text_changed.connect(_on_list_text_entry_text_changed)
 	entry.text_edit_toggled.connect(_on_list_text_entry_text_entry_toggled)
 	entry.remove_from_list.connect(_on_list_text_entry_remove_from_list.bind(entry))
+	entry.text_resized.connect(_on_list_text_entry_text_resized)
 
 
 func disconnect_list_text_entry(entry: ListTextEntry) -> void:
@@ -341,6 +331,7 @@ func disconnect_list_text_entry(entry: ListTextEntry) -> void:
 	entry.text_changed.disconnect(_on_list_text_entry_text_changed)
 	entry.text_edit_toggled.disconnect(_on_list_text_entry_text_entry_toggled)
 	entry.remove_from_list.disconnect(_on_list_text_entry_remove_from_list)
+	entry.text_resized.disconnect(_on_list_text_entry_text_resized)
 
 
 func change_size(new_size: Vector2) -> void:
@@ -398,6 +389,12 @@ func to_json() -> Dictionary:
 	dict["title"] = list_title.text
 	dict["show_title"] = show_title
 	return dict
+
+
+func ensure_entry_visible() -> void:
+	if entries.size() == 0 or last_edited_entry_id < 0 or last_edited_entry_id >= entries.size():
+		return
+	scroll_container.ensure_control_visible(entries[last_edited_entry_id])
 
 
 func line_up_entry_erase_button() -> void:
@@ -466,6 +463,7 @@ func _on_resized() -> void:
 
 
 func _on_list_text_entry_text_changed() -> void:
+	ensure_entry_visible()
 	list_changed.emit()
 
 
@@ -514,6 +512,10 @@ func _on_list_text_entry_text_entry_toggled(entry_id: int, toggled: bool) -> voi
 		line_up_entry_erase_button.call_deferred()
 	else:
 		erase_entry_tween.toggle(false)
+
+
+func _on_list_text_entry_text_resized() -> void:
+	ensure_entry_visible()
 
 
 func _on_gui_input(event: InputEvent) -> void:

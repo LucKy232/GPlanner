@@ -19,6 +19,7 @@ signal text_changed
 signal grabber_moved
 signal grabber_started_move
 signal grabber_ended_move
+signal text_resized
 
 
 func _ready() -> void:
@@ -136,6 +137,8 @@ func _on_mouse_hover_mouse_exited() -> void:
 func _on_resized() -> void:
 	if !is_node_ready():
 		return
+	if is_editing_text():
+		text_resized.emit()
 	mouse_hover_shape.shape.size = size
 	mouse_hover.position = size * 0.5
 
