@@ -109,6 +109,7 @@ custom_minimum_size = Vector2(30, 12)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
+tooltip_text = "Active"
 theme_override_styles/normal = ExtResource("7_bnxrp")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_y2cp5")
 action_mode = 0
@@ -118,6 +119,7 @@ custom_minimum_size = Vector2(30, 12)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
+tooltip_text = "High"
 theme_override_styles/normal = ExtResource("8_60qy3")
 action_mode = 0
 
@@ -126,6 +128,7 @@ custom_minimum_size = Vector2(30, 12)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
+tooltip_text = "Medium"
 theme_override_styles/normal = ExtResource("9_m5dkd")
 action_mode = 0
 
@@ -134,6 +137,7 @@ custom_minimum_size = Vector2(30, 12)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
+tooltip_text = "Low"
 theme_override_styles/normal = ExtResource("10_pxswx")
 action_mode = 0
 
@@ -142,6 +146,7 @@ custom_minimum_size = Vector2(30, 12)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
+tooltip_text = "None"
 theme_override_styles/normal = ExtResource("11_pnn6i")
 action_mode = 0
 

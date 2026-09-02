@@ -13,6 +13,11 @@
 [ext_resource type="Texture2D" uid="uid://xj70o30q5but" path="res://Icons/add_text.svg" id="8_khfxa"]
 [ext_resource type="Texture2D" uid="uid://b34ikx2kfdvbg" path="res://Icons/add_link.svg" id="9_7y3jv"]
 [ext_resource type="Texture2D" uid="uid://c2aisi4g5mld" path="res://Icons/object_delete.svg" id="9_tej6j"]
+[ext_resource type="StyleBox" uid="uid://wrrl0mk4mdli" path="res://Themes/Buttons/active_priority_button_stylebox.tres" id="10_gx5u6"]
+[ext_resource type="StyleBox" uid="uid://0m1wm66xknlk" path="res://Themes/Buttons/high_priority_button_stylebox.tres" id="11_e8exb"]
+[ext_resource type="StyleBox" uid="uid://dgq7v0gkqrpgf" path="res://Themes/Buttons/medium_priority_button_stylebox.tres" id="12_tymhl"]
+[ext_resource type="StyleBox" uid="uid://dga3kal7lipkl" path="res://Themes/Buttons/low_priority_button_stylebox.tres" id="13_o0xsb"]
+[ext_resource type="StyleBox" uid="uid://b0l55wn2xggiw" path="res://Themes/Buttons/none_priority_button_stylebox.tres" id="14_vupf7"]
 
 [sub_resource type="StyleBoxLine" id="StyleBoxLine_qbj2a"]
 color = Color(0.71, 0.71, 0.71, 0.717647)
@@ -96,7 +101,6 @@ theme = ExtResource("4_4adj3")
 text = " Title"
 
 [node name="AddButtonsMargin" type="MarginContainer" parent="." unique_id=2002850228]
-unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -149,7 +153,7 @@ theme = ExtResource("7_khfxa")
 icon = ExtResource("9_7y3jv")
 icon_alignment = 1
 
-[node name="EraseEntryControl" type="MarginContainer" parent="." unique_id=604463664]
+[node name="EraseEntryMargin" type="MarginContainer" parent="." unique_id=604463664]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 6
@@ -163,14 +167,13 @@ offset_bottom = 22.0
 grow_horizontal = 0
 grow_vertical = 2
 scale = Vector2(0.5, 0.5)
-pivot_offset_ratio = Vector2(1, 0.5)
+pivot_offset_ratio = Vector2(1, 0)
 mouse_filter = 2
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="EraseButton" type="Button" parent="EraseEntryControl" unique_id=1456070977]
+[node name="EraseButton" type="Button" parent="EraseEntryMargin" unique_id=1456070977]
 unique_name_in_owner = true
-visible = false
 light_mask = 8
 visibility_layer = 8
 texture_filter = 2
@@ -178,11 +181,12 @@ layout_mode = 2
 size_flags_horizontal = 2
 size_flags_vertical = 0
 offset_transform_enabled = true
+offset_transform_pivot_ratio = Vector2(0.5, 0)
 offset_transform_visual_only = false
 theme = ExtResource("8_g5dxn")
 icon = ExtResource("9_tej6j")
 
-[node name="EraseEntryTween" type="Control" parent="EraseEntryControl" unique_id=915967617 node_paths=PackedStringArray("target")]
+[node name="EraseEntryTween" type="Control" parent="EraseEntryMargin" unique_id=915967617 node_paths=PackedStringArray("target")]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 2
@@ -194,6 +198,69 @@ transition_type = 7
 default_hidden_behind = true
 offset_show = 14.5
 metadata/_custom_type_script = "uid://b0ioikc1dokvh"
+
+[node name="PriorityButtonsMargin" type="MarginContainer" parent="." unique_id=878485958]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -17.0
+offset_right = 43.0
+offset_bottom = 17.0
+grow_vertical = 2
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="PriorityButtonsTween" type="Control" parent="PriorityButtonsMargin" unique_id=678601578 node_paths=PackedStringArray("target")]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+script = ExtResource("6_7y3jv")
+target = NodePath("PriorityButtonsHBox")
+animation_time = 0.25
+transition_type = 7
+default_hidden_behind = true
+offset_show = -6.0
+metadata/_custom_type_script = "uid://b0ioikc1dokvh"
+
+[node name="PriorityButtonsHBox" type="HBoxContainer" parent="PriorityButtonsMargin/PriorityButtonsTween" unique_id=1992208939]
+layout_mode = 0
+offset_right = 73.0
+offset_bottom = 22.0
+offset_transform_enabled = true
+offset_transform_visual_only = false
+theme_override_constants/separation = 1
+
+[node name="PriorityActive" type="Button" parent="PriorityButtonsMargin/PriorityButtonsTween/PriorityButtonsHBox" unique_id=1989779911]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+tooltip_text = "Active"
+theme_override_styles/normal = ExtResource("10_gx5u6")
+
+[node name="PriorityHigh" type="Button" parent="PriorityButtonsMargin/PriorityButtonsTween/PriorityButtonsHBox" unique_id=94480287]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+tooltip_text = "High"
+theme_override_styles/normal = ExtResource("11_e8exb")
+
+[node name="PriorityMedium" type="Button" parent="PriorityButtonsMargin/PriorityButtonsTween/PriorityButtonsHBox" unique_id=642373945]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+tooltip_text = "Medium"
+theme_override_styles/normal = ExtResource("12_tymhl")
+
+[node name="PriorityLow" type="Button" parent="PriorityButtonsMargin/PriorityButtonsTween/PriorityButtonsHBox" unique_id=1098971028]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+tooltip_text = "Low"
+theme_override_styles/normal = ExtResource("13_o0xsb")
+
+[node name="PriorityNone" type="Button" parent="PriorityButtonsMargin/PriorityButtonsTween/PriorityButtonsHBox" unique_id=405655448]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+tooltip_text = "None"
+theme_override_styles/normal = ExtResource("14_vupf7")
 
 [node name="Background" type="Panel" parent="." unique_id=972831401]
 light_mask = 8
@@ -301,7 +368,12 @@ debug_color = Color(0, 0.5950001, 0.7, 0)
 [connection signal="toggled" from="ToggleTitleButtonMargin/ToggleTitleTween/ToggleTitleButton" to="." method="_on_toggle_title_button_toggled"]
 [connection signal="pressed" from="AddButtonsMargin/AddButtonsTween/AddButtonsVBox/AddTextEntryButton" to="." method="_on_add_text_entry_button_pressed"]
 [connection signal="pressed" from="AddButtonsMargin/AddButtonsTween/AddButtonsVBox/AddLinkEntryButton" to="." method="_on_add_link_entry_button_pressed"]
-[connection signal="pressed" from="EraseEntryControl/EraseButton" to="." method="_on_erase_button_pressed"]
+[connection signal="pressed" from="EraseEntryMargin/EraseButton" to="." method="_on_erase_button_pressed"]
+[connection signal="pressed" from="PriorityButtonsMargin/PriorityButtonsTween/PriorityButtonsHBox/PriorityActive" to="." method="_on_priority_active_pressed"]
+[connection signal="pressed" from="PriorityButtonsMargin/PriorityButtonsTween/PriorityButtonsHBox/PriorityHigh" to="." method="_on_priority_high_pressed"]
+[connection signal="pressed" from="PriorityButtonsMargin/PriorityButtonsTween/PriorityButtonsHBox/PriorityMedium" to="." method="_on_priority_medium_pressed"]
+[connection signal="pressed" from="PriorityButtonsMargin/PriorityButtonsTween/PriorityButtonsHBox/PriorityLow" to="." method="_on_priority_low_pressed"]
+[connection signal="pressed" from="PriorityButtonsMargin/PriorityButtonsTween/PriorityButtonsHBox/PriorityNone" to="." method="_on_priority_none_pressed"]
 [connection signal="focus_entered" from="ListMarginContainer/VBoxContainer/ListTitle" to="." method="_on_list_name_focus_entered"]
 [connection signal="gui_input" from="ListMarginContainer/VBoxContainer/ListTitle" to="." method="_on_list_title_gui_input"]
 [connection signal="mouse_entered" from="ListMarginContainer/VBoxContainer/ScrollContainer" to="." method="_on_scroll_mouse_entered"]

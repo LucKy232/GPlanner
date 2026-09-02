@@ -14,9 +14,11 @@ class_name ObjectList extends Control
 @onready var add_buttons_tween: TweenShowHide = %AddButtonsTween
 @onready var toggle_title_tween: TweenShowHide = %ToggleTitleTween
 @onready var toggle_title_button: CheckBox = %ToggleTitleButton
-@onready var erase_entry_control: Control = %EraseEntryControl
+@onready var erase_entry_margin: MarginContainer = %EraseEntryMargin
 @onready var erase_button: Button = %EraseButton
 @onready var erase_entry_tween: TweenShowHide = %EraseEntryTween
+@onready var priority_buttons_tween: TweenShowHide = %PriorityButtonsTween
+@onready var priority_buttons_margin: MarginContainer = %PriorityButtonsMargin
 
 var id: int = -1
 var entries: Array[ListTextEntry]
@@ -25,6 +27,8 @@ var dragger: ListDragHelper = ListDragHelper.new()
 var canvas_scale: float = 1.0
 var mouse_inside: bool = false
 var top_left_margin: Vector2 = Vector2.ZERO
+var priority_enabled: bool = false
+var priority_tool_enabled: bool = true
 var show_title: bool = true
 var selected: bool = false
 
@@ -43,6 +47,7 @@ signal remove_element_request
 signal select_request
 signal text_edit_active
 signal dragging
+signal entry_priority_changed
 
 
 func _ready() -> void:
@@ -158,6 +163,7 @@ func _input(event: InputEvent) -> void:
 		sort_entries(last_edited_entry_id, last_edited_entry_id + 1)
 		last_edited_entry_id += 1
 		ensure_entry_visible.call_deferred()
+		line_up_side_buttons.call_deferred()
 		list_changed.emit()
 	if event.is_action_pressed("move_list_entry_down", true, true):
 		if last_edited_entry_id == 0:
@@ -166,6 +172,7 @@ func _input(event: InputEvent) -> void:
 		sort_entries(last_edited_entry_id, last_edited_entry_id - 1)
 		last_edited_entry_id -= 1
 		ensure_entry_visible.call_deferred()
+		line_up_side_buttons.call_deferred()
 		list_changed.emit()
 
 
@@ -205,6 +212,15 @@ func deselect() -> void:
 	add_buttons_tween.toggle(false)
 	toggle_title_tween.toggle(false)
 	selected = false
+
+
+func set_priority_visible(toggled_on: bool) -> void:
+	priority_enabled = toggled_on
+	# TODO show default priorty dot on all entries if false, else show priority colored dot
+
+
+func set_priority_tool_enabled(toggled_on: bool) -> void:
+	priority_tool_enabled = toggled_on
 
 
 func is_editing_text(include_title: bool = true) -> bool:
@@ -358,7 +374,18 @@ func reset_entry_ids() -> void:
 		entries[i].id = i
 
 
-func rebuild_from_dict(dict: Dictionary) -> void:
+func filter_entries(value: int) -> void:
+	for entry in entries:
+		if entry.priority_id > value:
+			if last_edited_entry_id == entry.id:
+				last_edited_entry_id = -1
+			entry.visible = false
+		# TODO reparent and reorder ids as well???
+		else:
+			entry.visible = true
+
+
+func rebuild_from_dict(dict: Dictionary, priority_colors: Dictionary[Enums.Priority, Color]) -> void:
 	id = dict["id"]
 	size = Vector2(dict["size.x"], dict["size.y"])
 	position = Vector2(dict["pos.x"], dict["pos.y"])
@@ -370,7 +397,10 @@ func rebuild_from_dict(dict: Dictionary) -> void:
 	for entry_id in dict["entries"]:
 		add_text_entry(false)
 		entries[-1].rebuild_from_dict(dict["entries"][entry_id])
-		#print("Added ", entry_id)
+		if dict["entries"][entry_id].has("priority_id"):
+			var priority: Enums.Priority = dict["entries"][entry_id]["priority_id"] as Enums.Priority
+			entries[-1].set_priority(priority)
+			entries[-1].set_priority_color(priority_colors[priority])
 	# NOTE doesn't need to be sorted in entry.id order because they get saved / read in alphabetical / numerical order to the .json
 
 
@@ -397,19 +427,28 @@ func ensure_entry_visible() -> void:
 	scroll_container.ensure_control_visible(entries[last_edited_entry_id])
 
 
-func line_up_entry_erase_button() -> void:
+func line_up_side_buttons() -> void:
 	if is_editing_text():
 		var new_y_position: float = (entries[last_edited_entry_id].position.y
 									+ scroll_container.position.y
-									- scroll_container.scroll_vertical
-									- erase_entry_control.size.y * erase_entry_control.scale.y * 0.5)
-		erase_entry_control.position.y = new_y_position
+									- scroll_container.scroll_vertical)
+		erase_entry_margin.position.y = new_y_position
+		priority_buttons_margin.position.y = new_y_position
 		if new_y_position < scroll_container.position.y - 40.0:
-			erase_entry_control.visible = false
+			erase_entry_margin.visible = false
+			priority_buttons_margin.visible = false
 		elif new_y_position > scroll_container.size.y:
-			erase_entry_control.visible = false
+			erase_entry_margin.visible = false
+			priority_buttons_margin.visible = false
 		else:
-			erase_entry_control.visible = true
+			erase_entry_margin.visible = true
+			if priority_enabled and priority_tool_enabled:
+				priority_buttons_margin.visible = true
+
+
+func set_active_entry_priority(p: Enums.Priority) -> void:
+	if entries.size() > last_edited_entry_id and last_edited_entry_id >= 0:
+		entry_priority_changed.emit(entries[last_edited_entry_id], p)
 
 
 func _on_scroll_hover(inside: bool) -> void:
@@ -428,7 +467,7 @@ func _on_scroll() -> void:
 		position_child_drop_visual(dragger.current, dragger.object_id)
 	if dragger.is_dragging_outside:
 		position_drop_visual_on_entry(dragger.current - 1)
-	line_up_entry_erase_button.call_deferred()
+	line_up_side_buttons.call_deferred()
 
 
 func _on_scroll_mouse_entered() -> void:
@@ -459,7 +498,7 @@ func _on_resized() -> void:
 		return
 	mouse_hover_shape.shape.size = size
 	mouse_hover.position = size * 0.5
-	line_up_entry_erase_button.call_deferred()
+	line_up_side_buttons.call_deferred()
 
 
 func _on_list_text_entry_text_changed() -> void:
@@ -509,9 +548,12 @@ func _on_list_text_entry_text_entry_toggled(entry_id: int, toggled: bool) -> voi
 		last_edited_entry_id = entry_id
 		text_edit_active.emit(id)
 		erase_entry_tween.toggle(true)
-		line_up_entry_erase_button.call_deferred()
+		line_up_side_buttons.call_deferred()
+		if priority_tool_enabled and priority_enabled:
+			priority_buttons_tween.toggle(true)
 	else:
 		erase_entry_tween.toggle(false)
+		priority_buttons_tween.toggle(false)
 
 
 func _on_list_text_entry_text_resized() -> void:
@@ -554,3 +596,23 @@ func _on_erase_button_pressed() -> void:
 func _on_list_title_gui_input(event: InputEvent) -> void:
 	if list_title.has_focus() and event.is_action_pressed("exit_text_edit", false, true):
 		list_title.release_focus()
+
+
+func _on_priority_active_pressed() -> void:
+	set_active_entry_priority(Enums.Priority.ACTIVE)
+
+
+func _on_priority_high_pressed() -> void:
+	set_active_entry_priority(Enums.Priority.HIGH)
+
+
+func _on_priority_medium_pressed() -> void:
+	set_active_entry_priority(Enums.Priority.MEDIUM)
+
+
+func _on_priority_low_pressed() -> void:
+	set_active_entry_priority(Enums.Priority.LOW)
+
+
+func _on_priority_none_pressed() -> void:
+	set_active_entry_priority(Enums.Priority.NONE)

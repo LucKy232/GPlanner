@@ -10,6 +10,7 @@ class_name ListTextEntry extends Control
 
 var grabber_clicked: bool = false
 var can_hover: bool = true
+var priority_id: Enums.Priority = Enums.Priority.NONE
 var id: int = -1
 
 @warning_ignore("unused_signal")
@@ -55,6 +56,16 @@ func set_font_size(font_size: int) -> void:
 
 func get_font_size() -> float:
 	return text_edit.get_theme_font_size("font_size")
+
+
+func set_priority(p: Enums.Priority) -> void:
+	priority_id = p
+
+
+func set_priority_color(color: Color) -> void:
+	priority_idicator.inner_circle_color = color
+	priority_idicator.outer_circle_color = color if priority_id != Enums.Priority.NONE else Color.WHITE
+	priority_idicator.queue_redraw()
 
 
 func rebuild_from_dict(dict: Dictionary) -> void:
@@ -105,6 +116,7 @@ func is_editing_text() -> bool:
 func to_json() -> Dictionary:
 	var dict: Dictionary = {
 		"text": text_edit.text,
+		"priority_id": priority_id,
 	}
 	return dict
 

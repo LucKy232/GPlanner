@@ -36,7 +36,7 @@ extends Control
 @export_color_no_alpha var accent_color_drawing
 @export var button_theme: Theme
 @export var popup_dialog_theme: Theme
-@export var priority_colors: Array[Color]
+@export var priority_colors: Dictionary[Enums.Priority, Color]
 @export var priority_styleboxes: Array[StyleBoxFlat]
 @export_category("Settings")
 @export var zoom_limits: Vector2 = Vector2(0.2, 2.0)

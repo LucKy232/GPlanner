@@ -1,22 +1,24 @@
-extends Control
-class_name SettingsDrawer
+class_name SettingsDrawer extends Control
 
-@onready var show_completed: CheckBox = $PanelContainer/HBoxContainer/Background/MarginContainer/Scroll/Settings/ShowCompleted
-@onready var show_priorities: CheckBox = $PanelContainer/HBoxContainer/Background/MarginContainer/Scroll/Settings/ShowPriorities
-@onready var show_priority_tool: CheckBox = $PanelContainer/HBoxContainer/Background/MarginContainer/Scroll/Settings/ShowPriorityTool
-@onready var priority_filter_label: Label = $PanelContainer/HBoxContainer/Background/MarginContainer/Scroll/Settings/PriorityFilterLabel
-@onready var priority_filter: HScrollBar = $PanelContainer/HBoxContainer/Background/MarginContainer/Scroll/Settings/PriorityFilter
-@onready var animation_player: AnimationPlayer = $AnimationPlayer
-@onready var toggle_drawer: Button = $PanelContainer/HBoxContainer/ToggleDrawer
-@onready var background: Panel = $PanelContainer/HBoxContainer/Background
+@onready var show_completed: CheckBox = %ShowCompleted
+@onready var show_priorities: CheckBox = %ShowPriorities
+@onready var show_priority_tool: CheckBox = %ShowPriorityTool
+@onready var priority_filter_label: Label = %PriorityFilterLabel
+@onready var priority_filter: HScrollBar = %PriorityFilter
+@onready var toggle_drawer: Button = %ToggleDrawer
+@onready var background: Panel = %Background
+@onready var tween_show_hide: TweenShowHide = %TweenShowHide
 
 @export var priority_filter_text: Array[String]
+@export var icon_hidden: CompressedTexture2D
+@export var icon_shown: CompressedTexture2D
 
 var checkboxes: Array[CheckBox] = []
 
+
 func _ready() -> void:
-	toggle_drawer.set_pressed_no_signal(false)
-	_on_toggle_drawer_toggled(false)
+	toggle_drawer.set_pressed_no_signal(true)
+	_on_toggle_drawer_toggled(true)
 	checkboxes = [show_priorities, show_priority_tool, show_completed]
 
 
@@ -43,10 +45,11 @@ func update_data(settings: SettingsStates) -> void:
 
 
 func _on_toggle_drawer_toggled(toggled_on: bool) -> void:
-	if toggled_on and !animation_player.is_playing():
-		animation_player.play("toggle_settings_drawer_on")
-	elif !toggled_on and !animation_player.is_playing():
-		animation_player.play("toggle_settings_drawer_off")
+	tween_show_hide.toggle(toggled_on)
+	if toggled_on:
+		toggle_drawer.icon = icon_hidden
+	else:
+		toggle_drawer.icon = icon_shown
 
 
 func _on_show_priorities_toggled(toggled_on: bool) -> void:

@@ -11,7 +11,7 @@ class_name PlannerCanvas extends Control
 var text_element_scene		## Passed by main.gd to be instantiated here
 var connection_scene	## Passed by main.gd to be instantiated here
 var list_scene			## Passed by main.gd to be instantiated here	# TODO class that keeps scene refs w/ errors
-var priority_colors: Array[Color]
+var priority_colors: Dictionary[Enums.Priority, Color]
 var elements: Dictionary[int, TextElement]
 var lists: Dictionary[int, ObjectList]
 var connections: Dictionary[int, Connection]
@@ -254,6 +254,7 @@ func add_object_list(at_position: Vector2, id_specified: int = -1) -> void:
 	new_list.remove_element_request.connect(_on_list_remove_element_request)
 	new_list.text_edit_active.connect(_on_list_text_edit_active)
 	new_list.select_request.connect(_on_list_select_requested)
+	new_list.entry_priority_changed.connect(_on_list_entry_changed_priority)
 	new_list.drag_and_resize_input.drag_requested.connect(_on_control_dragged.bind(new_list))
 	new_list.drag_and_resize_input.resize_requested.connect(_on_control_resized.bind(new_list))
 	new_list.drag_and_resize_input.input_ended.connect(_on_control_input_ended.bind(new_list))
@@ -601,7 +602,7 @@ func rebuild_lists(json_lists: Dictionary) -> void:
 	for i in json_lists:
 		var list_id = int(i)
 		add_object_list(Vector2.ZERO, list_id)
-		lists[list_id].rebuild_from_dict(json_lists[i])
+		lists[list_id].rebuild_from_dict(json_lists[i], priority_colors)
 	is_user_input = true
 
 
@@ -739,6 +740,8 @@ func toggle_show_priorities(toggled_on: bool) -> void:
 	settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITIES] = toggled_on
 	for i in elements:
 		elements[i].set_priority_visible(toggled_on)
+	for i in lists:
+		lists[i].set_priority_visible(toggled_on)
 
 
 func toggle_show_priority_tool(toggled_on: bool, update_state: bool = true) -> void:
@@ -746,6 +749,8 @@ func toggle_show_priority_tool(toggled_on: bool, update_state: bool = true) -> v
 		settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL] = toggled_on
 	for i in elements:
 		elements[i].set_priority_tool_enabled(toggled_on)
+	for i in lists:
+		lists[i].set_priority_tool_enabled(toggled_on)
 
 
 func change_priority_filter(value: int) -> void:
@@ -757,6 +762,8 @@ func change_priority_filter(value: int) -> void:
 			toggle_element(i, true)
 	for i in elements:
 		toggle_connections(i)
+	for i in lists:
+		lists[i].filter_entries(value)
 
 
 func toggle_text_element_mouse_inputs(toggled_on: bool) -> void:
@@ -1064,6 +1071,12 @@ func _on_element_changed_priority(elem_id: int) -> void:
 	if elements.has(elem_id):
 		var pr_id = elements[elem_id].priority_id
 		elements[elem_id].set_priority_color(priority_colors[pr_id])
+
+
+func _on_list_entry_changed_priority(entry: ListTextEntry, p: Enums.Priority) -> void:
+	canvas_changed()
+	entry.set_priority(p)
+	entry.set_priority_color(priority_colors[p])
 
 
 func _on_connection_arrow_changed() -> void:

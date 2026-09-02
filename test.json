@@ -102,12 +102,15 @@
 		"0": {
 			"entries": {
 				"0": {
+					"priority_id": 4,
 					"text": "Scoot"
 				},
 				"1": {
+					"priority_id": 4,
 					"text": "And"
 				},
 				"2": {
+					"priority_id": 4,
 					"text": "Shoot"
 				}
 			},
@@ -122,6 +125,7 @@
 		"1": {
 			"entries": {
 				"0": {
+					"priority_id": 4,
 					"text": "Nah"
 				}
 			},
@@ -136,36 +140,47 @@
 		"2": {
 			"entries": {
 				"0": {
+					"priority_id": 1,
 					"text": "2"
 				},
 				"1": {
+					"priority_id": 2,
 					"text": "When it's a multiline text box"
 				},
 				"2": {
+					"priority_id": 3,
 					"text": "5"
 				},
 				"3": {
+					"priority_id": 0,
 					"text": "4"
 				},
 				"4": {
+					"priority_id": 3,
 					"text": "NAHHH"
 				},
 				"5": {
+					"priority_id": 2,
 					"text": "Alright"
 				},
 				"6": {
+					"priority_id": 1,
 					"text": "???"
 				},
 				"7": {
+					"priority_id": 0,
 					"text": "9"
 				},
 				"8": {
+					"priority_id": 4,
 					"text": "8"
 				},
 				"9": {
+					"priority_id": 4,
 					"text": "1"
 				},
 				"10": {
+					"priority_id": 4,
 					"text": "6"
 				}
 			},
@@ -181,15 +196,15 @@
 	"State": {
 		"app_mode": 0,
 		"drawing_folder_path": "",
-		"position.x": -7626.49853515625,
-		"position.y": -2929.88549804688,
+		"position.x": -11576.783203125,
+		"position.y": -4421.06494140625,
 		"priority_filter_value": 4,
-		"scale.x": 0.76709258556366,
-		"scale.y": 0.76709258556366,
+		"scale.x": 1.13996827602386,
+		"scale.y": 1.13996827602386,
 		"show_completed": false,
 		"show_priorities": true,
 		"show_priority_tool": true,
-		"zoom_level": 0.767092568219999
+		"zoom_level": 1.13996825551545
 	},
 	"StylePresets": {},
 	"Swatches": {}

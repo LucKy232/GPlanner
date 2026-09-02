@@ -1,4 +1,5 @@
 class_name ListDragHelper
+## Manages offset transforms to move entries away visually from the dragged object
 
 var object_id: int	## Dragging object ID
 var current: int	## Current position ID, where object_id will be

@@ -30,8 +30,8 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 mouse_filter = 1
 script = ExtResource("2_30uiy")
-circle_radius = 2.5
-circle_thickness = 1.5
+circle_radius = 3.0
+circle_thickness = 1.0
 inner_circle_color = Color(0, 0, 0, 0)
 
 [node name="GrabberControl" type="Control" parent="HBox" unique_id=1196397820]

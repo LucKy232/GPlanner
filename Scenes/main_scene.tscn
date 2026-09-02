@@ -122,7 +122,13 @@ accent_color_planning = Color(0.188235, 0.701961, 1, 1)
 accent_color_drawing = Color(0.760784, 0.537255, 1, 1)
 button_theme = ExtResource("4_x6ack")
 popup_dialog_theme = ExtResource("18_2ebs2")
-priority_colors = Array[Color]([Color(1, 1, 1, 1), Color(1, 0, 0, 1), Color(1, 1, 0, 1), Color(0, 1, 0, 1), Color(0, 0, 0, 0)])
+priority_colors = Dictionary[int, Color]({
+0: Color(1, 1, 1, 1),
+1: Color(1, 0, 0, 1),
+2: Color(1, 1, 0, 1),
+3: Color(0, 1, 0, 1),
+4: Color(0, 0, 0, 0)
+})
 priority_styleboxes = Array[StyleBoxFlat]([ExtResource("2_mai8y"), ExtResource("3_76v2p"), ExtResource("4_drdnd"), ExtResource("5_ioaeq"), ExtResource("6_7ewk0")])
 zoom_speed = 1.1
 cycle_zoom_levels = Array[float]([0.25, 0.5, 1.0, 1.5, 2.0])
