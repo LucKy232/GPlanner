@@ -11,6 +11,7 @@ class_name ListTextEntry extends Control
 var grabber_clicked: bool = false
 var can_hover: bool = true
 var priority_id: Enums.Priority = Enums.Priority.NONE
+var priority_color: Color = Color.WHITE
 var id: int = -1
 
 @warning_ignore("unused_signal")
@@ -63,8 +64,21 @@ func set_priority(p: Enums.Priority) -> void:
 
 
 func set_priority_color(color: Color) -> void:
+	priority_color = color
 	priority_idicator.inner_circle_color = color
 	priority_idicator.outer_circle_color = color if priority_id != Enums.Priority.NONE else Color.WHITE
+	priority_idicator.queue_redraw()
+
+
+func disable_priority_color() -> void:
+	priority_idicator.inner_circle_color = Color.TRANSPARENT
+	priority_idicator.outer_circle_color = Color.WHITE
+	priority_idicator.queue_redraw()
+
+
+func enable_priority_color() -> void:
+	priority_idicator.inner_circle_color = priority_color
+	priority_idicator.outer_circle_color = priority_color if priority_id != Enums.Priority.NONE else Color.WHITE
 	priority_idicator.queue_redraw()
 
 

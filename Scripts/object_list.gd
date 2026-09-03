@@ -215,8 +215,13 @@ func deselect() -> void:
 
 
 func set_priority_visible(toggled_on: bool) -> void:
+	if !priority_enabled and toggled_on:
+		for entry in entries:
+			entry.enable_priority_color()
+	elif priority_enabled and !toggled_on:
+		for entry in entries:
+			entry.disable_priority_color()
 	priority_enabled = toggled_on
-	# TODO show default priorty dot on all entries if false, else show priority colored dot
 
 
 func set_priority_tool_enabled(toggled_on: bool) -> void:
@@ -321,9 +326,11 @@ func add_link_entry(_is_user_input: bool) -> void:
 		#list_changed.emit()
 
 
-func remove_text_entry(entry: ListTextEntry) -> void:
+func remove_text_entry(entry: ListTextEntry, delete_from_memory: bool) -> void:
 	disconnect_list_text_entry(entry)
 	entries.erase(entry)
+	if delete_from_memory:
+		entry.queue_free()
 	if last_edited_entry_id > entries.size() - 1:
 		last_edited_entry_id = entries.size() - 1
 	reset_entry_ids()
@@ -483,14 +490,11 @@ func _on_mouse_hover_mouse_entered() -> void:
 
 
 func _on_list_text_entry_erase(entry: ListTextEntry) -> void:
-	entries.erase(entry)
-	reset_entry_ids()
-	entry.queue_free()
-	list_changed.emit()
+	remove_text_entry(entry, true)
 
 
 func _on_list_text_entry_remove_from_list(entry: ListTextEntry) -> void:
-	remove_text_entry(entry)
+	remove_text_entry(entry, false)
 
 
 func _on_resized() -> void:
@@ -540,12 +544,14 @@ func _on_list_text_entry_grabber_ended_move(entry_id: int) -> void:
 	if entry_id != move_to:
 		object_v_box.move_child(entries[entry_id], move_to)
 		sort_entries(entry_id, move_to)
+		last_edited_entry_id = move_to
+		line_up_side_buttons.call_deferred()
 		list_changed.emit()
 
 
 func _on_list_text_entry_text_entry_toggled(entry_id: int, toggled: bool) -> void:
+	last_edited_entry_id = entry_id		# on focus enterd and exited
 	if toggled:
-		last_edited_entry_id = entry_id
 		text_edit_active.emit(id)
 		erase_entry_tween.toggle(true)
 		line_up_side_buttons.call_deferred()
@@ -586,11 +592,8 @@ func _on_toggle_title_button_toggled(toggled_on: bool) -> void:
 func _on_erase_button_pressed() -> void:
 	if entries.size() == 0 or last_edited_entry_id < 0 or last_edited_entry_id > entries.size() - 1:
 		return
-	var entry: ListTextEntry = entries[last_edited_entry_id] # TODO generic entry
-	entries.erase(entry)
-	reset_entry_ids()
-	entry.queue_free()
-	list_changed.emit()
+	var entry: ListTextEntry = entries[last_edited_entry_id]
+	remove_text_entry(entry, true)
 
 
 func _on_list_title_gui_input(event: InputEvent) -> void:
