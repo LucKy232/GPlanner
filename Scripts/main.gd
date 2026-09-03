@@ -103,7 +103,9 @@ func _ready() -> void:
 
 func auto_scale_ui() -> void:
 	var dpi: int = DisplayServer.screen_get_dpi(DisplayServer.SCREEN_OF_MAIN_WINDOW)
-	var auto_scale: float = clampf(float(dpi) / 96.0, 0.5, 2.0)
+	var default: int = 96
+	var percent_bigger = float(dpi - default) / float(default)
+	var auto_scale: float = clampf(1.0 + percent_bigger * 0.5, 0.5, 2.0)
 	scale_ui(auto_scale)
 	print("Auto UI Scale: %0.0f%%" % [auto_scale * 100.0])
 
@@ -601,6 +603,9 @@ func load_opened_file_paths(path: String) -> int:
 			printerr("Can't parse JSON string @ main.gd:load_file()")
 			return 0
 		else:
+			if !data.has("OpenedFiles"):
+				printerr("No files found!")
+				return 0
 			var files = data["OpenedFiles"]
 			var current = int(data["CurrentID"])
 			if data.has("WindowState"):
