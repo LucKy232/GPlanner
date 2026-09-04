@@ -58,8 +58,11 @@ func end_drag() -> void:
 
 func drag_child() -> void:
 	var drag_pos: Vector2 = list[object_id].offset_transform_position + list[object_id].position
-	if current - 1 >= 0 and drag_pos.y < list[current - 1].position.y + list[current - 1].size.y:
-		current -= 1
+	var previous: int = get_previous_visible_id()
+	var next: int = get_next_visible_id()
+	if previous >= 0 and drag_pos.y < list[previous].position.y + list[previous].size.y:
+		current = previous
+		print("LOWER")
 		if lowest > current:
 			lowest = current
 		drag_inside_visual_offsets(object_id)
@@ -67,8 +70,9 @@ func drag_child() -> void:
 		if current < highest and highest != object_id:
 			list[highest].offset_transform_position = Vector2.ZERO
 			highest = current
-	elif current + 1 < list.size() and drag_pos.y > list[current + 1].position.y:
-		current += 1
+	elif next >= 0 and next < list.size() and drag_pos.y > list[next].position.y:
+		current = next
+		print("HIGHER")
 		if highest < current:
 			highest = current
 		drag_inside_visual_offsets(object_id)
@@ -78,23 +82,43 @@ func drag_child() -> void:
 			lowest = current
 
 
+# TODO optimize return early, without a var
+func get_previous_visible_id() -> int:
+	var prev: int = -1
+	if current > 0:
+		for i in range(0, current):
+			if list[i].visible:
+				prev = i
+	return prev
+
+
+func get_next_visible_id() -> int:
+	for i in range(current + 1, list.size()):
+		if list[i].visible:
+			return i
+	return -1
+
+
+
 func accumulate_position(event_relative: Vector2, new_scroll_y: int) -> Vector2:
 	scroll_diff = Vector2(0.0, float(new_scroll_y - initial_scroll_y))
 	offset += event_relative
 	return offset + scroll_diff
 
 
+# TODO work with hidden entries
 func drag_from_outside(drag_pos: Vector2, new_scroll_y: int) -> void:
 	scroll_diff = Vector2(0.0, float(new_scroll_y))
 	drag_pos += scroll_diff
+	# Before first entry
+	if drag_pos.y < 20.0:
+		current = 0
+		return
 	for entry in list:
-		# Before first entry
-		if drag_pos.y < 20.0:
-			current = 0
 		# After last entry
-		elif entry.id == list.size() - 1 and drag_pos.y > entry.position.y + entry.size.y * 0.4:
-			current = list.size()
-		elif drag_pos.y > entry.position.y + entry.size.y:
+		if entry.id == list.size() - 1 and drag_pos.y > entry.position.y + entry.size.y * 0.4:
+			current = list.size() # TODO return last visible ID
+		elif entry.visible and drag_pos.y > entry.position.y + entry.size.y:
 			current = entry.id + 1
 	drag_from_outside_visual_offsets()
 

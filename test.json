@@ -59,7 +59,7 @@
 			},
 			"pos.x": 10166.017578125,
 			"pos.y": 4289.04150390625,
-			"priority_id": 4,
+			"priority_id": 1,
 			"size.x": 64.0,
 			"size.y": 32.0,
 			"style_preset_id": "none",
@@ -92,8 +92,8 @@
 				"outline_color.r": 0.0,
 				"outline_size": 8
 			},
-			"pos.x": 10797.529296875,
-			"pos.y": 4740.07568359375,
+			"pos.x": 10429.0791015625,
+			"pos.y": 4464.1201171875,
 			"priority_id": 4,
 			"size.x": 64.0,
 			"size.y": 32.0,
@@ -143,12 +143,12 @@
 		"2": {
 			"entries": {
 				"0": {
-					"priority_id": 1,
-					"text": "2"
-				},
-				"1": {
 					"priority_id": 2,
 					"text": "When it's a multiline text box"
+				},
+				"1": {
+					"priority_id": 1,
+					"text": "???"
 				},
 				"2": {
 					"priority_id": 3,
@@ -163,12 +163,12 @@
 					"text": "NAHHH"
 				},
 				"5": {
-					"priority_id": 2,
-					"text": "Alright"
+					"priority_id": 1,
+					"text": "2"
 				},
 				"6": {
-					"priority_id": 1,
-					"text": "???"
+					"priority_id": 2,
+					"text": "Alright"
 				},
 				"7": {
 					"priority_id": 0,
@@ -176,13 +176,17 @@
 				},
 				"8": {
 					"priority_id": 4,
-					"text": "8"
+					"text": "www"
 				},
 				"9": {
 					"priority_id": 4,
-					"text": "1"
+					"text": "8"
 				},
 				"10": {
+					"priority_id": 4,
+					"text": "1"
+				},
+				"11": {
 					"priority_id": 4,
 					"text": "6"
 				}
@@ -206,7 +210,7 @@
 					"text": "UI scale too big"
 				},
 				"2": {
-					"priority_id": 1,
+					"priority_id": 3,
 					"text": "StatusBar bad position w/ UI Scale"
 				}
 			},
@@ -222,15 +226,15 @@
 	"State": {
 		"app_mode": 0,
 		"drawing_folder_path": "test 2026-09-03T192852",
-		"position.x": -15161.2021484375,
-		"position.y": -6377.19873046875,
+		"position.x": -11768.9208984375,
+		"position.y": -4728.0791015625,
 		"priority_filter_value": 4,
-		"scale.x": 1.41422069072723,
-		"scale.y": 1.41422069072723,
+		"scale.x": 1.16838479042053,
+		"scale.y": 1.16838479042053,
 		"show_completed": false,
 		"show_priorities": true,
 		"show_priority_tool": true,
-		"zoom_level": 1.41422065345299
+		"zoom_level": 1.16838473106312
 	},
 	"StylePresets": {},
 	"Swatches": {}

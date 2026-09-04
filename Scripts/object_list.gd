@@ -387,9 +387,9 @@ func filter_entries(value: int) -> void:
 			if last_edited_entry_id == entry.id:
 				last_edited_entry_id = -1
 			entry.visible = false
-		# TODO reparent and reorder ids as well???
 		else:
 			entry.visible = true
+	line_up_side_buttons.call_deferred()
 
 
 func rebuild_from_dict(dict: Dictionary, priority_colors: Dictionary[Enums.Priority, Color]) -> void:
