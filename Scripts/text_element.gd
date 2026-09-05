@@ -44,6 +44,10 @@ func _ready() -> void:
 	priority_panel.add_theme_stylebox_override("panel", priority_stylebox)
 	total_horizontal_margin = text_margin_container.get_theme_constant("margin_left") + text_margin_container.get_theme_constant("margin_right")
 	total_vertical_margin = text_margin_container.get_theme_constant("margin_top") + text_margin_container.get_theme_constant("margin_bottom")
+	# TODO change these cursors w/ custom ones -> DRAG cursor & DROP cursor
+	#Input.set_custom_mouse_cursor(img, Input.CURSOR_CAN_DROP)		# DROP
+	#Input.set_custom_mouse_cursor(img, Input.CURSOR_DRAG)			# DRAG
+	#Input.set_custom_mouse_cursor(img, Input.CURSOR_FORBIDDEN)		# DRAG
 
 
 func _get_drag_data(_at_position: Vector2) -> Variant:
@@ -66,7 +70,6 @@ func start_resizing() -> void:
 
 
 func end_input() -> void:
-	drag_and_resize_input.end()
 	set_default_cursor_shape(Control.CURSOR_POINTING_HAND)
 
 

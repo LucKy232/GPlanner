@@ -82,17 +82,18 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 		else:
 			drop_visual.visible = true
 			drop_visual.size = data.size
-			drop_visual.position = at_position
+			drop_visual.position = at_position - data.initial_grabber_event / scale * 0.5
 			return true
 	elif data is TextElement:
 		return false
 	else:
+		drop_visual.visible = false
 		return false
 
 
 func _drop_data(at_position: Vector2, data: Variant) -> void:
 	if data is ListTextEntry:
-		var new_elem_id: int = add_text_element(at_position)
+		var new_elem_id: int = add_text_element(at_position - data.initial_grabber_event / scale * 0.5)
 		elements[new_elem_id].set_text(data.get_text())
 		elements[new_elem_id].size = data.size
 		select_element(new_elem_id)
@@ -1041,6 +1042,8 @@ func _on_list_changed() -> void:
 
 func _on_list_dragging_toggled(drag_on: bool) -> void:
 	is_dragging = drag_on
+	if !drag_on:
+		drop_visual.visible = false
 
 
 func _on_list_text_edit_active(list_id: int) -> void:

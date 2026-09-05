@@ -9,6 +9,7 @@ class_name ListTextEntry extends Control
 @onready var mouse_hover_shape: CollisionShape2D = %MouseHoverShape
 
 var grabber_clicked: bool = false
+var initial_grabber_event: Vector2 = Vector2.ZERO
 var can_hover: bool = true
 var priority_id: Enums.Priority = Enums.Priority.NONE
 var priority_color: Color = Color.WHITE
@@ -36,13 +37,20 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 
 
 func _input(event: InputEvent) -> void:
+	if !grabber_clicked:
+		return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
-		if grabber_clicked:
-			grabber_clicked = false
-			grabber_ended_move.emit(id)
-			_on_hover(false)
-	if grabber_clicked and event is InputEventMouseMotion:
+		end_grab()
+	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_RIGHT and event.is_pressed():
+		end_grab()
+	elif event is InputEventMouseMotion:
 		grabber_moved.emit(event, id)
+
+
+func end_grab() -> void:
+	grabber_clicked = false
+	grabber_ended_move.emit(id)
+	_on_hover(false)
 
 
 func change_priority_color(c: Color) -> void:

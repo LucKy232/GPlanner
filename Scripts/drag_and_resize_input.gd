@@ -16,6 +16,10 @@ func end() -> void:
 func _process(_delta: float) -> void:
 	if (is_being_dragged or is_being_resized) and !Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 		input_ended.emit()
+		end()
+	if (is_being_dragged or is_being_resized) and Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
+		input_ended.emit()
+		end()
 
 
 func _input(event: InputEvent) -> void:

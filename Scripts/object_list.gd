@@ -65,7 +65,7 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 			return false
 		# Start drag from outside
 		elif !dragger.is_dragging_outside and !entries.has(data):
-			dragger.start_drag_from_outside(entries, drop_visual.size.y, scroll_container.scroll_vertical)
+			dragger.start_drag_from_outside(entries, drop_visual, get_new_drag_position_data())
 			change_state(State.DRAGGING_FROM_OUTSIDE)
 			drop_visual.size = Vector2(object_v_box.size.x, get_font_size() + 4.0)
 			return true
@@ -73,7 +73,7 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 		elif dragger.is_dragging_outside:
 			var position_in_list: Vector2 = scroll_container.position
 			dragger.drag_from_outside(at_position - position_in_list, scroll_container.scroll_vertical)
-			position_drop_visual_on_entry(dragger.current - 1)
+			dragger.position_outside_drop_visual()
 			can_drop.emit()		# For visual on canvas
 			return true
 		else:
@@ -81,7 +81,7 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 	elif data is TextElement:
 		# Start drag from outside
 		if !dragger.is_dragging_outside and mouse_inside:
-			dragger.start_drag_from_outside(entries, drop_visual.size.y, scroll_container.scroll_vertical)
+			dragger.start_drag_from_outside(entries, drop_visual, get_new_drag_position_data())
 			change_state(State.DRAGGING_FROM_OUTSIDE)
 			drop_visual.size = Vector2(object_v_box.size.x, get_font_size() + 4.0)
 			return true
@@ -89,7 +89,7 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 		elif dragger.is_dragging_outside:
 			var position_in_list: Vector2 = scroll_container.position
 			dragger.drag_from_outside(at_position - position_in_list, scroll_container.scroll_vertical)
-			position_drop_visual_on_entry(dragger.current - 1)
+			dragger.position_outside_drop_visual()
 			return true
 		else:
 			return false
@@ -102,6 +102,15 @@ func get_font_size() -> float:
 	if entries.size() > 0:
 		return entries[0].get_font_size()
 	return 20.0
+
+
+func get_new_drag_position_data() -> ListDragHelper.DragPositionData:
+	return ListDragHelper.DragPositionData.new(
+				top_left_margin,
+				object_v_box.get_theme_constant("separation"),
+				scroll_container.scroll_vertical,
+				scroll_container.position
+			)
 
 
 func _drop_data(_at_position: Vector2, data: Variant) -> void:
@@ -185,6 +194,7 @@ func change_state(new_state: State) -> void:
 			drop_visual.visible = false
 		State.DRAGGING_CHILD_INSIDE:	# Stop the input going to canvas
 			mouse_filter = Control.MOUSE_FILTER_STOP
+			scroll_container.clip_contents = false
 			drop_visual.visible = true
 		State.DRAGGING_CHILD_OUTSIDE:
 			mouse_filter = Control.MOUSE_FILTER_PASS
@@ -265,42 +275,6 @@ func start_resizing() -> void:
 func end_input() -> void:
 	drag_and_resize_input.end()
 	set_default_cursor_shape(Control.CURSOR_POINTING_HAND)
-
-
-func position_drop_visual_on_entry(entry_id: int) -> void:
-	var after_entry_position: Vector2 = Vector2.ZERO
-	# Position on empty list
-	if entries.size() == 0:
-		after_entry_position = Vector2.ZERO
-	# Position on next entry if not after last
-	elif entry_id >= 0 and entry_id < entries.size() - 1:
-		after_entry_position = (entries[entry_id+1].position
-							- Vector2(0.0, object_v_box.get_theme_constant("separation") * 0.5))
-	# After last entry, position at last entry + its height
-	elif entry_id == entries.size() - 1:
-		after_entry_position = (entries[-1].position
-							+ Vector2(0.0, entries[-1].size.y))
-	drop_visual.position = (after_entry_position
-						+ scroll_container.position
-						+ top_left_margin
-						- Vector2(0.0, scroll_container.scroll_vertical))
-
-
-func position_child_drop_visual(entry_id: int, dragging_id: int) -> void:
-	if entry_id < 0 or entry_id >= entries.size():
-		return
-	var after_entry_position: Vector2 = Vector2.ZERO
-	if entry_id > dragging_id:		# Going down the list
-		after_entry_position = (entries[entry_id].offset_transform_position
-							+ Vector2(0.0, entries[entry_id].size.y)
-							+ Vector2(0.0, object_v_box.get_theme_constant("separation") * 0.5))
-	elif entry_id < dragging_id:	# Going up the list
-		after_entry_position = -Vector2(0.0, object_v_box.get_theme_constant("separation") * 0.5)
-	drop_visual.position = (entries[entry_id].position
-						+ after_entry_position
-						+ scroll_container.position
-						+ top_left_margin
-						- Vector2(0.0, scroll_container.scroll_vertical))
 
 
 func add_text_entry(is_user_input: bool) -> void:
@@ -471,9 +445,9 @@ func _on_scroll_hover(inside: bool) -> void:
 
 func _on_scroll() -> void:
 	if dragger.is_dragging_child:
-		position_child_drop_visual(dragger.current, dragger.object_id)
+		dragger.position_child_drop_visual()
 	if dragger.is_dragging_outside:
-		position_drop_visual_on_entry(dragger.current - 1)
+		dragger.position_outside_drop_visual()
 	line_up_side_buttons.call_deferred()
 
 
@@ -514,20 +488,19 @@ func _on_list_text_entry_grabber_started_move(entry_id: int, event_pos: Vector2)
 	if entries.size() <= entry_id:
 		push_error("Entry ID %d Invalid!" % [entry_id])
 		return
-	dragger.start_drag_child(entry_id, entries, event_pos, drop_visual.size.y, scroll_container.scroll_vertical)
+	dragger.start_drag_child(entry_id, entries, event_pos, drop_visual, get_new_drag_position_data())
 	dragging.emit(true)
 	change_state(State.DRAGGING_CHILD_INSIDE)
-	drop_visual.size = entries[entry_id].size
 
 
 func _on_list_text_entry_grabber_moved(event: InputEventMouseMotion, entry_id: int) -> void:
 	if entries.size() <= entry_id:
 		push_error("Entry ID %d Invalid!" % [entry_id])
 		return
-	entries[entry_id].offset_transform_position = dragger.accumulate_position(event.relative / canvas_scale, scroll_container.scroll_vertical)
+	dragger.accumulate_position(event.relative / canvas_scale, scroll_container.scroll_vertical)
 	if mouse_inside:
 		dragger.drag_child()
-		position_child_drop_visual(dragger.current, dragger.object_id)
+		dragger.position_child_drop_visual()
 
 
 func _on_list_text_entry_grabber_ended_move(entry_id: int) -> void:
