@@ -129,6 +129,7 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	if data is TextElement:
 		add_text_entry(false)
 		entries[-1].set_text(data.get_text())
+		entry_priority_changed.emit(entries[-1], data.priority_id)
 		object_v_box.move_child(entries[-1], dragger.current)
 		sort_entries(entries.size() - 1, dragger.current)
 		reset_entry_ids()

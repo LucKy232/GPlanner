@@ -82,7 +82,7 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 		else:
 			drop_visual.visible = true
 			drop_visual.size = data.size
-			drop_visual.position = at_position - data.initial_grabber_event / scale * 0.5
+			drop_visual.position = at_position
 			return true
 	elif data is TextElement:
 		return false
@@ -93,9 +93,11 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 
 func _drop_data(at_position: Vector2, data: Variant) -> void:
 	if data is ListTextEntry:
-		var new_elem_id: int = add_text_element(at_position - data.initial_grabber_event / scale * 0.5)
+		var new_elem_id: int = add_text_element(at_position)
 		elements[new_elem_id].set_text(data.get_text())
 		elements[new_elem_id].size = data.size
+		elements[new_elem_id].priority_id = data.priority_id
+		elements[new_elem_id].set_priority_color(priority_colors[data.priority_id])
 		select_element(new_elem_id)
 		data.remove_from_list.emit()
 		data.queue_free()
