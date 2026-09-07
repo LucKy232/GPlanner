@@ -153,6 +153,8 @@ func _on_hover(on: bool) -> void:
 func _on_grabber_margin_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
 		grabber_started_move.emit(id, event.position)
+		initial_grabber_event = ( event.position * grabber_margin.scale
+					+ Vector2(grabber_margin.get_theme_constant("margin_left"), grabber_margin.get_theme_constant("margin_top")) )
 		grabber_clicked = true
 
 

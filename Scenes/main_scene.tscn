@@ -4,6 +4,7 @@
 [ext_resource type="StyleBox" uid="uid://wrrl0mk4mdli" path="res://Themes/Buttons/active_priority_button_stylebox.tres" id="2_mai8y"]
 [ext_resource type="StyleBox" uid="uid://0m1wm66xknlk" path="res://Themes/Buttons/high_priority_button_stylebox.tres" id="3_76v2p"]
 [ext_resource type="PackedScene" uid="uid://csgrqqjqi1d4t" path="res://Scenes/zoom_indicator.tscn" id="3_jv6wh"]
+[ext_resource type="Texture2D" uid="uid://cooqi7tt4ohpx" path="res://Icons/drop_icon.svg" id="3_rpyod"]
 [ext_resource type="StyleBox" uid="uid://dgq7v0gkqrpgf" path="res://Themes/Buttons/medium_priority_button_stylebox.tres" id="4_drdnd"]
 [ext_resource type="Theme" uid="uid://y7w4cfil7ay0" path="res://Themes/Buttons/button_theme.tres" id="4_x6ack"]
 [ext_resource type="PackedScene" uid="uid://c2apku3xuhhyp" path="res://Scenes/status_bar.tscn" id="5_iacmt"]
@@ -120,6 +121,8 @@ connection_scene = "uid://c4jirlcfvnhoj"
 canvas_scene = "uid://b1do6gcy6peum"
 accent_color_planning = Color(0.188235, 0.701961, 1, 1)
 accent_color_drawing = Color(0.760784, 0.537255, 1, 1)
+drag_icon = ExtResource("23_viu5a")
+drop_icon = ExtResource("3_rpyod")
 button_theme = ExtResource("4_x6ack")
 popup_dialog_theme = ExtResource("18_2ebs2")
 priority_colors = Dictionary[int, Color]({

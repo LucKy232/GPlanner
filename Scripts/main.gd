@@ -34,6 +34,8 @@ extends Control
 @export_category("Themes")
 @export_color_no_alpha var accent_color_planning
 @export_color_no_alpha var accent_color_drawing
+@export var drag_cursor_icon: CompressedTexture2D
+@export var drop_cursor_icon: CompressedTexture2D
 @export var button_theme: Theme
 @export var popup_dialog_theme: Theme
 @export var priority_colors: Dictionary[Enums.Priority, Color]
@@ -88,6 +90,12 @@ func _ready() -> void:
 	close_tab_confirmation.add_cancel_button(" Cancel ")
 	exit_tab_confirmation.add_button("     No     ", true, "no_save")
 	exit_tab_confirmation.add_cancel_button(" Cancel ")
+	# Custom mouse cursors, except drawing tools
+	if drag_cursor_icon:
+		Input.set_custom_mouse_cursor(drag_cursor_icon, Input.CURSOR_DRAG, drag_cursor_icon.get_size() * 0.5)
+		Input.set_custom_mouse_cursor(drag_cursor_icon, Input.CURSOR_FORBIDDEN, drag_cursor_icon.get_size() * 0.5)
+	if drop_cursor_icon:
+		Input.set_custom_mouse_cursor(drop_cursor_icon, Input.CURSOR_CAN_DROP)
 	# Before reading files, ask for read / write permissions
 	if android_build:
 		OS.request_permissions()

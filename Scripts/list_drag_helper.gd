@@ -40,7 +40,6 @@ func start_drag_child(obj_id: int, entry_list: Array[ListTextEntry], event_posit
 	highest = obj_id
 	position_data = drag_position_data
 	list[object_id].offset_transform_position = event_position
-	list[object_id].initial_grabber_event = event_position
 	is_dragging_child = true
 	toggle_all_entries_hover(false)
 

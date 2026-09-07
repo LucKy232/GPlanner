@@ -44,10 +44,6 @@ func _ready() -> void:
 	priority_panel.add_theme_stylebox_override("panel", priority_stylebox)
 	total_horizontal_margin = text_margin_container.get_theme_constant("margin_left") + text_margin_container.get_theme_constant("margin_right")
 	total_vertical_margin = text_margin_container.get_theme_constant("margin_top") + text_margin_container.get_theme_constant("margin_bottom")
-	# TODO change these cursors w/ custom ones -> DRAG cursor & DROP cursor
-	#Input.set_custom_mouse_cursor(img, Input.CURSOR_CAN_DROP)		# DROP
-	#Input.set_custom_mouse_cursor(img, Input.CURSOR_DRAG)			# DRAG
-	#Input.set_custom_mouse_cursor(img, Input.CURSOR_FORBIDDEN)		# DRAG
 
 
 func _get_drag_data(_at_position: Vector2) -> Variant:
@@ -108,6 +104,10 @@ func get_bg_color() -> Color:
 		return individual_style.background_panel_style_box.bg_color
 
 
+func set_priority_id(_priority_id: Enums.Priority) -> void:
+	priority_id = _priority_id
+
+
 func set_priority_color(color: Color) -> void:
 	priority_stylebox.bg_color = color
 	if completed:
@@ -144,6 +144,15 @@ func change_size(new_size: Vector2) -> void:
 func set_size_fixed() -> void:
 	manual_resize = true
 	resize_timer.start()
+
+
+# TODO
+func minimize_horizontal_size() -> void:
+	var old_horizontal: float = size.x
+	text_margin_container.set_anchors_preset(Control.PRESET_CENTER_LEFT)
+	var new_horizontal: float = size.x
+	text_margin_container.set_anchors_preset.call_deferred(Control.PRESET_HCENTER_WIDE)
+	printt(old_horizontal, new_horizontal, size.x)
 
 
 func change_style_preset(preset: ElementPresetStyle) -> void:

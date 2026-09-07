@@ -83,7 +83,7 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 		else:
 			drop_visual.visible = true
 			drop_visual.size = data.size
-			drop_visual.position = at_position
+			drop_visual.position = at_position - data.initial_grabber_event
 			return true
 	elif data is TextElement:
 		return false
@@ -96,8 +96,9 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 	if data is ListTextEntry:
 		var new_elem_id: int = add_text_element(at_position)
 		elements[new_elem_id].set_text(data.get_text())
-		elements[new_elem_id].size = data.size
-		elements[new_elem_id].priority_id = data.priority_id
+		elements[new_elem_id].change_size(data.size)
+		#elements[new_elem_id].minimize_horizontal_size()
+		elements[new_elem_id].set_priority_id(data.priority_id)
 		elements[new_elem_id].set_priority_color(priority_colors[data.priority_id])
 		select_element(new_elem_id)
 		data.remove_from_list.emit()
@@ -291,8 +292,8 @@ func add_text_element(at_position: Vector2, id_specified: int = -1) -> int:
 	new_element.drag_and_resize_input.input_ended.connect(_on_control_input_ended.bind(new_element))
 	new_element.name = "TextElement"
 	new_element.position = at_position
-	new_element.priority_id = Enums.Priority.NONE
-	new_element.priority_tool_enabled = settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL]
+	new_element.set_priority_id(Enums.Priority.NONE)
+	new_element.set_priority_tool_enabled(settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL])
 	new_element.set_priority_color(priority_colors[Enums.Priority.NONE])
 	new_element.set_priority_visible(settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITIES])
 	new_element.z_index = 1
@@ -585,7 +586,7 @@ func rebuild_elements(json_elems: Dictionary) -> void:
 			if json_elems[i].has("style_preset_id"):
 				style_id = str(json_elems[i]["style_preset_id"])
 			elements[elem_id].change_size(Vector2(json_elems[i]["size.x"], json_elems[i]["size.y"]))
-			elements[elem_id].priority_id = priority_id as Enums.Priority
+			elements[elem_id].set_priority_id(priority_id as Enums.Priority)
 			elements[elem_id].set_priority_color(priority_colors[priority_id])
 			if json_elems[i].has("bgcolor.r"):	# Backwards compatibility
 				var c: Color = Color(json_elems[i]["bgcolor.r"], json_elems[i]["bgcolor.g"], json_elems[i]["bgcolor.b"], json_elems[i]["bgcolor.a"])
@@ -1087,7 +1088,7 @@ func _on_list_entry_changed_priority(entry: ListTextEntry, p: Enums.Priority) ->
 
 
 func _on_list_copied_to_clipboard() -> void:
-	status_message_requested.emit("List copied to clipboard!", GlobalColors.ui_green)
+	status_message_requested.emit("List copied to clipboard", GlobalColors.ui_green)
 
 
 func _on_connection_arrow_changed() -> void:
