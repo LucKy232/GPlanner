@@ -48,6 +48,7 @@ signal select_request
 signal text_edit_active
 signal dragging
 signal entry_priority_changed
+signal copied_to_clipboard
 
 
 func _ready() -> void:
@@ -97,22 +98,6 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 		return false
 
 
-# TODO will be replaced by style settings
-func get_font_size() -> float:
-	if entries.size() > 0:
-		return entries[0].get_font_size()
-	return 20.0
-
-
-func get_new_drag_position_data() -> ListDragHelper.DragPositionData:
-	return ListDragHelper.DragPositionData.new(
-				top_left_margin,
-				object_v_box.get_theme_constant("separation"),
-				scroll_container.scroll_vertical,
-				scroll_container.position
-			)
-
-
 func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	if data is ListTextEntry:
 		data.remove_from_list.emit()
@@ -146,7 +131,7 @@ func _input(event: InputEvent) -> void:
 		add_text_entry(true)
 	if event.is_action_pressed("add_list_link_entry"):
 		add_link_entry(true)
-		
+	
 	if entries.size() == 0:
 		return
 	if event.is_action_pressed("edit_previous_in_list", true, true):
@@ -162,6 +147,8 @@ func _input(event: InputEvent) -> void:
 	if list_title.visible and event.is_action_pressed("edit_list_title", false, true):
 		list_title.grab_focus()
 	
+	if !is_editing_text() and event.is_action_pressed("ui_copy"):
+		copy_list_text_to_clipboard()
 	if !is_editing_text(false):	# Not editing an entry
 		return
 	if event.is_action_pressed("erase_selected_list_entry", false, true):
@@ -184,6 +171,14 @@ func _input(event: InputEvent) -> void:
 		ensure_entry_visible.call_deferred()
 		line_up_side_buttons.call_deferred()
 		list_changed.emit()
+
+
+func copy_list_text_to_clipboard() -> void:
+	var clip_text: String = (list_title.text)
+	for entry in entries:
+		clip_text += ("\n - %s" % [entry.get_text()])
+	DisplayServer.clipboard_set(clip_text)
+	copied_to_clipboard.emit()
 
 
 func change_state(new_state: State) -> void:
@@ -223,6 +218,22 @@ func deselect() -> void:
 	add_buttons_tween.toggle(false)
 	toggle_title_tween.toggle(false)
 	selected = false
+
+
+# TODO will be replaced by style settings
+func get_font_size() -> float:
+	if entries.size() > 0:
+		return entries[0].get_font_size()
+	return 20.0
+
+
+func get_new_drag_position_data() -> ListDragHelper.DragPositionData:
+	return ListDragHelper.DragPositionData.new(
+				top_left_margin,
+				object_v_box.get_theme_constant("separation"),
+				scroll_container.scroll_vertical,
+				scroll_container.position
+			)
 
 
 func set_priority_visible(toggled_on: bool) -> void:

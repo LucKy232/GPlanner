@@ -7,8 +7,8 @@ class_name StatusBar extends Label
 func update_status(new_text: String, bg_color := Color(0.6, 0.6, 0.6, 0.45)) -> void:
 	animation_player.play("fade_in_status_bar")
 	visible = true
-	hide_timer.start()
 	text = new_text
+	hide_timer.start()
 	get_theme_stylebox("normal").bg_color = bg_color
 
 

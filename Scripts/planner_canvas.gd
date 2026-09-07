@@ -58,6 +58,7 @@ signal changed_position
 signal has_changed
 signal has_selected_control
 signal has_deselected_control
+signal status_message_requested	# NOTE only for list copied to clipboard atm
 
 
 func _init() -> void:
@@ -258,6 +259,7 @@ func add_object_list(at_position: Vector2, id_specified: int = -1) -> void:
 	new_list.text_edit_active.connect(_on_list_text_edit_active)
 	new_list.select_request.connect(_on_list_select_requested)
 	new_list.entry_priority_changed.connect(_on_list_entry_changed_priority)
+	new_list.copied_to_clipboard.connect(_on_list_copied_to_clipboard)
 	new_list.drag_and_resize_input.drag_requested.connect(_on_control_dragged.bind(new_list))
 	new_list.drag_and_resize_input.resize_requested.connect(_on_control_resized.bind(new_list))
 	new_list.drag_and_resize_input.input_ended.connect(_on_control_input_ended.bind(new_list))
@@ -1082,6 +1084,10 @@ func _on_list_entry_changed_priority(entry: ListTextEntry, p: Enums.Priority) ->
 	canvas_changed()
 	entry.set_priority(p)
 	entry.set_priority_color(priority_colors[p])
+
+
+func _on_list_copied_to_clipboard() -> void:
+	status_message_requested.emit("List copied to clipboard!", GlobalColors.ui_green)
 
 
 func _on_connection_arrow_changed() -> void:

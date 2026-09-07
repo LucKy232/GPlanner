@@ -390,6 +390,7 @@ func new_file(add_canvas: bool, show_status: bool = true) -> int:
 		new_canvas.has_changed.connect(_on_canvas_has_changed.bind(new_canvas.id))
 		new_canvas.has_selected_control.connect(_on_canvas_has_selected_control)
 		new_canvas.has_deselected_control.connect(_on_canvas_has_deselected_control)
+		new_canvas.status_message_requested.connect(_on_canvas_status_message_requested)
 		new_canvas.text_element_scene = text_element_scene
 		new_canvas.list_scene = list_scene
 		new_canvas.connection_scene = connection_scene
@@ -464,7 +465,7 @@ func save_file(path: String) -> void:
 	if file == null:
 		var error = error_string(FileAccess.get_open_error())
 		printerr("FileAcces error: %s", error)
-		status_bar.update_status("Error %s when saving file to path: %s" % [error, path], Color(0.55, 0.3, 0.3, 0.5))
+		status_bar.update_status("Error %s when saving file to path: %s" % [error, path], GlobalColors.ui_red)
 		return
 	
 	save_data = {
@@ -480,8 +481,8 @@ func save_file(path: String) -> void:
 	
 	var success: bool = file.store_string(JSON.stringify(save_data, "\t"))
 	if success:
-		#status_bar.call_deferred("update_status", str("File saved to path: %s" % path), Color(0.3, 0.55, 0.3, 0.5))
-		status_bar.update_status("File saved to path: %s" % path, Color(0.3, 0.55, 0.3, 0.5))
+		#status_bar.call_deferred("update_status", str("File saved to path: %s" % path), GlobalColors.ui_green)
+		status_bar.update_status("File saved to path: %s" % path, GlobalColors.ui_green)
 		#DisplayServer.window_set_title("GPlanner %s: %s" % [app_version, path])
 		get_tree().root.title = ("GPlanner %s: %s" % [app_version, path])
 		# If drawing in the time between saving the images and saving the file
@@ -490,7 +491,7 @@ func save_file(path: String) -> void:
 		set_tab_name_and_title_from_canvas(cc)
 		print("Saved %s" % path)
 	else:
-		status_bar.update_status("Error when saving file to path: %s" % path, Color(0.55, 0.3, 0.3, 0.5))
+		status_bar.update_status("Error when saving file to path: %s" % path, GlobalColors.ui_red)
 	file.close()
 
 
@@ -512,7 +513,7 @@ func load_file(path: String, app_startup: bool = false) -> void:
 	var data = JSON.parse_string(content)
 	
 	if data == null:
-		status_bar.update_status("Can't load file / Can't parse JSON string: %s" % path, Color(0.55, 0.3, 0.3, 0.5))
+		status_bar.update_status("Can't load file / Can't parse JSON string: %s" % path, GlobalColors.ui_red)
 		printerr("Can't parse JSON string @ main.gd:load_file()")
 		return
 	
@@ -545,7 +546,7 @@ func load_file(path: String, app_startup: bool = false) -> void:
 		else:
 			drawing_tool_bar.add_color_picker_swatches_from_array(canvases[cc].swatches)
 	
-	status_bar.update_status("File loaded: %s" % path, Color(0.3, 0.55, 0.3, 0.5))
+	status_bar.update_status("File loaded: %s" % path, GlobalColors.ui_green)
 	canvases[cc].canvas_changed(true)
 	canvases[cc].save_state.is_created = true
 	canvases[cc].save_state.is_loaded = true
@@ -599,7 +600,7 @@ func load_opened_file_paths(path: String) -> int:
 		file.close()
 		var data = JSON.parse_string(content)
 		if data == null:
-			status_bar.update_status("Can't load file / Can't parse JSON string: %s" % path, Color(0.55, 0.3, 0.3, 0.5))
+			status_bar.update_status("Can't load file / Can't parse JSON string: %s" % path, GlobalColors.ui_red)
 			printerr("Can't parse JSON string @ main.gd:load_file()")
 			return 0
 		else:
@@ -789,13 +790,13 @@ func change_drawing_tool_cursor() -> void:
 				var b_size: float = canvases[cc].drawing_settings.eraser_brush_settings.size * canvases[cc].scale.x
 				if b_size > 127.0:
 					using_cursor_image = true
-					img.load_svg_from_string(get_2circle_svg(b_size, ceilf(b_size / 40.0 + 1.0), Color(1.0, 1.0, 1.0), 0.5))
+					img.load_svg_from_string(get_2circle_svg(b_size, ceilf(b_size / 40.0 + 1.0), GlobalColors.eraser_brush_color, 0.5))
 					cursor_big_brush.texture = ImageTexture.create_from_image(img)
 					cursor_big_brush.size = Vector2(b_size, b_size)
 				else:
 					using_cursor_image = false
 					b_size = clampf(b_size, 4.0, 127.0)
-					img.load_svg_from_string(get_circle_svg(b_size, ceilf(b_size / 40.0 + 1.0), Color(1.0, 1.0, 1.0), 0.5))
+					img.load_svg_from_string(get_circle_svg(b_size, ceilf(b_size / 40.0 + 1.0), GlobalColors.eraser_brush_color, 0.5))
 					Input.set_custom_mouse_cursor(img, Input.CURSOR_HELP, img.get_size() * 0.5)
 	use_mouse_cursor_big_brush()
 
@@ -1181,6 +1182,10 @@ func _on_canvas_has_deselected_control() -> void:
 	element_settings.toggle_none_preset_inputs(false)
 
 
+func _on_canvas_status_message_requested(message: String, color: Color) -> void:
+	status_bar.update_status(message, color)
+
+
 func _on_element_settings_is_editing_text() -> void:
 	is_editing_preset_name = true
 
@@ -1214,16 +1219,16 @@ func _on_drawing_manager_finished_saving(save_canvas: int) -> void:
 
 
 func _on_drawing_manager_status_message(message: String) -> void:
-	status_bar.update_status_immediate(message, Color(0.6, 0.6, 0.3, 0.55))
+	status_bar.update_status_immediate(message, GlobalColors.ui_yellow)
 
 
 func _on_drawing_manager_forced_save_started() -> void:
-	status_bar.update_status("Need to capture images to reduce VRAM usage", Color(0.55, 0.3, 0.3, 0.5))
+	status_bar.update_status("Need to capture images to reduce VRAM usage", GlobalColors.ui_red)
 	prepare_to_save_images_lock_UI()
 
 
 func _on_drawing_manager_forced_save_ended() -> void:
-	status_bar.update_status("Done capturing images to reduce VRAM usage", Color(0.3, 0.55, 0.3, 0.5))
+	status_bar.update_status("Done capturing images to reduce VRAM usage", GlobalColors.ui_green)
 	finish_saving_images_unlock_UI()
 
 
