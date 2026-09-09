@@ -97,7 +97,7 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 		var new_elem_id: int = add_text_element(at_position)
 		elements[new_elem_id].set_text(data.get_text())
 		elements[new_elem_id].change_size(data.size)
-		#elements[new_elem_id].minimize_horizontal_size()
+		elements[new_elem_id].minimize_horizontal_size()
 		elements[new_elem_id].set_priority_id(data.priority_id)
 		elements[new_elem_id].set_priority_color(priority_colors[data.priority_id])
 		select_element(new_elem_id)

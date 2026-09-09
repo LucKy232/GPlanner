@@ -146,15 +146,6 @@ func set_size_fixed() -> void:
 	resize_timer.start()
 
 
-# TODO
-func minimize_horizontal_size() -> void:
-	var old_horizontal: float = size.x
-	text_margin_container.set_anchors_preset(Control.PRESET_CENTER_LEFT)
-	var new_horizontal: float = size.x
-	text_margin_container.set_anchors_preset.call_deferred(Control.PRESET_HCENTER_WIDE)
-	printt(old_horizontal, new_horizontal, size.x)
-
-
 func change_style_preset(preset: ElementPresetStyle) -> void:
 	has_style_preset = true
 	style_preset_id = preset.id
