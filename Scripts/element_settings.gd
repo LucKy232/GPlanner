@@ -1,5 +1,4 @@
-extends Control
-class_name ElementSettings
+class_name ElementSettings extends Control
 
 @export_range(150.0, 800.0, 5.0) var MAX_HEIGHT_SETTINGS: float = 335.0
 @export_range(150.0, 1000.0, 5.0) var MAX_HEIGHT_ALL: float = 490.0

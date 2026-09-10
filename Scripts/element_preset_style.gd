@@ -3,9 +3,9 @@ class_name ElementPresetStyle
 var id: String = "unassigned_id"
 var name: String = ""
 var font_size: int = 20
-var outline_size: int = 8
+var outline_size: int = 0
 var border_size: int = 1
-var background_color: Color = Color.DEEP_SKY_BLUE
+var background_color: Color = Color.LIGHT_SEA_GREEN
 var font_color: Color = Color.WHITE
 var outline_color: Color = Color.BLACK
 var border_color: Color = Color.BLACK
@@ -13,8 +13,18 @@ var background_panel_style_box: StyleBoxFlat
 var text_edit_theme: Theme
 
 
-func _init(idx: String) -> void:
-	id = idx
+func _init(string_id: String) -> void:
+	id = string_id
+
+
+func set_default_values() -> void:
+	set_border_size(border_size)
+	background_panel_style_box.bg_color = background_color
+	background_panel_style_box.border_color = border_color
+	text_edit_theme.set_font_size("font_size", "TextEdit", font_size)
+	text_edit_theme.set_constant("outline_size", "TextEdit", outline_size)
+	text_edit_theme.set_color("font_color", "TextEdit", font_color)
+	text_edit_theme.set_color("font_outline_color", "TextEdit", outline_color)
 
 
 func set_font_size(size: int) -> void:
@@ -55,19 +65,30 @@ func set_border_size(size: int) -> void:
 	background_panel_style_box.border_width_right = size
 
 
-func set_background_panel_style_box(style_box_flat: StyleBoxFlat) -> void:
+func set_background_panel_style_box(style_box_flat: StyleBoxFlat, use_theme_values: bool) -> void:
 	background_panel_style_box = style_box_flat
-	border_size = background_panel_style_box.border_width_top
-	background_color = background_panel_style_box.bg_color
-	border_color = background_panel_style_box.border_color
+	if use_theme_values:
+		border_size = background_panel_style_box.border_width_top
+		background_color = background_panel_style_box.bg_color
+		border_color = background_panel_style_box.border_color
+	else:		# Use defaults
+		set_border_size(border_size)
+		background_panel_style_box.bg_color = background_color
+		background_panel_style_box.border_color = border_color
 
 
-func set_text_edit_theme(theme: Theme) -> void:
+func set_text_edit_theme(theme: Theme, use_theme_values: bool) -> void:
 	text_edit_theme = theme
-	font_size = text_edit_theme.get_font_size("font_size", "TextEdit")
-	outline_size = text_edit_theme.get_constant("outline_size", "TextEdit")
-	font_color = text_edit_theme.get_color("font_color", "TextEdit")
-	outline_color = text_edit_theme.get_color("font_outline_color", "TextEdit")
+	if use_theme_values:
+		font_size = text_edit_theme.get_font_size("font_size", "TextEdit")
+		outline_size = text_edit_theme.get_constant("outline_size", "TextEdit")
+		font_color = text_edit_theme.get_color("font_color", "TextEdit")
+		outline_color = text_edit_theme.get_color("font_outline_color", "TextEdit")
+	else:		# Use defaults
+		text_edit_theme.set_font_size("font_size", "TextEdit", font_size)
+		text_edit_theme.set_constant("outline_size", "TextEdit", outline_size)
+		text_edit_theme.set_color("font_color", "TextEdit", font_color)
+		text_edit_theme.set_color("font_outline_color", "TextEdit", outline_color)
 
 
 func rebuild_from_json_dict(dict: Dictionary) -> void:

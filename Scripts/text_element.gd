@@ -71,8 +71,8 @@ func end_input() -> void:
 
 func init_individual_style() -> void:
 	individual_style = ElementPresetStyle.new("individual")
-	individual_style.set_background_panel_style_box(background.get_theme_stylebox("panel").duplicate())
-	individual_style.set_text_edit_theme(text_edit_theme.duplicate())
+	individual_style.set_background_panel_style_box(background.get_theme_stylebox("panel").duplicate(), true)
+	individual_style.set_text_edit_theme(text_edit_theme.duplicate(), true)
 
 
 func toggle_completed() -> void:

@@ -3,13 +3,18 @@
 [ext_resource type="SystemFont" uid="uid://dhj4uuya6elb5" path="res://Themes/element_font.tres" id="1_23fvt"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ielnv"]
-bg_color = Color(0.6, 0.6, 0.6, 0)
+bg_color = Color(0.6, 0.6, 0.6, 0.26666668)
+draw_center = false
 border_color = Color(0.8, 0.8, 0.8, 0)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0qxw5"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5g0ls"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fcyl1"]
+bg_color = Color(0, 0, 0, 0.40392157)
+border_color = Color(0.8, 0.8, 0.8, 0)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pkvct"]
 
@@ -35,10 +40,10 @@ TextEdit/colors/font_placeholder_color = Color(0.65, 0.65, 0.65, 0.784314)
 TextEdit/colors/font_selected_color = Color(0, 0, 0, 0)
 TextEdit/colors/selection_color = Color(0.5, 0.5, 0.5, 0.784314)
 TextEdit/constants/caret_width = 2
-TextEdit/constants/line_spacing = 4
-TextEdit/constants/outline_size = 8
+TextEdit/constants/line_spacing = 0
+TextEdit/constants/outline_size = 0
 TextEdit/constants/wrap_offset = 10
 TextEdit/font_sizes/font_size = 20
-TextEdit/styles/focus = SubResource("StyleBoxFlat_ielnv")
+TextEdit/styles/focus = SubResource("StyleBoxFlat_fcyl1")
 TextEdit/styles/normal = SubResource("StyleBoxFlat_ielnv")
 TextEdit/styles/read_only = SubResource("StyleBoxEmpty_pkvct")

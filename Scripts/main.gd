@@ -101,6 +101,8 @@ func _ready() -> void:
 		OS.request_permissions()
 	if auto_ui_scale:
 		auto_scale_ui()
+	else:
+		scale_ui(ui_scale)
 	# Load files
 	var active_id: int = load_opened_file_paths(opened_files_file_name)
 	is_at_startup = false

@@ -88,6 +88,7 @@ target = NodePath("PriorityButtons")
 side = 1
 animation_time = 0.25
 transition_type = 7
+offset_show = 4.0
 metadata/_custom_type_script = "uid://b0ioikc1dokvh"
 
 [node name="PriorityButtons" type="VBoxContainer" parent="PanelContainer/PriorityButtonsTween" unique_id=1231603066]
