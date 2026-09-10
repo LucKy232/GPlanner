@@ -3,7 +3,7 @@ class_name PresetStyleButtons
 
 @export_file("*.tscn") var button_scene
 @onready var style_button_grid: GridContainer = $StyleButtonGrid
-@export var MAX_BUTTON_COUNT = 21
+@export var MAX_BUTTON_COUNT = 16
 
 var current_pressed: int = -1
 var buttons: Dictionary[int, Button]
@@ -156,6 +156,15 @@ func change_button_background_color(idx: int, color: Color) -> void:
 	buttons[idx].theme.get_stylebox("pressed", "Button").bg_color = color * 1.2
 	buttons[idx].theme.get_stylebox("focus", "Button").bg_color = color * 1.2
 	buttons[idx].theme.get_stylebox("hover", "Button").bg_color = color * 0.9
+
+
+func change_border_blend(idx: int, toggled_on: bool) -> void:
+	if idx >= MAX_BUTTON_COUNT or !buttons.has(idx):
+		return
+	buttons[idx].theme.get_stylebox("normal", "Button").border_blend = toggled_on
+	buttons[idx].theme.get_stylebox("pressed", "Button").border_blend = toggled_on
+	buttons[idx].theme.get_stylebox("focus", "Button").border_blend = toggled_on
+	buttons[idx].theme.get_stylebox("hover", "Button").border_blend = toggled_on
 
 
 func _on_button_pressed(idx: int) -> void:

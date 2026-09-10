@@ -7,36 +7,50 @@ class_name ElementSettings extends Control
 @export var color_picker_theme: Theme
 @export var color_picker_panel_theme: Theme
 @export var div_theme: Theme
-
+# Preset Settings
 @onready var preset_options: OptionButton = %PresetOptions
 @onready var background_color_picker_button: ColorPickerButton = %BackgroundColorPickerButton
+@onready var border_size_spin_box: SpinBox = %BorderSizeSpinBox
+@onready var border_color_picker_button: ColorPickerButton = %BorderColorPickerButton
+@onready var border_blend_check_box: CheckBox = %BorderBlendCheckBox
 @onready var font_size_spin_box: SpinBox = %FontSizeSpinBox
 @onready var font_color_picker_button: ColorPickerButton = %FontColorPickerButton
 @onready var font_outline_spin_box: SpinBox = %FontOutlineSpinBox
+@onready var line_spacing_spin_box: SpinBox = %LineSpacingSpinBox
 @onready var font_outline_color_picker_button: ColorPickerButton = %FontOutlineColorPickerButton
-@onready var border_size_spin_box: SpinBox = %BorderSizeSpinBox
-@onready var border_color_picker_button: ColorPickerButton = %BorderColorPickerButton
+
 @onready var name_insert: LineEdit = %NameInsert
 @onready var scroll_container: ScrollContainer = %ScrollContainer
 @onready var v_box_container: VBoxContainer = %VBoxContainer
-
 @onready var settings_panel: PanelContainer = $VBoxContainer/SettingsPanel
 @onready var style_buttons: PresetStyleButtons = $VBoxContainer/StyleButtons
 @onready var current_preset_label: Label = $VBoxContainer/HBoxContainer/CurrentPresetLabel
 # For visibility toggle
 @onready var background_color_h_box: HBoxContainer = %BackgroundColorHBox
-@onready var font_size_h_box: HBoxContainer = %FontSizeHBox
-@onready var font_color_h_box: HBoxContainer = %FontColorHBox
-@onready var font_outline_h_box: HBoxContainer = %FontOutlineHBox
-@onready var outline_color_h_box: HBoxContainer = %OutlineColorHBox
 @onready var border_size_h_box: HBoxContainer = %BorderSizeHBox
 @onready var border_color_h_box: HBoxContainer = %BorderColorHBox
+@onready var border_blend_h_box: HBoxContainer = %BorderBlendHBox
+@onready var font_size_h_box: HBoxContainer = %FontSizeHBox
+@onready var font_color_h_box: HBoxContainer = %FontColorHBox
+@onready var line_spacing_h_box: HBoxContainer = %LineSpacingHBox
+@onready var font_outline_h_box: HBoxContainer = %FontOutlineHBox
+@onready var outline_color_h_box: HBoxContainer = %OutlineColorHBox
+@onready var title_font_size_h_box: HBoxContainer = %TitleFontSizeHBox
+@onready var title_font_color_h_box: HBoxContainer = %TitleFontColorHBox
+@onready var title_font_outline_h_box: HBoxContainer = %TitleFontOutlineHBox
+@onready var title_outline_color_h_box: HBoxContainer = %TitleOutlineColorHBox
+@onready var title_line_spacing_h_box: HBoxContainer = %TitleLineSpacingHBox
+@onready var entry_separation_h_box: HBoxContainer = %EntrySeparationHBox
+@onready var entry_div_line_h_box: HBoxContainer = %EntryDivLineHBox
+@onready var list_title_category_button: Button = %ListTitleCategoryButton
+@onready var list_title_category_div: Panel = %ListTitleCategoryDiv
+@onready var list_entry_category_button: Button = %ListEntryCategoryButton
+@onready var list_entry_category_div: Panel = %ListEntryCategoryDiv
+
 
 var presets: Dictionary[int, ElementPresetStyle]	## KEY: preset_options selector ID (not preset ID like in planner_canvas.gd)
 var none_preset: ElementPresetStyle
 var max_option_id: int = 1
-var is_user_input: bool = true
-var resize_scroll_container: bool = false
 
 signal preset_added
 signal preset_changed
@@ -57,13 +71,22 @@ func _ready() -> void:
 	style_buttons.add_button("0", "No Preset")
 	reset_none_preset()
 	if preset_options.selected == 0:
-		background_color_picker_button.color = none_preset.background_color
-		font_size_spin_box.value = none_preset.font_size
-		font_color_picker_button.color = none_preset.font_color
-		font_outline_spin_box.value = none_preset.outline_size
-		font_outline_color_picker_button.color = none_preset.outline_color
-		border_size_spin_box.value = none_preset.border_size
-		border_color_picker_button.color = none_preset.border_color
+		load_values_from_preset(none_preset)
+
+
+# Only use set_no_signal functions (user didn't change the values)
+func load_values_from_preset(preset: ElementPresetStyle) -> void:
+	background_color_picker_button.color = preset.background_color
+	border_size_spin_box.set_value_no_signal(preset.border_size)
+	border_color_picker_button.color = preset.border_color
+	border_blend_check_box.set_pressed_no_signal(preset.border_blend)
+	font_size_spin_box.set_value_no_signal(preset.font_size)
+	font_color_picker_button.color = preset.font_color
+	font_outline_spin_box.set_value_no_signal(preset.outline_size)
+	font_outline_color_picker_button.color = preset.outline_color
+	line_spacing_spin_box.set_value_no_signal(preset.line_spacing)
+	toggle_background_border_settings(false if preset.border_size == 0 else true)
+	toggle_font_outline_settings(false if preset.outline_size == 0 else true)
 
 
 func toggle_visible(toggled_on: bool):
@@ -87,23 +110,23 @@ func add_preset(p_name: String) -> void:
 
 
 func remove_preset(idx: int) -> void:
-	if idx > 0:
-		style_buttons.remove_button(idx)
-		if presets.size() > style_buttons.MAX_BUTTON_COUNT - 1:
-			style_buttons.add_button(str(style_buttons.MAX_BUTTON_COUNT - 1), presets[style_buttons.MAX_BUTTON_COUNT].name)
-			style_buttons.set_button_theme(style_buttons.MAX_BUTTON_COUNT - 1, presets[style_buttons.MAX_BUTTON_COUNT])
-		var removed_id: String = presets[idx].id
-		preset_options.remove_item(idx)
-		rewind_option_button(idx)
-		rewind_dict(idx+1)
-		change_preset(0)
-		preset_removed.emit(removed_id)
-		#check_key_equivalence()
+	if !presets.has(idx):
+		return
+	style_buttons.remove_button(idx)
+	var removed_id: String = presets[idx].id
+	preset_options.remove_item(idx)
+	rewind_option_button(idx)
+	rewind_dict(idx+1)
+	change_preset(0)
+	if presets.size() > style_buttons.MAX_BUTTON_COUNT - 1:
+		style_buttons.add_button(str(style_buttons.MAX_BUTTON_COUNT - 1), presets[style_buttons.MAX_BUTTON_COUNT].name)
+		style_buttons.set_button_theme(style_buttons.MAX_BUTTON_COUNT - 1, presets[style_buttons.MAX_BUTTON_COUNT])
+	preset_removed.emit(removed_id)
 
 
 func change_preset(idx: int) -> void:
 	if !presets.has(idx) and idx != 0:
-		printerr("Style preset index not found: %d" % idx)
+		push_error("Style preset index not found: %d" % idx)
 		return
 	preset_options.select(idx)
 	_on_preset_options_item_selected(idx)
@@ -170,15 +193,6 @@ func rewind_dict(index: int) -> void:
 	presets.erase(last_key)
 
 
-func check_key_equivalence() -> void:
-	print("\nCheck equivalence: ")
-	var i = 1
-	while i < preset_options.item_count:
-		preset_options.select(i)
-		print("Selected: %d Selected ID: %d Dictionary has ID as key: %s Preset ID: %d" % [preset_options.selected, preset_options.get_selected_id(), presets.has(i), presets[i].id if presets.has(i) else "No ID"])
-		i += 1
-
-
 func get_selected_preset() -> ElementPresetStyle:
 	if preset_options.selected > 0:
 		return presets[preset_options.selected]
@@ -204,25 +218,20 @@ func select_by_style_preset_id(idx: String) -> void:
 
 func toggle_none_preset_inputs(toggled_on: bool) -> void:
 	if preset_options.selected == 0:
-		background_color_picker_button.disabled = !toggled_on
-		font_color_picker_button.disabled = !toggled_on
-		font_outline_color_picker_button.disabled = !toggled_on
-		border_color_picker_button.disabled = !toggled_on
-		
-		font_size_spin_box.editable = toggled_on
-		font_outline_spin_box.editable = toggled_on
-		border_size_spin_box.editable = toggled_on
+		toggle_preset_inputs(toggled_on)
 
 
 func toggle_preset_inputs(toggled_on: bool) -> void:
 	background_color_picker_button.disabled = !toggled_on
+	border_color_picker_button.disabled = !toggled_on
+	border_blend_check_box.disabled = !toggled_on
 	font_color_picker_button.disabled = !toggled_on
 	font_outline_color_picker_button.disabled = !toggled_on
-	border_color_picker_button.disabled = !toggled_on
 	
+	border_size_spin_box.editable = toggled_on
 	font_size_spin_box.editable = toggled_on
 	font_outline_spin_box.editable = toggled_on
-	border_size_spin_box.editable = toggled_on
+	line_spacing_spin_box.editable = toggled_on
 
 
 func toggle_style_presets(toggled_on: bool) -> void:
@@ -270,6 +279,15 @@ func remove_theme_override(panel: Panel) -> void:
 		#panel.visibility_changed.disconnect(remove_theme_override)
 
 
+func toggle_background_border_settings(toggled_on: bool) -> void:
+	border_color_h_box.visible = toggled_on
+	border_blend_h_box.visible = toggled_on
+
+
+func toggle_font_outline_settings(toggled_on: bool) -> void:
+	outline_color_h_box.visible = toggled_on
+
+
 func _on_add_preset_pressed() -> void:
 	name_insert.visible = true
 	name_insert.edit()
@@ -280,38 +298,20 @@ func _on_remove_preset_pressed() -> void:
 	remove_preset(preset_options.selected)
 
 
-# Loads settings into fields depending on active preset style
 # If the fields get updated by this function and not by user input, don't trigger their signals
 func _on_preset_options_item_selected(index: int) -> void:
-	is_user_input = false
 	if index == 0:
-		background_color_picker_button.color = none_preset.background_color
-		font_size_spin_box.value = none_preset.font_size
-		font_color_picker_button.color = none_preset.font_color
-		font_outline_spin_box.value = none_preset.outline_size
-		font_outline_color_picker_button.color = none_preset.outline_color
-		border_size_spin_box.value = none_preset.border_size
-		border_color_picker_button.color = none_preset.border_color
-		current_preset_label.text = "Current Style: None"
-		preset_selected.emit()
+		load_values_from_preset(none_preset)
+		current_preset_label.text = ("Current Style: None")
 	elif index > 0:
-		background_color_picker_button.color = presets[index].background_color
-		font_size_spin_box.value = presets[index].font_size
-		font_color_picker_button.color = presets[index].font_color
-		font_outline_spin_box.value = presets[index].outline_size
-		font_outline_color_picker_button.color = presets[index].outline_color
-		border_size_spin_box.value = presets[index].border_size
-		border_color_picker_button.color = presets[index].border_color
+		load_values_from_preset(presets[index])
 		current_preset_label.text = ("Current Style: %s" % presets[index].name)
 		toggle_preset_inputs(true)
-		preset_selected.emit()
+	preset_selected.emit()
 	style_buttons.focus_button(index)
-	is_user_input = true
 
 
 func _on_background_color_picker_button_color_changed(color: Color) -> void:
-	if !is_user_input:
-		return
 	if preset_options.selected == 0:
 		none_preset.set_background_color(color)
 		#style_buttons.change_button_background_color(0, color)
@@ -322,9 +322,35 @@ func _on_background_color_picker_button_color_changed(color: Color) -> void:
 	preset_changed.emit()
 
 
+func _on_border_size_spin_box_value_changed(value: float) -> void:
+	if preset_options.selected == 0:
+		none_preset.set_border_size(int(value))
+	else:
+		presets[preset_options.selected].set_border_size(int(value))
+	toggle_background_border_settings(false if int(value) == 0 else true)
+	preset_changed.emit()
+
+
+func _on_border_color_picker_button_color_changed(color: Color) -> void:
+	if preset_options.selected == 0:
+		none_preset.set_border_color(color)
+		#style_buttons.change_button_border_color(0, color)
+	else:
+		presets[preset_options.selected].set_border_color(color)
+		style_buttons.change_button_border_color(preset_options.selected, color)
+	preset_changed.emit()
+
+
+func _on_border_blend_check_box_toggled(toggled_on: bool) -> void:
+	if preset_options.selected == 0:
+		none_preset.set_border_blend(toggled_on)
+	else:
+		presets[preset_options.selected].set_border_blend(toggled_on)
+		style_buttons.change_border_blend(preset_options.selected, toggled_on)
+	preset_changed.emit()
+
+
 func _on_font_size_spin_box_value_changed(value: float) -> void:
-	if !is_user_input:
-		return
 	if preset_options.selected == 0:
 		none_preset.set_font_size(int(value))
 		#style_buttons.change_button_font_size(0, int(value))
@@ -335,8 +361,6 @@ func _on_font_size_spin_box_value_changed(value: float) -> void:
 
 
 func _on_font_color_picker_button_color_changed(color: Color) -> void:
-	if !is_user_input:
-		return
 	if preset_options.selected == 0:
 		none_preset.set_font_color(color)
 		#style_buttons.change_button_font_color(0, color)
@@ -347,20 +371,17 @@ func _on_font_color_picker_button_color_changed(color: Color) -> void:
 
 
 func _on_font_outline_spin_box_value_changed(value: float) -> void:
-	if !is_user_input:
-		return
 	if preset_options.selected == 0:
 		none_preset.set_outline_size(int(value))
 		#style_buttons.change_button_font_outline_size(0, int(value))
 	else:
 		presets[preset_options.selected].set_outline_size(int(value))
 		style_buttons.change_button_font_outline_size(preset_options.selected, int(value))
+	toggle_font_outline_settings(false if int(value) == 0 else true)
 	preset_changed.emit()
 
 
 func _on_font_outline_color_picker_button_color_changed(color: Color) -> void:
-	if !is_user_input:
-		return
 	if preset_options.selected == 0:
 		none_preset.set_outline_color(color)
 		#style_buttons.change_button_font_outline_color(0, color)
@@ -370,25 +391,11 @@ func _on_font_outline_color_picker_button_color_changed(color: Color) -> void:
 	preset_changed.emit()
 
 
-func _on_border_size_spin_box_value_changed(value: float) -> void:
-	if !is_user_input:
-		return
+func _on_line_spacing_spin_box_value_changed(value: float) -> void:
 	if preset_options.selected == 0:
-		none_preset.set_border_size(int(value))
+		none_preset.set_line_spacing(int(value))
 	else:
-		presets[preset_options.selected].set_border_size(int(value))
-	preset_changed.emit()
-
-
-func _on_border_color_picker_button_color_changed(color: Color) -> void:
-	if !is_user_input:
-		return
-	if preset_options.selected == 0:
-		none_preset.set_border_color(color)
-		#style_buttons.change_button_border_color(0, color)
-	else:
-		presets[preset_options.selected].set_border_color(color)
-		style_buttons.change_button_border_color(preset_options.selected, color)
+		presets[preset_options.selected].set_line_spacing(int(value))
 	preset_changed.emit()
 
 
@@ -410,22 +417,42 @@ func _on_style_buttons_preset_style_button_pressed(idx: int) -> void:
 func _on_background_category_button_toggled(toggled_on: bool) -> void:
 	background_color_h_box.visible = toggled_on
 	border_size_h_box.visible = toggled_on
-	border_color_h_box.visible = toggled_on
-	resize_scroll_container = true
+	toggle_background_border_settings(false if int(border_size_spin_box.value) == 0 else toggled_on)
 
 
 func _on_font_category_button_toggled(toggled_on: bool) -> void:
 	font_size_h_box.visible = toggled_on
 	font_color_h_box.visible = toggled_on
+	line_spacing_h_box.visible = toggled_on
 	font_outline_h_box.visible = toggled_on
-	outline_color_h_box.visible = toggled_on
-	resize_scroll_container = true
+	toggle_font_outline_settings(false if int(font_outline_spin_box.value) == 0 else toggled_on)
+
+
+func _on_list_title_category_button_toggled(toggled_on: bool) -> void:
+	pass # Replace with function body.
+
+
+func _on_list_entry_category_button_toggled(toggled_on: bool) -> void:
+	pass # Replace with function body.
 
 
 # Need to change other container sizes after the size change occured
 func _on_v_box_container_resized() -> void:
-	if v_box_container:
-		scroll_container.size.y = clampf(v_box_container.size.y + 20.0, 0.0, MAX_HEIGHT_SETTINGS)
-		settings_panel.size.y = clampf(v_box_container.size.y + 20.0 + 4.0, 0.0, MAX_HEIGHT_SETTINGS + 4.0)
-		custom_minimum_size.y = clampf(v_box_container.size.y + 20.0 + 4.0 + 151.0, 350.0, MAX_HEIGHT_ALL)
-		resize_scroll_container = false
+	if !v_box_container:
+		return
+	#scroll_container.set_deferred("size:y", clampf(v_box_container.size.y + 20.0, 0.0, MAX_HEIGHT_SETTINGS))
+	#settings_panel.set_deferred("size:y", clampf(v_box_container.size.y + 20.0 + 4.0, 0.0, MAX_HEIGHT_SETTINGS + 4.0))
+	#set_deferred("custom_minimum_size:y", clampf(v_box_container.size.y + 20.0 + 4.0 + 151.0, 350.0, MAX_HEIGHT_ALL))
+	#scroll_container.size.y = clampf(v_box_container.size.y + 20.0, 0.0, MAX_HEIGHT_SETTINGS)
+	#settings_panel.size.y = clampf(v_box_container.size.y + 20.0 + 4.0, 0.0, MAX_HEIGHT_SETTINGS + 4.0)
+	#custom_minimum_size.y = clampf(v_box_container.size.y + 20.0 + 4.0 + 151.0, 350.0, MAX_HEIGHT_ALL)
+
+
+# Test for dictionary keys, use after add_preset() or remove_preset()
+#func check_key_equivalence() -> void:
+	#print("\nCheck equivalence: ")
+	#var i = 1
+	#while i < preset_options.item_count:
+		#preset_options.select(i)
+		#print("Selected: %d Selected ID: %d Dictionary has ID as key: %s Preset ID: %d" % [preset_options.selected, preset_options.get_selected_id(), presets.has(i), presets[i].id if presets.has(i) else "No ID"])
+		#i += 1
