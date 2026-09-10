@@ -409,6 +409,8 @@ func _on_style_buttons_preset_style_button_pressed(idx: int) -> void:
 
 func _on_background_category_button_toggled(toggled_on: bool) -> void:
 	background_color_h_box.visible = toggled_on
+	border_size_h_box.visible = toggled_on
+	border_color_h_box.visible = toggled_on
 	resize_scroll_container = true
 
 
@@ -417,12 +419,6 @@ func _on_font_category_button_toggled(toggled_on: bool) -> void:
 	font_color_h_box.visible = toggled_on
 	font_outline_h_box.visible = toggled_on
 	outline_color_h_box.visible = toggled_on
-	resize_scroll_container = true
-
-
-func _on_border_category_button_toggled(toggled_on: bool) -> void:
-	border_size_h_box.visible = toggled_on
-	border_color_h_box.visible = toggled_on
 	resize_scroll_container = true
 
 

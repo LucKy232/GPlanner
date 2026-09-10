@@ -4,6 +4,7 @@ class_name TweenShowHide extends Control
 @export var side: Enums.Side = Enums.Side.LEFT
 @export var animation_time: float = 1.0
 @export var transition_type: Tween.TransitionType
+@export var ease_type: Tween.EaseType = Tween.EASE_IN_OUT
 @export var default_hidden_behind: bool = false
 @export var offset_show: float = 0.0
 @export var offset_hide: float = 0.0
@@ -61,7 +62,7 @@ func show_control() -> void:
 	if tween and tween.is_running():
 		tween.stop()
 	tween = create_tween()
-	tween.set_parallel().set_ease(Tween.EASE_IN_OUT).set_trans(transition_type)
+	tween.set_parallel().set_ease(ease_type).set_trans(transition_type)
 	target.visible = true
 	tween.tween_property(target, transform_property, transform_amount_show + offset_show, animation_time)
 	if hide_target:
@@ -72,7 +73,7 @@ func hide_control() -> void:
 	if tween and tween.is_running():
 		tween.stop()
 	tween = create_tween()
-	tween.set_ease(Tween.EASE_IN_OUT).set_trans(transition_type)
+	tween.set_ease(ease_type).set_trans(transition_type)
 	tween.tween_property(target, transform_property, transform_amount_hide + offset_hide, animation_time)
 	if hide_target:
 		tween.tween_property(target, "modulate:a", 0.0, 0.2)

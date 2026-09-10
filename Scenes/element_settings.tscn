@@ -199,6 +199,46 @@ size_flags_horizontal = 10
 mouse_default_cursor_shape = 2
 theme = ExtResource("12_r7vyq")
 
+[node name="BorderSizeHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=546180535]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="BorderSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderSizeHBox" unique_id=924010134]
+layout_mode = 2
+theme = ExtResource("4_vcnja")
+text = "Border Size"
+label_settings = ExtResource("3_uc373")
+
+[node name="BorderSizeSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderSizeHBox" unique_id=988227872]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 10
+mouse_default_cursor_shape = 2
+theme = ExtResource("13_nvup7")
+max_value = 255.0
+value = 1.0
+rounded = true
+alignment = 2
+custom_arrow_step = 1.0
+
+[node name="BorderColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=146050177]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="BorderColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderColorHBox" unique_id=1583830612]
+layout_mode = 2
+theme = ExtResource("4_vcnja")
+text = "Border Color"
+label_settings = ExtResource("3_uc373")
+
+[node name="BorderColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderColorHBox" unique_id=1777643174]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+mouse_default_cursor_shape = 2
+theme = ExtResource("12_r7vyq")
+
 [node name="FontCategoryButton" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=2111005931]
 layout_mode = 2
 theme = ExtResource("15_rhtjl")
@@ -293,57 +333,6 @@ size_flags_horizontal = 10
 mouse_default_cursor_shape = 2
 theme = ExtResource("12_r7vyq")
 
-[node name="BorderCategoryButton" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=2071507040]
-layout_mode = 2
-theme = ExtResource("15_rhtjl")
-theme_override_styles/normal = ExtResource("6_nvup7")
-toggle_mode = true
-button_pressed = true
-text = "Border"
-
-[node name="div4" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=1704069206 instance=ExtResource("2_qtb5q")]
-layout_mode = 2
-
-[node name="BorderSizeHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=546180535]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="BorderSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderSizeHBox" unique_id=924010134]
-layout_mode = 2
-theme = ExtResource("4_vcnja")
-text = "Border Size"
-label_settings = ExtResource("3_uc373")
-
-[node name="BorderSizeSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderSizeHBox" unique_id=988227872]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 10
-mouse_default_cursor_shape = 2
-theme = ExtResource("13_nvup7")
-max_value = 255.0
-value = 1.0
-rounded = true
-alignment = 2
-custom_arrow_step = 1.0
-
-[node name="BorderColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=146050177]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="BorderColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderColorHBox" unique_id=1583830612]
-layout_mode = 2
-theme = ExtResource("4_vcnja")
-text = "Border Color"
-label_settings = ExtResource("3_uc373")
-
-[node name="BorderColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderColorHBox" unique_id=1777643174]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(48, 0)
-layout_mode = 2
-size_flags_horizontal = 10
-mouse_default_cursor_shape = 2
-theme = ExtResource("12_r7vyq")
-
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/SettingsPanel" unique_id=44170739]
 layout_mode = 2
 mouse_filter = 2
@@ -367,12 +356,11 @@ placeholder_text = "Name..."
 [connection signal="pressed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox/RemovePreset" to="." method="_on_remove_preset_pressed"]
 [connection signal="toggled" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BackgroundCategoryButton" to="." method="_on_background_category_button_toggled"]
 [connection signal="color_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BackgroundColorHBox/BackgroundColorPickerButton" to="." method="_on_background_color_picker_button_color_changed"]
+[connection signal="value_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderSizeHBox/BorderSizeSpinBox" to="." method="_on_border_size_spin_box_value_changed"]
+[connection signal="color_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderColorHBox/BorderColorPickerButton" to="." method="_on_border_color_picker_button_color_changed"]
 [connection signal="toggled" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontCategoryButton" to="." method="_on_font_category_button_toggled"]
 [connection signal="value_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontSizeHBox/FontSizeSpinBox" to="." method="_on_font_size_spin_box_value_changed"]
 [connection signal="color_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontColorHBox/FontColorPickerButton" to="." method="_on_font_color_picker_button_color_changed"]
 [connection signal="value_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontOutlineHBox/FontOutlineSpinBox" to="." method="_on_font_outline_spin_box_value_changed"]
 [connection signal="color_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/OutlineColorHBox/FontOutlineColorPickerButton" to="." method="_on_font_outline_color_picker_button_color_changed"]
-[connection signal="toggled" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderCategoryButton" to="." method="_on_border_category_button_toggled"]
-[connection signal="value_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderSizeHBox/BorderSizeSpinBox" to="." method="_on_border_size_spin_box_value_changed"]
-[connection signal="color_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderColorHBox/BorderColorPickerButton" to="." method="_on_border_color_picker_button_color_changed"]
 [connection signal="editing_toggled" from="VBoxContainer/SettingsPanel/MarginContainer/NameInsert" to="." method="_on_name_insert_editing_toggled"]
