@@ -17,12 +17,12 @@ class_name TextElement extends Panel
 @onready var priority_buttons_tween: TweenShowHide = %PriorityButtonsTween
 
 var individual_style: ElementPresetStyle
+var style_preset: ElementPresetStyle
 var priority_stylebox: StyleBoxFlat
 var preset_text_edit_theme: Theme
 var preset_background_stylebox: StyleBoxFlat
 var id: int
 var priority_id: Enums.Priority
-var style_preset_id: String = "none"
 var completed: bool = false
 var has_style_preset: bool = false
 var priority_enabled: bool = false
@@ -69,12 +69,6 @@ func end_input() -> void:
 	set_default_cursor_shape(Control.CURSOR_POINTING_HAND)
 
 
-func init_individual_style() -> void:
-	individual_style = ElementPresetStyle.new("individual")
-	individual_style.set_background_panel_style_box(background.get_theme_stylebox("panel").duplicate(), true)
-	individual_style.set_text_edit_theme(text_edit_theme.duplicate(), true)
-
-
 func toggle_completed() -> void:
 	completed = !completed
 	if completed:
@@ -91,17 +85,6 @@ func toggle_completed() -> void:
 			text_edit.theme = individual_style.text_edit_theme
 		priority_panel.visible = true
 		z_index = active_z_index
-
-
-func set_bg_color(color: Color) -> void:
-	individual_style.set_background_color(color)
-
-
-func get_bg_color() -> Color:
-	if has_style_preset:
-		return preset_background_stylebox.bg_color
-	else:
-		return individual_style.background_panel_style_box.bg_color
 
 
 func set_priority_id(_priority_id: Enums.Priority) -> void:
@@ -146,27 +129,6 @@ func set_size_fixed() -> void:
 	resize_timer.start()
 
 
-func change_style_preset(preset: ElementPresetStyle) -> void:
-	has_style_preset = true
-	style_preset_id = preset.id
-	preset_text_edit_theme = preset.text_edit_theme
-	preset_background_stylebox = preset.background_panel_style_box
-	if !completed:
-		text_edit.theme = preset.text_edit_theme
-		background.add_theme_stylebox_override("panel", preset.background_panel_style_box)
-
-
-func unassign_preset_style() -> void:
-	has_style_preset = false
-	style_preset_id = "none"
-	if completed:
-		background.add_theme_stylebox_override("panel", completed_stylebox)
-		text_edit.theme = text_edit_completed_theme
-	else:
-		background.add_theme_stylebox_override("panel", individual_style.background_panel_style_box)
-		text_edit.theme = individual_style.text_edit_theme
-
-
 func enter_text_edit() -> void:
 	text_edit.grab_focus()
 
@@ -194,7 +156,43 @@ func deselect() -> void:
 	priority_buttons_tween.toggle(false)
 
 
+func get_bg_color() -> Color:
+	if has_style_preset:
+		return preset_background_stylebox.bg_color
+	else:
+		return individual_style.background_panel_style_box.bg_color
+
+
+func init_individual_style() -> void:
+	individual_style = ElementPresetStyle.new("individual")
+	individual_style.set_background_panel_style_box(background.get_theme_stylebox("panel").duplicate(), true)
+	individual_style.set_text_edit_theme(text_edit_theme.duplicate(), true)
+	individual_style.id = "none"
+
+
+func change_style_preset(preset: ElementPresetStyle) -> void:
+	has_style_preset = true
+	style_preset = preset
+	preset_text_edit_theme = preset.text_edit_theme
+	preset_background_stylebox = preset.background_panel_style_box
+	if !completed:
+		text_edit.theme = preset.text_edit_theme
+		background.add_theme_stylebox_override("panel", preset.background_panel_style_box)
+
+
+func unassign_preset_style() -> void:
+	has_style_preset = false
+	style_preset = null
+	if completed:
+		background.add_theme_stylebox_override("panel", completed_stylebox)
+		text_edit.theme = text_edit_completed_theme
+	else:
+		background.add_theme_stylebox_override("panel", individual_style.background_panel_style_box)
+		text_edit.theme = individual_style.text_edit_theme
+
+
 func to_json() -> Dictionary:
+	var style_preset_id: String = "none" if !has_style_preset else style_preset.id
 	var dict: Dictionary = {
 		"id": id,
 		"priority_id": priority_id,

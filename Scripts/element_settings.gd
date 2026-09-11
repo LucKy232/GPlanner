@@ -16,8 +16,15 @@ class_name ElementSettings extends Control
 @onready var font_size_spin_box: SpinBox = %FontSizeSpinBox
 @onready var font_color_picker_button: ColorPickerButton = %FontColorPickerButton
 @onready var font_outline_spin_box: SpinBox = %FontOutlineSpinBox
-@onready var line_spacing_spin_box: SpinBox = %LineSpacingSpinBox
 @onready var font_outline_color_picker_button: ColorPickerButton = %FontOutlineColorPickerButton
+@onready var line_spacing_spin_box: SpinBox = %LineSpacingSpinBox
+@onready var title_font_size_spin_box: SpinBox = %TitleFontSizeSpinBox
+@onready var title_font_color_picker_button: ColorPickerButton = %TitleFontColorPickerButton
+@onready var title_font_outline_spin_box: SpinBox = %TitleFontOutlineSpinBox
+@onready var title_outline_color_picker_button: ColorPickerButton = %TitleOutlineColorPickerButton
+@onready var title_line_spacing_spin_box: SpinBox = %TitleLineSpacingSpinBox
+@onready var entry_separation_spin_box: SpinBox = %EntrySeparationSpinBox
+@onready var entry_div_line_color_picker_button: ColorPickerButton = %EntryDivLineColorPickerButton
 
 @onready var name_insert: LineEdit = %NameInsert
 @onready var scroll_container: ScrollContainer = %ScrollContainer
@@ -288,6 +295,10 @@ func toggle_font_outline_settings(toggled_on: bool) -> void:
 	outline_color_h_box.visible = toggled_on
 
 
+func toggle_title_font_outline_settings(toggled_on: bool) -> void:
+	title_outline_color_h_box.visible = toggled_on
+
+
 func _on_add_preset_pressed() -> void:
 	name_insert.visible = true
 	name_insert.edit()
@@ -399,6 +410,72 @@ func _on_line_spacing_spin_box_value_changed(value: float) -> void:
 	preset_changed.emit()
 
 
+func _on_title_font_size_spin_box_value_changed(value: float) -> void:
+	if preset_options.selected == 0:
+		none_preset.set_title_font_size(int(value))
+	else:
+		presets[preset_options.selected].set_title_font_size(int(value))
+	preset_changed.emit()
+
+
+func _on_title_font_color_picker_button_color_changed(color: Color) -> void:
+	if preset_options.selected == 0:
+		none_preset.set_title_font_color(color)
+	else:
+		presets[preset_options.selected].set_title_font_color(color)
+	preset_changed.emit()
+
+
+func _on_title_font_outline_spin_box_value_changed(value: float) -> void:
+	if preset_options.selected == 0:
+		none_preset.set_title_outline_size(int(value))
+	else:
+		presets[preset_options.selected].set_title_outline_size(int(value))
+	toggle_title_font_outline_settings(false if int(value) == 0 else true)
+	preset_changed.emit()
+
+
+func _on_title_outline_color_picker_button_color_changed(color: Color) -> void:
+	if preset_options.selected == 0:
+		none_preset.set_title_outline_color(color)
+	else:
+		presets[preset_options.selected].set_title_outline_color(color)
+	preset_changed.emit()
+
+
+func _on_title_line_spacing_spin_box_value_changed(value: float) -> void:
+	if preset_options.selected == 0:
+		none_preset.set_title_line_spacing(int(value))
+	else:
+		presets[preset_options.selected].set_title_line_spacing(int(value))
+	preset_changed.emit()
+
+
+func _on_entry_separation_spin_box_value_changed(value: float) -> void:
+	if preset_options.selected == 0:
+		none_preset.set_list_entry_separation(int(value))
+		pass
+	else:
+		presets[preset_options.selected].set_list_entry_separation(int(value))
+	preset_changed.emit()
+
+
+func _on_entry_div_line_check_box_toggled(toggled_on: bool) -> void:
+	if preset_options.selected == 0:
+		none_preset.set_list_div_toggled(toggled_on)
+	else:
+		presets[preset_options.selected].set_list_div_toggled(toggled_on)
+	preset_changed.emit()
+
+
+func _on_entry_div_line_color_picker_button_color_changed(color: Color) -> void:
+	if preset_options.selected == 0:
+		none_preset.set_list_div_color(color)
+	else:
+		presets[preset_options.selected].set_list_div_color(color)
+	preset_changed.emit()
+
+
 func _on_name_insert_editing_toggled(toggled_on: bool) -> void:
 	if !toggled_on:
 		if name_insert.text == "":
@@ -429,11 +506,16 @@ func _on_font_category_button_toggled(toggled_on: bool) -> void:
 
 
 func _on_list_title_category_button_toggled(toggled_on: bool) -> void:
-	pass # Replace with function body.
+	title_font_size_h_box.visible = toggled_on
+	title_font_color_h_box.visible = toggled_on
+	title_line_spacing_h_box.visible = toggled_on
+	title_font_outline_h_box.visible = toggled_on
+	toggle_title_font_outline_settings(false if int(title_font_outline_spin_box.value) == 0 else toggled_on)
 
 
 func _on_list_entry_category_button_toggled(toggled_on: bool) -> void:
-	pass # Replace with function body.
+	entry_separation_h_box.visible = toggled_on
+	entry_div_line_h_box.visible = toggled_on
 
 
 # Need to change other container sizes after the size change occured

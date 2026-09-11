@@ -31,8 +31,11 @@ var priority_enabled: bool = false
 var priority_tool_enabled: bool = true
 var show_title: bool = true
 var selected: bool = false
-
 var state: State
+var individual_style: ElementPresetStyle
+var style_preset: ElementPresetStyle
+var has_style_preset: bool = false
+
 enum State {
 	DEFAULT,
 	DRAGGING_CHILD_INSIDE,
@@ -52,6 +55,7 @@ signal copied_to_clipboard
 
 
 func _ready() -> void:
+	init_individual_style()
 	scroll_container.get_v_scroll_bar().mouse_filter = Control.MOUSE_FILTER_PASS
 	scroll_container.get_v_scroll_bar().scrolling.connect(_on_scroll)
 	top_left_margin = Vector2(margin_container.get_theme_constant("margin_left"), margin_container.get_theme_constant("margin_top"))
@@ -171,6 +175,34 @@ func _input(event: InputEvent) -> void:
 		ensure_entry_visible.call_deferred()
 		line_up_side_buttons.call_deferred()
 		list_changed.emit()
+
+
+# TODO set themes, connect signal
+func init_individual_style() -> void:
+	individual_style = ElementPresetStyle.new("individual")
+	individual_style.background_panel_style_box
+	individual_style.text_edit_theme
+	individual_style.title_text_edit_theme
+
+
+# TODO set themes to new preset, connect new signal
+func change_style_preset(preset: ElementPresetStyle) -> void:
+	if has_style_preset and style_preset:
+		style_preset.list_setting_changed.disconnect(_on_list_style_settings_changed)
+	has_style_preset = true
+	style_preset = preset
+	style_preset.background_panel_style_box
+	style_preset.text_edit_theme
+	style_preset.title_text_edit_theme
+
+
+# TODO set themes to individual
+func unassign_preset_style() -> void:
+	has_style_preset = false
+	style_preset = null
+	individual_style.background_panel_style_box
+	individual_style.text_edit_theme
+	individual_style.title_text_edit_theme
 
 
 func copy_list_text_to_clipboard() -> void:
@@ -442,6 +474,17 @@ func line_up_side_buttons() -> void:
 func set_active_entry_priority(p: Enums.Priority) -> void:
 	if entries.size() > last_edited_entry_id and last_edited_entry_id >= 0:
 		entry_priority_changed.emit(entries[last_edited_entry_id], p)
+
+
+# TODO
+func _on_list_style_settings_changed(setting: ElementPresetStyle.ListSettings, value) -> void:
+	match setting:
+		ElementPresetStyle.ListSettings.ENTRY_SEPARATION:
+			pass
+		ElementPresetStyle.ListSettings.DIV_ENABLED:
+			pass
+		ElementPresetStyle.ListSettings.DIV_COLOR:
+			pass
 
 
 func _on_scroll_hover(inside: bool) -> void:

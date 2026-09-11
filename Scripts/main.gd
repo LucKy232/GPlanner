@@ -345,7 +345,7 @@ func switch_main_canvas(id: int, force_load_same: bool = false) -> void:
 	drawing_manager.change_active_canvas_drawing_group(cc)
 	pan_indicator_camera.set_canvas_size(canvases[cc].size)
 	pan_indicator_camera.hide_animation()
-	canvases[cc].change_selected_preset_style("none")
+	canvases[cc].unassign_selected_preset_style()
 	element_settings.erase_everything()
 	element_settings.rebuild_options_and_dictionary_from_canvas(canvases[cc].style_presets)
 	drawing_tool_bar.change_settings(canvases[cc].drawing_settings)
@@ -1161,14 +1161,19 @@ func _on_element_settings_preset_selected() -> void:
 	var selected_control: Control = get_selected_control()
 	if element_settings.preset_options.selected > 0:
 		if canvases[cc].selected_preset_style != style_preset.id:
-			canvases[cc].change_selected_preset_style(style_preset.id)
-			if selected_control and selected_control is TextElement:
+			canvases[cc].change_selected_preset_style_by_id(style_preset.id)
+			if !selected_control:
+				return
+			if selected_control is TextElement:
 				canvases[cc].canvas_changed()
 				canvases[cc].update_connection_color(selected_control.id, style_preset.background_color)
 				selected_control.change_style_preset(style_preset)
+			if selected_control is ObjectList:
+				canvases[cc].canvas_changed()
+				selected_control.change_style_preset(style_preset)
 	elif element_settings.preset_options.selected == 0:
-		canvases[cc].change_selected_preset_style("none")
-		if selected_control and selected_control is TextElement:
+		canvases[cc].unassign_selected_preset_style()
+		if selected_control and (selected_control is TextElement or selected_control is ObjectList):
 			if selected_control.has_style_preset:
 				canvases[cc].canvas_changed()
 				selected_control.unassign_preset_style()
@@ -1182,7 +1187,7 @@ func _on_canvas_has_selected_control() -> void:
 	if !canvases.has(cc):
 		return
 	var selected_control: Control = get_selected_control()
-	if selected_control and selected_control is TextElement and canvases[cc].selected_preset_style == "none":
+	if selected_control and (selected_control is TextElement or selected_control is ObjectList) and canvases[cc].selected_preset_style == "none":
 		element_settings.none_preset = selected_control.individual_style
 	element_settings.select_by_style_preset_id(canvases[cc].selected_preset_style)
 	element_settings.toggle_none_preset_inputs(true)

@@ -209,7 +209,7 @@ func update_single_style_preset(style_preset: ElementPresetStyle) -> void:
 
 func update_connection_color_by_preset(preset_id: String) -> void:
 	for e_id in elements:
-		if elements[e_id].has_style_preset and elements[e_id].style_preset_id == preset_id and style_presets.has(preset_id):
+		if elements[e_id].has_style_preset and elements[e_id].style_preset.id == preset_id and style_presets.has(preset_id):
 			update_connection_color(e_id, style_presets[preset_id].background_color)
 
 
@@ -217,7 +217,7 @@ func remove_style_preset(style_id: String) -> void:
 	if style_presets.has(style_id):
 		style_presets.erase(style_id)
 		for elem_id in elements:
-			if elements[elem_id].style_preset_id == style_id:
+			if elements[elem_id].has_style_preset and elements[elem_id].style_preset.id == style_id:
 				elements[elem_id].unassign_preset_style()
 
 
@@ -420,7 +420,7 @@ func select_element(elem_id: int) -> void:
 		selection_viewer.visible = true
 		selection_viewer.size = selected_control.size
 		selection_viewer.position = selected_control.position
-		change_selected_preset_style(selected_control.style_preset_id)
+		change_preset_to_active_control(selected_control)
 		has_selected_control.emit()
 
 
@@ -435,7 +435,7 @@ func select_list(list_id: int) -> void:
 		selection_viewer.visible = true
 		selection_viewer.size = selected_control.size
 		selection_viewer.position = selected_control.position
-		#change_selected_preset_style(selected_control.style_preset_id)
+		change_preset_to_active_control(selected_control)
 		has_selected_control.emit()
 
 
@@ -455,13 +455,25 @@ func reset_adding_connection() -> void:
 
 
 # Called from select_element(), which also emits a signal after this telling main.gd to handle the style change
-# From main.gd:switch_main_canvas() with "none"
 # From main.gd:_on_element_settings_preset_selected() passes the selected preset from the style settings panel
-func change_selected_preset_style(style_id: String) -> void:
-	if style_id == "none" or !style_presets.has(style_id):
+func change_preset_to_active_control(control: Control) -> void:
+	if (control is TextElement) or (control is ObjectList):
+		if !control.has_style_preset:
+			selected_preset_style = "none"
+		elif selected_preset_style != control.style_preset.id:
+			selected_preset_style = control.style_preset.id
+
+
+# From main.gd:switch_main_canvas()
+func unassign_selected_preset_style() -> void:
+	selected_preset_style = "none"
+
+
+func change_selected_preset_style_by_id(preset_id: String) -> void:
+	if preset_id == "none" or !style_presets.has(preset_id):
 		selected_preset_style = "none"
-	elif selected_preset_style != style_id:
-		selected_preset_style = style_id
+	elif selected_preset_style != preset_id:
+		selected_preset_style = preset_id
 
 
 func update_connections(elem_id: int) -> void:
@@ -587,15 +599,11 @@ func rebuild_elements(json_elems: Dictionary) -> void:
 			elements[elem_id].change_size(Vector2(json_elems[i]["size.x"], json_elems[i]["size.y"]))
 			elements[elem_id].set_priority_id(priority_id as Enums.Priority)
 			elements[elem_id].set_priority_color(priority_colors[priority_id])
-			if json_elems[i].has("bgcolor.r"):	# Backwards compatibility
-				var c: Color = Color(json_elems[i]["bgcolor.r"], json_elems[i]["bgcolor.g"], json_elems[i]["bgcolor.b"], json_elems[i]["bgcolor.a"])
-				elements[elem_id].set_bg_color(c)
 			elements[elem_id].manual_resize = false
 			elements[elem_id].set_text(json_elems[i]["text"])
 			if completed:
 				elements[elem_id].toggle_completed()
 			if has_style and style_presets.has(style_id):
-				elements[elem_id].style_preset_id = style_id
 				elements[elem_id].change_style_preset(style_presets[style_id])
 			elif json_elems[i].has("individual_style") and !has_style:
 				elements[elem_id].individual_style.rebuild_from_json_dict(json_elems[i]["individual_style"])

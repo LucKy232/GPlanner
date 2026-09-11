@@ -429,9 +429,7 @@ size_flags_horizontal = 10
 size_flags_vertical = 4
 mouse_default_cursor_shape = 2
 theme = ExtResource("13_nvup7")
-min_value = 1.0
 max_value = 255.0
-value = 1.0
 rounded = true
 alignment = 2
 custom_arrow_step = 1.0
@@ -467,9 +465,7 @@ size_flags_horizontal = 10
 size_flags_vertical = 4
 mouse_default_cursor_shape = 2
 theme = ExtResource("13_nvup7")
-min_value = 1.0
-max_value = 255.0
-value = 1.0
+min_value = -100.0
 rounded = true
 alignment = 2
 custom_arrow_step = 1.0
@@ -503,9 +499,8 @@ size_flags_horizontal = 10
 size_flags_vertical = 4
 mouse_default_cursor_shape = 2
 theme = ExtResource("13_nvup7")
-min_value = 1.0
-max_value = 255.0
-value = 1.0
+min_value = -100.0
+value = 4.0
 rounded = true
 alignment = 2
 custom_arrow_step = 1.0
@@ -562,5 +557,13 @@ placeholder_text = "Name..."
 [connection signal="color_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/OutlineColorHBox/FontOutlineColorPickerButton" to="." method="_on_font_outline_color_picker_button_color_changed"]
 [connection signal="value_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/LineSpacingHBox/LineSpacingSpinBox" to="." method="_on_line_spacing_spin_box_value_changed"]
 [connection signal="toggled" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/ListTitleCategoryButton" to="." method="_on_list_title_category_button_toggled"]
+[connection signal="value_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/TitleFontSizeHBox/TitleFontSizeSpinBox" to="." method="_on_title_font_size_spin_box_value_changed"]
+[connection signal="color_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/TitleFontColorHBox/TitleFontColorPickerButton" to="." method="_on_title_font_color_picker_button_color_changed"]
+[connection signal="value_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/TitleFontOutlineHBox/TitleFontOutlineSpinBox" to="." method="_on_title_font_outline_spin_box_value_changed"]
+[connection signal="color_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/TitleOutlineColorHBox/TitleOutlineColorPickerButton" to="." method="_on_title_outline_color_picker_button_color_changed"]
+[connection signal="value_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/TitleLineSpacingHBox/TitleLineSpacingSpinBox" to="." method="_on_title_line_spacing_spin_box_value_changed"]
 [connection signal="toggled" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/ListEntryCategoryButton" to="." method="_on_list_entry_category_button_toggled"]
+[connection signal="value_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/EntrySeparationHBox/EntrySeparationSpinBox" to="." method="_on_entry_separation_spin_box_value_changed"]
+[connection signal="toggled" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/EntryDivLineHBox/EntryDivLineCheckBox" to="." method="_on_entry_div_line_check_box_toggled"]
+[connection signal="color_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/EntryDivLineHBox/EntryDivLineColorPickerButton" to="." method="_on_entry_div_line_color_picker_button_color_changed"]
 [connection signal="editing_toggled" from="VBoxContainer/SettingsPanel/MarginContainer/NameInsert" to="." method="_on_name_insert_editing_toggled"]

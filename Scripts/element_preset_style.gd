@@ -26,20 +26,21 @@ var list_div_color: Color = Color.DARK_GRAY
 ## THEMES (targets to get changed by the values)
 var background_panel_style_box: StyleBoxFlat
 var text_edit_theme: Theme
-var title_text_edit_theme: Theme
-var type: Type
+var title_text_edit_theme: Theme # TODO set
 
-
-enum Type {
-	TEXT_ELEMENT,
-	OBJECT_LIST,
-}
+signal list_setting_changed		# TODO connect signal to list when ref passed
 
 enum Category {
 	BACKGROUND,
 	TEXT_EDIT,
 	TITLE_TEXT_EDIT,
 	OBJECT_LIST_ENTRY,
+}
+
+enum ListSettings {
+	ENTRY_SEPARATION,
+	DIV_ENABLED,
+	DIV_COLOR,
 }
 
 
@@ -72,6 +73,10 @@ func set_default_values(category: Category) -> void:
 			title_text_edit_theme.set_color("font_color", "TextEdit", title_font_color)
 			title_text_edit_theme.set_color("font_outline_color", "TextEdit", title_outline_color)
 			title_text_edit_theme.set_constant("line_spacing", "TextEdit", title_line_spacing)
+		Category.OBJECT_LIST_ENTRY:
+			list_setting_changed.emit(ListSettings.ENTRY_SEPARATION, entry_separation)
+			list_setting_changed.emit(ListSettings.DIV_ENABLED, list_div_enabled)
+			list_setting_changed.emit(ListSettings.DIV_COLOR, list_div_color)
 
 
 func set_font_size(size: int) -> void:
@@ -149,17 +154,17 @@ func set_border_blend(toggled_on: bool) -> void:
 
 func set_list_entry_separation(value: int) -> void:
 	entry_separation = value
-	# TODO signal to list to change value, connect signal in list
+	list_setting_changed.emit(ListSettings.ENTRY_SEPARATION, value)
 
 
 func set_list_div_toggled(toggled_on: bool) -> void:
 	list_div_enabled = toggled_on
-	# TODO signal to list to change value, connect signal in list
+	list_setting_changed.emit(ListSettings.DIV_ENABLED, toggled_on)
 
 
 func set_list_div_color(c: Color) -> void:
 	list_div_color = c
-	# TODO signal to list to change value, connect signal in list
+	list_setting_changed.emit(ListSettings.DIV_COLOR, c)
 
 
 func set_background_panel_style_box(style_box_flat: StyleBoxFlat, use_theme_values: bool) -> void:
