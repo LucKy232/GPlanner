@@ -15,6 +15,11 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_562gy"]
 
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_87eqm"]
+
+[sub_resource type="Theme" id="Theme_fxdsv"]
+Panel/styles/panel = SubResource("StyleBoxLine_87eqm")
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y2cp5"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y2cp5"]
@@ -61,6 +66,7 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_562gy")
 script = ExtResource("1_87eqm")
 line_wrap_limit = 5.0
 completed_stylebox = ExtResource("2_fxdsv")
+empty_div_theme = SubResource("Theme_fxdsv")
 text_edit_theme = ExtResource("3_47qi8")
 text_edit_completed_theme = ExtResource("4_2a0l0")
 

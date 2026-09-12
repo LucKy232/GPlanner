@@ -4,6 +4,7 @@
 [ext_resource type="StyleBox" uid="uid://cdui0dgu3vdrr" path="res://Themes/element_background_style_box.tres" id="1_hw88c"]
 [ext_resource type="PackedScene" uid="uid://cytlmlx7kw2l2" path="res://Scenes/drag_and_resize_input.tscn" id="2_8suv5"]
 [ext_resource type="Theme" uid="uid://dao6v8vx8h5ip" path="res://Themes/text_edit_theme.tres" id="2_qbj2a"]
+[ext_resource type="Theme" uid="uid://oh7uiqgv8si2" path="res://Themes/div_theme.tres" id="3_e8exb"]
 [ext_resource type="PackedScene" uid="uid://brbbmqwm6hpj4" path="res://Scenes/div.tscn" id="3_qbj2a"]
 [ext_resource type="Theme" uid="uid://cc6sgahjvrord" path="res://Themes/Buttons/list_toggle_button.tres" id="4_4adj3"]
 [ext_resource type="Theme" uid="uid://u70boqrojq3j" path="res://Themes/placeholder_visual_panel.tres" id="5_01tnx"]
@@ -64,7 +65,8 @@ mouse_filter = 1
 mouse_default_cursor_shape = 2
 script = ExtResource("1_01tnx")
 list_text_entry_scene = "uid://q0me3hofnycc"
-div_scene = "uid://brbbmqwm6hpj4"
+default_text_edit_theme = ExtResource("2_qbj2a")
+default_div_theme = ExtResource("3_e8exb")
 
 [node name="DragAndResizeInput" parent="." unique_id=713311794 instance=ExtResource("2_8suv5")]
 layout_mode = 1
@@ -174,6 +176,7 @@ theme_override_constants/margin_bottom = 5
 
 [node name="EraseButton" type="Button" parent="EraseEntryMargin" unique_id=1456070977]
 unique_name_in_owner = true
+visible = false
 light_mask = 8
 visibility_layer = 8
 texture_filter = 2
@@ -225,6 +228,7 @@ offset_show = -6.0
 metadata/_custom_type_script = "uid://b0ioikc1dokvh"
 
 [node name="PriorityButtonsHBox" type="HBoxContainer" parent="PriorityButtonsMargin/PriorityButtonsTween" unique_id=1992208939]
+visible = false
 layout_mode = 0
 offset_right = 73.0
 offset_bottom = 22.0
@@ -263,6 +267,7 @@ tooltip_text = "None"
 theme_override_styles/normal = ExtResource("14_vupf7")
 
 [node name="Background" type="Panel" parent="." unique_id=972831401]
+unique_name_in_owner = true
 light_mask = 8
 visibility_layer = 8
 layout_mode = 1

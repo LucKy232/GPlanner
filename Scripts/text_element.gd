@@ -2,6 +2,7 @@ class_name TextElement extends Panel
 
 @export var line_wrap_limit: float = 4.0
 @export var completed_stylebox: StyleBoxFlat
+@export var empty_div_theme: Theme
 @export var text_edit_theme: Theme
 @export var text_edit_completed_theme: Theme
 @export var completed_z_index = 0
@@ -38,8 +39,6 @@ signal text_changed
 
 func _ready() -> void:
 	init_individual_style()
-	background.add_theme_stylebox_override("panel", individual_style.background_panel_style_box)
-	text_edit.theme = individual_style.text_edit_theme
 	priority_stylebox = priority_panel.get_theme_stylebox("panel").duplicate()
 	priority_panel.add_theme_stylebox_override("panel", priority_stylebox)
 	total_horizontal_margin = text_margin_container.get_theme_constant("margin_left") + text_margin_container.get_theme_constant("margin_right")
@@ -167,7 +166,11 @@ func init_individual_style() -> void:
 	individual_style = ElementPresetStyle.new("individual")
 	individual_style.set_background_panel_style_box(background.get_theme_stylebox("panel").duplicate(), true)
 	individual_style.set_text_edit_theme(text_edit_theme.duplicate(), true)
+	individual_style.set_title_text_edit_theme(individual_style.text_edit_theme, true)
+	individual_style.set_list_div_theme(empty_div_theme, true)
 	individual_style.id = "none"
+	background.add_theme_stylebox_override("panel", individual_style.background_panel_style_box)
+	text_edit.theme = individual_style.text_edit_theme
 
 
 func change_style_preset(preset: ElementPresetStyle) -> void:
@@ -178,6 +181,16 @@ func change_style_preset(preset: ElementPresetStyle) -> void:
 	if !completed:
 		text_edit.theme = preset.text_edit_theme
 		background.add_theme_stylebox_override("panel", preset.background_panel_style_box)
+
+
+func copy_style_preset(preset: ElementPresetStyle) -> void:
+	has_style_preset = false
+	individual_style.set_background_panel_style_box(preset.background_panel_style_box.duplicate(), true)
+	individual_style.set_text_edit_theme(preset.text_edit_theme.duplicate(), true)
+	individual_style.set_title_text_edit_theme(individual_style.text_edit_theme, true)
+	individual_style.set_list_div_theme(empty_div_theme, true)
+	background.add_theme_stylebox_override("panel", individual_style.background_panel_style_box)
+	text_edit.theme = individual_style.text_edit_theme
 
 
 func unassign_preset_style() -> void:

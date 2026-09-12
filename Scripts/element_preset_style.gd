@@ -8,7 +8,7 @@ var border_color: Color = Color.BLACK
 var border_size: int = 1
 var border_blend: bool = false
 ## TEXT EDIT
-var font_size: int = 16
+var font_size: int = 20
 var font_color: Color = Color.WHITE
 var outline_color: Color = Color.BLACK
 var outline_size: int = 0
@@ -26,9 +26,11 @@ var list_div_color: Color = Color.DARK_GRAY
 ## THEMES (targets to get changed by the values)
 var background_panel_style_box: StyleBoxFlat
 var text_edit_theme: Theme
-var title_text_edit_theme: Theme # TODO set
+var title_text_edit_theme: Theme
+var list_div_theme: Theme
 
-signal list_setting_changed		# TODO connect signal to list when ref passed
+signal list_setting_changed
+signal entry_font_size_changed
 
 enum Category {
 	BACKGROUND,
@@ -40,7 +42,6 @@ enum Category {
 enum ListSettings {
 	ENTRY_SEPARATION,
 	DIV_ENABLED,
-	DIV_COLOR,
 }
 
 
@@ -74,14 +75,17 @@ func set_default_values(category: Category) -> void:
 			title_text_edit_theme.set_color("font_outline_color", "TextEdit", title_outline_color)
 			title_text_edit_theme.set_constant("line_spacing", "TextEdit", title_line_spacing)
 		Category.OBJECT_LIST_ENTRY:
+			if !list_div_theme:
+				return
 			list_setting_changed.emit(ListSettings.ENTRY_SEPARATION, entry_separation)
 			list_setting_changed.emit(ListSettings.DIV_ENABLED, list_div_enabled)
-			list_setting_changed.emit(ListSettings.DIV_COLOR, list_div_color)
+			list_div_theme.get_stylebox("panel", "Panel").color = list_div_color
 
 
 func set_font_size(size: int) -> void:
 	font_size = size
 	text_edit_theme.set_font_size("font_size", "TextEdit", size)
+	entry_font_size_changed.emit()
 
 
 func set_font_color(color: Color) -> void:
@@ -164,7 +168,7 @@ func set_list_div_toggled(toggled_on: bool) -> void:
 
 func set_list_div_color(c: Color) -> void:
 	list_div_color = c
-	list_setting_changed.emit(ListSettings.DIV_COLOR, c)
+	list_div_theme.get_stylebox("panel", "Panel").color = c
 
 
 func set_background_panel_style_box(style_box_flat: StyleBoxFlat, use_theme_values: bool) -> void:
@@ -200,6 +204,14 @@ func set_title_text_edit_theme(theme: Theme, use_theme_values: bool) -> void:
 		title_line_spacing = theme.get_constant("line_spacing", "TextEdit")
 	else:
 		set_default_values(Category.TITLE_TEXT_EDIT)
+
+
+func set_list_div_theme(theme: Theme, use_theme_values: bool) -> void:
+	list_div_theme = theme
+	if use_theme_values:
+		list_div_color = theme.get_stylebox("panel", "Panel").color
+	else:
+		set_list_div_color(list_div_color)
 
 
 func rebuild_from_json_dict(dict: Dictionary) -> void:
@@ -241,6 +253,34 @@ func rebuild_from_json_dict(dict: Dictionary) -> void:
 	set_outline_color(oc)
 	if dict.has("line_spacing"):
 		set_line_spacing(dict["line_spacing"])
+	if dict.has("title_font_size"):
+		set_title_font_size(int(dict["title_font_size"]))
+	if dict.has("title_font_color.r"):
+		var tfc: Color = Color(dict["title_font_color.r"],
+							dict["title_font_color.g"],
+							dict["title_font_color.b"],
+							dict["title_font_color.a"])
+		set_title_font_color(tfc)
+	if dict.has("title_outline_size"):
+		set_title_outline_size(int(dict["title_outline_size"]))
+	if dict.has("title_outline_color.r"):
+		var toc: Color = Color(dict["title_outline_color.r"],
+							dict["title_outline_color.g"],
+							dict["title_outline_color.b"],
+							dict["title_outline_color.a"])
+		set_title_outline_color(toc)
+	if dict.has("title_line_spacing"):
+		set_line_spacing(int(dict["title_line_spacing"]))
+	if dict.has("list_entry_separation"):
+		set_list_entry_separation(int(dict["list_entry_separation"]))
+	if dict.has("list_div_enabled"):
+		set_list_div_toggled(bool(dict["list_div_enabled"]))
+	if dict.has("list_div_color.r"):
+		var ldc: Color = Color(dict["list_div_color.r"],
+							dict["list_div_color.g"],
+							dict["list_div_color.b"],
+							dict["list_div_color.a"])
+		set_list_div_color(ldc)
 
 
 func to_json() -> Dictionary:
@@ -268,4 +308,21 @@ func to_json() -> Dictionary:
 		"outline_color.b": outline_color.b,
 		"outline_color.a": outline_color.a,
 		"line_spacing": line_spacing,
+		"title_font_size": title_font_size,
+		"title_font_color.r": title_font_color.r,
+		"title_font_color.g": title_font_color.g,
+		"title_font_color.b": title_font_color.b,
+		"title_font_color.a": title_font_color.a,
+		"title_outline_size": title_outline_size,
+		"title_outline_color.r": title_outline_color.r,
+		"title_outline_color.g": title_outline_color.g,
+		"title_outline_color.b": title_outline_color.b,
+		"title_outline_color.a": title_outline_color.a,
+		"title_line_spacing": title_line_spacing,
+		"list_entry_separation": entry_separation,
+		"list_div_enabled": list_div_enabled,
+		"list_div_color.r": list_div_color.r,
+		"list_div_color.g": list_div_color.g,
+		"list_div_color.b": list_div_color.b,
+		"list_div_color.a": list_div_color.a,
 	}

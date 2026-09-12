@@ -95,6 +95,12 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 func _drop_data(at_position: Vector2, data: Variant) -> void:
 	if data is ListTextEntry:
 		var new_elem_id: int = add_text_element(at_position)
+		var list_id = data.list_id
+		if lists.has(list_id):
+			if lists[list_id].has_style_preset:
+				elements[new_elem_id].change_style_preset(lists[list_id].style_preset)
+			else:
+				elements[new_elem_id].copy_style_preset(lists[list_id].individual_style)
 		elements[new_elem_id].set_text(data.get_text())
 		elements[new_elem_id].change_size(data.size)
 		elements[new_elem_id].set_priority_id(data.priority_id)
@@ -616,6 +622,13 @@ func rebuild_lists(json_lists: Dictionary) -> void:
 		var list_id = int(i)
 		add_object_list(Vector2.ZERO, list_id)
 		lists[list_id].rebuild_from_dict(json_lists[i], priority_colors)
+		if json_lists[i].has("has_style_preset") and json_lists[i].has("style_preset_id"):
+			var has_style: bool = bool(json_lists[i]["has_style_preset"])
+			var style_id: String = str(json_lists[i]["style_preset_id"])
+			if has_style and style_presets.has(style_id):
+				lists[list_id].change_style_preset(style_presets[style_id])
+			elif !has_style and json_lists[i].has("individual_style"):
+				lists[list_id].individual_style.rebuild_from_json_dict(json_lists[i]["individual_style"])
 	is_user_input = true
 
 

@@ -1,7 +1,8 @@
 class_name ObjectList extends Control
 
 @export_file("*.tscn") var list_text_entry_scene
-@export_file("*.tscn") var div_scene
+@export var default_text_edit_theme: Theme
+@export var default_div_theme: Theme
 @onready var object_v_box: VBoxContainer = %ObjectVBox
 @onready var scroll_container: ScrollContainer = %ScrollContainer
 @onready var mouse_hover: Area2D = $MouseHover
@@ -19,6 +20,7 @@ class_name ObjectList extends Control
 @onready var erase_entry_tween: TweenShowHide = %EraseEntryTween
 @onready var priority_buttons_tween: TweenShowHide = %PriorityButtonsTween
 @onready var priority_buttons_margin: MarginContainer = %PriorityButtonsMargin
+@onready var background: Panel = %Background
 
 var id: int = -1
 var entries: Array[ListTextEntry]
@@ -72,7 +74,7 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 		elif !dragger.is_dragging_outside and !entries.has(data):
 			dragger.start_drag_from_outside(entries, drop_visual, get_new_drag_position_data())
 			change_state(State.DRAGGING_FROM_OUTSIDE)
-			drop_visual.size = Vector2(object_v_box.size.x, get_font_size() + 4.0)
+			drop_visual.size = Vector2(object_v_box.size.x, float(get_font_size() + 4))
 			return true
 		# Continue drag from outside
 		elif dragger.is_dragging_outside:
@@ -88,7 +90,7 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 		if !dragger.is_dragging_outside and mouse_inside:
 			dragger.start_drag_from_outside(entries, drop_visual, get_new_drag_position_data())
 			change_state(State.DRAGGING_FROM_OUTSIDE)
-			drop_visual.size = Vector2(object_v_box.size.x, get_font_size() + 4.0)
+			drop_visual.size = Vector2(object_v_box.size.x, float(get_font_size() + 4))
 			return true
 		# Continue drag from outside
 		elif dragger.is_dragging_outside:
@@ -106,6 +108,9 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	if data is ListTextEntry:
 		data.remove_from_list.emit()
 		data.reparent(object_v_box, false)
+		data.list_id = id
+		data.change_text_edit_theme(style_preset.text_edit_theme if has_style_preset else individual_style.text_edit_theme)
+		data.change_div_theme(style_preset.list_div_theme if has_style_preset else individual_style.list_div_theme)
 		connect_list_text_entry(data)
 		entries.append(data)
 		data.id = dragger.current
@@ -118,6 +123,9 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	if data is TextElement:
 		add_text_entry(false)
 		entries[-1].set_text(data.get_text())
+		entries[-1].list_id = id
+		entries[-1].change_text_edit_theme(style_preset.text_edit_theme if has_style_preset else individual_style.text_edit_theme)
+		entries[-1].change_div_theme(style_preset.list_div_theme if has_style_preset else individual_style.list_div_theme)
 		entry_priority_changed.emit(entries[-1], data.priority_id)
 		object_v_box.move_child(entries[-1], dragger.current)
 		sort_entries(entries.size() - 1, dragger.current)
@@ -177,34 +185,6 @@ func _input(event: InputEvent) -> void:
 		list_changed.emit()
 
 
-# TODO set themes, connect signal
-func init_individual_style() -> void:
-	individual_style = ElementPresetStyle.new("individual")
-	individual_style.background_panel_style_box
-	individual_style.text_edit_theme
-	individual_style.title_text_edit_theme
-
-
-# TODO set themes to new preset, connect new signal
-func change_style_preset(preset: ElementPresetStyle) -> void:
-	if has_style_preset and style_preset:
-		style_preset.list_setting_changed.disconnect(_on_list_style_settings_changed)
-	has_style_preset = true
-	style_preset = preset
-	style_preset.background_panel_style_box
-	style_preset.text_edit_theme
-	style_preset.title_text_edit_theme
-
-
-# TODO set themes to individual
-func unassign_preset_style() -> void:
-	has_style_preset = false
-	style_preset = null
-	individual_style.background_panel_style_box
-	individual_style.text_edit_theme
-	individual_style.title_text_edit_theme
-
-
 func copy_list_text_to_clipboard() -> void:
 	var clip_text: String = (list_title.text)
 	for entry in entries:
@@ -252,11 +232,11 @@ func deselect() -> void:
 	selected = false
 
 
-# TODO will be replaced by style settings
-func get_font_size() -> float:
-	if entries.size() > 0:
-		return entries[0].get_font_size()
-	return 20.0
+func get_font_size() -> int:
+	if has_style_preset:
+		return style_preset.font_size
+	else:
+		return individual_style.font_size
 
 
 func get_new_drag_position_data() -> ListDragHelper.DragPositionData:
@@ -325,9 +305,13 @@ func add_text_entry(is_user_input: bool) -> void:
 	var new_list_text_entry: ListTextEntry = load(list_text_entry_scene).instantiate()
 	object_v_box.add_child(new_list_text_entry)
 	new_list_text_entry.id = entries.size()
+	new_list_text_entry.list_id = id
 	new_list_text_entry.name = "ListTextEntry"
+	new_list_text_entry.change_text_edit_theme(style_preset.text_edit_theme if has_style_preset else individual_style.text_edit_theme)
+	new_list_text_entry.change_div_theme(style_preset.list_div_theme if has_style_preset else individual_style.list_div_theme)
 	entries.append(new_list_text_entry)
 	connect_list_text_entry(new_list_text_entry)
+	toggle_entry_divs(style_preset.list_div_enabled if has_style_preset else individual_style.list_div_enabled)
 	if is_user_input:
 		list_changed.emit()
 
@@ -352,6 +336,7 @@ func remove_text_entry(entry: ListTextEntry, delete_from_memory: bool) -> void:
 	if last_edited_entry_id > entries.size() - 1:
 		last_edited_entry_id = entries.size() - 1
 	reset_entry_ids()
+	toggle_entry_divs(style_preset.list_div_enabled if has_style_preset else individual_style.list_div_enabled)
 	list_changed.emit()
 
 
@@ -431,6 +416,7 @@ func rebuild_from_dict(dict: Dictionary, priority_colors: Dictionary[Enums.Prior
 
 # Map order to entry
 func to_json() -> Dictionary:
+	var style_preset_id: String = "none" if !has_style_preset else style_preset.id
 	var dict: Dictionary
 	dict["entries"] = {}
 	for entry in entries:
@@ -443,6 +429,10 @@ func to_json() -> Dictionary:
 	dict["size.y"] = size.y
 	dict["title"] = list_title.text
 	dict["show_title"] = show_title
+	dict["has_style_preset"] = has_style_preset
+	dict["style_preset_id"] = style_preset_id
+	if !has_style_preset:
+		dict["individual_style"] = individual_style.to_json()
 	return dict
 
 
@@ -453,22 +443,23 @@ func ensure_entry_visible() -> void:
 
 
 func line_up_side_buttons() -> void:
-	if is_editing_text():
-		var new_y_position: float = (entries[last_edited_entry_id].position.y
-									+ scroll_container.position.y
-									- scroll_container.scroll_vertical)
-		erase_entry_margin.position.y = new_y_position
-		priority_buttons_margin.position.y = new_y_position
-		if new_y_position < scroll_container.position.y - 40.0:
-			erase_entry_margin.visible = false
-			priority_buttons_margin.visible = false
-		elif new_y_position > scroll_container.size.y:
-			erase_entry_margin.visible = false
-			priority_buttons_margin.visible = false
-		else:
-			erase_entry_margin.visible = true
-			if priority_enabled and priority_tool_enabled:
-				priority_buttons_margin.visible = true
+	if !is_editing_text():
+		return
+	var new_y_position: float = (entries[last_edited_entry_id].position.y
+								+ scroll_container.position.y
+								- scroll_container.scroll_vertical)
+	erase_entry_margin.position.y = new_y_position
+	priority_buttons_margin.position.y = new_y_position
+	if new_y_position < scroll_container.position.y - 40.0:
+		erase_entry_margin.visible = false
+		priority_buttons_margin.visible = false
+	elif new_y_position > scroll_container.size.y + entries[last_edited_entry_id].size.y:
+		erase_entry_margin.visible = false
+		priority_buttons_margin.visible = false
+	else:
+		erase_entry_margin.visible = true
+		if priority_enabled and priority_tool_enabled:
+			priority_buttons_margin.visible = true
 
 
 func set_active_entry_priority(p: Enums.Priority) -> void:
@@ -476,15 +467,75 @@ func set_active_entry_priority(p: Enums.Priority) -> void:
 		entry_priority_changed.emit(entries[last_edited_entry_id], p)
 
 
-# TODO
-func _on_list_style_settings_changed(setting: ElementPresetStyle.ListSettings, value) -> void:
+#region PresetStyles
+func init_individual_style() -> void:
+	individual_style = ElementPresetStyle.new("individual")
+	individual_style.set_background_panel_style_box(background.get_theme_stylebox("panel", "Panel").duplicate(), true)
+	individual_style.set_text_edit_theme(default_text_edit_theme.duplicate(), true)
+	individual_style.set_title_text_edit_theme(default_text_edit_theme.duplicate(), true)
+	individual_style.set_list_div_theme(default_div_theme.duplicate(true), true)
+	individual_style.list_setting_changed.connect(_on_style_settings_changed)
+	individual_style.entry_font_size_changed.connect(_on_style_font_size_changed)
+	individual_style.entry_separation = object_v_box.get_theme_constant("separation")
+	_apply_style_preset(individual_style)
+
+
+func _apply_style_preset(preset: ElementPresetStyle) -> void:
+	background.add_theme_stylebox_override("panel", preset.background_panel_style_box)
+	list_title.theme = preset.title_text_edit_theme
+	for e in entries:
+		e.change_text_edit_theme(preset.text_edit_theme)
+	for e in entries:
+		e.change_div_theme(preset.list_div_theme)
+	toggle_entry_divs(preset.list_div_enabled)
+
+
+func change_style_preset(preset: ElementPresetStyle) -> void:
+	if has_style_preset and style_preset:
+		if style_preset == preset:		# Stop if changing to the same preset
+			return
+		style_preset.list_setting_changed.disconnect(_on_style_settings_changed)
+		style_preset.entry_font_size_changed.disconnect(_on_style_font_size_changed)
+	has_style_preset = true
+	style_preset = preset
+	style_preset.list_setting_changed.connect(_on_style_settings_changed)
+	style_preset.entry_font_size_changed.connect(_on_style_font_size_changed)
+	_apply_style_preset(style_preset)
+
+
+func unassign_preset_style() -> void:
+	has_style_preset = false
+	style_preset = null
+	_apply_style_preset(individual_style)
+
+
+func toggle_entry_divs(toggled_on: bool) -> void:
+	if entries.size() == 0:
+		return
+	for idx in range(0, entries.size() - 1):
+		entries[idx].toggle_div(toggled_on)
+	entries[-1].toggle_div(false)
+
+
+func get_bg_color() -> Color:
+	if has_style_preset:
+		return style_preset.background_color
+	else:
+		return individual_style.background_panel_style_box.bg_color
+
+
+func _on_style_settings_changed(setting: ElementPresetStyle.ListSettings, value) -> void:
 	match setting:
 		ElementPresetStyle.ListSettings.ENTRY_SEPARATION:
-			pass
+			object_v_box.add_theme_constant_override("separation", int(value))
 		ElementPresetStyle.ListSettings.DIV_ENABLED:
-			pass
-		ElementPresetStyle.ListSettings.DIV_COLOR:
-			pass
+			toggle_entry_divs(bool(value))
+
+
+func _on_style_font_size_changed() -> void:
+	for e in entries:
+		e.reset_item_sizes.call_deferred()
+#endregion
 
 
 func _on_scroll_hover(inside: bool) -> void:

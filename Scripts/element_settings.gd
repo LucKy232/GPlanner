@@ -24,6 +24,7 @@ class_name ElementSettings extends Control
 @onready var title_outline_color_picker_button: ColorPickerButton = %TitleOutlineColorPickerButton
 @onready var title_line_spacing_spin_box: SpinBox = %TitleLineSpacingSpinBox
 @onready var entry_separation_spin_box: SpinBox = %EntrySeparationSpinBox
+@onready var entry_div_line_check_box: CheckBox = %EntryDivLineCheckBox
 @onready var entry_div_line_color_picker_button: ColorPickerButton = %EntryDivLineColorPickerButton
 
 @onready var name_insert: LineEdit = %NameInsert
@@ -92,8 +93,17 @@ func load_values_from_preset(preset: ElementPresetStyle) -> void:
 	font_outline_spin_box.set_value_no_signal(preset.outline_size)
 	font_outline_color_picker_button.color = preset.outline_color
 	line_spacing_spin_box.set_value_no_signal(preset.line_spacing)
+	title_font_size_spin_box.set_value_no_signal(preset.title_font_size)
+	title_font_color_picker_button.color = preset.title_font_color
+	title_font_outline_spin_box.set_value_no_signal(preset.title_outline_size)
+	title_outline_color_picker_button.color = preset.title_outline_color
+	title_line_spacing_spin_box.set_value_no_signal(preset.title_line_spacing)
+	entry_separation_spin_box.set_value_no_signal(preset.entry_separation)
+	entry_div_line_check_box.set_pressed_no_signal(preset.list_div_enabled)
+	entry_div_line_color_picker_button.color = preset.list_div_color
 	toggle_background_border_settings(false if preset.border_size == 0 else true)
 	toggle_font_outline_settings(false if preset.outline_size == 0 else true)
+	toggle_title_font_outline_settings(false if preset.title_outline_size == 0 else true)
 
 
 func toggle_visible(toggled_on: bool):
@@ -142,8 +152,10 @@ func change_preset(idx: int) -> void:
 
 func get_new_preset() -> ElementPresetStyle:
 	var new_preset: ElementPresetStyle = ElementPresetStyle.new("%s %d" % [Time.get_datetime_string_from_system(), Time.get_ticks_msec()])
-	new_preset.background_panel_style_box = default_background_style_box.duplicate()
-	new_preset.text_edit_theme = default_text_edit_theme.duplicate()
+	new_preset.set_background_panel_style_box(default_background_style_box.duplicate(), false)
+	new_preset.set_text_edit_theme(default_text_edit_theme.duplicate(), false)
+	new_preset.set_title_text_edit_theme(default_text_edit_theme.duplicate(), false)
+	new_preset.set_list_div_theme(div_theme.duplicate(true), false)
 	return new_preset
 
 
@@ -297,6 +309,22 @@ func toggle_font_outline_settings(toggled_on: bool) -> void:
 
 func toggle_title_font_outline_settings(toggled_on: bool) -> void:
 	title_outline_color_h_box.visible = toggled_on
+
+
+func toggle_list_settings(toggled_on) -> void:
+	list_title_category_button.set_pressed_no_signal(toggled_on)
+	list_title_category_button.visible = toggled_on
+	list_title_category_div.visible = toggled_on
+	title_font_size_h_box.visible = toggled_on
+	title_font_color_h_box.visible = toggled_on
+	title_font_outline_h_box.visible = toggled_on
+	title_outline_color_h_box.visible = toggled_on
+	title_line_spacing_h_box.visible = toggled_on
+	list_entry_category_button.set_pressed_no_signal(toggled_on)
+	list_entry_category_button.visible = toggled_on
+	list_entry_category_div.visible = toggled_on
+	entry_separation_h_box.visible = toggled_on
+	entry_div_line_h_box.visible = toggled_on
 
 
 func _on_add_preset_pressed() -> void:

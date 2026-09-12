@@ -1187,8 +1187,11 @@ func _on_canvas_has_selected_control() -> void:
 	if !canvases.has(cc):
 		return
 	var selected_control: Control = get_selected_control()
-	if selected_control and (selected_control is TextElement or selected_control is ObjectList) and canvases[cc].selected_preset_style == "none":
+	if !selected_control:
+		return
+	if (selected_control is TextElement or selected_control is ObjectList) and canvases[cc].selected_preset_style == "none":
 		element_settings.none_preset = selected_control.individual_style
+		element_settings.toggle_list_settings(selected_control is ObjectList)
 	element_settings.select_by_style_preset_id(canvases[cc].selected_preset_style)
 	element_settings.toggle_none_preset_inputs(true)
 
