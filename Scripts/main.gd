@@ -6,7 +6,7 @@ extends Control
 @onready var drawing_tool_box: ItemList = %DrawingToolBox
 @onready var drawing_tool_bar: DrawingToolBar = %DrawingToolBar
 @onready var settings_drawer: SettingsDrawer = %SettingsDrawer
-@onready var element_settings: ElementSettings = %ElementSettings
+@onready var style_settings: StyleSettings = %StyleSettings
 @onready var zoom_indicator: ZoomIndicator = %ZoomIndicator
 @onready var pan_indicator_camera: PanIndicatorCamera = %PanIndicatorCamera
 @onready var status_bar: StatusBar = %StatusBar
@@ -256,6 +256,14 @@ func connect_signals() -> void:
 	drawing_tool_bar.brush_color_changed.connect(change_drawing_tool_cursor)
 	drawing_tool_bar.swatch_added.connect(_on_drawing_tool_bar_swatch_added)
 	drawing_tool_bar.swatch_removed.connect(_on_drawing_tooL_bar_swatch_removed)
+	
+	style_settings.is_editing_text.connect(_on_style_settings_is_editing_text)
+	style_settings.preset_added.connect(_on_style_settings_preset_added)
+	style_settings.preset_changed.connect(_on_style_settings_preset_changed)
+	style_settings.preset_color_changed.connect(_on_style_settings_preset_color_changed)
+	style_settings.preset_removed.connect(_on_style_settings_preset_removed)
+	style_settings.preset_selected.connect(_on_style_settings_preset_selected)
+	style_settings.stopped_editing_text.connect(_on_style_settings_stopped_editing_text)
 
 
 func create_tool_keybinds() -> void:
@@ -342,8 +350,8 @@ func switch_main_canvas(id: int, force_load_same: bool = false) -> void:
 	pan_indicator_camera.set_canvas_size(canvases[cc].size)
 	pan_indicator_camera.hide_animation()
 	canvases[cc].unassign_selected_preset_style()
-	element_settings.erase_everything()
-	element_settings.rebuild_options_and_dictionary_from_canvas(canvases[cc].style_presets)
+	style_settings.erase_everything()
+	style_settings.rebuild_options_and_dictionary_from_canvas(canvases[cc].style_presets)
 	drawing_tool_bar.change_settings(canvases[cc].drawing_settings)
 	drawing_tool_box.select(canvases[cc].drawing_settings.selected_tool)
 	drawing_tool_bar.delete_color_picker_swatches()
@@ -384,7 +392,7 @@ func new_file(add_canvas: bool, show_status: bool = true) -> int:
 		new_canvas.name = "PlanningCanvas"
 		drawing_manager.move_to_front()
 		margin_container.move_to_front()
-		element_settings.move_to_front()
+		style_settings.move_to_front()
 		settings_drawer.move_to_front()
 		bottom_bar.move_to_front()
 		new_canvas.id = max_canvas_id
@@ -526,9 +534,9 @@ func load_file(path: String, app_startup: bool = false) -> void:
 		canvases[cc].file_name_short = path.get_file().get_slice(".", 0)	# For tab name or referring to the file in general
 		canvases[cc].rebuild_canvas_state(state)
 		if data.has("StylePresets"):
-			element_settings.erase_everything()
-			element_settings.rebuild_options_and_dictionary_from_json(data["StylePresets"])
-			canvases[cc].update_all_style_presets(element_settings.presets)
+			style_settings.erase_everything()
+			style_settings.rebuild_options_and_dictionary_from_json(data["StylePresets"])
+			canvases[cc].update_all_style_presets(style_settings.presets)
 		
 	drawing_manager.clear_canvas_drawing_group(cc)
 	if data.has("Elements"):
@@ -848,7 +856,7 @@ func change_accent_color(c: Color) -> void:
 		return
 	if canvases[cc].settings.app_mode == Enums.AppMode.PLANNING:
 		tool_box.theme.get_stylebox("panel", "ItemList").border_color = c
-		element_settings.set_accent_color(c)
+		style_settings.set_accent_color(c)
 	if canvases[cc].settings.app_mode == Enums.AppMode.DRAWING:
 		drawing_tool_box.theme.get_stylebox("panel", "ItemList").border_color = c
 		drawing_tool_bar.set_accent_color(c)
@@ -876,9 +884,9 @@ func _on_tool_box_item_selected(index: Enums.Tool) -> void:
 	if index != Enums.Tool.ADD_CONNECTION:
 		canvases[cc].reset_adding_connection()
 	if index == Enums.Tool.ELEMENT_STYLE_SETTINGS:
-		element_settings.toggle_visible(true)
-	elif index != Enums.Tool.ELEMENT_STYLE_SETTINGS and element_settings.is_panel_visible():
-		element_settings.toggle_visible(false)
+		style_settings.toggle_visible(true)
+	elif index != Enums.Tool.ELEMENT_STYLE_SETTINGS and style_settings.is_panel_visible():
+		style_settings.toggle_visible(false)
 
 
 func _on_new_button_pressed() -> void:
@@ -1113,46 +1121,46 @@ func _on_canvas_has_changed(id: int) -> void:
 		set_tab_name_and_title_from_canvas(id)
 
 
-func _on_element_settings_preset_added() -> void:
+func _on_style_settings_preset_added() -> void:
 	if !canvases.has(cc):
 		return
-	var style_preset: ElementPresetStyle = element_settings.get_selected_preset()
+	var style_preset: PresetStyle = style_settings.get_selected_preset()
 	canvases[cc].update_single_style_preset(style_preset)
 
 
-func _on_element_settings_preset_changed() -> void:
+func _on_style_settings_preset_changed() -> void:
 	if !canvases.has(cc):
 		return
 	canvases[cc].canvas_changed()
 
 
-func _on_element_settings_preset_color_changed() -> void:
+func _on_style_settings_preset_color_changed() -> void:
 	if !canvases.has(cc):
 		return
-	var style_preset: ElementPresetStyle = element_settings.get_selected_preset()
+	var style_preset: PresetStyle = style_settings.get_selected_preset()
 	var selected_control: Control = get_selected_control()
 	if style_preset.id == "individual" and selected_control is TextElement:
 		if selected_control:
 			canvases[cc].update_connection_color(selected_control.id, style_preset.background_color)
 		else:
-			push_error("Null element %d in canvas %d at main.gd:func _on_element_settings_preset_color_changed" % [selected_control.id, cc])
+			push_error("Null element %d in canvas %d at main.gd:func _on_style_settings_preset_color_changed" % [selected_control.id, cc])
 	else:
 		canvases[cc].update_connection_color_by_preset(style_preset.id)
 
 
-func _on_element_settings_preset_removed(preset_id: String) -> void:
+func _on_style_settings_preset_removed(preset_id: String) -> void:
 	if !canvases.has(cc):
 		return
 	canvases[cc].canvas_changed()
 	canvases[cc].remove_style_preset(preset_id)
 
 
-func _on_element_settings_preset_selected() -> void:
+func _on_style_settings_preset_selected() -> void:
 	if !canvases.has(cc):
 		return
-	var style_preset: ElementPresetStyle = element_settings.get_selected_preset()
+	var style_preset: PresetStyle = style_settings.get_selected_preset()
 	var selected_control: Control = get_selected_control()
-	if element_settings.preset_options.selected > 0:
+	if style_settings.preset_options.selected > 0:
 		if canvases[cc].selected_preset_style != style_preset.id:
 			canvases[cc].change_selected_preset_style_by_id(style_preset.id)
 			if !selected_control:
@@ -1164,16 +1172,16 @@ func _on_element_settings_preset_selected() -> void:
 			if selected_control is ObjectList:
 				canvases[cc].canvas_changed()
 				selected_control.change_style_preset(style_preset)
-	elif element_settings.preset_options.selected == 0:
+	elif style_settings.preset_options.selected == 0:
 		canvases[cc].unassign_selected_preset_style()
 		if selected_control and (selected_control is TextElement or selected_control is ObjectList):
 			if selected_control.has_style_preset:
 				canvases[cc].canvas_changed()
 				selected_control.unassign_preset_style()
 				canvases[cc].update_connection_color(selected_control.id, selected_control.get_bg_color())
-			element_settings.none_preset = selected_control.individual_style
+			style_settings.none_preset = selected_control.individual_style
 		else:
-			element_settings.toggle_none_preset_inputs(false)
+			style_settings.toggle_none_preset_inputs(false)
 
 
 func _on_canvas_has_selected_control() -> void:
@@ -1183,25 +1191,25 @@ func _on_canvas_has_selected_control() -> void:
 	if !selected_control:
 		return
 	if (selected_control is TextElement or selected_control is ObjectList) and canvases[cc].selected_preset_style == "none":
-		element_settings.none_preset = selected_control.individual_style
-		element_settings.toggle_list_settings(selected_control is ObjectList)
-	element_settings.select_by_style_preset_id(canvases[cc].selected_preset_style)
-	element_settings.toggle_none_preset_inputs(true)
+		style_settings.none_preset = selected_control.individual_style
+		style_settings.toggle_list_settings(selected_control is ObjectList)
+	style_settings.select_by_style_preset_id(canvases[cc].selected_preset_style)
+	style_settings.toggle_none_preset_inputs(true)
 
 
 func _on_canvas_has_deselected_control() -> void:
-	element_settings.toggle_none_preset_inputs(false)
+	style_settings.toggle_none_preset_inputs(false)
 
 
 func _on_canvas_status_message_requested(message: String, color: Color) -> void:
 	status_bar.update_status(message, color)
 
 
-func _on_element_settings_is_editing_text() -> void:
+func _on_style_settings_is_editing_text() -> void:
 	is_editing_preset_name = true
 
 
-func _on_element_settings_stopped_editing_text() -> void:
+func _on_style_settings_stopped_editing_text() -> void:
 	is_editing_preset_name = false
 
 
@@ -1267,7 +1275,7 @@ func _on_toggle_mode_toggled(toggled_on: bool) -> void:
 		drawing_tool_box.visible = true
 		drawing_tool_bar.visible = true
 		drawing_tool_bar.inputs_enabled = true
-		element_settings.toggle_style_presets(false)
+		style_settings.toggle_style_presets(false)
 		change_accent_color(accent_color_drawing)
 		var move_images: bool = drawing_tool_box.is_selected(Enums.DrawingTool.MOVE)
 		drawing_manager.toggle_clipboard_image_input(move_images)
@@ -1283,7 +1291,7 @@ func _on_toggle_mode_toggled(toggled_on: bool) -> void:
 		drawing_tool_box.visible = false
 		drawing_tool_bar.visible = false
 		drawing_tool_bar.inputs_enabled = false
-		element_settings.toggle_style_presets(true)
+		style_settings.toggle_style_presets(true)
 		tool_box.select(Enums.Tool.SELECT)
 		_on_tool_box_item_selected(Enums.Tool.SELECT)
 		change_accent_color(accent_color_planning)

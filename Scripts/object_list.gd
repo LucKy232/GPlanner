@@ -33,8 +33,8 @@ var priority_tool_enabled: bool = true
 var show_title: bool = true
 var selected: bool = false
 var state: State
-var individual_style: ElementPresetStyle
-var style_preset: ElementPresetStyle
+var individual_style: PresetStyle
+var style_preset: PresetStyle
 var has_style_preset: bool = false
 
 enum State {
@@ -475,7 +475,7 @@ func set_active_entry_priority(p: Enums.Priority) -> void:
 
 #region PresetStyles
 func init_individual_style() -> void:
-	individual_style = ElementPresetStyle.new("individual")
+	individual_style = PresetStyle.new("individual")
 	individual_style.set_background_panel_style_box(background.get_theme_stylebox("panel", "Panel").duplicate(), true)
 	individual_style.set_text_edit_theme(default_text_edit_theme.duplicate(), true)
 	individual_style.set_title_text_edit_theme(default_text_edit_theme.duplicate(), true)
@@ -486,7 +486,7 @@ func init_individual_style() -> void:
 	_apply_style_preset(individual_style)
 
 
-func _apply_style_preset(preset: ElementPresetStyle) -> void:
+func _apply_style_preset(preset: PresetStyle) -> void:
 	background.add_theme_stylebox_override("panel", preset.background_panel_style_box)
 	#object_v_box.add_theme_constant_override("separation", preset.entry_separation)
 	list_title.theme = preset.title_text_edit_theme
@@ -497,7 +497,7 @@ func _apply_style_preset(preset: ElementPresetStyle) -> void:
 	toggle_entry_divs(preset.list_div_enabled)
 
 
-func change_style_preset(preset: ElementPresetStyle) -> void:
+func change_style_preset(preset: PresetStyle) -> void:
 	if has_style_preset and style_preset:
 		if style_preset == preset:		# Stop if changing to the same preset
 			return
@@ -531,11 +531,11 @@ func get_bg_color() -> Color:
 		return individual_style.background_panel_style_box.bg_color
 
 
-func _on_style_settings_changed(setting: ElementPresetStyle.ListSettings, value) -> void:
+func _on_style_settings_changed(setting: PresetStyle.ListSettings, value) -> void:
 	match setting:
-		ElementPresetStyle.ListSettings.ENTRY_SEPARATION:
+		PresetStyle.ListSettings.ENTRY_SEPARATION:
 			object_v_box.add_theme_constant_override("separation", int(value))
-		ElementPresetStyle.ListSettings.DIV_ENABLED:
+		PresetStyle.ListSettings.DIV_ENABLED:
 			toggle_entry_divs(bool(value))
 
 

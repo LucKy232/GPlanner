@@ -17,8 +17,8 @@ class_name TextElement extends Panel
 @onready var drag_and_resize_input: DragAndResizeInput = $DragAndResizeInput
 @onready var priority_buttons_tween: TweenShowHide = %PriorityButtonsTween
 
-var individual_style: ElementPresetStyle
-var style_preset: ElementPresetStyle
+var individual_style: PresetStyle
+var style_preset: PresetStyle
 var priority_stylebox: StyleBoxFlat
 var preset_text_edit_theme: Theme
 var preset_background_stylebox: StyleBoxFlat
@@ -163,7 +163,7 @@ func get_bg_color() -> Color:
 
 
 func init_individual_style() -> void:
-	individual_style = ElementPresetStyle.new("individual")
+	individual_style = PresetStyle.new("individual")
 	individual_style.set_background_panel_style_box(background.get_theme_stylebox("panel").duplicate(), true)
 	individual_style.set_text_edit_theme(text_edit_theme.duplicate(), true)
 	individual_style.set_title_text_edit_theme(individual_style.text_edit_theme, true)
@@ -173,7 +173,7 @@ func init_individual_style() -> void:
 	text_edit.theme = individual_style.text_edit_theme
 
 
-func change_style_preset(preset: ElementPresetStyle) -> void:
+func change_style_preset(preset: PresetStyle) -> void:
 	has_style_preset = true
 	style_preset = preset
 	preset_text_edit_theme = preset.text_edit_theme
@@ -183,7 +183,7 @@ func change_style_preset(preset: ElementPresetStyle) -> void:
 		background.add_theme_stylebox_override("panel", preset.background_panel_style_box)
 
 
-func copy_style_preset(preset: ElementPresetStyle) -> void:
+func copy_style_preset(preset: PresetStyle) -> void:
 	has_style_preset = false
 	individual_style.set_background_panel_style_box(preset.background_panel_style_box.duplicate(), true)
 	individual_style.set_text_edit_theme(preset.text_edit_theme.duplicate(), true)

@@ -1,4 +1,4 @@
-class_name ElementPresetStyle
+class_name PresetStyle
 
 var id: String = "unassigned_id"
 var name: String = ""

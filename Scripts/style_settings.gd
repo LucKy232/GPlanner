@@ -1,4 +1,4 @@
-class_name ElementSettings extends Control
+class_name StyleSettings extends Control
 
 @export_range(150.0, 800.0, 5.0) var MAX_HEIGHT_SETTINGS: float = 335.0
 @export_range(150.0, 1000.0, 5.0) var MAX_HEIGHT_ALL: float = 490.0
@@ -56,8 +56,8 @@ class_name ElementSettings extends Control
 @onready var list_entry_category_div: Panel = %ListEntryCategoryDiv
 
 
-var presets: Dictionary[int, ElementPresetStyle]	## KEY: preset_options selector ID (not preset ID like in planner_canvas.gd)
-var none_preset: ElementPresetStyle
+var presets: Dictionary[int, PresetStyle]	## KEY: preset_options selector ID (not preset ID like in planner_canvas.gd)
+var none_preset: PresetStyle
 var max_option_id: int = 1
 
 signal preset_added
@@ -83,7 +83,7 @@ func _ready() -> void:
 
 
 # Only use set_no_signal functions (user didn't change the values)
-func load_values_from_preset(preset: ElementPresetStyle) -> void:
+func load_values_from_preset(preset: PresetStyle) -> void:
 	background_color_picker_button.color = preset.background_color
 	border_size_spin_box.set_value_no_signal(preset.border_size)
 	border_color_picker_button.color = preset.border_color
@@ -150,8 +150,8 @@ func change_preset(idx: int) -> void:
 	style_buttons.focus_button(idx)
 
 
-func get_new_preset() -> ElementPresetStyle:
-	var new_preset: ElementPresetStyle = ElementPresetStyle.new("%s %d" % [Time.get_datetime_string_from_system(), Time.get_ticks_msec()])
+func get_new_preset() -> PresetStyle:
+	var new_preset: PresetStyle = PresetStyle.new("%s %d" % [Time.get_datetime_string_from_system(), Time.get_ticks_msec()])
 	new_preset.set_background_panel_style_box(default_background_style_box.duplicate(), false)
 	new_preset.set_text_edit_theme(default_text_edit_theme.duplicate(), false)
 	new_preset.set_title_text_edit_theme(default_text_edit_theme.duplicate(), false)
@@ -170,7 +170,7 @@ func erase_everything() -> void:
 
 
 func reset_none_preset() -> void:
-	none_preset = ElementPresetStyle.new("individual")
+	none_preset = PresetStyle.new("individual")
 	none_preset.background_panel_style_box = default_background_style_box.duplicate()
 	none_preset.text_edit_theme = default_text_edit_theme.duplicate()
 
@@ -186,7 +186,7 @@ func rebuild_options_and_dictionary_from_json(dict: Dictionary) -> void:
 		max_option_id += 1
 
 
-func rebuild_options_and_dictionary_from_canvas(dict: Dictionary[String, ElementPresetStyle]) -> void:
+func rebuild_options_and_dictionary_from_canvas(dict: Dictionary[String, PresetStyle]) -> void:
 	for key in dict:
 		preset_options.add_item("%s" % dict[key].name)
 		style_buttons.add_button(str(max_option_id), dict[key].name)
@@ -212,7 +212,7 @@ func rewind_dict(index: int) -> void:
 	presets.erase(last_key)
 
 
-func get_selected_preset() -> ElementPresetStyle:
+func get_selected_preset() -> PresetStyle:
 	if preset_options.selected > 0:
 		return presets[preset_options.selected]
 	elif preset_options.selected == 0:

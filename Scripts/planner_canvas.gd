@@ -15,7 +15,7 @@ var connections: Dictionary[int, Connection]
 var connections_p1: Dictionary[int, PackedInt32Array]	## ELEMENT ID key, Array of CONNECTION ID value
 var connections_p2: Dictionary[int, PackedInt32Array]	## ELEMENT ID key, Array of CONNECTION ID value
 var elements_to_connection: Dictionary[Vector2i, int]	## ELEMENT ID Vector2i(ID1, ID2) key, CONNECTION ID value
-var style_presets: Dictionary[String, ElementPresetStyle]	## PRESET ID key (not option_selector like in element_setting.gd)
+var style_presets: Dictionary[String, PresetStyle]	## PRESET ID key (not option_selector like in element_setting.gd)
 var swatches: Array[Color]
 var drawing_manager: DrawingManager
 
@@ -200,13 +200,13 @@ func reset_save_state(is_already_created: bool = false) -> void:
 		save_state.is_loaded = true
 
 
-func update_all_style_presets(dict: Dictionary[int, ElementPresetStyle]) -> void:
+func update_all_style_presets(dict: Dictionary[int, PresetStyle]) -> void:
 	style_presets.clear()
 	for key in dict:
 		style_presets[dict[key].id] = dict[key]
 
 
-func update_single_style_preset(style_preset: ElementPresetStyle) -> void:
+func update_single_style_preset(style_preset: PresetStyle) -> void:
 	style_presets[style_preset.id] = style_preset
 
 
@@ -460,7 +460,7 @@ func reset_adding_connection() -> void:
 
 
 # Called from select_element(), which also emits a signal after this telling main.gd to handle the style change
-# From main.gd:_on_element_settings_preset_selected() passes the selected preset from the style settings panel
+# From main.gd:_on_style_settings_preset_selected() passes the selected preset from the style settings panel
 func change_preset_to_active_control(control: Control) -> void:
 	if (control is TextElement) or (control is ObjectList):
 		if !control.has_style_preset:
@@ -510,7 +510,7 @@ func all_lists_to_json() -> Dictionary:
 
 func all_presets_to_json() -> Dictionary:
 	var dict: Dictionary = {}
-	var entry_id: int = 1	# Put the style presets in order, same way they get read in element_settings.gd
+	var entry_id: int = 1	# Put the style presets in order, same way they get read in style_settings.gd
 	for key in style_presets:
 		dict[entry_id] = style_presets[key].to_json()
 		entry_id += 1

@@ -106,7 +106,7 @@ func focus_button(idx: int) -> void:
 	current_pressed = idx
 
 
-func set_button_theme(idx: int, preset: ElementPresetStyle) -> void:
+func set_button_theme(idx: int, preset: PresetStyle) -> void:
 	if idx >= MAX_BUTTON_COUNT or !buttons.has(idx):
 		return
 	change_button_font_size(idx, preset.font_size)
