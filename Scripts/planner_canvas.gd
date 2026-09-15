@@ -257,6 +257,8 @@ func add_object_list(at_position: Vector2, id_specified: int = -1) -> void:
 	new_list.name = "ObjectList"
 	new_list.position = at_position
 	new_list.canvas_scale = scale.x
+	new_list.set_priority_visible(settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITIES])
+	new_list.set_priority_tool_enabled(settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL])
 	new_list.can_drop.connect(_on_object_list_can_drop)
 	new_list.filtered_gui_input.connect(_on_object_list_mouse_input)
 	new_list.list_changed.connect(_on_list_changed)
@@ -298,9 +300,9 @@ func add_text_element(at_position: Vector2, id_specified: int = -1) -> int:
 	new_element.name = "TextElement"
 	new_element.position = at_position
 	new_element.set_priority_id(Enums.Priority.NONE)
-	new_element.set_priority_tool_enabled(settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL])
 	new_element.set_priority_color(priority_colors[Enums.Priority.NONE])
 	new_element.set_priority_visible(settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITIES])
+	new_element.set_priority_tool_enabled(settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL])
 	new_element.z_index = 1
 	if style_presets.has(selected_preset_style):
 		new_element.change_style_preset(style_presets[selected_preset_style])

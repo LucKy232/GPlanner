@@ -91,7 +91,7 @@ func disable_priority_color() -> void:
 
 
 func enable_priority_color() -> void:
-	priority_idicator.inner_circle_color = priority_color
+	priority_idicator.inner_circle_color = priority_color if priority_id != Enums.Priority.NONE else Color.TRANSPARENT
 	priority_idicator.outer_circle_color = priority_color if priority_id != Enums.Priority.NONE else Color.WHITE
 	priority_idicator.queue_redraw()
 

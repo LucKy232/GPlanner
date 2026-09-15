@@ -44,9 +44,9 @@ VScrollBar/styles/scroll = null
 
 [node name="ElementSettings" type="PanelContainer" unique_id=589894355]
 z_index = 5
-custom_minimum_size = Vector2(300, 350)
+custom_minimum_size = Vector2(300, 450)
 offset_right = 300.0
-offset_bottom = 721.0
+offset_bottom = 450.0
 size_flags_vertical = 3
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_6vqs3")

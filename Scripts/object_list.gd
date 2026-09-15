@@ -436,14 +436,21 @@ func to_json() -> Dictionary:
 	return dict
 
 
-func ensure_entry_visible() -> void:
+func last_edited_id_valid() -> bool:
 	if entries.size() == 0 or last_edited_entry_id < 0 or last_edited_entry_id >= entries.size():
+		return false
+	else:
+		return true
+
+
+func ensure_entry_visible() -> void:
+	if !last_edited_id_valid():
 		return
 	scroll_container.ensure_control_visible(entries[last_edited_entry_id])
 
 
 func line_up_side_buttons() -> void:
-	if !is_editing_text():
+	if !is_editing_text() or !last_edited_id_valid():
 		return
 	var new_y_position: float = (entries[last_edited_entry_id].position.y
 								+ scroll_container.position.y
@@ -475,13 +482,14 @@ func init_individual_style() -> void:
 	individual_style.set_title_text_edit_theme(default_text_edit_theme.duplicate(), true)
 	individual_style.set_list_div_theme(default_div_theme.duplicate(true), true)
 	individual_style.list_setting_changed.connect(_on_style_settings_changed)
-	individual_style.entry_font_size_changed.connect(_on_style_font_size_changed)
+	individual_style.font_size_changed.connect(_on_style_font_size_changed)
 	individual_style.entry_separation = object_v_box.get_theme_constant("separation")
 	_apply_style_preset(individual_style)
 
 
 func _apply_style_preset(preset: ElementPresetStyle) -> void:
 	background.add_theme_stylebox_override("panel", preset.background_panel_style_box)
+	#object_v_box.add_theme_constant_override("separation", preset.entry_separation)
 	list_title.theme = preset.title_text_edit_theme
 	for e in entries:
 		e.change_text_edit_theme(preset.text_edit_theme)
@@ -495,11 +503,11 @@ func change_style_preset(preset: ElementPresetStyle) -> void:
 		if style_preset == preset:		# Stop if changing to the same preset
 			return
 		style_preset.list_setting_changed.disconnect(_on_style_settings_changed)
-		style_preset.entry_font_size_changed.disconnect(_on_style_font_size_changed)
+		style_preset.font_size_changed.disconnect(_on_style_font_size_changed)
 	has_style_preset = true
 	style_preset = preset
 	style_preset.list_setting_changed.connect(_on_style_settings_changed)
-	style_preset.entry_font_size_changed.connect(_on_style_font_size_changed)
+	style_preset.font_size_changed.connect(_on_style_font_size_changed)
 	_apply_style_preset(style_preset)
 
 
@@ -669,7 +677,7 @@ func _on_toggle_title_button_toggled(toggled_on: bool) -> void:
 
 
 func _on_erase_button_pressed() -> void:
-	if entries.size() == 0 or last_edited_entry_id < 0 or last_edited_entry_id > entries.size() - 1:
+	if !last_edited_id_valid():
 		return
 	var entry: ListTextEntry = entries[last_edited_entry_id]
 	remove_text_entry(entry, true)

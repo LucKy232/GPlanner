@@ -29,8 +29,8 @@ var text_edit_theme: Theme
 var title_text_edit_theme: Theme
 var list_div_theme: Theme
 
+signal font_size_changed
 signal list_setting_changed
-signal entry_font_size_changed
 
 enum Category {
 	BACKGROUND,
@@ -85,7 +85,7 @@ func set_default_values(category: Category) -> void:
 func set_font_size(size: int) -> void:
 	font_size = size
 	text_edit_theme.set_font_size("font_size", "TextEdit", size)
-	entry_font_size_changed.emit()
+	font_size_changed.emit()
 
 
 func set_font_color(color: Color) -> void:
@@ -270,7 +270,7 @@ func rebuild_from_json_dict(dict: Dictionary) -> void:
 							dict["title_outline_color.a"])
 		set_title_outline_color(toc)
 	if dict.has("title_line_spacing"):
-		set_line_spacing(int(dict["title_line_spacing"]))
+		set_title_line_spacing(int(dict["title_line_spacing"]))
 	if dict.has("list_entry_separation"):
 		set_list_entry_separation(int(dict["list_entry_separation"]))
 	if dict.has("list_div_enabled"):

@@ -50,7 +50,7 @@ Panel/styles/panel = SubResource("StyleBoxFlat_4eiuu")
 [sub_resource type="Theme" id="Theme_id6lq"]
 MarginContainer/constants/margin_bottom = 0
 MarginContainer/constants/margin_left = 15
-MarginContainer/constants/margin_right = 8
+MarginContainer/constants/margin_right = 12
 MarginContainer/constants/margin_top = 0
 
 [node name="TextElement" type="Panel" unique_id=655691787]
@@ -220,14 +220,12 @@ layout_mode = 2
 [node name="TextEdit" type="TextEdit" parent="PanelContainer/Background/TextMarginContainer/InputBlocker" unique_id=805361146]
 unique_name_in_owner = true
 z_index = 1
-custom_minimum_size = Vector2(30, 20)
+custom_minimum_size = Vector2(30, 0)
 layout_mode = 1
-anchors_preset = 14
+anchors_preset = -1
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_top = -12.0
-offset_bottom = 12.0
 grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 4

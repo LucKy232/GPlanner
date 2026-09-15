@@ -482,7 +482,6 @@ func _on_title_line_spacing_spin_box_value_changed(value: float) -> void:
 func _on_entry_separation_spin_box_value_changed(value: float) -> void:
 	if preset_options.selected == 0:
 		none_preset.set_list_entry_separation(int(value))
-		pass
 	else:
 		presets[preset_options.selected].set_list_entry_separation(int(value))
 	preset_changed.emit()
