@@ -50,7 +50,7 @@ Panel/styles/panel = SubResource("StyleBoxFlat_4eiuu")
 [sub_resource type="Theme" id="Theme_id6lq"]
 MarginContainer/constants/margin_bottom = 0
 MarginContainer/constants/margin_left = 15
-MarginContainer/constants/margin_right = 5
+MarginContainer/constants/margin_right = 8
 MarginContainer/constants/margin_top = 0
 
 [node name="TextElement" type="Panel" unique_id=655691787]
