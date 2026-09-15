@@ -1,6 +1,5 @@
 class_name ObjectList extends Control
 
-@export_file("*.tscn") var list_text_entry_scene
 @export var default_text_edit_theme: Theme
 @export var default_div_theme: Theme
 @onready var object_v_box: VBoxContainer = %ObjectVBox
@@ -302,7 +301,7 @@ func end_input() -> void:
 
 
 func add_text_entry(is_user_input: bool) -> void:
-	var new_list_text_entry: ListTextEntry = load(list_text_entry_scene).instantiate()
+	var new_list_text_entry: ListTextEntry = load(GlobalScenes.list_text_entry_scene).instantiate()
 	object_v_box.add_child(new_list_text_entry)
 	new_list_text_entry.id = entries.size()
 	new_list_text_entry.list_id = id
@@ -318,7 +317,7 @@ func add_text_entry(is_user_input: bool) -> void:
 
 func add_link_entry(_is_user_input: bool) -> void:
 	pass
-	#var new_list_text_entry: ListTextEntry = load(list_text_entry_scene).instantiate()
+	#var new_list_text_entry: ListTextEntry = load(GlobalScenes.list_text_entry_scene).instantiate()
 	#object_v_box.add_child(new_list_text_entry)
 	#new_list_text_entry.id = entries.size()
 	#new_list_text_entry.name = "ListTextEntry"

@@ -26,11 +26,6 @@ extends Control
 @export var android_build: bool = false
 @export var auto_ui_scale: bool = true
 @export var ui_scale: float = 1.0
-@export_category("Scenes")
-@export_file("*.tscn") var text_element_scene
-@export_file("*.tscn") var list_scene
-@export_file("*.tscn") var connection_scene
-@export_file("*.tscn") var canvas_scene
 @export_category("Themes")
 @export_color_no_alpha var accent_color_planning
 @export_color_no_alpha var accent_color_drawing
@@ -71,6 +66,7 @@ var last_window_mode: Window.Mode = Window.Mode.MODE_WINDOWED		## When going to 
 
 func _ready() -> void:
 	#Performance.add_custom_monitor("Request Action Type", func(): return int(canvases[cc].get_requested_save_action()))
+	GlobalScenes.test_scene_paths()
 	get_tree().set_auto_accept_quit(false)		# Don't automatically quit
 	var window_size: Vector2 = get_viewport_rect().size
 	pan_indicator_camera.set_world_2d(get_world_2d())
@@ -383,7 +379,7 @@ func set_tab_name_and_title_from_canvas(c_id: int) -> void:
 func new_file(add_canvas: bool, show_status: bool = true) -> int:
 	var new_canvas: PlannerCanvas
 	if add_canvas:
-		new_canvas = load(canvas_scene).instantiate()
+		new_canvas = load(GlobalScenes.planner_canvas_scene).instantiate()
 		add_child(new_canvas)
 		new_canvas.name = "PlanningCanvas"
 		drawing_manager.move_to_front()
@@ -401,9 +397,6 @@ func new_file(add_canvas: bool, show_status: bool = true) -> int:
 		new_canvas.has_selected_control.connect(_on_canvas_has_selected_control)
 		new_canvas.has_deselected_control.connect(_on_canvas_has_deselected_control)
 		new_canvas.status_message_requested.connect(_on_canvas_status_message_requested)
-		new_canvas.text_element_scene = text_element_scene
-		new_canvas.list_scene = list_scene
-		new_canvas.connection_scene = connection_scene
 		new_canvas.priority_colors = priority_colors
 		new_canvas.zoom_limits = zoom_limits
 		new_canvas.zoom_speed = zoom_speed

@@ -1,7 +1,6 @@
 extends MarginContainer
 class_name PresetStyleButtons
 
-@export_file("*.tscn") var button_scene
 @onready var style_button_grid: GridContainer = $StyleButtonGrid
 @export var MAX_BUTTON_COUNT = 16
 
@@ -42,7 +41,7 @@ func add_button(text: String, tooltip: String) -> void:
 	if buttons.size() < MAX_BUTTON_COUNT:
 		var id = buttons.size()
 		tooltips[id] = tooltip
-		buttons[id] = load(button_scene).instantiate()
+		buttons[id] = load(GlobalScenes.style_select_button_scene).instantiate()
 		buttons[id].theme = buttons[id].theme.duplicate(true)
 		buttons[id].pressed.connect(_on_button_pressed.bind(id))
 		if id <= 10:

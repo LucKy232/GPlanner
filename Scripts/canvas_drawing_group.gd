@@ -31,9 +31,6 @@ var mask_eraser_material: CanvasItemMaterial	## CanvasItemMaterial.BLEND_MODE_MU
 var CANVAS_SIZE: Vector2 = Vector2(20000.0, 10000.0)
 var MAX_PAST_ACTIONS: int = 100	## Actions available to undo.
 var FORCE_SAVE_REQUEST_KB_LIMIT: float = 512000.0	## When the force_save_request signal will be triggered, (used_temp_data_kb + used_overflow_data_kb is measured currently). A message will be sent using StatusBar via force_save_message signal at 75% of this value.
-var temp_drawing_action_scene	## Scene to instantiate for a single drawing stroke / action.
-var drawing_region_scene		## Scene to instantiate for a final image (1024x1024) that will get saved to disk.
-var clipboard_image_scene
 var folder_path: String = ""	## Folder inside user:// in which the images are stored, created on save_images() inside main.gd or loaded on rebuild_canvas_state() inside planner_canvas.gd
 var size: Vector2
 var current_zoom: float = 1.0
@@ -369,7 +366,7 @@ func update_regions_from_screenshots(screenshots: Dictionary[Vector2i, Image]) -
 
 
 func add_temp_drawing_action() -> TempDrawingAction:
-	var temp: TempDrawingAction = load(temp_drawing_action_scene).instantiate()
+	var temp: TempDrawingAction = load(GlobalScenes.temp_drawing_action_scene).instantiate()
 	temp_drawing_actions_container.add_child(temp)
 	temp.name = "TempDrawingAction"
 	temp.size = size
@@ -379,7 +376,7 @@ func add_temp_drawing_action() -> TempDrawingAction:
 
 
 func add_drawing_region(region_v2i: Vector2i) -> void:
-	var reg = load(drawing_region_scene).instantiate()
+	var reg = load(GlobalScenes.drawing_region_scene).instantiate()
 	drawing_regions_container.add_child(reg)
 	reg.name = "DrawingRegion (%02d %02d)" % [region_v2i.x, region_v2i.y]
 	reg.size = Vector2(1024.0, 1024.0)
@@ -389,7 +386,7 @@ func add_drawing_region(region_v2i: Vector2i) -> void:
 
 
 func add_clipboard_image(image: Image, pos: Vector2, scl: Vector2) -> void:
-	var clip: ClipboardImage = load(clipboard_image_scene).instantiate()
+	var clip: ClipboardImage = load(GlobalScenes.clipboard_image_scene).instantiate()
 	temp_drawing_actions_container.add_child(clip)
 	clip.name = "ClipboardImage"
 	clip.size = image.get_size()
@@ -404,7 +401,7 @@ func add_clipboard_image(image: Image, pos: Vector2, scl: Vector2) -> void:
 
 
 func add_clipboard_image_from_data(data: Dictionary, create_image: bool = true) -> void:
-	var clip: ClipboardImage = load(clipboard_image_scene).instantiate()
+	var clip: ClipboardImage = load(GlobalScenes.clipboard_image_scene).instantiate()
 	temp_drawing_actions_container.add_child(clip)
 	clip.name = "ClipboardImage"
 	clip.load_from_dict(data, create_image)

@@ -8,9 +8,6 @@ class_name PlannerCanvas extends Control
 @onready var background: CanvasBackground = %Background
 @onready var drop_visual: Panel = %DropVisualIndicator
 
-var text_element_scene		## Passed by main.gd to be instantiated here
-var connection_scene	## Passed by main.gd to be instantiated here
-var list_scene			## Passed by main.gd to be instantiated here	# TODO class that keeps scene refs w/ errors
 var priority_colors: Dictionary[Enums.Priority, Color]
 var elements: Dictionary[int, TextElement]
 var lists: Dictionary[int, ObjectList]
@@ -242,7 +239,7 @@ func pan_limits(pos: Vector2) -> Vector2:
 
 func add_object_list(at_position: Vector2, id_specified: int = -1) -> void:
 	canvas_changed()
-	var new_list: ObjectList = load(list_scene).instantiate()
+	var new_list: ObjectList = load(GlobalScenes.object_list_scene).instantiate()
 	var list_id: int
 	if id_specified < 0:
 		list_id = list_id_counter
@@ -275,7 +272,7 @@ func add_object_list(at_position: Vector2, id_specified: int = -1) -> void:
 
 func add_text_element(at_position: Vector2, id_specified: int = -1) -> int:
 	canvas_changed()
-	var new_element: TextElement = load(text_element_scene).instantiate()
+	var new_element: TextElement = load(GlobalScenes.text_element_scene).instantiate()
 	var elem_id: int
 	if id_specified < 0:
 		elem_id = element_id_counter
@@ -323,7 +320,7 @@ func add_connection(id_specified: int = -1, arrow_1_enabled: bool = false, arrow
 		return
 	if (!elements_to_connection.has(Vector2i(connection_candidate_1, connection_candidate_2)) 
 	and !elements_to_connection.has(Vector2i(connection_candidate_2, connection_candidate_1))):
-		var new_connection = load(connection_scene).instantiate() as Connection
+		var new_connection = load(GlobalScenes.connection_scene).instantiate() as Connection
 		var conn_id: int
 		if id_specified < 0:
 			conn_id = connection_id_counter

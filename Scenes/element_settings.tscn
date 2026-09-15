@@ -85,7 +85,6 @@ theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 script = ExtResource("4_qg77d")
-button_scene = "uid://dvorb6p8oev77"
 
 [node name="StyleButtonGrid" type="GridContainer" parent="VBoxContainer/StyleButtons" unique_id=1159601047]
 layout_mode = 2
