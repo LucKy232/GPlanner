@@ -1,4 +1,4 @@
-class_name ObjectList extends Control
+class_name ObjectList extends CanvasElement
 
 @export var default_text_edit_theme: Theme
 @export var default_div_theme: Theme
@@ -21,7 +21,7 @@ class_name ObjectList extends Control
 @onready var priority_buttons_margin: MarginContainer = %PriorityButtonsMargin
 @onready var background: Panel = %Background
 
-var id: int = -1
+
 var entries: Array[ListTextEntry]
 var last_edited_entry_id: int = -1
 var dragger: ListDragHelper = ListDragHelper.new()

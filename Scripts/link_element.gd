@@ -1,4 +1,4 @@
-class_name LinkElement extends Panel
+class_name LinkElement extends CanvasElement
 
 @export var line_wrap_limit: float = 4.0
 @export var completed_stylebox: StyleBoxFlat
@@ -22,7 +22,6 @@ var style_preset: PresetStyle
 var priority_stylebox: StyleBoxFlat
 var preset_text_edit_theme: Theme
 var preset_background_stylebox: StyleBoxFlat
-var id: int
 var priority_id: Enums.Priority
 var completed: bool = false
 var has_style_preset: bool = false

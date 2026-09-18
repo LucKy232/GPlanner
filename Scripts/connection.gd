@@ -1,5 +1,4 @@
-extends Line2D
-class_name Connection
+class_name Connection extends Line2D
 
 @onready var arrow_1: ConnectionArrow = $Arrow1
 @onready var arrow_2: ConnectionArrow = $Arrow2
@@ -15,7 +14,9 @@ var size_2: Vector2
 var TEST_MARGIN: float = 25.0
 var CONNECTION_MARGIN: float = 10.0
 var SNAP_TO: float = 10.0
+
 signal arrow_changed
+
 
 func _ready() -> void:
 	gradient = gradient.duplicate()

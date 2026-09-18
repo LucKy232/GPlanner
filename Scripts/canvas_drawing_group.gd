@@ -56,6 +56,7 @@ signal saving_images_to_disk
 ## Emitted when all regions are visible, used when screenshotting images changes to ensure all are loaded
 signal all_drawing_regions_visible
 signal clipboard_images_changed
+signal all_clipboard_images_visible
 
 
 func _process(_delta: float) -> void:
@@ -66,6 +67,14 @@ func _process(_delta: float) -> void:
 	if is_loading and image_load_tasks.size() == 0 and clipboard_image_load_tasks.size() == 0:
 		is_loading = false
 		is_at_startup = false
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		if clipboard_image_load_tasks.size() > 0:
+			printerr("%d clipboard image load tasks still remaining!" % clipboard_image_load_tasks.size())
+		if image_load_tasks.size() > 0:
+			printerr("%d image load tasks still remaining!" % image_load_tasks.size())
 
 
 # Update the shader brush texture from the brush_sub_viewport to accumulate shader contributions
@@ -112,6 +121,8 @@ func check_clipboard_image_load_tasks_completed() -> void:
 			ci.unload()
 		clipboard_images_being_loaded.erase(ci)
 		clipboard_image_load_tasks.erase(task)
+	if clipboard_image_load_tasks.size() == 0:
+		all_clipboard_images_visible.emit()
 
 
 func init(manager_size: Vector2) -> void:
