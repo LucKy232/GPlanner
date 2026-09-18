@@ -1,0 +1,252 @@
+[gd_scene format=3 uid="uid://wqdp37siilsl"]
+
+[ext_resource type="Script" uid="uid://dv7fw7e4sbcqn" path="res://Scripts/link_element.gd" id="1_qb10n"]
+[ext_resource type="StyleBox" uid="uid://8g7b3501cxjx" path="res://Themes/element_completed_style_box.tres" id="2_5wgtq"]
+[ext_resource type="Theme" uid="uid://bw15nbn335862" path="res://Themes/text_edit_element_theme.tres" id="3_nnaip"]
+[ext_resource type="Theme" uid="uid://dfkiu7dg1cfmm" path="res://Themes/text_edit_completed_theme.tres" id="4_6s6te"]
+[ext_resource type="PackedScene" uid="uid://cytlmlx7kw2l2" path="res://Scenes/drag_and_resize_input.tscn" id="5_u8i2g"]
+[ext_resource type="Script" uid="uid://b0ioikc1dokvh" path="res://AddonsOwn/tween_show_hide.gd" id="6_yte85"]
+[ext_resource type="StyleBox" uid="uid://wrrl0mk4mdli" path="res://Themes/Buttons/active_priority_button_stylebox.tres" id="7_8pgt8"]
+[ext_resource type="StyleBox" uid="uid://0m1wm66xknlk" path="res://Themes/Buttons/high_priority_button_stylebox.tres" id="8_ocqel"]
+[ext_resource type="StyleBox" uid="uid://dgq7v0gkqrpgf" path="res://Themes/Buttons/medium_priority_button_stylebox.tres" id="9_acxfp"]
+[ext_resource type="StyleBox" uid="uid://dga3kal7lipkl" path="res://Themes/Buttons/low_priority_button_stylebox.tres" id="10_vq5v6"]
+[ext_resource type="StyleBox" uid="uid://b0l55wn2xggiw" path="res://Themes/Buttons/none_priority_button_stylebox.tres" id="11_t56dj"]
+[ext_resource type="StyleBox" uid="uid://cdui0dgu3vdrr" path="res://Themes/element_background_style_box.tres" id="12_hfavs"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_562gy"]
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_87eqm"]
+
+[sub_resource type="Theme" id="Theme_fxdsv"]
+Panel/styles/panel = SubResource("StyleBoxLine_87eqm")
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y2cp5"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_y2cp5"]
+bg_color = Color(0.85098, 0.85098, 0.85098, 0.392157)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_01as5"]
+content_margin_left = 1.0
+bg_color = Color(1, 1, 1, 1)
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 0)
+border_blend = true
+corner_radius_top_right = 2
+corner_radius_bottom_right = 7
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4eiuu"]
+bg_color = Color(0.9, 0.9, 0.9, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="Theme" id="Theme_dvpmy"]
+Panel/styles/panel = SubResource("StyleBoxFlat_4eiuu")
+
+[sub_resource type="Theme" id="Theme_id6lq"]
+MarginContainer/constants/margin_bottom = 0
+MarginContainer/constants/margin_left = 15
+MarginContainer/constants/margin_right = 12
+MarginContainer/constants/margin_top = 0
+
+[node name="LinkElement" type="Panel" unique_id=655691787]
+light_mask = 8
+visibility_layer = 8
+custom_minimum_size = Vector2(64, 32)
+offset_right = 120.0
+offset_bottom = 80.0
+pivot_offset = Vector2(0.5, 0.5)
+mouse_force_pass_scroll_events = false
+mouse_default_cursor_shape = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_562gy")
+script = ExtResource("1_qb10n")
+line_wrap_limit = 5.0
+completed_stylebox = ExtResource("2_5wgtq")
+empty_div_theme = SubResource("Theme_fxdsv")
+text_edit_theme = ExtResource("3_nnaip")
+text_edit_completed_theme = ExtResource("4_6s6te")
+
+[node name="DragAndResizeInput" parent="." unique_id=713311794 instance=ExtResource("5_u8i2g")]
+layout_mode = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=931848533]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_y2cp5")
+
+[node name="PriorityButtonsTween" type="Control" parent="PanelContainer" unique_id=1268397800 node_paths=PackedStringArray("target")]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+mouse_filter = 2
+script = ExtResource("6_yte85")
+target = NodePath("PriorityButtons")
+side = 1
+animation_time = 0.25
+transition_type = 7
+offset_show = 4.0
+metadata/_custom_type_script = "uid://b0ioikc1dokvh"
+
+[node name="PriorityButtons" type="VBoxContainer" parent="PanelContainer/PriorityButtonsTween" unique_id=1231603066]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(20, 10)
+layout_mode = 1
+offset_right = 30.0
+offset_bottom = 60.0
+size_flags_horizontal = 8
+size_flags_vertical = 0
+offset_transform_enabled = true
+offset_transform_visual_only = false
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="PriorityActive" type="Button" parent="PanelContainer/PriorityButtonsTween/PriorityButtons" unique_id=457811591]
+custom_minimum_size = Vector2(30, 12)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+tooltip_text = "Active"
+theme_override_styles/normal = ExtResource("7_8pgt8")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_y2cp5")
+action_mode = 0
+
+[node name="PriorityHigh" type="Button" parent="PanelContainer/PriorityButtonsTween/PriorityButtons" unique_id=1999228504]
+custom_minimum_size = Vector2(30, 12)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+tooltip_text = "High"
+theme_override_styles/normal = ExtResource("8_ocqel")
+action_mode = 0
+
+[node name="PriorityMedium" type="Button" parent="PanelContainer/PriorityButtonsTween/PriorityButtons" unique_id=843168330]
+custom_minimum_size = Vector2(30, 12)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+tooltip_text = "Medium"
+theme_override_styles/normal = ExtResource("9_acxfp")
+action_mode = 0
+
+[node name="PriorityLow" type="Button" parent="PanelContainer/PriorityButtonsTween/PriorityButtons" unique_id=159438004]
+custom_minimum_size = Vector2(30, 12)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+tooltip_text = "Low"
+theme_override_styles/normal = ExtResource("10_vq5v6")
+action_mode = 0
+
+[node name="PriorityNone" type="Button" parent="PanelContainer/PriorityButtonsTween/PriorityButtons" unique_id=1381010741]
+custom_minimum_size = Vector2(30, 12)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+tooltip_text = "None"
+theme_override_styles/normal = ExtResource("11_t56dj")
+action_mode = 0
+
+[node name="Background" type="Panel" parent="PanelContainer" unique_id=656927497]
+unique_name_in_owner = true
+propagate_maximum_size = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+theme_override_styles/panel = ExtResource("12_hfavs")
+
+[node name="PriorityPanel" type="Panel" parent="PanelContainer/Background" unique_id=1272237648]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(15, 0)
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -15.0
+grow_horizontal = 0
+grow_vertical = 2
+mouse_filter = 1
+theme_override_styles/panel = SubResource("StyleBoxFlat_01as5")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/Background" unique_id=1021837475]
+custom_maximum_size = Vector2(15, -1)
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 15.0
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 6
+
+[node name="GrabIndicator" type="Panel" parent="PanelContainer/Background/MarginContainer" unique_id=1901976051]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(7, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+mouse_filter = 2
+theme = SubResource("Theme_dvpmy")
+
+[node name="TextMarginContainer" type="MarginContainer" parent="PanelContainer/Background" unique_id=628131232]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -14.0
+offset_bottom = 14.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_id6lq")
+
+[node name="InputBlocker" type="Control" parent="PanelContainer/Background/TextMarginContainer" unique_id=953159357]
+layout_mode = 2
+
+[node name="TextEdit" type="TextEdit" parent="PanelContainer/Background/TextMarginContainer/InputBlocker" unique_id=805361146]
+unique_name_in_owner = true
+z_index = 1
+custom_minimum_size = Vector2(30, 0)
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 4
+theme = ExtResource("3_nnaip")
+placeholder_text = "..."
+wrap_mode = 1
+scroll_fit_content_height = true
+scroll_fit_content_width = true
+
+[node name="ResizeTimer" type="Timer" parent="." unique_id=2084856569]
+wait_time = 0.25
+one_shot = true
+
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="pressed" from="PanelContainer/PriorityButtonsTween/PriorityButtons/PriorityActive" to="." method="_on_priority_active_pressed"]
+[connection signal="pressed" from="PanelContainer/PriorityButtonsTween/PriorityButtons/PriorityHigh" to="." method="_on_priority_high_pressed"]
+[connection signal="pressed" from="PanelContainer/PriorityButtonsTween/PriorityButtons/PriorityMedium" to="." method="_on_priority_medium_pressed"]
+[connection signal="pressed" from="PanelContainer/PriorityButtonsTween/PriorityButtons/PriorityLow" to="." method="_on_priority_low_pressed"]
+[connection signal="pressed" from="PanelContainer/PriorityButtonsTween/PriorityButtons/PriorityNone" to="." method="_on_priority_none_pressed"]
+[connection signal="focus_entered" from="PanelContainer/Background/TextMarginContainer/InputBlocker/TextEdit" to="." method="_on_text_edit_focus_entered"]
+[connection signal="gui_input" from="PanelContainer/Background/TextMarginContainer/InputBlocker/TextEdit" to="." method="_on_text_edit_gui_input"]
+[connection signal="lines_edited_from" from="PanelContainer/Background/TextMarginContainer/InputBlocker/TextEdit" to="." method="_on_text_edit_lines_edited_from"]
+[connection signal="resized" from="PanelContainer/Background/TextMarginContainer/InputBlocker/TextEdit" to="." method="_on_text_edit_resized"]
+[connection signal="timeout" from="ResizeTimer" to="." method="_on_resize_timer_timeout"]

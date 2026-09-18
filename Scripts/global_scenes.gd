@@ -1,8 +1,10 @@
 class_name GlobalScenes
 
+# Canvas
 const planner_canvas_scene: String = "uid://b1do6gcy6peum"
 # Canvas objects
 const text_element_scene: String = "uid://cdn8513i3j0ns"
+const link_element_scene: String = "uid://wqdp37siilsl"
 const connection_scene: String = "uid://c4jirlcfvnhoj"
 const object_list_scene: String = "uid://6odwhurrp3jx"
 const list_text_entry_scene: String = "uid://q0me3hofnycc"
@@ -20,6 +22,8 @@ static func test_scene_paths() -> void:
 		push_error("Invalid UID for planner_canvas_scene!")
 	if ResourceUID.ensure_path(text_element_scene) == "":
 		push_error("Invalid UID for text_element_scene!")
+	if ResourceUID.ensure_path(link_element_scene) == "":
+		push_error("Invalid UID for link_element_scene!")
 	if ResourceUID.ensure_path(connection_scene) == "":
 		push_error("Invalid UID for connection_scene!")
 	if ResourceUID.ensure_path(object_list_scene) == "":
