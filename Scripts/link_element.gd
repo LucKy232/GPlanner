@@ -7,6 +7,7 @@ class_name LinkElement extends CanvasElement
 @export var text_edit_completed_theme: Theme
 @export var completed_z_index = 0
 @export var active_z_index = 1
+@export var selected_z_index = 2
 @onready var background: Panel = %Background
 @onready var priority_panel: Panel = %PriorityPanel
 @onready var text_edit: TextEdit = %TextEdit
@@ -16,6 +17,7 @@ class_name LinkElement extends CanvasElement
 @onready var resize_timer: Timer = $ResizeTimer
 @onready var drag_and_resize_input: DragAndResizeInput = $DragAndResizeInput
 @onready var priority_buttons_tween: TweenShowHide = %PriorityButtonsTween
+@onready var input_blocker: Control = %InputBlocker
 
 var individual_style: PresetStyle
 var style_preset: PresetStyle
@@ -140,7 +142,7 @@ func is_editing_text() -> bool:
 
 
 func select() -> void:
-	z_index = 2
+	z_index = selected_z_index
 	grab_indicator.visible = true
 	if priority_tool_enabled and priority_enabled:
 		priority_buttons_tween.toggle(true)
@@ -165,11 +167,8 @@ func init_individual_style() -> void:
 	individual_style = PresetStyle.new("individual")
 	individual_style.set_background_panel_style_box(background.get_theme_stylebox("panel").duplicate(), true)
 	individual_style.set_text_edit_theme(text_edit_theme.duplicate(), true)
-	individual_style.set_title_text_edit_theme(individual_style.text_edit_theme, true)
+	individual_style.set_title_text_edit_theme(text_edit_theme.duplicate(), true)
 	individual_style.set_list_div_theme(empty_div_theme, true)
-	individual_style.id = "none"
-	background.add_theme_stylebox_override("panel", individual_style.background_panel_style_box)
-	text_edit.theme = individual_style.text_edit_theme
 
 
 func change_style_preset(preset: PresetStyle) -> void:
@@ -186,13 +185,13 @@ func copy_style_preset(preset: PresetStyle) -> void:
 	has_style_preset = false
 	individual_style.set_background_panel_style_box(preset.background_panel_style_box.duplicate(), true)
 	individual_style.set_text_edit_theme(preset.text_edit_theme.duplicate(), true)
-	individual_style.set_title_text_edit_theme(individual_style.text_edit_theme, true)
+	individual_style.set_title_text_edit_theme(preset.title_text_edit_theme.duplicate(), true)
 	individual_style.set_list_div_theme(empty_div_theme, true)
 	background.add_theme_stylebox_override("panel", individual_style.background_panel_style_box)
 	text_edit.theme = individual_style.text_edit_theme
 
 
-func unassign_preset_style() -> void:
+func unassign_style_preset() -> void:
 	has_style_preset = false
 	style_preset = null
 	if completed:
@@ -204,7 +203,7 @@ func unassign_preset_style() -> void:
 
 
 func to_json() -> Dictionary:
-	var style_preset_id: String = "none" if !has_style_preset else style_preset.id
+	var style_preset_id: String = "individual" if !has_style_preset else style_preset.id
 	var dict: Dictionary = {
 		"id": id,
 		"priority_id": priority_id,

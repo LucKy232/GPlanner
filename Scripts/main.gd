@@ -150,6 +150,7 @@ func scale_ui(factor: float) -> void:
 
 
 func _process(_delta):
+	var input_enabled: bool = !disable_input()
 	if Input.is_action_just_pressed("test_mult"):
 		scale_ui(ui_scale)
 	if use_mouse_cursor_big_brush():
@@ -165,17 +166,17 @@ func _process(_delta):
 		toggle_borderless_window()
 	if Input.is_action_just_pressed("exit_fullscreen_borderless") and get_window().mode == Window.MODE_FULLSCREEN and !is_saving_images:
 		toggle_borderless_window()
-	if Input.is_action_just_pressed("save_file") and !disable_input():
+	if Input.is_action_just_pressed("save_file") and input_enabled:
 		_on_save_button_pressed()
 	if Input.is_action_just_pressed("edit_element") and !tool_box.is_selected(Enums.Tool.MARK_COMPLETED):
-		if selected_control_exists() and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+		if selected_control_exists() and input_enabled and !Input.is_key_pressed(KEY_CTRL):
 			get_selected_control().enter_text_edit()
-	if Input.is_action_pressed("ui_undo", true) and !disable_input() and (input_repeat_timer.is_stopped() or first_input_repeat):
+	if Input.is_action_pressed("ui_undo", true) and input_enabled and (input_repeat_timer.is_stopped() or first_input_repeat):
 		if drawing_manager.undo_drawing_action():	# Check + action
 			input_repeat_timer.start(0.5 if first_input_repeat else 0.1)
 			first_input_repeat = false
 			canvases[cc].drawings_changed()	# A bit redundant since it already has changes if there's something that you can undo / redo
-	if Input.is_action_pressed("ui_redo", true) and !disable_input() and (input_repeat_timer.is_stopped() or first_input_repeat):
+	if Input.is_action_pressed("ui_redo", true) and input_enabled and (input_repeat_timer.is_stopped() or first_input_repeat):
 		if drawing_manager.redo_drawing_action():	# Check + action
 			input_repeat_timer.start(0.5 if first_input_repeat else 0.1)
 			first_input_repeat = false
@@ -183,49 +184,49 @@ func _process(_delta):
 	if Input.is_action_just_released("ui_undo") or Input.is_action_just_released("ui_redo"):
 		first_input_repeat = true
 	
+	drawing_tool_bar.inputs_enabled = (input_enabled and canvases[cc].settings.app_mode == Enums.AppMode.DRAWING)
+	if !input_enabled:
+		return
 	if canvases[cc].settings.app_mode == Enums.AppMode.DRAWING:
-		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.PENCIL], true) and !disable_input():
+		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.PENCIL], true):
 			drawing_tool_box.select(Enums.DrawingTool.PENCIL)
 			_on_drawing_tool_box_item_selected(Enums.DrawingTool.PENCIL)
-		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.BRUSH], true) and !disable_input():
+		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.BRUSH], true):
 			drawing_tool_box.select(Enums.DrawingTool.BRUSH)
 			_on_drawing_tool_box_item_selected(Enums.DrawingTool.BRUSH)
-		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.ERASER_PENCIL], true) and !disable_input():
+		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.ERASER_PENCIL], true):
 			drawing_tool_box.select(Enums.DrawingTool.ERASER_PENCIL)
 			_on_drawing_tool_box_item_selected(Enums.DrawingTool.ERASER_PENCIL)
-		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.ERASER_BRUSH], true) and !disable_input():
+		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.ERASER_BRUSH], true):
 			drawing_tool_box.select(Enums.DrawingTool.ERASER_BRUSH)
 			_on_drawing_tool_box_item_selected(Enums.DrawingTool.ERASER_BRUSH)
-		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.MOVE], true) and !disable_input():
+		if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.MOVE], true):
 			drawing_tool_box.select(Enums.DrawingTool.MOVE)
 			_on_drawing_tool_box_item_selected(Enums.DrawingTool.MOVE)
-		#if Input.is_action_just_pressed(draw_tool_keybinds[Enums.DrawingTool.BOX_SELECT], true) and !disable_input():
-			#drawing_tool_box.select(Enums.DrawingTool.BOX_SELECT)
-			#_on_drawing_tool_box_item_selected(Enums.DrawingTool.BOX_SELECT)
 	
 	if canvases[cc].settings.app_mode == Enums.AppMode.PLANNING:
-		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.SELECT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.SELECT]) and !Input.is_key_pressed(KEY_CTRL):
 			tool_box.select(Enums.Tool.SELECT)
 			_on_tool_box_item_selected(Enums.Tool.SELECT)
-		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.ADD_TEXT_ELEMENT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.ADD_TEXT_ELEMENT]) and !Input.is_key_pressed(KEY_CTRL):
 			tool_box.select(Enums.Tool.ADD_TEXT_ELEMENT)
 			_on_tool_box_item_selected(Enums.Tool.ADD_TEXT_ELEMENT)
-		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.ADD_LIST]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.ADD_LIST]) and !Input.is_key_pressed(KEY_CTRL):
 			tool_box.select(Enums.Tool.ADD_LIST)
 			_on_tool_box_item_selected(Enums.Tool.ADD_LIST)
-		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.REMOVE_ELEMENT]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.REMOVE_ELEMENT]) and !Input.is_key_pressed(KEY_CTRL):
 			tool_box.select(Enums.Tool.REMOVE_ELEMENT)
 			_on_tool_box_item_selected(Enums.Tool.REMOVE_ELEMENT)
-		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.ELEMENT_STYLE_SETTINGS]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.ELEMENT_STYLE_SETTINGS]) and !Input.is_key_pressed(KEY_CTRL):
 			tool_box.select(Enums.Tool.ELEMENT_STYLE_SETTINGS)
 			_on_tool_box_item_selected(Enums.Tool.ELEMENT_STYLE_SETTINGS)
-		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.ADD_CONNECTION]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.ADD_CONNECTION]) and !Input.is_key_pressed(KEY_CTRL):
 			tool_box.select(Enums.Tool.ADD_CONNECTION)
 			_on_tool_box_item_selected(Enums.Tool.ADD_CONNECTION)
-		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.REMOVE_CONNECTIONS]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.REMOVE_CONNECTIONS]) and !Input.is_key_pressed(KEY_CTRL):
 			tool_box.select(Enums.Tool.REMOVE_CONNECTIONS)
 			_on_tool_box_item_selected(Enums.Tool.REMOVE_CONNECTIONS)
-		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.MARK_COMPLETED]) and !disable_input() and !Input.is_key_pressed(KEY_CTRL):
+		if Input.is_action_just_pressed(tool_keybinds[Enums.Tool.MARK_COMPLETED]) and !Input.is_key_pressed(KEY_CTRL):
 			tool_box.select(Enums.Tool.MARK_COMPLETED)
 			_on_tool_box_item_selected(Enums.Tool.MARK_COMPLETED)
 
@@ -1139,8 +1140,8 @@ func _on_style_settings_preset_color_changed() -> void:
 		return
 	var style_preset: PresetStyle = style_settings.get_selected_preset()
 	var selected_control: Control = get_selected_control()
-	if style_preset.id == "individual" and selected_control is TextElement:
-		if selected_control:
+	if style_preset.id == "individual":
+		if selected_control and selected_control is CanvasElement:
 			canvases[cc].update_connection_color(selected_control.id, style_preset.background_color)
 		else:
 			push_error("Null element %d in canvas %d at main.gd:func _on_style_settings_preset_color_changed" % [selected_control.id, cc])
@@ -1165,23 +1166,20 @@ func _on_style_settings_preset_selected() -> void:
 			canvases[cc].change_selected_preset_style_by_id(style_preset.id)
 			if !selected_control:
 				return
-			if selected_control is TextElement:
+			if selected_control is CanvasElement:
 				canvases[cc].canvas_changed()
 				canvases[cc].update_connection_color(selected_control.id, style_preset.background_color)
 				selected_control.change_style_preset(style_preset)
-			if selected_control is ObjectList:
-				canvases[cc].canvas_changed()
-				selected_control.change_style_preset(style_preset)
 	elif style_settings.preset_options.selected == 0:
 		canvases[cc].unassign_selected_preset_style()
-		if selected_control and (selected_control is TextElement or selected_control is ObjectList):
+		if selected_control and (selected_control is CanvasElement):
 			if selected_control.has_style_preset:
 				canvases[cc].canvas_changed()
-				selected_control.unassign_preset_style()
+				selected_control.unassign_style_preset()
 				canvases[cc].update_connection_color(selected_control.id, selected_control.get_bg_color())
-			style_settings.none_preset = selected_control.individual_style
+			style_settings.individual_preset = selected_control.individual_style
 		else:
-			style_settings.toggle_none_preset_inputs(false)
+			style_settings.toggle_individual_preset_inputs(false)
 
 
 func _on_canvas_has_selected_control() -> void:
@@ -1190,15 +1188,15 @@ func _on_canvas_has_selected_control() -> void:
 	var selected_control: Control = get_selected_control()
 	if !selected_control:
 		return
-	if (selected_control is TextElement or selected_control is ObjectList) and canvases[cc].selected_preset_style == "none":
-		style_settings.none_preset = selected_control.individual_style
+	if (selected_control is CanvasElement) and canvases[cc].selected_preset_style == "individual":
+		style_settings.individual_preset = selected_control.individual_style
 		style_settings.toggle_list_settings(selected_control is ObjectList)
 	style_settings.select_by_style_preset_id(canvases[cc].selected_preset_style)
-	style_settings.toggle_none_preset_inputs(true)
+	style_settings.toggle_individual_preset_inputs(true)
 
 
 func _on_canvas_has_deselected_control() -> void:
-	style_settings.toggle_none_preset_inputs(false)
+	style_settings.toggle_individual_preset_inputs(false)
 
 
 func _on_canvas_status_message_requested(message: String, color: Color) -> void:
@@ -1265,16 +1263,14 @@ func _on_drawing_tool_box_item_selected(index: Enums.DrawingTool) -> void:
 func _on_toggle_mode_toggled(toggled_on: bool) -> void:
 	if !canvases.has(cc):
 		return
-	
 	if toggled_on:
 		canvases[cc].settings.app_mode = Enums.AppMode.DRAWING
-		canvases[cc].toggle_text_element_mouse_inputs(false)
+		canvases[cc].toggle_element_mouse_inputs(false)
 		canvases[cc].toggle_show_priority_tool(false, false)		# Hide priority tool popup while drawing
 		canvases[cc].set_default_cursor_shape(Control.CURSOR_HELP)	# To be replaced by custom mouse cursor
 		tool_box.visible = false
 		drawing_tool_box.visible = true
 		drawing_tool_bar.visible = true
-		drawing_tool_bar.inputs_enabled = true
 		style_settings.toggle_style_presets(false)
 		change_accent_color(accent_color_drawing)
 		var move_images: bool = drawing_tool_box.is_selected(Enums.DrawingTool.MOVE)
@@ -1283,14 +1279,13 @@ func _on_toggle_mode_toggled(toggled_on: bool) -> void:
 	else:
 		drawing_manager.end_stroke()
 		canvases[cc].settings.app_mode = Enums.AppMode.PLANNING
-		canvases[cc].toggle_text_element_mouse_inputs(true)
+		canvases[cc].toggle_element_mouse_inputs(true)
 		# Restore priority tool popup enabled state
 		canvases[cc].toggle_show_priority_tool(canvases[cc].settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL], false)
 		canvases[cc].set_default_cursor_shape(Control.CURSOR_ARROW)	# Default
 		tool_box.visible = true
 		drawing_tool_box.visible = false
 		drawing_tool_bar.visible = false
-		drawing_tool_bar.inputs_enabled = false
 		style_settings.toggle_style_presets(true)
 		tool_box.select(Enums.Tool.SELECT)
 		_on_tool_box_item_selected(Enums.Tool.SELECT)

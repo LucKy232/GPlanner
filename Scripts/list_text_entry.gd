@@ -14,7 +14,7 @@ var initial_grabber_event: Vector2 = Vector2.ZERO
 var can_hover: bool = true
 var priority_id: Enums.Priority = Enums.Priority.NONE
 var priority_color: Color = Color.WHITE
-var list_id: int = -1
+var list_id: int = -1		## updated when this is created, used when dropped on canvas to access list style, if list_id ever changes at runtime, this will break
 var id: int = -1
 
 @warning_ignore("unused_signal")
@@ -28,7 +28,7 @@ signal text_resized
 
 
 func _ready() -> void:
-	_on_hover(false)
+	reset_hover()
 	reset_item_sizes.call_deferred()
 
 
@@ -52,7 +52,7 @@ func _input(event: InputEvent) -> void:
 func end_grab() -> void:
 	grabber_clicked = false
 	grabber_ended_move.emit(id)
-	_on_hover(false)
+	reset_hover()
 
 
 func change_priority_color(c: Color) -> void:
@@ -150,6 +150,11 @@ func to_json() -> Dictionary:
 		"priority_id": priority_id,
 	}
 	return dict
+
+
+func reset_hover() -> void:
+	priority_idicator.visible = true
+	grabber_control.visible = false
 
 
 func _on_hover(on: bool) -> void:

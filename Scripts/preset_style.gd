@@ -216,14 +216,14 @@ func set_list_div_theme(theme: Theme, use_theme_values: bool) -> void:
 
 func rebuild_from_json_dict(dict: Dictionary) -> void:
 	var p_id: String
-	var p_name = "none"
+	var p_name = "individual"
 	if dict.has("ID"):
 		p_id = str(dict["ID"])
 	elif dict.has("id"):
 		p_id = str(dict["id"])
 	if dict.has("name"):
 		p_name = str(dict["name"])
-	id = p_id
+	id = p_id if p_id != "none" else "individual"		# Potential backwards compatibility convert "none" to "individual"
 	name = p_name
 	
 	var bgc: Color = Color(dict["background_color.r"],

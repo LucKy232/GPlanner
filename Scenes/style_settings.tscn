@@ -144,7 +144,7 @@ selected = 0
 fit_to_longest_item = false
 allow_reselect = true
 item_count = 1
-popup/item_0/text = "None"
+popup/item_0/text = "Individual"
 popup/item_0/id = 0
 
 [node name="AddPreset" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox" unique_id=484451912]

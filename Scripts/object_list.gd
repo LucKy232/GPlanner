@@ -1,5 +1,7 @@
 class_name ObjectList extends CanvasElement
 
+@export var selected_z_index: int = 2
+@export var default_z_index: int = 0
 @export var default_text_edit_theme: Theme
 @export var default_div_theme: Theme
 @onready var object_v_box: VBoxContainer = %ObjectVBox
@@ -187,7 +189,7 @@ func _input(event: InputEvent) -> void:
 func copy_list_text_to_clipboard() -> void:
 	var clip_text: String = (list_title.text)
 	for entry in entries:
-		clip_text += ("\n - %s" % [entry.get_text()])
+		clip_text += ("\n- %s" % [entry.get_text()])
 	DisplayServer.clipboard_set(clip_text)
 	copied_to_clipboard.emit()
 
@@ -199,16 +201,20 @@ func change_state(new_state: State) -> void:
 			mouse_filter = Control.MOUSE_FILTER_PASS
 			scroll_container.clip_contents = true
 			drop_visual.visible = false
+			toggle_all_entries_hover(true)
 		State.DRAGGING_CHILD_INSIDE:	# Stop the input going to canvas
 			mouse_filter = Control.MOUSE_FILTER_STOP
 			scroll_container.clip_contents = false
 			drop_visual.visible = true
+			toggle_all_entries_hover(false)
 		State.DRAGGING_CHILD_OUTSIDE:
 			mouse_filter = Control.MOUSE_FILTER_PASS
 			drop_visual.visible = false
+			toggle_all_entries_hover(false)
 		State.DRAGGING_FROM_OUTSIDE:
 			scroll_container.clip_contents = false
 			drop_visual.visible = true
+			toggle_all_entries_hover(false)
 
 
 func toggle_title(toggled_on: bool) -> void:
@@ -219,6 +225,7 @@ func toggle_title(toggled_on: bool) -> void:
 func select() -> void:
 	add_buttons_tween.toggle(true)
 	toggle_title_tween.toggle(true)
+	z_index = selected_z_index
 	selected = true
 
 
@@ -228,6 +235,7 @@ func deselect() -> void:
 	exit_text_edit()
 	add_buttons_tween.toggle(false)
 	toggle_title_tween.toggle(false)
+	z_index = default_z_index
 	selected = false
 
 
@@ -272,7 +280,6 @@ func is_editing_text(include_title: bool = true) -> bool:
 func enter_text_edit() -> void:
 	if entries.size() > last_edited_entry_id and last_edited_entry_id >= 0:
 		entries[last_edited_entry_id].enter_text_edit()
-		ensure_entry_visible()
 
 
 func exit_text_edit() -> void:
@@ -335,7 +342,9 @@ func remove_text_entry(entry: ListTextEntry, delete_from_memory: bool) -> void:
 	if last_edited_entry_id > entries.size() - 1:
 		last_edited_entry_id = entries.size() - 1
 	reset_entry_ids()
+	# To show all divs except last one
 	toggle_entry_divs(style_preset.list_div_enabled if has_style_preset else individual_style.list_div_enabled)
+	toggle_side_buttons(false)
 	list_changed.emit()
 
 
@@ -395,7 +404,6 @@ func filter_entries(value: int) -> void:
 
 
 func rebuild_from_dict(dict: Dictionary, priority_colors: Dictionary[Enums.Priority, Color]) -> void:
-	id = dict["id"]
 	size = Vector2(dict["size.x"], dict["size.y"])
 	position = Vector2(dict["pos.x"], dict["pos.y"])
 	if dict.has("title"):
@@ -415,7 +423,7 @@ func rebuild_from_dict(dict: Dictionary, priority_colors: Dictionary[Enums.Prior
 
 # Map order to entry
 func to_json() -> Dictionary:
-	var style_preset_id: String = "none" if !has_style_preset else style_preset.id
+	var style_preset_id: String = "individual" if !has_style_preset else style_preset.id
 	var dict: Dictionary
 	dict["entries"] = {}
 	for entry in entries:
@@ -483,7 +491,6 @@ func init_individual_style() -> void:
 	individual_style.list_setting_changed.connect(_on_style_settings_changed)
 	individual_style.font_size_changed.connect(_on_style_font_size_changed)
 	individual_style.entry_separation = object_v_box.get_theme_constant("separation")
-	_apply_style_preset(individual_style)
 
 
 func _apply_style_preset(preset: PresetStyle) -> void:
@@ -510,7 +517,10 @@ func change_style_preset(preset: PresetStyle) -> void:
 	_apply_style_preset(style_preset)
 
 
-func unassign_preset_style() -> void:
+func unassign_style_preset() -> void:
+	if has_style_preset and style_preset:
+		style_preset.list_setting_changed.disconnect(_on_style_settings_changed)
+		style_preset.font_size_changed.disconnect(_on_style_font_size_changed)
 	has_style_preset = false
 	style_preset = null
 	_apply_style_preset(individual_style)
@@ -522,6 +532,28 @@ func toggle_entry_divs(toggled_on: bool) -> void:
 	for idx in range(0, entries.size() - 1):
 		entries[idx].toggle_div(toggled_on)
 	entries[-1].toggle_div(false)
+
+
+func toggle_side_buttons(toggled_on: bool) -> void:
+	if toggled_on:
+		erase_entry_tween.toggle(true)
+		if priority_tool_enabled and priority_enabled:
+			priority_buttons_tween.toggle(true)
+		line_up_side_buttons.call_deferred()
+	else:
+		erase_entry_tween.toggle(false)
+		priority_buttons_tween.toggle(false)
+
+
+func toggle_all_entries_hover(toggled_on: bool) -> void:
+	for entry in entries:
+		entry.can_hover = toggled_on
+		if !toggled_on:
+			entry.reset_hover()
+
+
+func toggle_mouse_input(toggled_on: bool) -> void:
+	toggle_all_entries_hover(toggled_on)
 
 
 func get_bg_color() -> Color:
@@ -627,6 +659,7 @@ func _on_list_text_entry_grabber_ended_move(entry_id: int) -> void:
 	change_state(State.DEFAULT)
 	dragger.end_drag()
 	dragging.emit(false)
+	toggle_all_entries_hover(true)
 	if entry_id != move_to:
 		object_v_box.move_child(entries[entry_id], move_to)
 		sort_entries(entry_id, move_to)
@@ -635,17 +668,11 @@ func _on_list_text_entry_grabber_ended_move(entry_id: int) -> void:
 		list_changed.emit()
 
 
-func _on_list_text_entry_text_entry_toggled(entry_id: int, toggled: bool) -> void:
+func _on_list_text_entry_text_entry_toggled(entry_id: int, toggled_on: bool) -> void:
 	last_edited_entry_id = entry_id		# on focus enterd and exited
-	if toggled:
-		text_edit_active.emit(id)
-		erase_entry_tween.toggle(true)
-		line_up_side_buttons.call_deferred()
-		if priority_tool_enabled and priority_enabled:
-			priority_buttons_tween.toggle(true)
-	else:
-		erase_entry_tween.toggle(false)
-		priority_buttons_tween.toggle(false)
+	ensure_entry_visible()
+	toggle_side_buttons(toggled_on)
+	text_edit_active.emit(id)
 
 
 func _on_list_text_entry_text_resized() -> void:

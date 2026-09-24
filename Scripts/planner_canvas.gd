@@ -9,13 +9,14 @@ class_name PlannerCanvas extends Control
 @onready var drop_visual: Panel = %DropVisualIndicator
 
 var priority_colors: Dictionary[Enums.Priority, Color]
-var elements: Dictionary[int, TextElement]
+var elements: Dictionary[int, CanvasElement]
+var text_elements: Dictionary[int, TextElement]
 var lists: Dictionary[int, ObjectList]
 var connections: Dictionary[int, Connection]
-var connections_p1: Dictionary[int, PackedInt32Array]	## ELEMENT ID key, Array of CONNECTION ID value
-var connections_p2: Dictionary[int, PackedInt32Array]	## ELEMENT ID key, Array of CONNECTION ID value
-var elements_to_connection: Dictionary[Vector2i, int]	## ELEMENT ID Vector2i(ID1, ID2) key, CONNECTION ID value
-var style_presets: Dictionary[String, PresetStyle]	## PRESET ID key (not option_selector like in element_setting.gd)
+var connections_p1: Dictionary[int, PackedInt32Array]	## CanvasElement ID key, Array of Connection ID value
+var connections_p2: Dictionary[int, PackedInt32Array]	## CanvasElement ID key, Array of Connection ID value
+var elements_to_connection: Dictionary[Vector2i, int]	## CanvasElement ID Vector2i(ID1, ID2) key, Connection ID value
+var style_presets: Dictionary[String, PresetStyle]	## PRESET ID key (not option_selector like in style_settings.gd)
 var swatches: Array[Color]
 var drawing_manager: DrawingManager
 
@@ -24,9 +25,8 @@ var tool_id: Enums.Tool
 var opened_file_path: String = ""
 var file_name_short: String = ""
 var selected_control: Control
-var selected_preset_style: String = "none"
+var selected_preset_style: String = "individual"
 var element_id_counter: int = 0
-var list_id_counter: int = 0
 var connection_id_counter: int = 0
 var connection_candidate_1: int = -1
 var connection_candidate_2: int = -1
@@ -92,16 +92,17 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 func _drop_data(at_position: Vector2, data: Variant) -> void:
 	if data is ListTextEntry:
 		var new_elem_id: int = add_text_element(at_position)
+		var new_text_element: TextElement = elements[new_elem_id] as TextElement
 		var list_id = data.list_id
-		if lists.has(list_id):
-			if lists[list_id].has_style_preset:
-				elements[new_elem_id].change_style_preset(lists[list_id].style_preset)
+		if elements.has(list_id) and elements[list_id] is ObjectList:
+			if elements[list_id].has_style_preset:
+				new_text_element.change_style_preset(elements[list_id].style_preset)
 			else:
-				elements[new_elem_id].copy_style_preset(lists[list_id].individual_style)
-		elements[new_elem_id].set_text(data.get_text())
-		elements[new_elem_id].change_size(data.size)
-		elements[new_elem_id].set_priority_id(data.priority_id)
-		elements[new_elem_id].set_priority_color(priority_colors[data.priority_id])
+				new_text_element.copy_style_preset(elements[list_id].individual_style)
+		new_text_element.set_text(data.get_text())
+		new_text_element.change_size(data.size)
+		new_text_element.set_priority_id(data.priority_id)
+		new_text_element.set_priority_color(priority_colors[data.priority_id])
 		select_element(new_elem_id)
 		data.remove_from_list.emit()
 		data.queue_free()
@@ -211,9 +212,9 @@ func update_single_style_preset(style_preset: PresetStyle) -> void:
 
 
 func update_connection_color_by_preset(preset_id: String) -> void:
-	for e_id in elements:
-		if elements[e_id].has_style_preset and elements[e_id].style_preset.id == preset_id and style_presets.has(preset_id):
-			update_connection_color(e_id, style_presets[preset_id].background_color)
+	for elem_id in elements:
+		if elements[elem_id].has_style_preset and elements[elem_id].style_preset.id == preset_id and style_presets.has(preset_id):
+			update_connection_color(elem_id, style_presets[preset_id].background_color)
 
 
 func remove_style_preset(style_id: String) -> void:
@@ -221,7 +222,7 @@ func remove_style_preset(style_id: String) -> void:
 		style_presets.erase(style_id)
 		for elem_id in elements:
 			if elements[elem_id].has_style_preset and elements[elem_id].style_preset.id == style_id:
-				elements[elem_id].unassign_preset_style()
+				elements[elem_id].unassign_style_preset()
 
 
 func pan_limits(pos: Vector2) -> Vector2:
@@ -237,20 +238,21 @@ func pan_limits(pos: Vector2) -> Vector2:
 	return pos
 
 
-func add_object_list(at_position: Vector2, id_specified: int = -1) -> void:
+func add_object_list(at_position: Vector2, id_from_file: int = -1) -> int:
 	canvas_changed()
 	var new_list: ObjectList = load(GlobalScenes.object_list_scene).instantiate()
 	var list_id: int
-	if id_specified < 0:
-		list_id = list_id_counter
-		list_id_counter += 1
+	if id_from_file < 0 or elements.has(id_from_file):
+		list_id = element_id_counter
+		element_id_counter += 1
 	else:
-		list_id = id_specified
-		if id_specified >= list_id_counter:
-			list_id_counter = id_specified + 1
-	new_list.id = list_id
+		list_id = id_from_file
+		if id_from_file >= element_id_counter:
+			element_id_counter = id_from_file + 1
 	lists[list_id] = new_list
+	elements[list_id] = new_list
 	object_container.add_child(new_list)
+	new_list.id = list_id
 	new_list.name = "ObjectList"
 	new_list.position = at_position
 	new_list.canvas_scale = scale.x
@@ -267,27 +269,37 @@ func add_object_list(at_position: Vector2, id_specified: int = -1) -> void:
 	new_list.copied_to_clipboard.connect(_on_list_copied_to_clipboard)
 	new_list.drag_and_resize_input.drag_requested.connect(_on_control_dragged.bind(new_list))
 	new_list.drag_and_resize_input.resize_requested.connect(_on_control_resized.bind(new_list))
-	new_list.drag_and_resize_input.input_ended.connect(_on_control_input_ended.bind(new_list))
+	new_list.drag_and_resize_input.input_ended.connect(_on_control_input_ended.bind(new_list))# If loading from file, skip default style change
+	# If loading from file, skip default style change & auto select
+	if id_from_file < 0:
+		if style_presets.has(selected_preset_style):
+			new_list.change_style_preset(style_presets[selected_preset_style])
+		else:
+			new_list.unassign_style_preset()
+		select_element(list_id)
+		is_element_just_created = true
+	return new_list.id
 
 
-func add_text_element(at_position: Vector2, id_specified: int = -1) -> int:
+func add_text_element(at_position: Vector2, id_from_file: int = -1) -> int:
 	canvas_changed()
 	var new_element: TextElement = load(GlobalScenes.text_element_scene).instantiate()
 	var elem_id: int
-	if id_specified < 0:
+	if id_from_file < 0 or elements.has(id_from_file):
 		elem_id = element_id_counter
 		element_id_counter += 1
 	else:
-		elem_id = id_specified
-		if id_specified >= element_id_counter:
-			element_id_counter = id_specified + 1
+		elem_id = id_from_file
+		if id_from_file >= element_id_counter:
+			element_id_counter = id_from_file + 1
 	new_element.id = elem_id
+	text_elements[elem_id] = new_element
 	elements[elem_id] = new_element
 	object_container.add_child(new_element)
 	# NOTE element IDs can't change after creation because they are bound to their signals
 	# if fix needed, emit these signals from element script with current IDs
 	new_element.gui_input.connect(_on_text_element_gui_input.bind(elem_id))
-	new_element.resized.connect(_on_text_element_resized.bind(elem_id))
+	new_element.resized.connect(_on_element_resized.bind(elem_id))
 	new_element.became_selected.connect(_on_element_text_box_active.bind(elem_id))
 	new_element.changed_priority.connect(_on_element_changed_priority.bind(elem_id))
 	new_element.text_changed.connect(_on_text_element_text_changed)
@@ -301,17 +313,20 @@ func add_text_element(at_position: Vector2, id_specified: int = -1) -> int:
 	new_element.set_priority_visible(settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITIES])
 	new_element.set_priority_tool_enabled(settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL])
 	new_element.z_index = 1
-	if style_presets.has(selected_preset_style):
-		new_element.change_style_preset(style_presets[selected_preset_style])
-	# Auto select created element, and start editing text
-	if id_specified < 0:	# Don't select elements when creating them in bulk (when id is specified)
+	# If loading from file, skip default style change
+	if id_from_file < 0:
+		if style_presets.has(selected_preset_style):
+			new_element.change_style_preset(style_presets[selected_preset_style])
+		else:
+			new_element.unassign_style_preset()
+		# Auto select created element, and start editing text
 		select_element(elem_id)
 		new_element.enter_text_edit()
 		is_element_just_created = true
-	return elem_id
+	return new_element.id
 
 
-func add_connection(id_specified: int = -1, arrow_1_enabled: bool = false, arrow_2_enabled: bool = false) -> void:
+func add_connection(id_from_file: int = -1, arrow_1_enabled: bool = false, arrow_2_enabled: bool = false) -> void:
 	canvas_changed()
 	if connection_candidate_1 == connection_candidate_2:
 		connection_candidate_1 = -1
@@ -322,13 +337,13 @@ func add_connection(id_specified: int = -1, arrow_1_enabled: bool = false, arrow
 	and !elements_to_connection.has(Vector2i(connection_candidate_2, connection_candidate_1))):
 		var new_connection = load(GlobalScenes.connection_scene).instantiate() as Connection
 		var conn_id: int
-		if id_specified < 0:
+		if id_from_file < 0:
 			conn_id = connection_id_counter
 			connection_id_counter += 1
 		else:
-			conn_id = id_specified
-			if id_specified >= connection_id_counter:
-				connection_id_counter = id_specified + 1
+			conn_id = id_from_file
+			if id_from_file >= connection_id_counter:
+				connection_id_counter = id_from_file + 1
 		connections[conn_id] = new_connection
 		new_connection.elem_id1 = connection_candidate_1
 		new_connection.elem_id2 = connection_candidate_2
@@ -360,20 +375,17 @@ func add_connection(id_specified: int = -1, arrow_1_enabled: bool = false, arrow
 	connection_indicator.visible = false
 
 
-func remove_text_element(elem_id: int) -> void:
+func remove_element(elem_id: int) -> void:
 	canvas_changed()
 	deselect_any()
 	remove_connections(elem_id)
 	elements[elem_id].queue_free()
-	elements.erase(elem_id)
-
-
-func remove_object_list(list_id: int) -> void:
-	canvas_changed()
-	deselect_any()
-	#remove_connections(list_id)
-	lists[list_id].queue_free()
-	lists.erase(list_id)
+	if lists.has(elem_id):
+		lists.erase(elem_id)
+	elif text_elements.has(elem_id):
+		text_elements.erase(elem_id)
+	if elements.has(elem_id):
+		elements.erase(elem_id)
 
 
 func remove_connections(elem_id: int) -> void:
@@ -415,7 +427,7 @@ func remove_connections(elem_id: int) -> void:
 
 
 func select_element(elem_id: int) -> void:
-	if selected_control and selected_control is TextElement and elem_id == selected_control.id:
+	if selected_control and selected_control is CanvasElement and elem_id == selected_control.id:
 		return			# Already selected
 	deselect_any()		# Deselect previous element
 	if elements.has(elem_id):
@@ -427,21 +439,8 @@ func select_element(elem_id: int) -> void:
 		selection_viewer.position = selected_control.position
 		change_preset_to_active_control(selected_control)
 		has_selected_control.emit()
-
-
-func select_list(list_id: int) -> void:
-	if selected_control and selected_control is ObjectList and list_id == selected_control.id:
-		return			# Already selected
-	deselect_any()		# Deselect previous element
-	if lists.has(list_id):
-		selected_control = lists[list_id]
-		object_container.move_child(selected_control, 0)
-		selected_control.select()
-		selection_viewer.visible = true
-		selection_viewer.size = selected_control.size
-		selection_viewer.position = selected_control.position
-		change_preset_to_active_control(selected_control)
-		has_selected_control.emit()
+	else:
+		push_error("elements Dictionary doesn't have ID %d" [elem_id])
 
 
 func deselect_any() -> void:
@@ -462,21 +461,22 @@ func reset_adding_connection() -> void:
 # Called from select_element(), which also emits a signal after this telling main.gd to handle the style change
 # From main.gd:_on_style_settings_preset_selected() passes the selected preset from the style settings panel
 func change_preset_to_active_control(control: Control) -> void:
-	if (control is TextElement) or (control is ObjectList):
-		if !control.has_style_preset:
-			selected_preset_style = "none"
-		elif selected_preset_style != control.style_preset.id:
-			selected_preset_style = control.style_preset.id
+	if control is not CanvasElement:
+		return
+	if !control.has_style_preset:
+		selected_preset_style = "individual"
+	elif selected_preset_style != control.style_preset.id:
+		selected_preset_style = control.style_preset.id
 
 
 # From main.gd:switch_main_canvas()
 func unassign_selected_preset_style() -> void:
-	selected_preset_style = "none"
+	selected_preset_style = "individual"
 
 
 func change_selected_preset_style_by_id(preset_id: String) -> void:
-	if preset_id == "none" or !style_presets.has(preset_id):
-		selected_preset_style = "none"
+	if preset_id == "individual" or !style_presets.has(preset_id):
+		selected_preset_style = "individual"
 	elif selected_preset_style != preset_id:
 		selected_preset_style = preset_id
 
@@ -494,7 +494,7 @@ func update_connections(elem_id: int) -> void:
 
 func all_elements_to_Json() -> Dictionary:
 	var dict: Dictionary = {}
-	for elem_id in elements:
+	for elem_id in text_elements:
 		if elements[elem_id]:
 			dict[elem_id] = elements[elem_id].to_json()
 	return dict
@@ -503,8 +503,8 @@ func all_elements_to_Json() -> Dictionary:
 func all_lists_to_json() -> Dictionary:
 	var dict: Dictionary = {}
 	for list_id in lists:
-		if lists[list_id]:
-			dict[list_id] = lists[list_id].to_json()
+		if elements[list_id]:
+			dict[list_id] = elements[list_id].to_json()
 	return dict
 
 
@@ -587,7 +587,7 @@ func rebuild_elements(json_elems: Dictionary) -> void:
 			var elem_id: int = int(json_elems[i]["id"])
 			var pos: Vector2 = Vector2(json_elems[i]["pos.x"], json_elems[i]["pos.y"])
 			add_text_element(pos, elem_id)
-			var style_id: String = "none"
+			var style_id: String = "individual"
 			var completed: bool = false
 			var has_style: bool = false
 			var priority_id: int = Enums.Priority.NONE
@@ -612,22 +612,23 @@ func rebuild_elements(json_elems: Dictionary) -> void:
 				elements[elem_id].change_style_preset(style_presets[style_id])
 			elif json_elems[i].has("individual_style") and !has_style:
 				elements[elem_id].individual_style.rebuild_from_json_dict(json_elems[i]["individual_style"])
+				elements[elem_id].unassign_style_preset()
 	is_user_input = true
 
 
 func rebuild_lists(json_lists: Dictionary) -> void:
 	is_user_input = false
 	for i in json_lists:
-		var list_id = int(i)
-		add_object_list(Vector2.ZERO, list_id)
-		lists[list_id].rebuild_from_dict(json_lists[i], priority_colors)
+		var list_id = add_object_list(Vector2.ZERO, int(i))
+		elements[list_id].rebuild_from_dict(json_lists[i], priority_colors)
 		if json_lists[i].has("has_style_preset") and json_lists[i].has("style_preset_id"):
 			var has_style: bool = bool(json_lists[i]["has_style_preset"])
 			var style_id: String = str(json_lists[i]["style_preset_id"])
 			if has_style and style_presets.has(style_id):
-				lists[list_id].change_style_preset(style_presets[style_id])
+				elements[list_id].change_style_preset(style_presets[style_id])
 			elif !has_style and json_lists[i].has("individual_style"):
-				lists[list_id].individual_style.rebuild_from_json_dict(json_lists[i]["individual_style"])
+				elements[list_id].individual_style.rebuild_from_json_dict(json_lists[i]["individual_style"])
+				elements[list_id].unassign_style_preset()
 	is_user_input = true
 
 
@@ -676,6 +677,8 @@ func erase_everything() -> void:
 		if elements[i] != null:
 			elements[i].queue_free()
 	elements = {}
+	text_elements = {}
+	lists = {}
 	for i in connections:
 		if connections[i] != null:
 			connections[i].queue_free()
@@ -689,21 +692,21 @@ func erase_everything() -> void:
 	is_resizing = false
 
 
-func toggle_element_and_connections(elem_id: int, state: bool) -> void:
+func toggle_element_and_connections(elem_id: int, completed: bool) -> void:
 	if selected_control and selected_control is TextElement and selected_control.id == elem_id:
 		deselect_any()
-	elements[elem_id].visible = state
+	elements[elem_id].visible = completed
 	
 	if elem_id in connections_p1:
 		for conn_id in connections_p1[elem_id]:
-			connections[conn_id].visible = state
+			connections[conn_id].visible = completed
 	if elem_id in connections_p2:
 		for conn_id in connections_p2[elem_id]:
-			connections[conn_id].visible = state
+			connections[conn_id].visible = completed
 
 
 func toggle_element(elem_id: int, state: bool) -> void:
-	if selected_control and selected_control is TextElement and selected_control.id == elem_id:
+	if selected_control and selected_control is CanvasElement and selected_control.id == elem_id:
 		deselect_any()
 	elements[elem_id].visible = state
 
@@ -749,12 +752,12 @@ func handle_zoom(old_zoom: float, target: Vector2) -> void:
 
 func update_lists_canvas_scale() -> void:
 	for list_id in lists:
-		lists[list_id].canvas_scale = scale.x
+		elements[list_id].canvas_scale = scale.x
 
 
 func toggle_show_completed(toggled_on: bool) -> void:
 	settings.checkbox_data[Enums.Checkbox.SHOW_COMPLETED] = toggled_on
-	for i in elements:
+	for i in text_elements:
 		if elements[i].completed and elements[i].priority_id <= settings.priority_filter_value:
 			toggle_element(i, toggled_on)
 	for i in elements:
@@ -763,44 +766,34 @@ func toggle_show_completed(toggled_on: bool) -> void:
 
 func toggle_show_priorities(toggled_on: bool) -> void:
 	settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITIES] = toggled_on
-	for i in elements:
-		elements[i].set_priority_visible(toggled_on)
-	for i in lists:
-		lists[i].set_priority_visible(toggled_on)
+	for elem_id in elements:
+		elements[elem_id].set_priority_visible(toggled_on)
 
 
 func toggle_show_priority_tool(toggled_on: bool, update_state: bool = true) -> void:
 	if update_state:
 		settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL] = toggled_on
-	for i in elements:
-		elements[i].set_priority_tool_enabled(toggled_on)
-	for i in lists:
-		lists[i].set_priority_tool_enabled(toggled_on)
+	for elem_id in elements:
+		elements[elem_id].set_priority_tool_enabled(toggled_on)
 
 
 func change_priority_filter(value: int) -> void:
 	settings.priority_filter_value = value
-	for i in elements:
+	for i in text_elements:
 		if elements[i].priority_id > value or (elements[i].completed and !settings.checkbox_data[Enums.Checkbox.SHOW_COMPLETED]):
 			toggle_element(i, false)
 		else:
 			toggle_element(i, true)
-	for i in elements:
-		toggle_connections(i)
-	for i in lists:
-		lists[i].filter_entries(value)
+	for elem_id in elements:
+		toggle_connections(elem_id)
+		if elements[elem_id] is ObjectList:
+			elements[elem_id].filter_entries(value)
 
 
-func toggle_text_element_mouse_inputs(toggled_on: bool) -> void:
-	for e in elements:
-		if toggled_on:
-			elements[e].text_edit.mouse_filter = Control.MOUSE_FILTER_PASS
-			elements[e].mouse_filter = Control.MOUSE_FILTER_PASS
-		else:
-			elements[e].text_edit.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			elements[e].mouse_filter = Control.MOUSE_FILTER_IGNORE
-	for c in connections:
-		connections[c].toggle_arrow_inputs(toggled_on)
+func toggle_element_mouse_inputs(toggled_on: bool) -> void:
+	object_container.mouse_behavior_recursive = Control.MOUSE_BEHAVIOR_ENABLED if toggled_on else Control.MOUSE_BEHAVIOR_DISABLED
+	for list_id in lists:
+		elements[list_id].toggle_mouse_input(toggled_on)
 
 
 func warp_mouse_to_other_size() -> void:
@@ -832,7 +825,7 @@ func _on_control_dragged(event_relative: Vector2, control: Control) -> void:
 	if tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS:
 		control.position += event_relative / scale
 		selection_viewer.position = control.position
-		if control is TextElement:
+		if control is CanvasElement:
 			update_connections(control.id)
 		canvas_changed()
 
@@ -846,8 +839,7 @@ func _on_control_resized(event_relative: Vector2, control: Control) -> void:
 		else:
 			control.size += event_relative / scale
 		selection_viewer.size = control.size
-		if control is TextElement:
-			update_connections(control.id)
+		update_connections(control.id)
 		canvas_changed()
 
 
@@ -868,14 +860,9 @@ func _on_background_gui_input(event: InputEvent) -> void:
 			deselect_any()
 	
 	# Begin mouse pan
-	if event.is_action("pan") and event.is_pressed() and !is_drawing:
-		if is_element_just_created:	# Don't deselect if this event is the one that created an element
-			is_element_just_created = false
-		else:
-			deselect_any()
-		if !is_panning:
-			is_panning = true
-			set_default_cursor_shape(Control.CURSOR_DRAG)
+	if event.is_action("pan") and event.is_pressed() and !is_drawing and !is_panning:
+		is_panning = true
+		set_default_cursor_shape(Control.CURSOR_DRAG)
 	
 	# End mouse pan
 	if event.is_action("pan") and event.is_released():
@@ -1002,7 +989,7 @@ func _on_text_element_gui_input(event: InputEvent, elem_id: int) -> void:
 			elements[elem_id].toggle_completed()
 			toggle_element_and_connections(elem_id, settings.checkbox_data[Enums.Checkbox.SHOW_COMPLETED])
 	elif tool_id == Enums.Tool.REMOVE_ELEMENT and event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
-		remove_text_element(elem_id)
+		remove_element(elem_id)
 
 
 func _on_object_list_mouse_input(event: InputEvent, list_id: int) -> void:
@@ -1011,20 +998,33 @@ func _on_object_list_mouse_input(event: InputEvent, list_id: int) -> void:
 	if event is not InputEventMouseButton:
 		return
 	if event.button_index == MOUSE_BUTTON_LEFT and event.is_pressed():
+		if tool_id == Enums.Tool.ADD_CONNECTION:
+			if connection_candidate_1 == -1:
+				connection_candidate_1 = list_id
+				select_element(list_id)
+				if selected_control:
+					connection_indicator.visible = true
+					connection_indicator.position = selected_control.position - Vector2(20.0, 20.0)
+				#print("FIRST ID CONFIRMED")
+			else:
+				connection_candidate_2 = list_id
+				add_connection()
+		if tool_id == Enums.Tool.REMOVE_CONNECTIONS:
+			remove_connections(list_id)
 		if (tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS):
-			select_list(list_id)
+			select_element(list_id)
 			# Distance to bottom-right corner, start resizing
-			if event.position.distance_to(lists[list_id].size) < 18.0:
+			if event.position.distance_to(elements[list_id].size) < 18.0:
 				is_resizing = true
 				is_panning = false
-				lists[list_id].start_resizing()
+				elements[list_id].start_resizing()
 			# Start dragging
 			if !is_dragging and !is_resizing:
 				is_dragging = true
 				is_panning = false
-				lists[list_id].start_dragging()
+				elements[list_id].start_dragging()
 	elif tool_id == Enums.Tool.REMOVE_ELEMENT and event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
-		remove_object_list(list_id)
+		remove_element(list_id)
 
 
 func _on_object_list_can_drop() -> void:
@@ -1051,7 +1051,7 @@ func _on_element_text_box_active(elem_id: int) -> void:
 			connection_candidate_2 = elem_id
 			add_connection()
 	if tool_id == Enums.Tool.REMOVE_ELEMENT:
-		remove_text_element(elem_id)
+		remove_element(elem_id)
 	if tool_id == Enums.Tool.REMOVE_CONNECTIONS:
 		remove_connections(elem_id)
 
@@ -1071,25 +1071,26 @@ func _on_list_dragging_toggled(drag_on: bool) -> void:
 
 
 func _on_list_text_edit_active(list_id: int) -> void:
-	if lists.has(list_id):
-		select_list(list_id)
+	if elements.has(list_id):
+		select_element(list_id)
 
 
 func _on_list_select_requested(list_id: int) -> void:
-	if lists.has(list_id):
-		select_list(list_id)
+	if elements.has(list_id):
+		select_element(list_id)
 
 
 func _on_list_remove_element_request(elem_id: int) -> void:
 	if !elements.has(elem_id):
 		push_error("Wrong element id @ _on_list_remove_element_request")
-	remove_text_element(elem_id)
+	remove_element(elem_id)
 	is_dragging = false
 	is_resizing = false
 
 
-func _on_text_element_resized(elem_id: int) -> void:
-	if selected_control and selected_control is TextElement and selected_control.id == elem_id:
+# For anything that automatically resizes the CanvasElement
+func _on_element_resized(elem_id: int) -> void:
+	if selected_control and elements.has(elem_id) and selected_control == elements[elem_id]:
 		selection_viewer.size = elements[elem_id].size
 
 
@@ -1107,7 +1108,7 @@ func _on_list_entry_changed_priority(entry: ListTextEntry, p: Enums.Priority) ->
 
 
 func _on_list_copied_to_clipboard() -> void:
-	status_message_requested.emit("List copied to clipboard", GlobalColors.ui_green)
+	status_message_requested.emit("List copied to clipboard as text", GlobalColors.ui_green)
 
 
 func _on_connection_arrow_changed() -> void:

@@ -64,7 +64,7 @@ func remove_button(idx: int) -> void:
 func erase_everything() -> void:
 	var to_erase: PackedInt32Array = PackedInt32Array()
 	for butt_id in buttons:
-		if butt_id > 0:		# Keep none_preset
+		if butt_id > 0:		# Keep individual_preset
 			buttons[butt_id].queue_free()
 			to_erase.append(butt_id)
 	for tip in tooltips:

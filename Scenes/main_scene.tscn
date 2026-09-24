@@ -402,6 +402,7 @@ initial_position = 2
 theme = ExtResource("18_2ebs2")
 access = 2
 filters = PackedStringArray("*.json")
+use_native_dialog = true
 
 [node name="FileDialogLoad" type="FileDialog" parent="." unique_id=2041459749]
 unique_name_in_owner = true
@@ -415,6 +416,7 @@ ok_button_text = "Open"
 file_mode = 0
 access = 2
 filters = PackedStringArray("*.json")
+use_native_dialog = true
 
 [node name="NewFileConfirmation" type="AcceptDialog" parent="." unique_id=2101125233]
 unique_name_in_owner = true

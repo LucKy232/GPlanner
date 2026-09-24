@@ -57,7 +57,7 @@ class_name StyleSettings extends Control
 
 
 var presets: Dictionary[int, PresetStyle]	## KEY: preset_options selector ID (not preset ID like in planner_canvas.gd)
-var none_preset: PresetStyle
+var individual_preset: PresetStyle
 var max_option_id: int = 1
 
 signal preset_added
@@ -77,9 +77,9 @@ func _ready() -> void:
 	
 	style_buttons.preset_style_button_pressed.connect(change_preset)
 	style_buttons.add_button("0", "No Preset")
-	reset_none_preset()
+	reset_individual_preset()
 	if preset_options.selected == 0:
-		load_values_from_preset(none_preset)
+		load_values_from_preset(individual_preset)
 
 
 # Only use set_no_signal functions (user didn't change the values)
@@ -163,16 +163,16 @@ func erase_everything() -> void:
 	style_buttons.erase_everything()
 	presets.clear()
 	max_option_id = 1
-	reset_none_preset()
+	reset_individual_preset()
 	while preset_options.item_count > 1:
 		preset_options.remove_item(1)
 	change_preset(0)
 
 
-func reset_none_preset() -> void:
-	none_preset = PresetStyle.new("individual")
-	none_preset.background_panel_style_box = default_background_style_box.duplicate()
-	none_preset.text_edit_theme = default_text_edit_theme.duplicate()
+func reset_individual_preset() -> void:
+	individual_preset = PresetStyle.new("individual")
+	individual_preset.background_panel_style_box = default_background_style_box.duplicate()
+	individual_preset.text_edit_theme = default_text_edit_theme.duplicate()
 
 
 func rebuild_options_and_dictionary_from_json(dict: Dictionary) -> void:
@@ -216,13 +216,13 @@ func get_selected_preset() -> PresetStyle:
 	if preset_options.selected > 0:
 		return presets[preset_options.selected]
 	elif preset_options.selected == 0:
-		return none_preset
+		return individual_preset
 	else:
 		return get_new_preset()
 
 
 func select_by_style_preset_id(idx: String) -> void:
-	if idx == "none":
+	if idx == "individual":
 		change_preset(0)
 		return
 	
@@ -235,7 +235,7 @@ func select_by_style_preset_id(idx: String) -> void:
 		change_preset(0)
 
 
-func toggle_none_preset_inputs(toggled_on: bool) -> void:
+func toggle_individual_preset_inputs(toggled_on: bool) -> void:
 	if preset_options.selected == 0:
 		toggle_preset_inputs(toggled_on)
 
@@ -340,8 +340,8 @@ func _on_remove_preset_pressed() -> void:
 # If the fields get updated by this function and not by user input, don't trigger their signals
 func _on_preset_options_item_selected(index: int) -> void:
 	if index == 0:
-		load_values_from_preset(none_preset)
-		current_preset_label.text = ("Current Style: None")
+		load_values_from_preset(individual_preset)
+		current_preset_label.text = ("Current Style: Individual")
 	elif index > 0:
 		load_values_from_preset(presets[index])
 		current_preset_label.text = ("Current Style: %s" % presets[index].name)
@@ -352,7 +352,7 @@ func _on_preset_options_item_selected(index: int) -> void:
 
 func _on_background_color_picker_button_color_changed(color: Color) -> void:
 	if preset_options.selected == 0:
-		none_preset.set_background_color(color)
+		individual_preset.set_background_color(color)
 		#style_buttons.change_button_background_color(0, color)
 	else:
 		presets[preset_options.selected].set_background_color(color)
@@ -363,7 +363,7 @@ func _on_background_color_picker_button_color_changed(color: Color) -> void:
 
 func _on_border_size_spin_box_value_changed(value: float) -> void:
 	if preset_options.selected == 0:
-		none_preset.set_border_size(int(value))
+		individual_preset.set_border_size(int(value))
 	else:
 		presets[preset_options.selected].set_border_size(int(value))
 	toggle_background_border_settings(false if int(value) == 0 else true)
@@ -372,7 +372,7 @@ func _on_border_size_spin_box_value_changed(value: float) -> void:
 
 func _on_border_color_picker_button_color_changed(color: Color) -> void:
 	if preset_options.selected == 0:
-		none_preset.set_border_color(color)
+		individual_preset.set_border_color(color)
 		#style_buttons.change_button_border_color(0, color)
 	else:
 		presets[preset_options.selected].set_border_color(color)
@@ -382,7 +382,7 @@ func _on_border_color_picker_button_color_changed(color: Color) -> void:
 
 func _on_border_blend_check_box_toggled(toggled_on: bool) -> void:
 	if preset_options.selected == 0:
-		none_preset.set_border_blend(toggled_on)
+		individual_preset.set_border_blend(toggled_on)
 	else:
 		presets[preset_options.selected].set_border_blend(toggled_on)
 		style_buttons.change_border_blend(preset_options.selected, toggled_on)
@@ -391,7 +391,7 @@ func _on_border_blend_check_box_toggled(toggled_on: bool) -> void:
 
 func _on_font_size_spin_box_value_changed(value: float) -> void:
 	if preset_options.selected == 0:
-		none_preset.set_font_size(int(value))
+		individual_preset.set_font_size(int(value))
 		#style_buttons.change_button_font_size(0, int(value))
 	else:
 		presets[preset_options.selected].set_font_size(int(value))
@@ -401,7 +401,7 @@ func _on_font_size_spin_box_value_changed(value: float) -> void:
 
 func _on_font_color_picker_button_color_changed(color: Color) -> void:
 	if preset_options.selected == 0:
-		none_preset.set_font_color(color)
+		individual_preset.set_font_color(color)
 		#style_buttons.change_button_font_color(0, color)
 	else:
 		presets[preset_options.selected].set_font_color(color)
@@ -411,7 +411,7 @@ func _on_font_color_picker_button_color_changed(color: Color) -> void:
 
 func _on_font_outline_spin_box_value_changed(value: float) -> void:
 	if preset_options.selected == 0:
-		none_preset.set_outline_size(int(value))
+		individual_preset.set_outline_size(int(value))
 		#style_buttons.change_button_font_outline_size(0, int(value))
 	else:
 		presets[preset_options.selected].set_outline_size(int(value))
@@ -422,7 +422,7 @@ func _on_font_outline_spin_box_value_changed(value: float) -> void:
 
 func _on_font_outline_color_picker_button_color_changed(color: Color) -> void:
 	if preset_options.selected == 0:
-		none_preset.set_outline_color(color)
+		individual_preset.set_outline_color(color)
 		#style_buttons.change_button_font_outline_color(0, color)
 	else:
 		presets[preset_options.selected].set_outline_color(color)
@@ -432,7 +432,7 @@ func _on_font_outline_color_picker_button_color_changed(color: Color) -> void:
 
 func _on_line_spacing_spin_box_value_changed(value: float) -> void:
 	if preset_options.selected == 0:
-		none_preset.set_line_spacing(int(value))
+		individual_preset.set_line_spacing(int(value))
 	else:
 		presets[preset_options.selected].set_line_spacing(int(value))
 	preset_changed.emit()
@@ -440,7 +440,7 @@ func _on_line_spacing_spin_box_value_changed(value: float) -> void:
 
 func _on_title_font_size_spin_box_value_changed(value: float) -> void:
 	if preset_options.selected == 0:
-		none_preset.set_title_font_size(int(value))
+		individual_preset.set_title_font_size(int(value))
 	else:
 		presets[preset_options.selected].set_title_font_size(int(value))
 	preset_changed.emit()
@@ -448,7 +448,7 @@ func _on_title_font_size_spin_box_value_changed(value: float) -> void:
 
 func _on_title_font_color_picker_button_color_changed(color: Color) -> void:
 	if preset_options.selected == 0:
-		none_preset.set_title_font_color(color)
+		individual_preset.set_title_font_color(color)
 	else:
 		presets[preset_options.selected].set_title_font_color(color)
 	preset_changed.emit()
@@ -456,7 +456,7 @@ func _on_title_font_color_picker_button_color_changed(color: Color) -> void:
 
 func _on_title_font_outline_spin_box_value_changed(value: float) -> void:
 	if preset_options.selected == 0:
-		none_preset.set_title_outline_size(int(value))
+		individual_preset.set_title_outline_size(int(value))
 	else:
 		presets[preset_options.selected].set_title_outline_size(int(value))
 	toggle_title_font_outline_settings(false if int(value) == 0 else true)
@@ -465,7 +465,7 @@ func _on_title_font_outline_spin_box_value_changed(value: float) -> void:
 
 func _on_title_outline_color_picker_button_color_changed(color: Color) -> void:
 	if preset_options.selected == 0:
-		none_preset.set_title_outline_color(color)
+		individual_preset.set_title_outline_color(color)
 	else:
 		presets[preset_options.selected].set_title_outline_color(color)
 	preset_changed.emit()
@@ -473,7 +473,7 @@ func _on_title_outline_color_picker_button_color_changed(color: Color) -> void:
 
 func _on_title_line_spacing_spin_box_value_changed(value: float) -> void:
 	if preset_options.selected == 0:
-		none_preset.set_title_line_spacing(int(value))
+		individual_preset.set_title_line_spacing(int(value))
 	else:
 		presets[preset_options.selected].set_title_line_spacing(int(value))
 	preset_changed.emit()
@@ -481,7 +481,7 @@ func _on_title_line_spacing_spin_box_value_changed(value: float) -> void:
 
 func _on_entry_separation_spin_box_value_changed(value: float) -> void:
 	if preset_options.selected == 0:
-		none_preset.set_list_entry_separation(int(value))
+		individual_preset.set_list_entry_separation(int(value))
 	else:
 		presets[preset_options.selected].set_list_entry_separation(int(value))
 	preset_changed.emit()
@@ -489,7 +489,7 @@ func _on_entry_separation_spin_box_value_changed(value: float) -> void:
 
 func _on_entry_div_line_check_box_toggled(toggled_on: bool) -> void:
 	if preset_options.selected == 0:
-		none_preset.set_list_div_toggled(toggled_on)
+		individual_preset.set_list_div_toggled(toggled_on)
 	else:
 		presets[preset_options.selected].set_list_div_toggled(toggled_on)
 	preset_changed.emit()
@@ -497,7 +497,7 @@ func _on_entry_div_line_check_box_toggled(toggled_on: bool) -> void:
 
 func _on_entry_div_line_color_picker_button_color_changed(color: Color) -> void:
 	if preset_options.selected == 0:
-		none_preset.set_list_div_color(color)
+		individual_preset.set_list_div_color(color)
 	else:
 		presets[preset_options.selected].set_list_div_color(color)
 	preset_changed.emit()

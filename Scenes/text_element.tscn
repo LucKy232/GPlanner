@@ -26,16 +26,14 @@ Panel/styles/panel = SubResource("StyleBoxLine_87eqm")
 bg_color = Color(0.85098, 0.85098, 0.85098, 0.392157)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_01as5"]
-content_margin_left = 1.0
 bg_color = Color(1, 1, 1, 1)
+border_width_left = 1
 border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
 border_color = Color(0, 0, 0, 0)
-border_blend = true
-corner_radius_top_right = 2
-corner_radius_bottom_right = 7
+corner_radius_top_left = 2
+corner_radius_bottom_right = 18
 corner_detail = 1
+anti_aliasing = false
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4eiuu"]
 bg_color = Color(0.9, 0.9, 0.9, 1)
@@ -167,16 +165,10 @@ theme_override_styles/panel = ExtResource("12_60onh")
 
 [node name="PriorityPanel" type="Panel" parent="PanelContainer/Background" unique_id=1272237648]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(15, 0)
+custom_minimum_size = Vector2(18, 18)
 layout_mode = 1
-anchors_preset = 11
-anchor_left = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -15.0
-grow_horizontal = 0
-grow_vertical = 2
-mouse_filter = 1
+offset_right = 15.0
+mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_01as5")
 
 [node name="MarginContainer" type="MarginContainer" parent="PanelContainer/Background" unique_id=1021837475]
@@ -215,11 +207,11 @@ grow_vertical = 2
 theme = SubResource("Theme_id6lq")
 
 [node name="InputBlocker" type="Control" parent="PanelContainer/Background/TextMarginContainer" unique_id=953159357]
+unique_name_in_owner = true
 layout_mode = 2
 
 [node name="TextEdit" type="TextEdit" parent="PanelContainer/Background/TextMarginContainer/InputBlocker" unique_id=805361146]
 unique_name_in_owner = true
-z_index = 1
 custom_minimum_size = Vector2(30, 0)
 layout_mode = 1
 anchors_preset = -1

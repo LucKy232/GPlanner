@@ -41,7 +41,6 @@ func start_drag_child(obj_id: int, entry_list: Array[ListTextEntry], event_posit
 	position_data = drag_position_data
 	list[object_id].offset_transform_position = event_position
 	is_dragging_child = true
-	toggle_all_entries_hover(false)
 
 
 func start_drag_from_outside(entry_list: Array[ListTextEntry], _drop_visual: Control, drag_position_data: DragPositionData) -> void:
@@ -53,12 +52,10 @@ func start_drag_from_outside(entry_list: Array[ListTextEntry], _drop_visual: Con
 	highest = 0
 	position_data = drag_position_data
 	is_dragging_outside = true
-	toggle_all_entries_hover(false)
 
 
 func end_drag() -> void:
 	reset_offset_transforms()
-	toggle_all_entries_hover(true)
 	reset_data()
 
 
@@ -199,10 +196,3 @@ func position_child_drop_visual() -> void:
 						+ position_data.scroll_container_position
 						+ position_data.top_left_margin
 						- Vector2(0.0, position_data.scroll_y))
-
-
-func toggle_all_entries_hover(on: bool) -> void:
-	for entry in list:
-		entry.can_hover = on
-		if !on:
-			entry._on_hover(false)
