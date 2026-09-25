@@ -3,19 +3,19 @@ class_name PresetStyle
 var id: String = "unassigned_id"
 var name: String = ""
 ## BACKGROUND
-var background_color: Color = Color.LIGHT_SEA_GREEN
+var background_color: Color = Color("#549296")
 var border_color: Color = Color.BLACK
-var border_size: int = 1
+var border_size: int = 0
 var border_blend: bool = false
 ## TEXT EDIT
-var font_size: int = 20
+var font_size: int = 16
 var font_color: Color = Color.WHITE
 var outline_color: Color = Color.BLACK
 var outline_size: int = 0
 var line_spacing: int = 0
 ## TITLE TEXT EDIT
-var title_font_size: int = 20
-var title_font_color: Color = Color.WHITE 
+var title_font_size: int = 24
+var title_font_color: Color = Color.WHITE
 var title_outline_color: Color = Color.BLACK
 var title_outline_size: int = 0
 var title_line_spacing: int = 0

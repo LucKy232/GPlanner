@@ -165,10 +165,10 @@ func get_bg_color() -> Color:
 
 func init_individual_style() -> void:
 	individual_style = PresetStyle.new("individual")
-	individual_style.set_background_panel_style_box(background.get_theme_stylebox("panel").duplicate(), true)
-	individual_style.set_text_edit_theme(text_edit_theme.duplicate(), true)
-	individual_style.set_title_text_edit_theme(text_edit_theme.duplicate(), true)
-	individual_style.set_list_div_theme(empty_div_theme, true)
+	individual_style.set_background_panel_style_box(background.get_theme_stylebox("panel").duplicate(), false)
+	individual_style.set_text_edit_theme(text_edit_theme.duplicate(), false)
+	individual_style.set_title_text_edit_theme(text_edit_theme.duplicate(), false)
+	individual_style.set_list_div_theme(empty_div_theme, false)
 
 
 func change_style_preset(preset: PresetStyle) -> void:

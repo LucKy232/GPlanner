@@ -66,7 +66,7 @@ var last_window_mode: Window.Mode = Window.Mode.MODE_WINDOWED		## When going to 
 
 func _ready() -> void:
 	#Performance.add_custom_monitor("Request Action Type", func(): return int(canvases[cc].get_requested_save_action()))
-	GlobalScenes.test_scene_paths()
+	#GlobalScenes.test_scene_paths()
 	get_tree().set_auto_accept_quit(false)		# Don't automatically quit
 	var window_size: Vector2 = get_viewport_rect().size
 	pan_indicator_camera.set_world_2d(get_world_2d())
@@ -151,8 +151,6 @@ func scale_ui(factor: float) -> void:
 
 func _process(_delta):
 	var input_enabled: bool = !disable_input()
-	if Input.is_action_just_pressed("test_mult"):
-		scale_ui(ui_scale)
 	if use_mouse_cursor_big_brush():
 		cursor_big_brush.position = get_local_mouse_position() - cursor_big_brush.size * 0.5
 	if selected_control_exists():		# If editing text, don't use shortcuts
@@ -676,10 +674,11 @@ func get_window_state_json() -> Dictionary:
 
 
 func restore_window_state(dict: Dictionary) -> void:
+	if Engine.is_embedded_in_editor():
+		return
 	var screen: int = dict["current_screen"]
 	var win: Window = get_window()
 	var win_mode: Window.Mode = dict["window_mode"] as Window.Mode
-	
 	DisplayServer.window_set_current_screen(screen)
 	if win_mode == Window.MODE_MAXIMIZED:
 		win.mode = Window.MODE_MAXIMIZED

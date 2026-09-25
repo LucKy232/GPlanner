@@ -140,10 +140,15 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 func _input(event: InputEvent) -> void:
 	if !selected:
 		return
-	if event.is_action_pressed("add_list_text_entry"):
-		add_text_entry(true)
-	if event.is_action_pressed("add_list_link_entry"):
-		add_link_entry(true)
+	if !is_editing_text():
+		if event.is_action_pressed("add_list_text_entry"):
+			add_text_entry(true)
+		if event.is_action_pressed("add_list_link_entry"):
+			add_link_entry(true)
+		if list_title.visible and event.is_action_pressed("edit_list_title", false, true):
+			list_title.grab_focus()	
+		if event.is_action_pressed("ui_copy"):
+			copy_list_text_to_clipboard()
 	
 	if entries.size() == 0:
 		return
@@ -157,33 +162,29 @@ func _input(event: InputEvent) -> void:
 		if last_edited_entry_id > entries.size() - 1:
 			last_edited_entry_id = 0
 		enter_text_edit()
-	if list_title.visible and event.is_action_pressed("edit_list_title", false, true):
-		list_title.grab_focus()
 	
-	if !is_editing_text() and event.is_action_pressed("ui_copy"):
-		copy_list_text_to_clipboard()
 	if !is_editing_text(false):	# Not editing an entry
 		return
 	if event.is_action_pressed("erase_selected_list_entry", false, true):
 		_on_erase_button_pressed()
 	if event.is_action_pressed("move_list_entry_up", true, true):
-		if last_edited_entry_id == entries.size() - 1:
+		if last_edited_entry_id >= entries.size() - 1:
 			return
-		object_v_box.move_child(entries[last_edited_entry_id], last_edited_entry_id + 1)
-		sort_entries(last_edited_entry_id, last_edited_entry_id + 1)
-		last_edited_entry_id += 1
-		ensure_entry_visible.call_deferred()
-		line_up_side_buttons.call_deferred()
-		list_changed.emit()
+		move_entry_up_or_down(true)
 	if event.is_action_pressed("move_list_entry_down", true, true):
 		if last_edited_entry_id == 0:
 			return
-		object_v_box.move_child(entries[last_edited_entry_id], last_edited_entry_id - 1)
-		sort_entries(last_edited_entry_id, last_edited_entry_id - 1)
-		last_edited_entry_id -= 1
-		ensure_entry_visible.call_deferred()
-		line_up_side_buttons.call_deferred()
-		list_changed.emit()
+		move_entry_up_or_down(false)
+
+
+func move_entry_up_or_down(up: bool) -> void:
+	var move: int = 1 if up else -1
+	object_v_box.move_child(entries[last_edited_entry_id], last_edited_entry_id + move)
+	sort_entries(last_edited_entry_id, last_edited_entry_id + move)
+	last_edited_entry_id += move
+	ensure_entry_visible.call_deferred()
+	line_up_side_buttons.call_deferred()
+	list_changed.emit()
 
 
 func copy_list_text_to_clipboard() -> void:
@@ -315,6 +316,7 @@ func add_text_entry(is_user_input: bool) -> void:
 	new_list_text_entry.name = "ListTextEntry"
 	new_list_text_entry.change_text_edit_theme(style_preset.text_edit_theme if has_style_preset else individual_style.text_edit_theme)
 	new_list_text_entry.change_div_theme(style_preset.list_div_theme if has_style_preset else individual_style.list_div_theme)
+	last_edited_entry_id = new_list_text_entry.id
 	entries.append(new_list_text_entry)
 	connect_list_text_entry(new_list_text_entry)
 	toggle_entry_divs(style_preset.list_div_enabled if has_style_preset else individual_style.list_div_enabled)
@@ -485,9 +487,9 @@ func set_active_entry_priority(p: Enums.Priority) -> void:
 func init_individual_style() -> void:
 	individual_style = PresetStyle.new("individual")
 	individual_style.set_background_panel_style_box(background.get_theme_stylebox("panel", "Panel").duplicate(), true)
-	individual_style.set_text_edit_theme(default_text_edit_theme.duplicate(), true)
-	individual_style.set_title_text_edit_theme(default_text_edit_theme.duplicate(), true)
-	individual_style.set_list_div_theme(default_div_theme.duplicate(true), true)
+	individual_style.set_text_edit_theme(default_text_edit_theme.duplicate(), false)
+	individual_style.set_title_text_edit_theme(default_text_edit_theme.duplicate(), false)
+	individual_style.set_list_div_theme(default_div_theme.duplicate(true), false)
 	individual_style.list_setting_changed.connect(_on_style_settings_changed)
 	individual_style.font_size_changed.connect(_on_style_font_size_changed)
 	individual_style.entry_separation = object_v_box.get_theme_constant("separation")
