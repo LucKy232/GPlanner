@@ -3,7 +3,9 @@
 [ext_resource type="Theme" uid="uid://oh7uiqgv8si2" path="res://Themes/div_theme.tres" id="1_bg2d3"]
 
 [node name="div1" type="Panel" unique_id=2098245851]
-custom_minimum_size = Vector2(0, 6)
-offset_bottom = 6.0
+custom_minimum_size = Vector2(0, 3)
+offset_bottom = 3.0
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, -2)
 mouse_filter = 1
 theme = ExtResource("1_bg2d3")

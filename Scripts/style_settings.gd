@@ -147,7 +147,6 @@ func change_preset(idx: int) -> void:
 		return
 	preset_options.select(idx)
 	_on_preset_options_item_selected(idx)
-	style_buttons.focus_button(idx)
 
 
 func get_new_preset() -> PresetStyle:

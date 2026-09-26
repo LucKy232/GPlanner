@@ -14,6 +14,7 @@ offset_right = 183.0
 offset_bottom = 25.0
 size_flags_horizontal = 3
 offset_transform_enabled = true
+theme_override_constants/separation = 0
 script = ExtResource("1_64hbi")
 
 [node name="HBox" type="HBoxContainer" parent="." unique_id=1590603649]
@@ -80,6 +81,7 @@ scroll_fit_content_height = true
 
 [node name="BottomDiv" parent="." unique_id=2098245851 instance=ExtResource("5_7ednx")]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 
 [node name="MouseHover" type="Area2D" parent="." unique_id=600296509]

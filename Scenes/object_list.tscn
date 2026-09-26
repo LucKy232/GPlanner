@@ -324,6 +324,7 @@ visible = false
 light_mask = 8
 visibility_layer = 8
 layout_mode = 2
+size_flags_vertical = 0
 theme = ExtResource("2_qbj2a")
 placeholder_text = "..."
 wrap_mode = 1

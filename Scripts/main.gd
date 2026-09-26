@@ -68,6 +68,7 @@ func _ready() -> void:
 	#Performance.add_custom_monitor("Request Action Type", func(): return int(canvases[cc].get_requested_save_action()))
 	#GlobalScenes.test_scene_paths()
 	get_tree().set_auto_accept_quit(false)		# Don't automatically quit
+	get_viewport().oversampling = false
 	var window_size: Vector2 = get_viewport_rect().size
 	pan_indicator_camera.set_world_2d(get_world_2d())
 	pan_indicator_camera.set_window_size(window_size)
@@ -348,6 +349,7 @@ func switch_main_canvas(id: int, force_load_same: bool = false) -> void:
 	drawing_manager.change_active_canvas_drawing_group(cc)
 	pan_indicator_camera.set_canvas_size(canvases[cc].size)
 	pan_indicator_camera.hide_animation()
+	canvases[cc].deselect_any()
 	canvases[cc].unassign_selected_preset_style()
 	style_settings.erase_everything()
 	style_settings.rebuild_options_and_dictionary_from_canvas(canvases[cc].style_presets)

@@ -30,6 +30,7 @@ var dragger: ListDragHelper = ListDragHelper.new()
 var canvas_scale: float = 1.0
 var mouse_inside: bool = false
 var top_left_margin: Vector2 = Vector2.ZERO
+var total_horizontal_margin: float = 0.0
 var priority_enabled: bool = false
 var priority_tool_enabled: bool = true
 var show_title: bool = true
@@ -62,6 +63,7 @@ func _ready() -> void:
 	scroll_container.get_v_scroll_bar().mouse_filter = Control.MOUSE_FILTER_PASS
 	scroll_container.get_v_scroll_bar().scrolling.connect(_on_scroll)
 	top_left_margin = Vector2(margin_container.get_theme_constant("margin_left"), margin_container.get_theme_constant("margin_top"))
+	total_horizontal_margin = margin_container.get_theme_constant("margin_left") + margin_container.get_theme_constant("margin_right")
 	_on_scroll_hover(false)
 
 
@@ -119,6 +121,7 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		sort_entries(entries.size() - 1, dragger.current)	# Last entry added move to its id
 		reset_entry_ids()
 		change_state(State.DEFAULT)
+		refresh_entry_divs_visibility()
 		dragger.end_drag()
 		select_request.emit(id)
 	if data is TextElement:
@@ -132,6 +135,7 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		sort_entries(entries.size() - 1, dragger.current)
 		reset_entry_ids()
 		change_state(State.DEFAULT)
+		refresh_entry_divs_visibility()
 		dragger.end_drag()
 		remove_element_request.emit(data.id)
 		select_request.emit(id)
@@ -184,6 +188,7 @@ func move_entry_up_or_down(up: bool) -> void:
 	last_edited_entry_id += move
 	ensure_entry_visible.call_deferred()
 	line_up_side_buttons.call_deferred()
+	refresh_entry_divs_visibility()
 	list_changed.emit()
 
 
@@ -319,7 +324,7 @@ func add_text_entry(is_user_input: bool) -> void:
 	last_edited_entry_id = new_list_text_entry.id
 	entries.append(new_list_text_entry)
 	connect_list_text_entry(new_list_text_entry)
-	toggle_entry_divs(style_preset.list_div_enabled if has_style_preset else individual_style.list_div_enabled)
+	refresh_entry_divs_visibility()
 	if is_user_input:
 		list_changed.emit()
 
@@ -344,8 +349,7 @@ func remove_text_entry(entry: ListTextEntry, delete_from_memory: bool) -> void:
 	if last_edited_entry_id > entries.size() - 1:
 		last_edited_entry_id = entries.size() - 1
 	reset_entry_ids()
-	# To show all divs except last one
-	toggle_entry_divs(style_preset.list_div_enabled if has_style_preset else individual_style.list_div_enabled)
+	refresh_entry_divs_visibility()
 	toggle_side_buttons(false)
 	list_changed.emit()
 
@@ -497,13 +501,13 @@ func init_individual_style() -> void:
 
 func _apply_style_preset(preset: PresetStyle) -> void:
 	background.add_theme_stylebox_override("panel", preset.background_panel_style_box)
-	#object_v_box.add_theme_constant_override("separation", preset.entry_separation)
+	object_v_box.add_theme_constant_override("separation", preset.entry_separation)
 	list_title.theme = preset.title_text_edit_theme
 	for e in entries:
 		e.change_text_edit_theme(preset.text_edit_theme)
 	for e in entries:
 		e.change_div_theme(preset.list_div_theme)
-	toggle_entry_divs(preset.list_div_enabled)
+	refresh_entry_divs_visibility()
 
 
 func change_style_preset(preset: PresetStyle) -> void:
@@ -528,11 +532,11 @@ func unassign_style_preset() -> void:
 	_apply_style_preset(individual_style)
 
 
-func toggle_entry_divs(toggled_on: bool) -> void:
-	if entries.size() == 0:
-		return
+# When entries change order - show all div lines except last entry's 
+func refresh_entry_divs_visibility() -> void:
+	var divs_enabled: bool = style_preset.list_div_enabled if has_style_preset else individual_style.list_div_enabled
 	for idx in range(0, entries.size() - 1):
-		entries[idx].toggle_div(toggled_on)
+		entries[idx].toggle_div(divs_enabled)
 	entries[-1].toggle_div(false)
 
 
@@ -570,7 +574,7 @@ func _on_style_settings_changed(setting: PresetStyle.ListSettings, value) -> voi
 		PresetStyle.ListSettings.ENTRY_SEPARATION:
 			object_v_box.add_theme_constant_override("separation", int(value))
 		PresetStyle.ListSettings.DIV_ENABLED:
-			toggle_entry_divs(bool(value))
+			refresh_entry_divs_visibility()
 
 
 func _on_style_font_size_changed() -> void:
@@ -621,6 +625,7 @@ func _on_list_text_entry_remove_from_list(entry: ListTextEntry) -> void:
 func _on_resized() -> void:
 	if !is_node_ready():
 		return
+	list_title.custom_maximum_size.x = size.x - total_horizontal_margin
 	mouse_hover_shape.shape.size = size
 	mouse_hover.position = size * 0.5
 	line_up_side_buttons.call_deferred()
@@ -667,6 +672,7 @@ func _on_list_text_entry_grabber_ended_move(entry_id: int) -> void:
 		sort_entries(entry_id, move_to)
 		last_edited_entry_id = move_to
 		line_up_side_buttons.call_deferred()
+		refresh_entry_divs_visibility()
 		list_changed.emit()
 
 
