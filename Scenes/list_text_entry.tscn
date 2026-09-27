@@ -64,6 +64,7 @@ texture_filter = 2
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
+tooltip_text = "Grab"
 texture = ExtResource("3_1jr1i")
 stretch_mode = 3
 

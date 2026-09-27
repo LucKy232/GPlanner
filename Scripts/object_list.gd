@@ -470,16 +470,7 @@ func line_up_side_buttons() -> void:
 								- scroll_container.scroll_vertical)
 	erase_entry_margin.position.y = new_y_position
 	priority_buttons_margin.position.y = new_y_position
-	if new_y_position < scroll_container.position.y - 40.0:
-		erase_entry_margin.visible = false
-		priority_buttons_margin.visible = false
-	elif new_y_position > scroll_container.size.y + entries[last_edited_entry_id].size.y:
-		erase_entry_margin.visible = false
-		priority_buttons_margin.visible = false
-	else:
-		erase_entry_margin.visible = true
-		if priority_enabled and priority_tool_enabled:
-			priority_buttons_margin.visible = true
+	priority_buttons_margin.visible = true if (priority_enabled and priority_tool_enabled) else false
 
 
 func set_active_entry_priority(p: Enums.Priority) -> void:
@@ -534,6 +525,11 @@ func unassign_style_preset() -> void:
 
 # When entries change order - show all div lines except last entry's 
 func refresh_entry_divs_visibility() -> void:
+	if entries.size() < 1:
+		return
+	elif entries.size() == 1:
+		entries[0].toggle_div(false)
+		return
 	var divs_enabled: bool = style_preset.list_div_enabled if has_style_preset else individual_style.list_div_enabled
 	for idx in range(0, entries.size() - 1):
 		entries[idx].toggle_div(divs_enabled)
