@@ -347,7 +347,7 @@ func switch_main_canvas(id: int, force_load_same: bool = false) -> void:
 		set_tab_name_and_title_from_canvas(cc)
 	drawing_manager.change_active_canvas_drawing_group(cc)
 	pan_indicator_camera.set_canvas_size(canvases[cc].size)
-	pan_indicator_camera.hide_animation()
+	pan_indicator_camera.force_update_subviewport()
 	canvases[cc].deselect_any()
 	canvases[cc].unassign_selected_preset_style()
 	style_settings.erase_everything()
@@ -1236,7 +1236,7 @@ func _on_drawing_manager_finished_saving(save_canvas: int) -> void:
 
 
 func _on_drawing_manager_status_message(message: String) -> void:
-	status_bar.update_status_immediate(message, GlobalColors.ui_yellow)
+	status_bar.update_status(message, GlobalColors.ui_yellow)
 
 
 func _on_drawing_manager_forced_save_started() -> void:

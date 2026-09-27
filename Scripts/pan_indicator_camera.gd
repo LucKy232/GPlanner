@@ -4,8 +4,8 @@ class_name PanIndicatorCamera
 @onready var sub_viewport: SubViewport = $SubViewportContainer/SubViewport
 @onready var camera: Camera2D = $SubViewportContainer/SubViewport/Camera
 @onready var highlight_panel: Panel = $HighlightPanel
-@onready var animation_player: AnimationPlayer = $AnimationPlayer
-@onready var timer: Timer = $Timer
+@onready var hide_timer: Timer = $HideTimer
+@onready var tween_show_hide: TweenShowHide = $TweenShowHide
 
 var canvas_size: Vector2 = Vector2(1.0, 1.0)
 var window_size: Vector2 = Vector2(1.0, 1.0)
@@ -19,7 +19,6 @@ func set_world_2d(world: World2D) -> void:
 
 
 func set_canvas_size(s: Vector2) -> void:
-	#print("Set canvas size %f %f This size: %f %f" % [s.x, s.y, size.x, size.y])
 	canvas_size = s
 	indicator_size_ratio = size.x / canvas_size.x
 	camera.zoom = Vector2(indicator_size_ratio, indicator_size_ratio)
@@ -27,24 +26,14 @@ func set_canvas_size(s: Vector2) -> void:
 
 
 func set_window_size(s: Vector2) -> void:
-	#print("Set window size %f %f" % [s.x, s.y])
 	window_size = s
 	window_canvas_size_ratio = window_size / (canvas_size * canvas_scale)
 	highlight_panel.set_deferred("size", size * window_canvas_size_ratio)
 
 
-func hide_animation() -> void:
-	if !animation_player.is_playing():
-		animation_player.play("hide")
-		sub_viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
-
-
 func move_camera_and_highlight(c_position: Vector2) -> void:
-	if !animation_player.is_playing() and modulate.a == 0.0:
-		animation_player.play("show")
-		sub_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
-	
-	timer.start()
+	show_this()
+	hide_timer.start()
 	camera.position = c_position
 	highlight_panel.position = -c_position * indicator_size_ratio / canvas_scale
 
@@ -66,5 +55,20 @@ func update_zoom(c_position: Vector2, c_scale: float) -> void:
 			#window_canvas_size_ratio.y, indicator_size_ratio, c_position.x, c_position.y, c_scale])
 
 
-func _on_timer_timeout() -> void:
-	hide_animation()
+func force_update_subviewport() -> void:
+	sub_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+
+
+func hide_this() -> void:
+	sub_viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
+	tween_show_hide.toggle(false)
+
+
+func show_this() -> void:
+	if !tween_show_hide.on:
+		sub_viewport.render_target_update_mode = SubViewport.UPDATE_ONCE
+	tween_show_hide.toggle(true)
+
+
+func _on_hide_timer_timeout() -> void:
+	hide_this()

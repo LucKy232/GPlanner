@@ -84,10 +84,10 @@ layout_mode = 2
 mouse_filter = 2
 script = ExtResource("6_7y3jv")
 target = NodePath("ToggleTitleButton")
-side = 2
 animation_time = 0.25
 transition_type = 7
 default_hidden_behind = true
+side = 2
 offset_show = -4.0
 offset_hide = 4.0
 metadata/_custom_type_script = "uid://b0ioikc1dokvh"
@@ -122,9 +122,9 @@ size_flags_vertical = 0
 mouse_filter = 2
 script = ExtResource("6_7y3jv")
 target = NodePath("AddButtonsVBox")
-side = 3
 animation_time = 0.25
 transition_type = 7
+side = 3
 offset_show = 10.5
 offset_hide = -2.0
 
@@ -200,11 +200,11 @@ layout_mode = 2
 mouse_filter = 2
 script = ExtResource("6_7y3jv")
 target = NodePath("../EraseButton")
-side = 1
 animation_time = 0.25
 transition_type = 7
 default_hidden_behind = true
-offset_show = 14.5
+side = 1
+offset_show = 13.0
 metadata/_custom_type_script = "uid://b0ioikc1dokvh"
 
 [node name="PriorityButtonsMargin" type="MarginContainer" parent="." unique_id=878485958]

@@ -32,9 +32,6 @@ mouse_filter = 2
 script = ExtResource("1_5m78p")
 pencil_cursor = ExtResource("2_6e8qd")
 eraser_pencil_cursor = ExtResource("3_02leu")
-canvas_drawing_group_scene = "uid://ciqbw443fikno"
-temp_drawing_action_scene = "uid://cpu02i5li1jfy"
-drawing_region_scene = "uid://cco3y5ld1vdkm"
 
 [node name="Curtain" type="Panel" parent="." unique_id=1026901446]
 visible = false

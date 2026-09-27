@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://dvj6pcwq77lqk" path="res://Scripts/zoom_indicator.gd" id="1_4qtpc"]
 [ext_resource type="Texture2D" uid="uid://demenk3lgkymx" path="res://Icons/magnifying_glass.svg" id="2_atq65"]
 [ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="2_cnilx"]
-[ext_resource type="AnimationLibrary" uid="uid://3dd4vig03gti" path="res://Animations/ZoomIndicator.res" id="4_kgcqr"]
+[ext_resource type="Script" uid="uid://b0ioikc1dokvh" path="res://AddonsOwn/tween_show_hide.gd" id="4_ek6ul"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_4qtpc"]
 font = ExtResource("2_cnilx")
@@ -43,29 +43,29 @@ corner_detail = 1
 ProgressBar/styles/background = SubResource("StyleBoxFlat_6l7je")
 ProgressBar/styles/fill = SubResource("StyleBoxFlat_x6ack")
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cnilx"]
-texture = ExtResource("2_atq65")
-modulate_color = Color(0.753986, 0.753983, 0.753984, 1)
-
-[sub_resource type="Theme" id="Theme_kgcqr"]
-Panel/styles/panel = SubResource("StyleBoxTexture_cnilx")
-
 [node name="ZoomIndicator" type="VBoxContainer" unique_id=934422770]
 offset_right = 45.0
 offset_bottom = 145.0
 size_flags_horizontal = 8
 size_flags_vertical = 0
 mouse_filter = 2
+theme_override_constants/separation = 5
 script = ExtResource("1_4qtpc")
 
 [node name="ZoomLabel" type="Label" parent="." unique_id=2098361006]
+texture_filter = 2
 custom_minimum_size = Vector2(45, 0)
 layout_mode = 2
 text = "100%"
 label_settings = SubResource("LabelSettings_4qtpc")
 horizontal_alignment = 1
 
-[node name="ZoomProgressBar" type="ProgressBar" parent="." unique_id=466624422]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=164018861]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ZoomProgressBar" type="ProgressBar" parent="VBoxContainer" unique_id=466624422]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(8, 90)
 layout_mode = 2
 size_flags_horizontal = 4
@@ -77,18 +77,27 @@ value = 1.0
 fill_mode = 3
 show_percentage = false
 
-[node name="ZoomIcon" type="Panel" parent="." unique_id=1960470790]
-modulate = Color(1, 1, 1, 0)
+[node name="ZoomIcon" type="TextureRect" parent="VBoxContainer" unique_id=2129521675]
+unique_name_in_owner = true
+texture_filter = 2
 custom_minimum_size = Vector2(24, 24)
 layout_mode = 2
 size_flags_horizontal = 4
-mouse_filter = 2
-theme = SubResource("Theme_kgcqr")
+texture = ExtResource("2_atq65")
+expand_mode = 2
+
+[node name="TweenShowHide" type="Control" parent="." unique_id=2066902953 node_paths=PackedStringArray("target")]
+layout_mode = 2
+script = ExtResource("4_ek6ul")
+target = NodePath("../VBoxContainer")
+animation_time = 0.5
+transition_type = 7
+move_target = false
+simultaneous_move_and_hide = false
+metadata/_custom_type_script = "uid://b0ioikc1dokvh"
 
 [node name="HideTimer" type="Timer" parent="." unique_id=439367237]
+wait_time = 1.5999999999999999
 one_shot = true
-
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1752549799]
-libraries/ = ExtResource("4_kgcqr")
 
 [connection signal="timeout" from="HideTimer" to="." method="_on_hide_timer_timeout"]
