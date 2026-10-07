@@ -28,8 +28,8 @@ signal text_resized
 
 
 func _ready() -> void:
-	reset_hover()
 	reset_item_sizes.call_deferred()
+	#reset_hover()
 
 
 func _get_drag_data(_at_position: Vector2) -> Variant:
@@ -52,7 +52,7 @@ func _input(event: InputEvent) -> void:
 func end_grab() -> void:
 	grabber_clicked = false
 	grabber_ended_move.emit(id)
-	reset_hover()
+	#reset_hover()
 
 
 func change_priority_color(c: Color) -> void:
@@ -153,6 +153,8 @@ func to_json() -> Dictionary:
 
 
 func reset_hover() -> void:
+	#if grabber_clicked:
+		#return
 	priority_idicator.visible = true
 	grabber_control.visible = false
 

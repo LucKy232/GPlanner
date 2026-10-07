@@ -23,7 +23,6 @@ class_name ObjectList extends CanvasElement
 @onready var priority_buttons_margin: MarginContainer = %PriorityButtonsMargin
 @onready var background: Panel = %Background
 
-
 var entries: Array[ListTextEntry]
 var last_edited_entry_id: int = -1
 var dragger: ListDragHelper = ListDragHelper.new()
@@ -550,8 +549,9 @@ func toggle_side_buttons(toggled_on: bool) -> void:
 func toggle_all_entries_hover(toggled_on: bool) -> void:
 	for entry in entries:
 		entry.can_hover = toggled_on
-		if !toggled_on:
-			entry.reset_hover()
+		# FIXME this will stop dragging from list to canvas and from list to list
+		#if !toggled_on:	#  and !entry.grabber_clicked
+			#entry.reset_hover()
 
 
 func toggle_mouse_input(toggled_on: bool) -> void:

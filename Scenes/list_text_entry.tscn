@@ -25,7 +25,6 @@ theme_override_constants/separation = 0
 
 [node name="PriorityIdicator" type="Control" parent="HBox" unique_id=1567381431]
 unique_name_in_owner = true
-visible = false
 light_mask = 8
 visibility_layer = 8
 layout_mode = 2
@@ -39,6 +38,7 @@ inner_circle_color = Color(0, 0, 0, 0)
 
 [node name="GrabberControl" type="Control" parent="HBox" unique_id=1196397820]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
@@ -84,6 +84,7 @@ scroll_fit_content_height = true
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
+mouse_filter = 2
 
 [node name="MouseHover" type="Area2D" parent="." unique_id=600296509]
 unique_name_in_owner = true
