@@ -20,7 +20,7 @@ var past_drawing_actions: Array[TempDrawingAction]
 var future_drawing_actions: Array[TempDrawingAction]
 ## When past_drawing_actions is full, the front TempDrawingAction gets removed and placed here
 var past_actions_overflow: Array[TempDrawingAction]
-var moving_images: Dictionary[ClipboardImage, bool]
+var moving_images: Dictionary[ClipboardImage, bool]	## To only move 1 image at a time??
 var regions: Dictionary[Vector2i, DrawingRegion]
 var clipboard_images: Array[ClipboardImage]
 
@@ -45,6 +45,7 @@ var complete_json_image_data: Dictionary
 var clipboard_image_changes: bool = false
 var is_at_startup: bool = true		## Used to not emit clipboard_images_changed when loading them
 var is_loading: bool = false
+var undo_redo: UndoRedo = null
 
 ## Emits when 75% of FORCE_SAVE_REQUEST_KB_LIMIT is reached to inform the user that they should save.
 signal force_save_message
@@ -125,7 +126,7 @@ func check_clipboard_image_load_tasks_completed() -> void:
 		all_clipboard_images_visible.emit()
 
 
-func init(manager_size: Vector2) -> void:
+func init(manager_size: Vector2, undo_redo_from_canvas: UndoRedo) -> void:
 	pencil_material = CanvasItemMaterial.new()
 	pencil_material.blend_mode = CanvasItemMaterial.BLEND_MODE_MIX
 	#pencil_material.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
@@ -136,7 +137,16 @@ func init(manager_size: Vector2) -> void:
 	mask_eraser_material.blend_mode = CanvasItemMaterial.BLEND_MODE_MUL
 	#mask_eraser_material.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
 	size = manager_size
+	undo_redo = undo_redo_from_canvas
 	current_stroke = add_temp_drawing_action()
+	
+	undo_redo.version_changed.connect(_on_undo_redo_version_changed)
+
+
+func _on_undo_redo_version_changed() -> void:
+	var count: int = undo_redo.get_history_count()
+	for i in range(count):
+		print("%d: %s" % [i, undo_redo.get_action_name(i)])
 
 
 func has_changes() -> bool:
@@ -245,6 +255,10 @@ func end_stroke() -> void:
 		var remove: TempDrawingAction = future_drawing_actions.pop_front()
 		used_temp_data_kb -= remove.data_usage_kb
 		remove.queue_free()
+	undo_redo.create_action("Drawing stroke")
+	undo_redo.add_do_method(redo_drawing_action)
+	undo_redo.add_undo_method(undo_drawing_action)
+	undo_redo.commit_action()
 
 
 func end_brush_stroke() -> void:
@@ -409,6 +423,10 @@ func add_clipboard_image(image: Image, pos: Vector2, scl: Vector2) -> void:
 	if !clipboard_image_changes and !is_at_startup:
 		clipboard_image_changes = true
 		clipboard_images_changed.emit()
+	undo_redo.create_action("Add Clipboard Image")
+	undo_redo.add_do_method(clip.toggle_visible_and_save.bind(true))
+	undo_redo.add_undo_method(clip.toggle_visible_and_save.bind(false))
+	undo_redo.commit_action()
 
 
 func add_clipboard_image_from_data(data: Dictionary, create_image: bool = true) -> void:

@@ -267,7 +267,7 @@ func has_folder_path(canvas_id: int) -> bool:
 	return !canvas_groups[canvas_id].folder_path == ""
 
 
-func add_canvas_drawing_group(canvas_id: int) -> void:
+func add_canvas_drawing_group(canvas_id: int, undo_redo_from_canvas: UndoRedo) -> void:
 	if canvas_groups.has(canvas_id):
 		printerr("Drawing Manager already has a canvas with that ID (on drawing_manager.add_canvas_drawing_group(id)")
 		return
@@ -277,7 +277,7 @@ func add_canvas_drawing_group(canvas_id: int) -> void:
 	new_group.saving_images_to_disk.connect(_on_canvas_drawing_group_saving_images)
 	new_group.force_save_message.connect(_on_canvas_drawing_group_force_save_message)
 	new_group.clipboard_images_changed.connect(_on_canvas_drawing_group_clipboard_images_changed)
-	new_group.init(get_viewport_rect().size)
+	new_group.init(get_viewport_rect().size, undo_redo_from_canvas)
 	canvas_groups[canvas_id] = new_group
 
 

@@ -170,15 +170,19 @@ func _process(_delta):
 		if selected_control_exists() and input_enabled and !Input.is_key_pressed(KEY_CTRL):
 			get_selected_control().enter_text_edit()
 	if Input.is_action_pressed("ui_undo", true) and input_enabled and (input_repeat_timer.is_stopped() or first_input_repeat):
-		if drawing_manager.undo_drawing_action():	# Check + action
+		if canvases.has(cc) and canvases[cc].undo_redo.has_undo():
+			#print("Undo: ", canvases[cc].undo_redo.get_current_action_name())
+			canvases[cc].undo_redo.undo()
 			input_repeat_timer.start(0.5 if first_input_repeat else 0.1)
 			first_input_repeat = false
-			canvases[cc].drawings_changed()	# A bit redundant since it already has changes if there's something that you can undo / redo
+			canvases[cc].canvas_changed()	# TODO drawings changed if undo type
 	if Input.is_action_pressed("ui_redo", true) and input_enabled and (input_repeat_timer.is_stopped() or first_input_repeat):
-		if drawing_manager.redo_drawing_action():	# Check + action
+		if canvases.has(cc) and canvases[cc].undo_redo.has_redo():
+			canvases[cc].undo_redo.redo()
+			#print("Redo: ", canvases[cc].undo_redo.get_current_action_name())
 			input_repeat_timer.start(0.5 if first_input_repeat else 0.1)
 			first_input_repeat = false
-			canvases[cc].drawings_changed()	# A bit redundant since it already has changes if there's something that you can undo / redo
+			canvases[cc].canvas_changed()	# TODO drawings changed if redo type
 	if Input.is_action_just_released("ui_undo") or Input.is_action_just_released("ui_redo"):
 		first_input_repeat = true
 	
@@ -398,18 +402,13 @@ func new_file(add_canvas: bool, show_status: bool = true) -> int:
 		new_canvas.id = max_canvas_id
 		max_canvas_id += 1
 		canvases[new_canvas.id] = new_canvas
-		new_canvas.done_adding_elements.connect(_on_canvas_done_adding_elements)
-		new_canvas.changed_zoom.connect(_on_canvas_changed_zoom)
-		new_canvas.changed_position.connect(_on_canvas_changed_position)
-		new_canvas.has_changed.connect(_on_canvas_has_changed.bind(new_canvas.id))
-		new_canvas.has_selected_control.connect(_on_canvas_has_selected_control)
-		new_canvas.has_deselected_control.connect(_on_canvas_has_deselected_control)
-		new_canvas.status_message_requested.connect(_on_canvas_status_message_requested)
+		connect_planner_canvas_signals(new_canvas)
 		new_canvas.priority_colors = priority_colors
 		new_canvas.zoom_limits = zoom_limits
 		new_canvas.zoom_speed = zoom_speed
 		new_canvas.cycle_zoom_levels = cycle_zoom_levels
-		drawing_manager.add_canvas_drawing_group(new_canvas.id)
+		new_canvas.undo_redo = UndoRedo.new()
+		drawing_manager.add_canvas_drawing_group(new_canvas.id, new_canvas.undo_redo)
 		new_canvas.drawing_manager = drawing_manager
 		new_canvas.save_state.is_created = true
 	elif canvases.has(cc):
@@ -433,6 +432,16 @@ func new_file(add_canvas: bool, show_status: bool = true) -> int:
 	_on_canvas_changed_position()
 	_on_canvas_changed_zoom()
 	return new_canvas.id
+
+
+func connect_planner_canvas_signals(new_canvas: PlannerCanvas) -> void:
+	new_canvas.done_adding_elements.connect(_on_canvas_done_adding_elements)
+	new_canvas.changed_zoom.connect(_on_canvas_changed_zoom)
+	new_canvas.changed_position.connect(_on_canvas_changed_position)
+	new_canvas.has_changed.connect(_on_canvas_has_changed.bind(new_canvas.id))
+	new_canvas.has_selected_control.connect(_on_canvas_has_selected_control)
+	new_canvas.has_deselected_control.connect(_on_canvas_has_deselected_control)
+	new_canvas.status_message_requested.connect(_on_canvas_status_message_requested)
 
 
 # DrawingManager screenshots & saves the images & sends a signal when it's done
@@ -492,13 +501,12 @@ func save_file(path: String) -> void:
 	
 	var success: bool = file.store_string(JSON.stringify(save_data, "\t"))
 	if success:
-		#status_bar.call_deferred("update_status", str("File saved to path: %s" % path), GlobalColors.ui_green)
 		status_bar.update_status("File saved to path: %s" % path, GlobalColors.ui_green)
-		#DisplayServer.window_set_title("GPlanner %s: %s" % [app_version, path])
 		get_tree().root.title = ("GPlanner %s: %s" % [app_version, path])
 		# If drawing in the time between saving the images and saving the file
 		if !drawing_manager.canvas_drawing_group_has_changes(cc):
 			canvases[cc].reset_save_state(true)
+		canvases[cc].undo_redo.clear_history()
 		set_tab_name_and_title_from_canvas(cc)
 		print("Saved %s" % path)
 	else:

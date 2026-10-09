@@ -48,6 +48,7 @@ var last_pressure_event: float = 1.0
 var save_state: SaveState
 var settings: SettingsStates
 var drawing_settings: DrawingSettings = DrawingSettings.new()
+var undo_redo: UndoRedo
 
 signal done_adding_elements
 signal changed_zoom
@@ -117,6 +118,8 @@ func new_canvas() -> void:
 	file_name_short = "New File"
 	position = -size * 0.5 + get_viewport_rect().size * 0.5	# Start from the center on New File
 	scale = Vector2(1.0, 1.0)
+	if undo_redo:
+		undo_redo.clear_history()
 	settings = SettingsStates.new()
 	drawing_settings = DrawingSettings.new()
 	canvas_changed(true)
@@ -688,6 +691,7 @@ func erase_everything() -> void:
 	connection_candidate_1 = -1
 	connection_candidate_2 = -1
 	settings = SettingsStates.new()
+	undo_redo.clear_history()
 	is_dragging = false
 	is_resizing = false
 

@@ -4,6 +4,8 @@ class_name ClipboardImage extends Control
 @export var IMAGE_FRONT_TEXTURE: CompressedTexture2D
 @export var DRAWING_FRONT_TEXTURE: CompressedTexture2D
 @export var RESIZE_RECT: Vector2 = Vector2(32.0, 32.0)
+@export var MINIMUM_SIZE: float = 16.0
+@export var MAXIMUM_SIZE: float = 2048.0
 @onready var texture_rect: TextureRect = $TextureRect
 @onready var hide_button: Button = %HideButton
 @onready var order_button: Button = %OrderButton
@@ -140,9 +142,14 @@ func unload() -> void:
 	is_loaded = false
 
 
+func toggle_visible_and_save(toggled_on: bool) -> void:
+	visible = toggled_on
+	save = toggled_on
+
+
+# TODO connect hide_button to CanvasDrawingGroup for UndoRedo
 func _on_hide_button_pressed() -> void:
-	visible = false
-	save = false
+	toggle_visible_and_save(false)
 
 
 func toggle_input(toggled_on: bool) -> void:
@@ -208,6 +215,12 @@ func _input(event: InputEvent) -> void:
 		is_resizing = false
 	elif event is InputEventMouseMotion and is_resizing:
 		var new_scale: Vector2 = texture_rect.scale * (texture_rect.size / (texture_rect.size - event.relative))
-		var min_axis: float = min(new_scale.x, new_scale.y)
+		var min_axis: float = minf(new_scale.x, new_scale.y)
+		var min_image: float = minf(image_size.x, image_size.y)
+		var max_image: float = maxf(image_size.x, image_size.y)
+		if min_axis * min_image < MINIMUM_SIZE:
+			min_axis = MINIMUM_SIZE / min_image
+		elif min_axis * max_image > MAXIMUM_SIZE:
+			min_axis = MAXIMUM_SIZE / max_image
 		cached_scale = min_axis
 		reset_texture_rect_scale()
