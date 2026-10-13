@@ -193,6 +193,15 @@ func toggle_arrow_inputs(toggled_on: bool) -> void:
 		arrow_2.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
+func to_json() -> Dictionary:
+	var entry: Dictionary = {}
+	entry["id1"] = elem_id1
+	entry["id2"] = elem_id2
+	entry["arrow_1"] = arrow_1.enabled
+	entry["arrow_2"] = arrow_2.enabled
+	return entry
+
+
 func _on_arrow_1_toggled(toggled_on: bool) -> void:
 	arrow_1.enabled = toggled_on
 	arrow_1.queue_redraw()

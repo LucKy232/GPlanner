@@ -171,7 +171,7 @@ func _process(_delta):
 			get_selected_control().enter_text_edit()
 	if Input.is_action_pressed("ui_undo", true) and input_enabled and (input_repeat_timer.is_stopped() or first_input_repeat):
 		if canvases.has(cc) and canvases[cc].undo_redo.has_undo():
-			#print("Undo: ", canvases[cc].undo_redo.get_current_action_name())
+			print("Undo: ", canvases[cc].undo_redo.get_current_action_name())
 			canvases[cc].undo_redo.undo()
 			input_repeat_timer.start(0.5 if first_input_repeat else 0.1)
 			first_input_repeat = false
@@ -179,7 +179,7 @@ func _process(_delta):
 	if Input.is_action_pressed("ui_redo", true) and input_enabled and (input_repeat_timer.is_stopped() or first_input_repeat):
 		if canvases.has(cc) and canvases[cc].undo_redo.has_redo():
 			canvases[cc].undo_redo.redo()
-			#print("Redo: ", canvases[cc].undo_redo.get_current_action_name())
+			print("Redo: ", canvases[cc].undo_redo.get_current_action_name())
 			input_repeat_timer.start(0.5 if first_input_repeat else 0.1)
 			first_input_repeat = false
 			canvases[cc].canvas_changed()	# TODO drawings changed if redo type
@@ -408,6 +408,8 @@ func new_file(add_canvas: bool, show_status: bool = true) -> int:
 		new_canvas.zoom_speed = zoom_speed
 		new_canvas.cycle_zoom_levels = cycle_zoom_levels
 		new_canvas.undo_redo = UndoRedo.new()
+		# NOTE Signal for debug, remove
+		new_canvas.undo_redo.version_changed.connect(_on_undo_redo_version_changed.bind(new_canvas.id))
 		drawing_manager.add_canvas_drawing_group(new_canvas.id, new_canvas.undo_redo)
 		new_canvas.drawing_manager = drawing_manager
 		new_canvas.save_state.is_created = true
@@ -432,6 +434,15 @@ func new_file(add_canvas: bool, show_status: bool = true) -> int:
 	_on_canvas_changed_position()
 	_on_canvas_changed_zoom()
 	return new_canvas.id
+
+
+func _on_undo_redo_version_changed(id: int) -> void:
+	if !canvases.has(id):
+		return
+	var count: int = canvases[id].undo_redo.get_history_count()
+	print("%1d Actions" % [count])
+	#for i in range(count):
+		#print("%d: %s" % [i, canvases[id].undo_redo.get_action_name(i)])
 
 
 func connect_planner_canvas_signals(new_canvas: PlannerCanvas) -> void:
@@ -1168,23 +1179,13 @@ func _on_style_settings_preset_selected() -> void:
 	if !canvases.has(cc):
 		return
 	var style_preset: PresetStyle = style_settings.get_selected_preset()
-	var selected_control: Control = get_selected_control()
 	if style_settings.preset_options.selected > 0:
-		if canvases[cc].selected_preset_style != style_preset.id:
-			canvases[cc].change_selected_preset_style_by_id(style_preset.id)
-			if !selected_control:
-				return
-			if selected_control is CanvasElement:
-				canvases[cc].canvas_changed()
-				canvases[cc].update_connection_color(selected_control.id, style_preset.background_color)
-				selected_control.change_style_preset(style_preset)
+		canvases[cc].change_selected_control_preset(style_preset)
 	elif style_settings.preset_options.selected == 0:
+		var selected_control: Control = get_selected_control()
 		canvases[cc].unassign_selected_preset_style()
+		canvases[cc].unassign_selected_control_preset()
 		if selected_control and (selected_control is CanvasElement):
-			if selected_control.has_style_preset:
-				canvases[cc].canvas_changed()
-				selected_control.unassign_style_preset()
-				canvases[cc].update_connection_color(selected_control.id, selected_control.get_bg_color())
 			style_settings.individual_preset = selected_control.individual_style
 		else:
 			style_settings.toggle_individual_preset_inputs(false)

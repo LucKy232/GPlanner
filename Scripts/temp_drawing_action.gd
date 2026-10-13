@@ -23,6 +23,7 @@ var pixel_brushes: Dictionary = {
 @warning_ignore("unused_signal")
 signal mouse_pressed
 
+
 func init_image(img_width: int, img_height: int) -> void:
 	width = img_width
 	height = img_height

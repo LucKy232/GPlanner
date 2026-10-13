@@ -275,12 +275,20 @@ func add_object_list(at_position: Vector2, id_from_file: int = -1) -> int:
 	new_list.drag_and_resize_input.input_ended.connect(_on_control_input_ended.bind(new_list))# If loading from file, skip default style change
 	# If loading from file, skip default style change & auto select
 	if id_from_file < 0:
+		var has_preset: bool = false
 		if style_presets.has(selected_preset_style):
 			new_list.change_style_preset(style_presets[selected_preset_style])
+			has_preset = true
 		else:
 			new_list.unassign_style_preset()
 		select_element(list_id)
 		is_element_just_created = true
+		undo_redo.create_action("Add List", UndoRedo.MERGE_DISABLE)
+		undo_redo.add_do_method(add_object_list.bind(at_position, new_list.id))
+		if has_preset:
+			undo_redo.add_do_method(change_element_preset_by_undo_redo.bind(new_list.id, style_presets[selected_preset_style]))
+		undo_redo.add_undo_method(remove_element_by_undo_add.bind(new_list.id))
+		undo_redo.commit_action(false)
 	return new_list.id
 
 
@@ -318,14 +326,22 @@ func add_text_element(at_position: Vector2, id_from_file: int = -1) -> int:
 	new_element.z_index = 1
 	# If loading from file, skip default style change
 	if id_from_file < 0:
+		var has_preset: bool = false
 		if style_presets.has(selected_preset_style):
 			new_element.change_style_preset(style_presets[selected_preset_style])
+			has_preset = true
 		else:
 			new_element.unassign_style_preset()
 		# Auto select created element, and start editing text
 		select_element(elem_id)
 		new_element.enter_text_edit()
 		is_element_just_created = true
+		undo_redo.create_action("Add TextElement", UndoRedo.MERGE_DISABLE)
+		undo_redo.add_do_method(add_text_element.bind(at_position, new_element.id))
+		if has_preset:
+			undo_redo.add_do_method(change_element_preset_by_undo_redo.bind(new_element.id, style_presets[selected_preset_style]))
+		undo_redo.add_undo_method(remove_element_by_undo_add.bind(new_element.id))
+		undo_redo.commit_action(false)
 	return new_element.id
 
 
@@ -371,17 +387,55 @@ func add_connection(id_from_file: int = -1, arrow_1_enabled: bool = false, arrow
 			new_connection.arrow_2.set_pressed_no_signal(arrow_2_enabled)
 		new_connection.update_positions()
 		new_connection.arrow_changed.connect(_on_connection_arrow_changed)
-	#else:
-		#print("ALREDY EXISTS")
+		if id_from_file < 0:
+			undo_redo.create_action("Add Connection", UndoRedo.MERGE_DISABLE)
+			undo_redo.add_undo_method(remove_connection_by_undo_add.bind(conn_id))
+			undo_redo.add_do_property(self, "connection_candidate_1", connection_candidate_1)
+			undo_redo.add_do_property(self, "connection_candidate_2", connection_candidate_2)
+			undo_redo.add_do_method(add_connection.bind(conn_id))
+			undo_redo.commit_action(false)
+	else:
+		print("Connection aready exists between %d and %d" % [connection_candidate_1, connection_candidate_2])
 	connection_candidate_1 = -1
 	connection_candidate_2 = -1
 	connection_indicator.visible = false
 
 
 func remove_element(elem_id: int) -> void:
+	if !elements.has(elem_id):
+		push_error("Element ID %d doesn't exist!" % [elem_id])
+		return
+	var element_data: Dictionary = {elem_id: elements[elem_id].to_json()}
+	if lists.has(elem_id):
+		undo_redo.create_action("Delete List", UndoRedo.MERGE_DISABLE)
+		undo_redo.add_undo_method(rebuild_lists.bind(element_data))
+		undo_redo.add_undo_method(rebuild_connections.bind(get_element_connection_data(elem_id)))
+		undo_redo.add_do_method(remove_element_by_undo_add.bind(elem_id))
+		undo_redo.add_do_method(remove_connections_from_element.bind(elem_id, false))
+		undo_redo.commit_action(false)
+		lists.erase(elem_id)
+	elif text_elements.has(elem_id):
+		undo_redo.create_action("Delete Text Element", UndoRedo.MERGE_DISABLE)
+		undo_redo.add_undo_method(rebuild_elements.bind(element_data))
+		undo_redo.add_undo_method(rebuild_connections.bind(get_element_connection_data(elem_id)))
+		undo_redo.add_do_method(remove_element_by_undo_add.bind(elem_id))
+		undo_redo.add_do_method(remove_connections_from_element.bind(elem_id, false))
+		undo_redo.commit_action(false)
+		text_elements.erase(elem_id)
 	canvas_changed()
 	deselect_any()
-	remove_connections(elem_id)
+	remove_connections_from_element(elem_id, false)
+	elements[elem_id].queue_free()
+	if elements.has(elem_id):
+		elements.erase(elem_id)
+
+
+func remove_element_by_undo_add(elem_id: int) -> void:
+	if !elements.has(elem_id):
+		push_error("Element ID %d doesn't exist!" % [elem_id])
+		return
+	canvas_changed()
+	deselect_any()
 	elements[elem_id].queue_free()
 	if lists.has(elem_id):
 		lists.erase(elem_id)
@@ -391,7 +445,38 @@ func remove_element(elem_id: int) -> void:
 		elements.erase(elem_id)
 
 
-func remove_connections(elem_id: int) -> void:
+func remove_element_by_reference(element: CanvasElement) -> void:
+	if !elements.has(element.id):
+		push_error("Element ID %d not in elements dictionary!" % [element.id])
+		element.queue_free()
+		return
+	remove_element(element.id)
+
+
+func remove_connection_by_undo_add(connection_id: int) -> void:
+	if !connections.has(connection_id):
+		push_error("Connection ID %d not in connections dictionary!" % [connection_id])
+		return
+	var elem_id1: int = connections[connection_id].elem_id1
+	var elem_id2: int = connections[connection_id].elem_id2
+	var pair1: Vector2i = Vector2i(elem_id1, elem_id2)
+	if elements_to_connection.has(pair1):
+		elements_to_connection.erase(pair1)
+	if connections_p1.has(elem_id1):
+		var at_index: int = connections_p1[elem_id1].find(connection_id)
+		if at_index >= 0:
+			connections_p1[elem_id1].remove_at(at_index)
+	if connections_p2.has(elem_id2):
+		var at_index: int = connections_p2[elem_id2].find(connection_id)
+		if at_index >= 0:
+			connections_p2[elem_id2].remove_at(at_index)
+	canvas_changed()
+	connections[connection_id].queue_free()
+	connections.erase(connection_id)
+
+
+# UndoRedo registered when the action was performed manually, not as a side-effect (removing a CanvasElement)
+func remove_connections_from_element(elem_id: int, register_undo: bool = true) -> void:
 	canvas_changed()
 	var arr: Array[int] = []
 	if connections_p1.has(elem_id):
@@ -424,26 +509,49 @@ func remove_connections(elem_id: int) -> void:
 			to_erase.append(pair)
 	for pair in to_erase:
 		elements_to_connection.erase(pair)
+	var connection_data: Dictionary = {}
 	for connid in arr:
+		connection_data[connid] = connections[connid].to_json()
 		connections[connid].queue_free()
 		connections.erase(connid)
+	if register_undo:
+		undo_redo.create_action("Delete Connections", UndoRedo.MERGE_DISABLE)
+		undo_redo.add_do_method(remove_connections_from_element.bind(elem_id, false))
+		undo_redo.add_undo_method(rebuild_connections.bind(connection_data))
+		undo_redo.commit_action(false)
+
+
+func get_element_connection_data(elem_id: int) -> Dictionary:
+	var connection_data: Dictionary = {}
+	var arr: Array[int] = []
+	if connections_p1.has(elem_id):
+		for connid in connections_p1[elem_id]:
+			if !arr.has(connid):
+				arr.append(connid)
+	if connections_p2.has(elem_id):
+		for connid in connections_p2[elem_id]:
+			if !arr.has(connid):
+				arr.append(connid)
+	for connid in arr:
+		connection_data[connid] = connections[connid].to_json()
+	return connection_data
 
 
 func select_element(elem_id: int) -> void:
 	if selected_control and selected_control is CanvasElement and elem_id == selected_control.id:
 		return			# Already selected
 	deselect_any()		# Deselect previous element
-	if elements.has(elem_id):
-		selected_control = elements[elem_id]
-		object_container.move_child(selected_control, 0)
-		selected_control.select()
-		selection_viewer.visible = true
-		selection_viewer.size = selected_control.size
-		selection_viewer.position = selected_control.position
-		change_preset_to_active_control(selected_control)
-		has_selected_control.emit()
-	else:
+	if !elements.has(elem_id):
 		push_error("elements Dictionary doesn't have ID %d" [elem_id])
+		return
+	selected_control = elements[elem_id]
+	object_container.move_child(selected_control, 0)
+	selected_control.select()
+	selection_viewer.visible = true
+	selection_viewer.size = selected_control.size
+	selection_viewer.position = selected_control.position
+	change_preset_to_active_control(selected_control)
+	has_selected_control.emit()
 
 
 func deselect_any() -> void:
@@ -482,6 +590,57 @@ func change_selected_preset_style_by_id(preset_id: String) -> void:
 		selected_preset_style = "individual"
 	elif selected_preset_style != preset_id:
 		selected_preset_style = preset_id
+
+
+# Also changes selected preset to this
+func change_selected_control_preset(preset: PresetStyle) -> void:
+	if selected_preset_style == preset.id:
+		return
+	change_selected_preset_style_by_id(preset.id)
+	if !selected_control or (selected_control is not CanvasElement):
+		return
+	undo_redo.create_action("Change Style", UndoRedo.MERGE_DISABLE)
+	undo_redo.add_do_method(change_element_preset_by_undo_redo.bind(selected_control.id, preset))
+	undo_redo.add_do_method(update_connection_color.bind(selected_control.id, preset.background_color))
+	if selected_control.has_style_preset:
+		undo_redo.add_undo_method(change_element_preset_by_undo_redo.bind(selected_control.id, selected_control.style_preset))
+		undo_redo.add_undo_method(update_connection_color.bind(selected_control.id, selected_control.style_preset.background_color))
+	else:
+		undo_redo.add_undo_method(unassign_element_preset_by_undo_redo.bind(selected_control.id))
+		undo_redo.add_undo_method(update_connection_color.bind(selected_control.id, selected_control.individual_style.background_color))
+	undo_redo.commit_action(false)
+	canvas_changed()
+	selected_control.change_style_preset(preset)
+	update_connection_color(selected_control.id, preset.background_color)
+
+
+func change_element_preset_by_undo_redo(elem_id: int, preset: PresetStyle) -> void:
+	if !elements.has(elem_id):
+		push_error("elements Dictionary doesn't have ID %d" [elem_id])
+		return
+	elements[elem_id].change_style_preset(preset)
+
+
+func unassign_element_preset_by_undo_redo(elem_id: int) -> void:
+	if !elements.has(elem_id):
+		push_error("elements Dictionary doesn't have ID %d" [elem_id])
+		return
+	elements[elem_id].unassign_style_preset()
+
+
+func unassign_selected_control_preset() -> void:
+	if !selected_control or (selected_control is not CanvasElement) or !selected_control.has_style_preset:
+		return
+	var old_preset: PresetStyle = selected_control.style_preset
+	canvas_changed()
+	selected_control.unassign_style_preset()
+	update_connection_color(selected_control.id, selected_control.get_bg_color())
+	undo_redo.create_action("Unassign Style", UndoRedo.MERGE_DISABLE)
+	undo_redo.add_do_method(unassign_element_preset_by_undo_redo.bind(selected_control.id))
+	undo_redo.add_do_method(update_connection_color.bind(selected_control.id, selected_control.get_bg_color()))
+	undo_redo.add_undo_method(change_element_preset_by_undo_redo.bind(selected_control.id, old_preset))
+	undo_redo.add_undo_method(update_connection_color.bind(selected_control.id, old_preset.background_color))
+	undo_redo.commit_action(false)
 
 
 func update_connections(elem_id: int) -> void:
@@ -535,13 +694,8 @@ func all_swatches_to_json() -> Dictionary:
 func all_connection_pairs_to_json() -> Dictionary:
 	var dict: Dictionary = {}
 	for pair in elements_to_connection:
-		var entry: Dictionary = {}
 		var connid = elements_to_connection[pair]
-		entry["id1"] = pair.x
-		entry["id2"] = pair.y
-		entry["arrow_1"] = connections[connid].arrow_1.enabled
-		entry["arrow_2"] = connections[connid].arrow_2.enabled
-		dict[connid] = entry
+		dict[connid] = connections[connid].to_json()
 	return dict
 
 
@@ -827,24 +981,58 @@ func _on_control_dragged(event_relative: Vector2, control: Control) -> void:
 	if !control or !is_dragging:
 		return
 	if tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS:
-		control.position += event_relative / scale
-		selection_viewer.position = control.position
-		if control is CanvasElement:
-			update_connections(control.id)
-		canvas_changed()
+		change_control_position(control, control.position, control.position + event_relative / scale)
+
+
+# TODO selection_viewer size changes because moving was done automatically without selecting object
+# Decide how to handle selection with UndoRedo (or select here with UndoRedo function calls?)
+# Or remove selection_viewer position if not handling selection with UndoRedo
+func change_control_position(control: Control, old_position: Vector2, new_position: Vector2) -> void:
+	control.position = new_position
+	selection_viewer.position = new_position
+	if control is CanvasElement:
+		update_connections(control.id)
+	canvas_changed()
+	undo_redo.create_action("Move CanvasElement", UndoRedo.MERGE_ENDS)
+	undo_redo.add_do_method(change_control_position_by_id.bind(control.id, new_position))
+	undo_redo.add_undo_method(change_control_position_by_id.bind(control.id, old_position))
+	undo_redo.commit_action(false)
+
+
+func change_control_position_by_id(elem_id: int, new_position: Vector2) -> void:
+	if !elements.has(elem_id):
+		push_error("elements Dictionary doesn't have ID %d" [elem_id])
+		return
+	elements[elem_id].position = new_position
+	selection_viewer.position = new_position
+	update_connections(elem_id)
+	canvas_changed()
 
 
 func _on_control_resized(event_relative: Vector2, control: Control) -> void:
 	if !control or !is_resizing:
 		return
 	if tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS:
-		if control.has_method("change_size"):
-			control.change_size(control.size + event_relative / scale)
-		else:
-			control.size += event_relative / scale
-		selection_viewer.size = control.size
+		change_control_size(control, control.size, control.size + event_relative / scale)
+
+
+# TODO selection_viewer size changes because resizing was done automatically without selecting object
+# Decide how to handle selection with UndoRedo (or select here with UndoRedo function calls?)
+# Or remove selection_viewer position if not handling selection with UndoRedo
+func change_control_size(control: Control, old_size: Vector2, new_size: Vector2, register_undo: bool = true) -> void:
+	if control.has_method("change_size"):
+		control.change_size(new_size)
+	else:
+		control.size = new_size
+	if control is CanvasElement:
 		update_connections(control.id)
-		canvas_changed()
+	selection_viewer.size = new_size
+	canvas_changed()
+	if register_undo:
+		undo_redo.create_action("Resize CanvasElement", UndoRedo.MERGE_ENDS)
+		undo_redo.add_do_method(change_control_size.bind(control, old_size, new_size, false))
+		undo_redo.add_undo_method(change_control_size.bind(control, new_size, old_size, false))
+		undo_redo.commit_action(false)
 
 
 func _on_background_gui_input(event: InputEvent) -> void:
@@ -973,7 +1161,7 @@ func _on_text_element_gui_input(event: InputEvent, elem_id: int) -> void:
 				connection_candidate_2 = elem_id
 				add_connection()
 		if tool_id == Enums.Tool.REMOVE_CONNECTIONS:
-			remove_connections(elem_id)
+			remove_connections_from_element(elem_id)
 		if (tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS):
 			select_element(elem_id)
 			# Distance to bottom-right corner, start resizing
@@ -1014,7 +1202,7 @@ func _on_object_list_mouse_input(event: InputEvent, list_id: int) -> void:
 				connection_candidate_2 = list_id
 				add_connection()
 		if tool_id == Enums.Tool.REMOVE_CONNECTIONS:
-			remove_connections(list_id)
+			remove_connections_from_element(list_id)
 		if (tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS):
 			select_element(list_id)
 			# Distance to bottom-right corner, start resizing
@@ -1057,7 +1245,7 @@ func _on_element_text_box_active(elem_id: int) -> void:
 	if tool_id == Enums.Tool.REMOVE_ELEMENT:
 		remove_element(elem_id)
 	if tool_id == Enums.Tool.REMOVE_CONNECTIONS:
-		remove_connections(elem_id)
+		remove_connections_from_element(elem_id)
 
 
 func _on_text_element_text_changed() -> void:
@@ -1086,7 +1274,7 @@ func _on_list_select_requested(list_id: int) -> void:
 
 func _on_list_remove_element_request(elem_id: int) -> void:
 	if !elements.has(elem_id):
-		push_error("Wrong element id @ _on_list_remove_element_request")
+		push_error("Wrong element id %d @ _on_list_remove_element_request" % [elem_id])
 	remove_element(elem_id)
 	is_dragging = false
 	is_resizing = false

@@ -5,7 +5,7 @@ class_name ClipboardImage extends Control
 @export var DRAWING_FRONT_TEXTURE: CompressedTexture2D
 @export var RESIZE_RECT: Vector2 = Vector2(32.0, 32.0)
 @export var MINIMUM_SIZE: float = 16.0
-@export var MAXIMUM_SIZE: float = 2048.0
+@export var MAXIMUM_SIZE: float = 4096.0
 @onready var texture_rect: TextureRect = $TextureRect
 @onready var hide_button: Button = %HideButton
 @onready var order_button: Button = %OrderButton
@@ -119,7 +119,26 @@ func reset_texture_rect_scale() -> void:
 	main_shape.shape.size = image_size * cached_scale
 	main_shape.position = image_size * cached_scale * 0.5
 	resize_shape.position = image_size * cached_scale - RESIZE_RECT * 0.5
-	resized.emit()
+
+
+func set_new_scale(new_scale: Vector2, use_signal: bool = true) -> void:
+	var old_scale: Vector2 = texture_rect.scale
+	var min_axis: float = minf(new_scale.x, new_scale.y)
+	var min_image: float = minf(image_size.x, image_size.y)
+	var max_image: float = maxf(image_size.x, image_size.y)
+	if min_axis * min_image < MINIMUM_SIZE:
+		min_axis = MINIMUM_SIZE / min_image
+	elif min_axis * max_image > MAXIMUM_SIZE:
+		min_axis = MAXIMUM_SIZE / max_image
+	cached_scale = min_axis
+	texture_rect.scale = Vector2(cached_scale, cached_scale)
+	reset_texture_rect_scale()
+	if use_signal:
+		resized.emit(old_scale)
+
+
+func set_new_scale_no_signal(new_scale: Vector2) -> void:
+	set_new_scale(new_scale, false)
 
 
 func to_json() -> Dictionary:
@@ -147,7 +166,6 @@ func toggle_visible_and_save(toggled_on: bool) -> void:
 	save = toggled_on
 
 
-# TODO connect hide_button to CanvasDrawingGroup for UndoRedo
 func _on_hide_button_pressed() -> void:
 	toggle_visible_and_save(false)
 
@@ -214,13 +232,4 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
 		is_resizing = false
 	elif event is InputEventMouseMotion and is_resizing:
-		var new_scale: Vector2 = texture_rect.scale * (texture_rect.size / (texture_rect.size - event.relative))
-		var min_axis: float = minf(new_scale.x, new_scale.y)
-		var min_image: float = minf(image_size.x, image_size.y)
-		var max_image: float = maxf(image_size.x, image_size.y)
-		if min_axis * min_image < MINIMUM_SIZE:
-			min_axis = MINIMUM_SIZE / min_image
-		elif min_axis * max_image > MAXIMUM_SIZE:
-			min_axis = MAXIMUM_SIZE / max_image
-		cached_scale = min_axis
-		reset_texture_rect_scale()
+		set_new_scale(texture_rect.scale * (texture_rect.size / (texture_rect.size - event.relative)))

@@ -139,14 +139,6 @@ func init(manager_size: Vector2, undo_redo_from_canvas: UndoRedo) -> void:
 	size = manager_size
 	undo_redo = undo_redo_from_canvas
 	current_stroke = add_temp_drawing_action()
-	
-	undo_redo.version_changed.connect(_on_undo_redo_version_changed)
-
-
-func _on_undo_redo_version_changed() -> void:
-	var count: int = undo_redo.get_history_count()
-	for i in range(count):
-		print("%d: %s" % [i, undo_redo.get_action_name(i)])
 
 
 func has_changes() -> bool:
@@ -255,10 +247,11 @@ func end_stroke() -> void:
 		var remove: TempDrawingAction = future_drawing_actions.pop_front()
 		used_temp_data_kb -= remove.data_usage_kb
 		remove.queue_free()
-	undo_redo.create_action("Drawing stroke")
-	undo_redo.add_do_method(redo_drawing_action)
-	undo_redo.add_undo_method(undo_drawing_action)
-	undo_redo.commit_action()
+	if !to_delete:
+		undo_redo.create_action("Drawing", UndoRedo.MERGE_DISABLE)
+		undo_redo.add_do_method(redo_drawing_action)
+		undo_redo.add_undo_method(undo_drawing_action)
+		undo_redo.commit_action(false)
 
 
 func end_brush_stroke() -> void:
@@ -411,32 +404,37 @@ func add_drawing_region(region_v2i: Vector2i) -> void:
 
 
 func add_clipboard_image(image: Image, pos: Vector2, scl: Vector2) -> void:
-	var clip: ClipboardImage = load(GlobalScenes.clipboard_image_scene).instantiate()
-	temp_drawing_actions_container.add_child(clip)
-	clip.name = "ClipboardImage"
-	clip.size = image.get_size()
-	clip.update_from_image(image)
-	clip.mouse_pressed.connect(_on_clipboard_image_mouse_pressed.bind(clip))
-	clip.resized.connect(_on_clipboard_image_resized.bind(clip))
-	clip.position = -pos / scl.x + get_viewport_rect().size * 0.5 / scl.x - image.get_size() * 0.5
-	clipboard_images.append(clip)
+	var ci: ClipboardImage = load(GlobalScenes.clipboard_image_scene).instantiate()
+	temp_drawing_actions_container.add_child(ci)
+	ci.name = "ClipboardImage"
+	ci.size = image.get_size()
+	ci.update_from_image(image)
+	connect_clipboard_image_signals(ci)
+	ci.position = -pos / scl.x + get_viewport_rect().size * 0.5 / scl.x - image.get_size() * 0.5
+	clipboard_images.append(ci)
 	if !clipboard_image_changes and !is_at_startup:
 		clipboard_image_changes = true
 		clipboard_images_changed.emit()
-	undo_redo.create_action("Add Clipboard Image")
-	undo_redo.add_do_method(clip.toggle_visible_and_save.bind(true))
-	undo_redo.add_undo_method(clip.toggle_visible_and_save.bind(false))
-	undo_redo.commit_action()
+	if !is_at_startup:
+		undo_redo.create_action("Add Clipboard Image", UndoRedo.MERGE_DISABLE)
+		undo_redo.add_do_method(ci.toggle_visible_and_save.bind(true))
+		undo_redo.add_undo_method(ci.toggle_visible_and_save.bind(false))
+		undo_redo.commit_action(false)
 
 
 func add_clipboard_image_from_data(data: Dictionary, create_image: bool = true) -> void:
-	var clip: ClipboardImage = load(GlobalScenes.clipboard_image_scene).instantiate()
-	temp_drawing_actions_container.add_child(clip)
-	clip.name = "ClipboardImage"
-	clip.load_from_dict(data, create_image)
-	clip.mouse_pressed.connect(_on_clipboard_image_mouse_pressed.bind(clip))
-	clip.resized.connect(_on_clipboard_image_resized.bind(clip))
-	clipboard_images.append(clip)
+	var ci: ClipboardImage = load(GlobalScenes.clipboard_image_scene).instantiate()
+	temp_drawing_actions_container.add_child(ci)
+	ci.name = "ClipboardImage"
+	ci.load_from_dict(data, create_image)
+	connect_clipboard_image_signals(ci)
+	clipboard_images.append(ci)
+
+
+func connect_clipboard_image_signals(ci: ClipboardImage) -> void:
+	ci.mouse_pressed.connect(_on_clipboard_image_mouse_pressed.bind(ci))
+	ci.resized.connect(_on_clipboard_image_resized.bind(ci))
+	ci.hide_button.pressed.connect(_on_clipboard_image_hide_pressed.bind(ci))
 
 
 ## Repositions the current_stroke TempDrawingAction to the current viewport
@@ -654,12 +652,20 @@ func _on_clipboard_image_mouse_pressed(temp: ClipboardImage) -> void:
 	moving_images[temp] = true
 
 
-func _on_clipboard_image_resized(ci: ClipboardImage) -> void:
+func _on_clipboard_image_resized(old_scale: Vector2, ci: ClipboardImage) -> void:
+	var old_position: Vector2 = ci.position
 	ci.position.x = clampf(ci.position.x, 0.0, CANVAS_SIZE.x - ci.size.x * ci.scale.x)
 	ci.position.y = clampf(ci.position.y, 0.0, CANVAS_SIZE.y - ci.size.y * ci.scale.x)
 	if !clipboard_image_changes and !is_at_startup:
 		clipboard_image_changes = true
 		clipboard_images_changed.emit()
+	#if !is_at_startup:
+	undo_redo.create_action("Scale Clipboard Image", UndoRedo.MERGE_ENDS)
+	undo_redo.add_undo_method(ci.set_new_scale_no_signal.bind(old_scale))
+	undo_redo.add_undo_property(ci, "position", old_position)
+	undo_redo.add_do_property(ci, "position", ci.position)
+	undo_redo.add_do_method(ci.set_new_scale_no_signal.bind(Vector2.ONE * ci.cached_scale))
+	undo_redo.commit_action(false)
 
 
 func _input(event: InputEvent) -> void:
@@ -668,6 +674,7 @@ func _input(event: InputEvent) -> void:
 		return
 	if event is InputEventMouseMotion and event.button_mask == 1:
 		for ci in moving_images:
+			var old_position: Vector2 = ci.position
 			ci.position += event.relative * current_zoom
 			ci.position.x = clampf(ci.position.x, 0.0, CANVAS_SIZE.x - ci.size.x * ci.scale.x)
 			ci.position.y = clampf(ci.position.y, 0.0, CANVAS_SIZE.y - ci.size.y * ci.scale.x)
@@ -675,3 +682,14 @@ func _input(event: InputEvent) -> void:
 			if !clipboard_image_changes and !is_at_startup:
 				clipboard_image_changes = true
 				clipboard_images_changed.emit()
+			undo_redo.create_action("Move Clipboard Image", UndoRedo.MERGE_ENDS)
+			undo_redo.add_undo_property(ci, "position", old_position)
+			undo_redo.add_do_property(ci, "position", ci.position)	# New position
+			undo_redo.commit_action(false)
+
+
+func _on_clipboard_image_hide_pressed(ci: ClipboardImage) -> void:
+	undo_redo.create_action("Erase Clipboard Image", UndoRedo.MERGE_DISABLE)
+	undo_redo.add_do_method(ci.toggle_visible_and_save.bind(false))
+	undo_redo.add_undo_method(ci.toggle_visible_and_save.bind(true))
+	undo_redo.commit_action(false)
