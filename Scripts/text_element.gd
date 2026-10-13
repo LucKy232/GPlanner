@@ -221,29 +221,32 @@ func to_json() -> Dictionary:
 	return dict
 
 
+func emit_changed_priority(new_priority: Enums.Priority) -> void:
+	if priority_id == new_priority:
+		return
+	var old_priority: Enums.Priority = priority_id
+	priority_id = new_priority
+	changed_priority.emit(old_priority)
+
+
 func _on_priority_active_pressed() -> void:
-	priority_id = Enums.Priority.ACTIVE
-	changed_priority.emit()
+	emit_changed_priority(Enums.Priority.ACTIVE)
 
 
 func _on_priority_high_pressed() -> void:
-	priority_id = Enums.Priority.HIGH
-	changed_priority.emit()
+	emit_changed_priority(Enums.Priority.HIGH)
 
 
 func _on_priority_medium_pressed() -> void:
-	priority_id = Enums.Priority.MEDIUM
-	changed_priority.emit()
+	emit_changed_priority(Enums.Priority.MEDIUM)
 
 
 func _on_priority_low_pressed() -> void:
-	priority_id = Enums.Priority.LOW
-	changed_priority.emit()
+	emit_changed_priority(Enums.Priority.LOW)
 
 
 func _on_priority_none_pressed() -> void:
-	priority_id = Enums.Priority.NONE
-	changed_priority.emit()
+	emit_changed_priority(Enums.Priority.NONE)
 
 
 func _on_resize_timer_timeout() -> void:

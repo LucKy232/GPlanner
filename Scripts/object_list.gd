@@ -472,9 +472,15 @@ func line_up_side_buttons() -> void:
 	priority_buttons_margin.visible = true if (priority_enabled and priority_tool_enabled) else false
 
 
-func set_active_entry_priority(p: Enums.Priority) -> void:
+func signal_active_entry_priority(p: Enums.Priority) -> void:
 	if entries.size() > last_edited_entry_id and last_edited_entry_id >= 0:
 		entry_priority_changed.emit(entries[last_edited_entry_id], p)
+
+
+func set_entry_priority(entry_id: int, priority: Enums.Priority, color: Color) -> void:
+	if entries.size() > entry_id and entry_id >= 0:
+		entries[entry_id].set_priority(priority)
+		entries[entry_id].set_priority_color(color)
 
 
 #region PresetStyles
@@ -719,20 +725,20 @@ func _on_list_title_gui_input(event: InputEvent) -> void:
 
 
 func _on_priority_active_pressed() -> void:
-	set_active_entry_priority(Enums.Priority.ACTIVE)
+	signal_active_entry_priority(Enums.Priority.ACTIVE)
 
 
 func _on_priority_high_pressed() -> void:
-	set_active_entry_priority(Enums.Priority.HIGH)
+	signal_active_entry_priority(Enums.Priority.HIGH)
 
 
 func _on_priority_medium_pressed() -> void:
-	set_active_entry_priority(Enums.Priority.MEDIUM)
+	signal_active_entry_priority(Enums.Priority.MEDIUM)
 
 
 func _on_priority_low_pressed() -> void:
-	set_active_entry_priority(Enums.Priority.LOW)
+	signal_active_entry_priority(Enums.Priority.LOW)
 
 
 func _on_priority_none_pressed() -> void:
-	set_active_entry_priority(Enums.Priority.NONE)
+	signal_active_entry_priority(Enums.Priority.NONE)

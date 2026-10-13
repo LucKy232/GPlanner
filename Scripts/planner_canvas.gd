@@ -1013,26 +1013,34 @@ func _on_control_resized(event_relative: Vector2, control: Control) -> void:
 	if !control or !is_resizing:
 		return
 	if tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS:
-		change_control_size(control, control.size, control.size + event_relative / scale)
+		change_control_size(control, control.size + event_relative / scale)
 
 
 # TODO selection_viewer size changes because resizing was done automatically without selecting object
 # Decide how to handle selection with UndoRedo (or select here with UndoRedo function calls?)
 # Or remove selection_viewer position if not handling selection with UndoRedo
-func change_control_size(control: Control, old_size: Vector2, new_size: Vector2, register_undo: bool = true) -> void:
-	if control.has_method("change_size"):
+func change_control_size(control: Control, new_size: Vector2, register_undo: bool = true) -> void:
+	var old_size: Vector2 = control.size
+	if control is CanvasElement:
 		control.change_size(new_size)
+		update_connections(control.id)
 	else:
 		control.size = new_size
-	if control is CanvasElement:
-		update_connections(control.id)
+		return
 	selection_viewer.size = new_size
 	canvas_changed()
 	if register_undo:
 		undo_redo.create_action("Resize CanvasElement", UndoRedo.MERGE_ENDS)
-		undo_redo.add_do_method(change_control_size.bind(control, old_size, new_size, false))
-		undo_redo.add_undo_method(change_control_size.bind(control, new_size, old_size, false))
+		undo_redo.add_do_method(change_control_size_by_id.bind(control.id, new_size))
+		undo_redo.add_undo_method(change_control_size_by_id.bind(control.id, old_size))
 		undo_redo.commit_action(false)
+
+
+func change_control_size_by_id(elem_id: int, new_size: Vector2) -> void:
+	if !elements.has(elem_id):
+		push_error("elements Dictionary doesn't have ID %d" [elem_id])
+		return
+	change_control_size(elements[elem_id], new_size, false)
 
 
 func _on_background_gui_input(event: InputEvent) -> void:
@@ -1286,17 +1294,37 @@ func _on_element_resized(elem_id: int) -> void:
 		selection_viewer.size = elements[elem_id].size
 
 
-func _on_element_changed_priority(elem_id: int) -> void:
-	canvas_changed()
-	if elements.has(elem_id):
-		var pr_id = elements[elem_id].priority_id
-		elements[elem_id].set_priority_color(priority_colors[pr_id])
+# TODO move function
+func set_text_element_priority_by_id(elem_id: int, p: Enums.Priority) -> void:
+	if !elements.has(elem_id):
+		return
+	elements[elem_id].set_priority_id(p)
+	elements[elem_id].set_priority_color(priority_colors[p])
 
 
-func _on_list_entry_changed_priority(entry: ListTextEntry, p: Enums.Priority) -> void:
+func _on_element_changed_priority(old_priority: Enums.Priority, elem_id: int) -> void:
+	if !elements.has(elem_id):
+		return
 	canvas_changed()
-	entry.set_priority(p)
-	entry.set_priority_color(priority_colors[p])
+	var new_priority: Enums.Priority = elements[elem_id].priority_id
+	undo_redo.create_action("Text Element Priority", UndoRedo.MERGE_DISABLE)
+	undo_redo.add_do_method(set_text_element_priority_by_id.bind(elem_id, new_priority))
+	undo_redo.add_undo_method(set_text_element_priority_by_id.bind(elem_id, old_priority))
+	undo_redo.commit_action(true)
+
+
+func _on_list_entry_changed_priority(entry: ListTextEntry, new_priority: Enums.Priority) -> void:
+	canvas_changed()
+	var old_priority: Enums.Priority = entry.priority_id
+	if old_priority == new_priority:
+		return
+	if !elements.has(entry.list_id) or (elements[entry.list_id] is not ObjectList):
+		push_error("Entry list_id invalid, list not in elements Dictionary")
+		return
+	undo_redo.create_action("List Entry Priority", UndoRedo.MERGE_DISABLE)
+	undo_redo.add_do_method(elements[entry.list_id].set_entry_priority.bind(entry.id, new_priority, priority_colors[new_priority]))
+	undo_redo.add_undo_method(elements[entry.list_id].set_entry_priority.bind(entry.id, old_priority, priority_colors[old_priority]))
+	undo_redo.commit_action(true)
 
 
 func _on_list_copied_to_clipboard() -> void:
