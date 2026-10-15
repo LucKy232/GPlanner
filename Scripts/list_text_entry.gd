@@ -15,6 +15,7 @@ var can_hover: bool = true
 var priority_id: Enums.Priority = Enums.Priority.NONE
 var priority_color: Color = Color.WHITE
 var list_id: int = -1		## updated when this is created, used when dropped on canvas to access list style, if list_id ever changes at runtime, this will break
+var order_id: int = -1
 var id: int = -1
 
 @warning_ignore("unused_signal")
@@ -102,6 +103,10 @@ func toggle_div(toggle_on: bool) -> void:
 
 func rebuild_from_dict(dict: Dictionary) -> void:
 	text_edit.text = dict["text"]
+	if dict.has("order_id"):
+		order_id = dict["order_id"]
+	else:
+		order_id = id
 
 
 func reset_item_sizes() -> void:
@@ -148,6 +153,7 @@ func to_json() -> Dictionary:
 	var dict: Dictionary = {
 		"text": text_edit.text,
 		"priority_id": priority_id,
+		"id": id,
 	}
 	return dict
 

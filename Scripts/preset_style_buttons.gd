@@ -44,7 +44,7 @@ func add_button(text: String, tooltip: String) -> void:
 		buttons[id] = load(GlobalScenes.style_select_button_scene).instantiate()
 		buttons[id].theme = buttons[id].theme.duplicate(true)
 		buttons[id].pressed.connect(_on_button_pressed.bind(id))
-		if id <= 10:
+		if id <= 10:	# Add keybinds
 			var events: Array[InputEvent] = InputMap.action_get_events(keybinds[id])
 			buttons[id].shortcut = Shortcut.new()
 			buttons[id].shortcut.events = InputMap.action_get_events(keybinds[id])

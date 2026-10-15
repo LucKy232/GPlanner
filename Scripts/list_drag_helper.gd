@@ -1,7 +1,8 @@
 class_name ListDragHelper
 ## Manages offset transforms to move list entries away visually from the dragged object
 
-var list: Array[ListTextEntry]
+var list: Dictionary[int, ListTextEntry]
+var order_array: Array[int]	## 
 var drop_visual: Control
 var object_id: int = -1		## Dragging object ID
 var current: int = -1		## Current position ID, where object_id will be
@@ -30,8 +31,8 @@ class DragPositionData:
 		scroll_container_position = _scroll_container_position
 
 
-func start_drag_child(obj_id: int, entry_list: Array[ListTextEntry], event_position: Vector2, _drop_visual: Control, drag_position_data: DragPositionData) -> void:
-	list = entry_list
+func start_drag_child(obj_id: int, entries_dict: Dictionary[int, ListTextEntry], event_position: Vector2, _drop_visual: Control, drag_position_data: DragPositionData) -> void:
+	list = entries_dict
 	drop_visual = _drop_visual
 	drop_visual.size = list[obj_id].size
 	object_id = obj_id
@@ -43,8 +44,8 @@ func start_drag_child(obj_id: int, entry_list: Array[ListTextEntry], event_posit
 	is_dragging_child = true
 
 
-func start_drag_from_outside(entry_list: Array[ListTextEntry], _drop_visual: Control, drag_position_data: DragPositionData) -> void:
-	list = entry_list
+func start_drag_from_outside(entries_dict: Dictionary[int, ListTextEntry], _drop_visual: Control, drag_position_data: DragPositionData) -> void:
+	list = entries_dict
 	drop_visual = _drop_visual
 	object_id = 0
 	current = 0
@@ -61,14 +62,15 @@ func end_drag() -> void:
 
 func reset_offset_transforms() -> void:
 	for entry in list:
-		entry.offset_transform_position = Vector2.ZERO
+		list[entry].offset_transform_position = Vector2.ZERO
 
 
 func reset_data() -> void:
 	is_dragging_child = false
 	is_dragging_outside = false
-	list = []
 	position_data = null
+	list = {}
+	order_array = []
 	object_id = 0
 	current = 0
 	lowest = 0
@@ -139,30 +141,30 @@ func drag_from_outside(drag_pos: Vector2, new_scroll_y: int) -> void:
 	if drag_pos.y < 20.0:
 		current = 0
 		#return
-	for entry in list:
+	for entry_id in list:
 		# After last entry
-		if entry.id == last_visible and drag_pos.y > entry.position.y + entry.size.y * 0.4:
+		if list[entry_id].order_id == last_visible and drag_pos.y > list[entry_id].position.y + list[entry_id].size.y * 0.4:
 			current = last_visible + 1
-		elif entry.visible and drag_pos.y > entry.position.y + entry.size.y:
-			current = entry.id + 1
+		elif list[entry_id].visible and drag_pos.y > list[entry_id].position.y + list[entry_id].size.y:
+			current = list[entry_id].order_id + 1
 	drag_from_outside_visual_offsets()
 
 
 func drag_from_outside_visual_offsets() -> void:
-	for entry in list:
+	for entry_id in list:
 		#printt("%d %d" % [entry.id, current - 1])
-		if entry.visible and entry.id > (current - 1):
-			entry.offset_transform_position = Vector2(0.0, drop_visual.size.y)
+		if list[entry_id].visible and list[entry_id].order_id > (current - 1):
+			list[entry_id].offset_transform_position = Vector2(0.0, drop_visual.size.y)
 		else:
-			entry.offset_transform_position = Vector2.ZERO
+			list[entry_id].offset_transform_position = Vector2.ZERO
 
 
 func drag_inside_visual_offsets(moving_entry_id: int) -> void:
-	for entry in list:
-		if entry.id >= current and entry.id < moving_entry_id:
-			entry.offset_transform_position = Vector2(0.0, list[moving_entry_id].size.y)
-		if entry.id <= current and entry.id > moving_entry_id:
-			entry.offset_transform_position = Vector2(0.0, -list[moving_entry_id].size.y)
+	for entry_id in list:
+		if list[entry_id].order_id >= current and list[entry_id].order_id < moving_entry_id:
+			list[entry_id].offset_transform_position = Vector2(0.0, list[moving_entry_id].size.y)
+		if list[entry_id].order_id <= current and list[entry_id].order_id > moving_entry_id:
+			list[entry_id].offset_transform_position = Vector2(0.0, -list[moving_entry_id].size.y)
 
 
 func position_outside_drop_visual() -> void:

@@ -993,7 +993,7 @@ func change_control_position(control: Control, old_position: Vector2, new_positi
 	if control is CanvasElement:
 		update_connections(control.id)
 	canvas_changed()
-	undo_redo.create_action("Move CanvasElement", UndoRedo.MERGE_ENDS)
+	undo_redo.create_action("Move CanvasElement|%d" % [control.id], UndoRedo.MERGE_ENDS)
 	undo_redo.add_do_method(change_control_position_by_id.bind(control.id, new_position))
 	undo_redo.add_undo_method(change_control_position_by_id.bind(control.id, old_position))
 	undo_redo.commit_action(false)
@@ -1030,7 +1030,7 @@ func change_control_size(control: Control, new_size: Vector2, register_undo: boo
 	selection_viewer.size = new_size
 	canvas_changed()
 	if register_undo:
-		undo_redo.create_action("Resize CanvasElement", UndoRedo.MERGE_ENDS)
+		undo_redo.create_action("Resize CanvasElement|%d" % [control.id], UndoRedo.MERGE_ENDS)
 		undo_redo.add_do_method(change_control_size_by_id.bind(control.id, new_size))
 		undo_redo.add_undo_method(change_control_size_by_id.bind(control.id, old_size))
 		undo_redo.commit_action(false)

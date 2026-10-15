@@ -660,7 +660,7 @@ func _on_clipboard_image_resized(old_scale: Vector2, ci: ClipboardImage) -> void
 		clipboard_image_changes = true
 		clipboard_images_changed.emit()
 	#if !is_at_startup:
-	undo_redo.create_action("Scale Clipboard Image", UndoRedo.MERGE_ENDS)
+	undo_redo.create_action("Scale Clipboard Image|%s" % [ci.name], UndoRedo.MERGE_ENDS)
 	undo_redo.add_undo_method(ci.set_new_scale_no_signal.bind(old_scale))
 	undo_redo.add_undo_property(ci, "position", old_position)
 	undo_redo.add_do_property(ci, "position", ci.position)
@@ -682,7 +682,7 @@ func _input(event: InputEvent) -> void:
 			if !clipboard_image_changes and !is_at_startup:
 				clipboard_image_changes = true
 				clipboard_images_changed.emit()
-			undo_redo.create_action("Move Clipboard Image", UndoRedo.MERGE_ENDS)
+			undo_redo.create_action("Move Clipboard Image|%s" % [ci.name], UndoRedo.MERGE_ENDS)
 			undo_redo.add_undo_property(ci, "position", old_position)
 			undo_redo.add_do_property(ci, "position", ci.position)	# New position
 			undo_redo.commit_action(false)
