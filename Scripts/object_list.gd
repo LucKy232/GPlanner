@@ -80,7 +80,8 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 			return false
 		# Start drag from outside
 		elif !dragger.is_dragging_outside and !entries.values().has(data):
-			dragger.start_drag_from_outside(entries, drop_visual, get_new_drag_position_data())
+			dragger.pass_references(entries, entries_order, drop_visual)
+			dragger.start_drag_from_outside(get_new_drag_position_data())
 			change_state(State.DRAGGING_FROM_OUTSIDE)
 			drop_visual.size = Vector2(object_v_box.size.x, float(get_font_size() + 4))
 			return true
@@ -96,7 +97,8 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 	elif data is TextElement:
 		# Start drag from outside
 		if !dragger.is_dragging_outside and mouse_inside:
-			dragger.start_drag_from_outside(entries, drop_visual, get_new_drag_position_data())
+			dragger.pass_references(entries, entries_order, drop_visual)
+			dragger.start_drag_from_outside(get_new_drag_position_data())
 			change_state(State.DRAGGING_FROM_OUTSIDE)
 			drop_visual.size = Vector2(object_v_box.size.x, float(get_font_size() + 4))
 			return true
@@ -123,6 +125,7 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		data.order_id = dragger.current
 		data.id = entry_id_counter
 		entry_id_counter += 1
+		entries_order.append(data.id)
 		entries[data.id] = data
 		object_v_box.move_child(data, dragger.current)
 		sort_entries(entries.size() - 1, dragger.current)	# Last entry added move to its id
@@ -676,17 +679,16 @@ func _on_list_text_entry_text_changed() -> void:
 	list_changed.emit()
 
 
-# TODO finish ListDragHelper
 func _on_list_text_entry_grabber_started_move(entry_id: int, event_pos: Vector2) -> void:
 	if !entries.has(entry_id):
 		push_error("Entry ID %d Invalid!" % [entry_id])
 		return
-	dragger.start_drag_child(entry_id, entries, event_pos, drop_visual, get_new_drag_position_data())
+	dragger.pass_references(entries, entries_order, drop_visual)
+	dragger.start_drag_child(entry_id, event_pos, get_new_drag_position_data())
 	dragging.emit(true)
 	change_state(State.DRAGGING_CHILD_INSIDE)
 
 
-# TODO finish ListDragHelper
 func _on_list_text_entry_grabber_moved(event: InputEventMouseMotion, entry_id: int) -> void:
 	if !entries.has(entry_id):
 		push_error("Entry ID %d Invalid!" % [entry_id])
@@ -702,7 +704,7 @@ func _on_list_text_entry_grabber_ended_move(entry_id: int) -> void:
 	if !entries.has(entry_id):
 		push_error("Entry ID %d Invalid!" % [entry_id])
 		return
-	if dragger.object_id != entry_id:
+	if dragger.entry_order_id != entries[entry_id].order_id:
 		push_error("Wrong drag ID")
 		return
 	var move_to: int = dragger.current
@@ -712,8 +714,8 @@ func _on_list_text_entry_grabber_ended_move(entry_id: int) -> void:
 	toggle_all_entries_hover(true)
 	if entry_id != move_to:
 		object_v_box.move_child(entries[entry_id], move_to)
-		sort_entries(entry_id, move_to)
-		last_edited_entry_id = move_to
+		sort_entries(entries[entry_id].order_id, move_to)
+		last_edited_entry_id = entry_id
 		last_edited_order_id = entries[entry_id].order_id
 		line_up_side_buttons.call_deferred()
 		refresh_entry_divs_visibility()

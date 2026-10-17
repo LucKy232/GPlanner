@@ -532,10 +532,10 @@ func load_file(path: String, app_startup: bool = false) -> void:
 	if FileAccess.file_exists(path):
 		file = FileAccess.open(path, FileAccess.READ)
 		if file == null:
-			printerr("FileAcces open error: ", FileAccess.get_open_error())
+			push_error("FileAcces open error: ", FileAccess.get_open_error())
 			return
 	else:
-		printerr("File doesn't exist @ main.gd:load_file()")
+		push_error("File doesn't exist @ main.gd:load_file()")
 		return
 	
 	var content = file.get_as_text()
