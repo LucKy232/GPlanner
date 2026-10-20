@@ -123,7 +123,7 @@ func drag_child() -> void:
 		current = previous
 		if lowest > current:
 			lowest = current
-		drag_inside_visual_offsets(entry_order_id)
+		drag_inside_visual_offsets(entry_id)
 		# Reset offsets if going opposite direction - was going up, now going down
 		if current < highest and highest != entry_order_id:
 			var highest_entry_id: int = order_array[highest]
@@ -133,7 +133,7 @@ func drag_child() -> void:
 		current = next
 		if highest < current:
 			highest = current
-		drag_inside_visual_offsets(entry_order_id)
+		drag_inside_visual_offsets(entry_id)
 		# Reset offsets if going opposite direction - was going down, now going up
 		if current > lowest and lowest != entry_order_id:
 			var lowest_entry_id: int = order_array[lowest]
@@ -151,8 +151,7 @@ func drag_from_outside(drag_pos: Vector2, new_scroll_y: int) -> void:
 	# Before first entry
 	if drag_pos.y < 20.0:
 		current = 0
-		#return
-	for entry_id in entries:
+	for entry_id in order_array:
 		# After last entry
 		if entries[entry_id].order_id == last_visible and drag_pos.y > entries[entry_id].position.y + entries[entry_id].size.y * 0.4:
 			current = last_visible + 1
@@ -162,6 +161,7 @@ func drag_from_outside(drag_pos: Vector2, new_scroll_y: int) -> void:
 
 
 func drag_from_outside_visual_offsets() -> void:
+	print("ID: ", current)
 	for entry_id in entries:
 		#printt("%d %d" % [entry.id, current - 1])
 		if entries[entry_id].visible and entries[entry_id].order_id > (current - 1):
@@ -171,22 +171,25 @@ func drag_from_outside_visual_offsets() -> void:
 
 
 func drag_inside_visual_offsets(moving_entry_id: int) -> void:
+	if !entries.has(moving_entry_id):
+		push_error("Bad entry ID %d passed to ListDragHelper: drag_inside_visual_offsets()!" % [moving_entry_id])
+		return
 	for entry_id in entries:
-		if entries[entry_id].order_id >= current and entries[entry_id].order_id < moving_entry_id:
+		if entries[entry_id].order_id >= current and entries[entry_id].order_id < entries[moving_entry_id].order_id:
 			entries[entry_id].offset_transform_position = Vector2(0.0, entries[moving_entry_id].size.y)
-		if entries[entry_id].order_id <= current and entries[entry_id].order_id > moving_entry_id:
+		if entries[entry_id].order_id <= current and entries[entry_id].order_id > entries[moving_entry_id].order_id:
 			entries[entry_id].offset_transform_position = Vector2(0.0, -entries[moving_entry_id].size.y)
 
 
 func position_outside_drop_visual() -> void:
 	var after_entry_position: Vector2 = Vector2.ZERO
 	var order_id: int = current - 1
-	var entry_id: int = order_array[order_id]
 	# Position on empty list
 	if order_array.size() == 0:
 		after_entry_position = Vector2.ZERO
 	# Position on current entry + its size
 	elif order_id >= 0 and order_id < order_array.size():
+		var entry_id: int = order_array[order_id]
 		after_entry_position = (entries[entry_id].position
 							+ Vector2(0.0, entries[entry_id].size.y))
 	drop_visual.position = (after_entry_position

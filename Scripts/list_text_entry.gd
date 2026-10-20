@@ -103,10 +103,6 @@ func toggle_div(toggle_on: bool) -> void:
 
 func rebuild_from_dict(dict: Dictionary) -> void:
 	text_edit.text = dict["text"]
-	if dict.has("order_id"):
-		order_id = dict["order_id"]
-	else:
-		order_id = id
 
 
 func reset_item_sizes() -> void:

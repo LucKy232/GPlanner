@@ -151,6 +151,8 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("test_mult", false, true):
+		sort_list_by_order_array()
 	if !selected:
 		return
 	if !is_editing_text():
@@ -166,16 +168,10 @@ func _input(event: InputEvent) -> void:
 	if entries.size() == 0:
 		return
 	if event.is_action_pressed("edit_previous_in_list", true, true):
-		last_edited_order_id -= 1
-		if last_edited_order_id < 0:
-			last_edited_order_id = entries_order.size() - 1
-		last_edited_entry_id = entries_order[last_edited_order_id]
+		attempt_cycle_to_previous_visible_id(last_edited_order_id)
 		enter_text_edit()
 	if event.is_action_pressed("edit_next_in_list", true, true):
-		last_edited_order_id += 1
-		if last_edited_order_id > entries_order.size() - 1:
-			last_edited_order_id = 0
-		last_edited_entry_id = entries_order[last_edited_order_id]
+		attempt_cycle_to_next_visible_id(last_edited_order_id)
 		enter_text_edit()
 	
 	if !is_editing_text(false):	# Not editing an entry
@@ -190,6 +186,57 @@ func _input(event: InputEvent) -> void:
 		if last_edited_order_id == 0:
 			return
 		move_entry_up_or_down(false)
+
+
+func set_new_order_array(arr: Array[int]) -> void:
+	var counter: int = 0
+	for i in arr:
+		if !entries.has(i):
+			return
+		entries[i].order_id = counter
+		counter += 1
+	entries_order = arr
+
+
+# The entries get read in order_id order from .json, so they will be initially sorted
+# NOTE Presumably the move will be executed later at the same time, and not sequentially
+func sort_list_by_order_array() -> void:
+	for i in range(entries_order.size()):
+		var entry_id: int = entries_order[i]
+		object_v_box.move_child(entries[entry_id], i)
+
+
+# Returns if entry is visible
+func select_previous_order_id() -> bool:
+	last_edited_order_id -= 1
+	if last_edited_order_id < 0:
+		last_edited_order_id = entries_order.size() - 1
+	last_edited_entry_id = entries_order[last_edited_order_id]
+	return get_last_edited_entry().visible
+
+
+func attempt_cycle_to_previous_visible_id(current_order_id: int) -> void:
+	if select_previous_order_id():			# Change last_edited_entry_id once
+		return
+	while current_order_id != last_edited_entry_id:		# Full loop
+		if select_previous_order_id():
+			return
+
+
+func select_next_order_id() -> bool:
+	last_edited_order_id += 1
+	if last_edited_order_id > entries_order.size() - 1:
+		last_edited_order_id = 0
+	last_edited_entry_id = entries_order[last_edited_order_id]
+	return get_last_edited_entry().visible
+
+
+func attempt_cycle_to_next_visible_id(current_order_id: int) -> void:
+	if select_next_order_id():			# Change last_edited_entry_id once
+		return
+	while current_order_id != last_edited_entry_id:		# Full loop
+		if select_next_order_id():
+			return
 
 
 func move_entry_up_or_down(up: bool) -> void:
@@ -339,20 +386,23 @@ func end_input() -> void:
 	set_default_cursor_shape(Control.CURSOR_POINTING_HAND)
 
 
-func add_text_entry(is_user_input: bool, id_from_file: int = -1) -> int:
+func add_text_entry(is_user_input: bool, id_from_file: int = -1, order_from_file: int = -1) -> int:
 	var new_entry_id: int = 0
+	var new_entry_order: int = 0
 	if id_from_file < 0 or entries.has(id_from_file):	# Generate new ID
 		new_entry_id = entry_id_counter
+		new_entry_order = entries.size()
 		entry_id_counter += 1
 	else:
 		new_entry_id = id_from_file
+		new_entry_order = order_from_file
 		if id_from_file >= entry_id_counter:
 			entry_id_counter = id_from_file + 1
 	var new_list_text_entry: ListTextEntry = load(GlobalScenes.list_text_entry_scene).instantiate()
 	object_v_box.add_child(new_list_text_entry)
-	new_list_text_entry.order_id = entries.size()
 	new_list_text_entry.list_id = id
 	new_list_text_entry.id = new_entry_id
+	new_list_text_entry.order_id = new_entry_order
 	new_list_text_entry.name = "ListTextEntry"
 	new_list_text_entry.change_text_edit_theme(style_preset.text_edit_theme if has_style_preset else individual_style.text_edit_theme)
 	new_list_text_entry.change_div_theme(style_preset.list_div_theme if has_style_preset else individual_style.list_div_theme)
@@ -464,7 +514,7 @@ func rebuild_from_dict(dict: Dictionary, priority_colors: Dictionary[Enums.Prior
 		var id_from_file: int = -1
 		if entry_dict.has("id"):
 			id_from_file = int(entry_dict["id"])
-		var new_entry_id: int = add_text_entry(false, id_from_file)
+		var new_entry_id: int = add_text_entry(false, id_from_file, int(order_id_str))
 		entries[new_entry_id].rebuild_from_dict(entry_dict)
 		if entry_dict.has("priority_id"):
 			var priority: Enums.Priority = entry_dict["priority_id"] as Enums.Priority
@@ -699,7 +749,6 @@ func _on_list_text_entry_grabber_moved(event: InputEventMouseMotion, entry_id: i
 		dragger.position_child_drop_visual()
 
 
-# TODO finish ListDragHelper
 func _on_list_text_entry_grabber_ended_move(entry_id: int) -> void:
 	if !entries.has(entry_id):
 		push_error("Entry ID %d Invalid!" % [entry_id])
