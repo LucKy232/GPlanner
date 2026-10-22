@@ -261,18 +261,7 @@ func add_object_list(at_position: Vector2, id_from_file: int = -1) -> int:
 	new_list.canvas_scale = scale.x
 	new_list.set_priority_visible(settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITIES])
 	new_list.set_priority_tool_enabled(settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL])
-	new_list.can_drop.connect(_on_object_list_can_drop)
-	new_list.filtered_gui_input.connect(_on_object_list_mouse_input)
-	new_list.list_changed.connect(_on_list_changed)
-	new_list.dragging.connect(_on_list_dragging_toggled)
-	new_list.remove_element_request.connect(_on_list_remove_element_request)
-	new_list.text_edit_active.connect(_on_list_text_edit_active)
-	new_list.select_request.connect(_on_list_select_requested)
-	new_list.entry_priority_changed.connect(_on_list_entry_changed_priority)
-	new_list.copied_to_clipboard.connect(_on_list_copied_to_clipboard)
-	new_list.drag_and_resize_input.drag_requested.connect(_on_control_dragged.bind(new_list))
-	new_list.drag_and_resize_input.resize_requested.connect(_on_control_resized.bind(new_list))
-	new_list.drag_and_resize_input.input_ended.connect(_on_control_input_ended.bind(new_list))# If loading from file, skip default style change
+	connect_object_list_signals(new_list)
 	# If loading from file, skip default style change & auto select
 	if id_from_file < 0:
 		var has_preset: bool = false
@@ -307,16 +296,7 @@ func add_text_element(at_position: Vector2, id_from_file: int = -1) -> int:
 	text_elements[elem_id] = new_element
 	elements[elem_id] = new_element
 	object_container.add_child(new_element)
-	# NOTE element IDs can't change after creation because they are bound to their signals
-	# if fix needed, emit these signals from element script with current IDs
-	new_element.gui_input.connect(_on_text_element_gui_input.bind(elem_id))
-	new_element.resized.connect(_on_element_resized.bind(elem_id))
-	new_element.became_selected.connect(_on_element_text_box_active.bind(elem_id))
-	new_element.changed_priority.connect(_on_element_changed_priority.bind(elem_id))
-	new_element.text_changed.connect(_on_text_element_text_changed)
-	new_element.drag_and_resize_input.drag_requested.connect(_on_control_dragged.bind(new_element))
-	new_element.drag_and_resize_input.resize_requested.connect(_on_control_resized.bind(new_element))
-	new_element.drag_and_resize_input.input_ended.connect(_on_control_input_ended.bind(new_element))
+	connect_text_element_signals(new_element)
 	new_element.name = "TextElement"
 	new_element.position = at_position
 	new_element.set_priority_id(Enums.Priority.NONE)
@@ -401,13 +381,44 @@ func add_connection(id_from_file: int = -1, arrow_1_enabled: bool = false, arrow
 	connection_indicator.visible = false
 
 
+func connect_object_list_signals(list: ObjectList) -> void:
+	list.can_drop.connect(_on_object_list_can_drop)
+	list.filtered_gui_input.connect(_on_object_list_mouse_input)
+	list.list_changed.connect(_on_list_changed)
+	list.dragging.connect(_on_list_dragging_toggled)
+	list.remove_element_request.connect(_on_list_remove_element_request)
+	list.text_edit_active.connect(_on_list_text_edit_active)
+	list.select_request.connect(_on_list_select_requested)
+	list.entry_priority_changed.connect(_on_list_entry_changed_priority)
+	list.copied_to_clipboard.connect(_on_list_copied_to_clipboard)
+	list.drag_and_resize_input.drag_requested.connect(_on_control_dragged.bind(list))
+	list.drag_and_resize_input.resize_requested.connect(_on_control_resized.bind(list))
+	list.drag_and_resize_input.input_ended.connect(_on_control_input_ended.bind(list))
+	list.entry_removed.connect(_on_list_entry_removed)
+	list.entry_added.connect(_on_list_entry_added)
+	list.order_changed.connect(_on_list_order_changed)
+
+
+# NOTE element IDs can't change after creation because they are bound to their signals
+# if fix needed, emit these signals from element script with current IDs
+func connect_text_element_signals(text_element: TextElement) -> void:
+	text_element.gui_input.connect(_on_text_element_gui_input.bind(text_element.id))
+	text_element.resized.connect(_on_element_resized.bind(text_element.id))
+	text_element.became_selected.connect(_on_element_text_box_active.bind(text_element.id))
+	text_element.changed_priority.connect(_on_element_changed_priority.bind(text_element.id))
+	text_element.text_changed.connect(_on_text_element_text_changed)
+	text_element.drag_and_resize_input.drag_requested.connect(_on_control_dragged.bind(text_element))
+	text_element.drag_and_resize_input.resize_requested.connect(_on_control_resized.bind(text_element))
+	text_element.drag_and_resize_input.input_ended.connect(_on_control_input_ended.bind(text_element))
+
+
 func remove_element(elem_id: int) -> void:
 	if !elements.has(elem_id):
 		push_error("Element ID %d doesn't exist!" % [elem_id])
 		return
 	var element_data: Dictionary = {elem_id: elements[elem_id].to_json()}
 	if lists.has(elem_id):
-		undo_redo.create_action("Delete List", UndoRedo.MERGE_DISABLE)
+		undo_redo.create_action("Deleted List", UndoRedo.MERGE_DISABLE)
 		undo_redo.add_undo_method(rebuild_lists.bind(element_data))
 		undo_redo.add_undo_method(rebuild_connections.bind(get_element_connection_data(elem_id)))
 		undo_redo.add_do_method(remove_element_by_undo_add.bind(elem_id))
@@ -415,7 +426,7 @@ func remove_element(elem_id: int) -> void:
 		undo_redo.commit_action(false)
 		lists.erase(elem_id)
 	elif text_elements.has(elem_id):
-		undo_redo.create_action("Delete Text Element", UndoRedo.MERGE_DISABLE)
+		undo_redo.create_action("Deleted Text Element", UndoRedo.MERGE_DISABLE)
 		undo_redo.add_undo_method(rebuild_elements.bind(element_data))
 		undo_redo.add_undo_method(rebuild_connections.bind(get_element_connection_data(elem_id)))
 		undo_redo.add_do_method(remove_element_by_undo_add.bind(elem_id))
@@ -1322,13 +1333,44 @@ func _on_list_entry_changed_priority(entry: ListTextEntry, new_priority: Enums.P
 		push_error("Entry list_id invalid, list not in elements Dictionary")
 		return
 	undo_redo.create_action("List Entry Priority", UndoRedo.MERGE_DISABLE)
-	undo_redo.add_do_method(elements[entry.list_id].set_entry_priority.bind(entry.id, new_priority, priority_colors[new_priority]))
-	undo_redo.add_undo_method(elements[entry.list_id].set_entry_priority.bind(entry.id, old_priority, priority_colors[old_priority]))
+	undo_redo.add_do_method(change_list_entry_priority_by_id.bind(entry.list_id, entry.id, new_priority))
+	undo_redo.add_undo_method(change_list_entry_priority_by_id.bind(entry.list_id, entry.id, old_priority))
 	undo_redo.commit_action(true)
 
 
 func _on_list_copied_to_clipboard() -> void:
 	status_message_requested.emit("List copied to clipboard as text", GlobalColors.ui_green)
+
+
+func _on_list_entry_removed(list_id: int, entry_id: int, entry_dict: Dictionary) -> void:
+	if !elements.has(list_id):
+		push_error("List ID %d not found in elements Dictionary!" % [list_id])
+		return
+	undo_redo.create_action("List Entry Erased", UndoRedo.MERGE_DISABLE)
+	undo_redo.add_do_method(remove_list_entry_by_id.bind(list_id, entry_id))
+	undo_redo.add_undo_method(rebuild_list_entries_by_undo.bind(list_id, entry_dict))
+	undo_redo.commit_action(false)
+
+
+func _on_list_entry_added(list_id: int, entry_id: int, entry_dict: Dictionary) -> void:
+	if !elements.has(list_id):
+		push_error("List ID %d not found in elements Dictionary!" % [list_id])
+		return
+	undo_redo.create_action("List Entry Added", UndoRedo.MERGE_DISABLE)
+	undo_redo.add_do_method(rebuild_list_entries_by_undo.bind(list_id, entry_dict))
+	undo_redo.add_undo_method(remove_list_entry_by_id.bind(list_id, entry_id))
+	undo_redo.commit_action(false)
+
+
+# FIXME? first redo gives final order, not first action
+func _on_list_order_changed(list_id: int, old_order: Array[int], new_order: Array[int]) -> void:
+	if !elements.has(list_id):
+		push_error("List ID %d not found in elements Dictionary!" % [list_id])
+		return
+	undo_redo.create_action("Reorder List", UndoRedo.MERGE_DISABLE)
+	undo_redo.add_do_method(change_list_order_by_id.bind(list_id, new_order))
+	undo_redo.add_undo_method(change_list_order_by_id.bind(list_id, old_order))
+	undo_redo.commit_action(false)
 
 
 func _on_connection_arrow_changed() -> void:
@@ -1338,3 +1380,32 @@ func _on_connection_arrow_changed() -> void:
 func _on_viewport_size_changed() -> void:
 	position = pan_limits(position)
 	changed_position.emit()
+
+
+func change_list_entry_priority_by_id(list_id: int, entry_id: int, priority: Enums.Priority) -> void:
+	if !elements.has(list_id) or !lists.has(list_id):
+		push_error("Entry list_id invalid, list not in elements Dictionary")
+		return
+	elements[list_id].set_entry_priority(entry_id, priority, priority_colors[priority])
+
+
+func remove_list_entry_by_id(list_id: int, entry_id: int) -> void:
+	if !elements.has(list_id) or !lists.has(list_id):
+		push_error("Entry list_id invalid, list not in elements Dictionary")
+		return
+	elements[list_id].remove_entry_by_id(entry_id)
+
+
+func rebuild_list_entries_by_undo(list_id: int, entry_dict: Dictionary) -> void:
+	if !elements.has(list_id) or !lists.has(list_id):
+		push_error("Entry list_id invalid, list not in elements Dictionary")
+		return
+	elements[list_id].rebuild_entries_from_dict(entry_dict, priority_colors)
+
+
+func change_list_order_by_id(list_id: int, new_order: Array[int]) -> void:
+	if !elements.has(list_id) or !lists.has(list_id):
+		push_error("Entry list_id invalid, list not in elements Dictionary")
+		return
+	elements[list_id].set_new_order_array(new_order)
+	elements[list_id].sort_list_by_order_array()

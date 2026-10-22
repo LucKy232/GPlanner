@@ -51,7 +51,7 @@ enum State {
 
 signal entry_added
 signal entry_removed
-signal entries_sorted
+signal order_changed
 signal entry_priority_changed
 signal list_changed
 signal filtered_gui_input
@@ -127,39 +127,30 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		entry_id_counter += 1
 		entries_order.append(data.id)
 		entries[data.id] = data
-		object_v_box.move_child(data, dragger.current)
-		sort_entries(entries.size() - 1, dragger.current)	# Last entry added move to its id
-		reset_entry_order_ids()
+		move_new_entry_to_order_id(data)
 		change_state(State.DEFAULT)
-		refresh_entry_divs_visibility()
 		dragger.end_drag()
 		select_request.emit(id)
 	if data is TextElement:
-		var new_entry_id: int = add_text_entry(false)
+		var new_entry_id: int = add_text_entry(false, -1, dragger.current)
 		entries[new_entry_id].set_text(data.get_text())
 		entries[new_entry_id].change_text_edit_theme(style_preset.text_edit_theme if has_style_preset else individual_style.text_edit_theme)
 		entries[new_entry_id].change_div_theme(style_preset.list_div_theme if has_style_preset else individual_style.list_div_theme)
 		entry_priority_changed.emit(entries[new_entry_id], data.priority_id)
-		object_v_box.move_child(entries[new_entry_id], dragger.current)
-		sort_entries(entries.size() - 1, dragger.current)
-		reset_entry_order_ids()
 		change_state(State.DEFAULT)
-		refresh_entry_divs_visibility()
 		dragger.end_drag()
 		remove_element_request.emit(data.id)
 		select_request.emit(id)
 
 
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("test_mult", false, true):
-		sort_list_by_order_array()
 	if !selected:
 		return
 	if !is_editing_text():
 		if event.is_action_pressed("add_list_text_entry"):
-			add_text_entry(true)
+			_on_add_text_entry_button_pressed()
 		if event.is_action_pressed("add_list_link_entry"):
-			add_link_entry(true)
+			_on_add_link_entry_button_pressed()
 		if list_title.visible and event.is_action_pressed("edit_list_title", false, true):
 			list_title.grab_focus()
 		if event.is_action_pressed("ui_copy"):
@@ -199,7 +190,7 @@ func set_new_order_array(arr: Array[int]) -> void:
 
 
 # The entries get read in order_id order from .json, so they will be initially sorted
-# NOTE Presumably the move will be executed later at the same time, and not sequentially
+# NOTE Presumably move_child will be executed later at the same time, and not sequentially, respecting the given order
 func sort_list_by_order_array() -> void:
 	for i in range(entries_order.size()):
 		var entry_id: int = entries_order[i]
@@ -409,9 +400,9 @@ func add_text_entry(is_user_input: bool, id_from_file: int = -1, order_from_file
 	last_edited_entry_id = new_entry_id
 	entries[new_entry_id] = new_list_text_entry
 	entries_order.append(new_entry_id)
+	move_new_entry_to_order_id(new_list_text_entry)
 	last_edited_order_id = new_list_text_entry.order_id
 	connect_list_text_entry(new_list_text_entry)
-	refresh_entry_divs_visibility()
 	if is_user_input:
 		list_changed.emit()
 	return new_entry_id
@@ -421,6 +412,13 @@ func add_link_entry(_is_user_input: bool) -> void:
 	pass
 
 
+func move_new_entry_to_order_id(entry: ListTextEntry) -> void:
+	object_v_box.move_child(entry, entry.order_id)
+	sort_entries(entries.size() - 1, entry.order_id)	# Last entry added move to its id
+	refresh_entry_divs_visibility()
+
+
+# NOTE delete_from_memory (=false) is needed when dragging from list to list (reparent entry)
 func remove_text_entry(entry: ListTextEntry, delete_from_memory: bool) -> void:
 	disconnect_list_text_entry(entry)
 	entries.erase(entry.id)
@@ -438,6 +436,11 @@ func remove_text_entry(entry: ListTextEntry, delete_from_memory: bool) -> void:
 	refresh_entry_divs_visibility()
 	toggle_side_buttons(false)
 	list_changed.emit()
+
+
+func remove_entry_by_id(entry_id: int) -> void:
+	var entry: ListTextEntry = entries[entry_id]
+	remove_text_entry(entry, true)
 
 
 func connect_list_text_entry(entry: ListTextEntry) -> void:
@@ -501,16 +504,9 @@ func filter_entries(value: int) -> void:
 	line_up_side_buttons.call_deferred()
 
 
-func rebuild_from_dict(dict: Dictionary, priority_colors: Dictionary[Enums.Priority, Color]) -> void:
-	size = Vector2(dict["size.x"], dict["size.y"])
-	position = Vector2(dict["pos.x"], dict["pos.y"])
-	if dict.has("title"):
-		list_title.text = dict["title"]
-	if dict.has("show_title"):
-		_on_toggle_title_button_toggled(bool(dict["show_title"]))
-		toggle_title_button.set_pressed_no_signal(show_title)
-	for order_id_str in dict["entries"]:
-		var entry_dict: Dictionary = dict["entries"][order_id_str]
+func rebuild_entries_from_dict(dict: Dictionary, priority_colors: Dictionary[Enums.Priority, Color]) -> void:
+	for order_id_str in dict:
+		var entry_dict: Dictionary = dict[order_id_str]
 		var id_from_file: int = -1
 		if entry_dict.has("id"):
 			id_from_file = int(entry_dict["id"])
@@ -520,6 +516,18 @@ func rebuild_from_dict(dict: Dictionary, priority_colors: Dictionary[Enums.Prior
 			var priority: Enums.Priority = entry_dict["priority_id"] as Enums.Priority
 			entries[new_entry_id].set_priority(priority)
 			entries[new_entry_id].set_priority_color(priority_colors[priority])
+
+
+func rebuild_from_dict(dict: Dictionary, priority_colors: Dictionary[Enums.Priority, Color]) -> void:
+	size = Vector2(dict["size.x"], dict["size.y"])
+	position = Vector2(dict["pos.x"], dict["pos.y"])
+	if dict.has("title"):
+		list_title.text = dict["title"]
+	if dict.has("show_title"):
+		_on_toggle_title_button_toggled(bool(dict["show_title"]))
+		toggle_title_button.set_pressed_no_signal(show_title)
+	if dict.has("entries"):
+		rebuild_entries_from_dict(dict["entries"], priority_colors)
 
 
 # Map order to entry
@@ -707,10 +715,6 @@ func _on_mouse_hover_mouse_entered() -> void:
 	mouse_inside = true
 
 
-func _on_list_text_entry_erase(entry: ListTextEntry) -> void:
-	remove_text_entry(entry, true)
-
-
 func _on_list_text_entry_remove_from_list(entry: ListTextEntry) -> void:
 	remove_text_entry(entry, false)
 
@@ -761,14 +765,17 @@ func _on_list_text_entry_grabber_ended_move(entry_id: int) -> void:
 	dragger.end_drag()
 	dragging.emit(false)
 	toggle_all_entries_hover(true)
-	if entry_id != move_to:
+	if entries[entry_id].order_id != move_to:
+		var old_order: Array[int] = entries_order.duplicate()
 		object_v_box.move_child(entries[entry_id], move_to)
 		sort_entries(entries[entry_id].order_id, move_to)
+		var new_order: Array[int] = entries_order.duplicate()
 		last_edited_entry_id = entry_id
 		last_edited_order_id = entries[entry_id].order_id
 		line_up_side_buttons.call_deferred()
 		refresh_entry_divs_visibility()
 		list_changed.emit()
+		order_changed.emit(id, old_order, new_order)
 
 
 # On TextEdit focus entered and exited
@@ -797,7 +804,9 @@ func _on_list_name_focus_entered() -> void:
 
 
 func _on_add_text_entry_button_pressed() -> void:
-	add_text_entry(true)
+	var created_id: int = add_text_entry(true)
+	if entries.has(created_id):
+		entry_added.emit(id, created_id, {entries[created_id].order_id : entries[created_id].to_json()})
 
 
 func _on_add_link_entry_button_pressed() -> void:
@@ -813,6 +822,7 @@ func _on_erase_button_pressed() -> void:
 	if !entries.has(last_edited_entry_id):
 		return
 	var entry: ListTextEntry = entries[last_edited_entry_id]
+	entry_removed.emit(id, entry.id, {entry.order_id : entry.to_json()})
 	remove_text_entry(entry, true)
 
 

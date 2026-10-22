@@ -84,15 +84,15 @@ theme_override_styles/panel = SubResource("StyleBoxEmpty_y2cp5")
 [node name="PriorityButtonsTween" type="Control" parent="PanelContainer" unique_id=1268397800 node_paths=PackedStringArray("target")]
 unique_name_in_owner = true
 layout_mode = 2
-size_flags_horizontal = 8
+size_flags_horizontal = 0
 size_flags_vertical = 0
 mouse_filter = 2
 script = ExtResource("6_konn6")
 target = NodePath("PriorityButtons")
-side = 1
 animation_time = 0.25
 transition_type = 7
-offset_show = 4.0
+default_hidden_behind = true
+offset_show = -4.0
 metadata/_custom_type_script = "uid://b0ioikc1dokvh"
 
 [node name="PriorityButtons" type="VBoxContainer" parent="PanelContainer/PriorityButtonsTween" unique_id=1231603066]

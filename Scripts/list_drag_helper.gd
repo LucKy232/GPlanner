@@ -161,7 +161,6 @@ func drag_from_outside(drag_pos: Vector2, new_scroll_y: int) -> void:
 
 
 func drag_from_outside_visual_offsets() -> void:
-	print("ID: ", current)
 	for entry_id in entries:
 		#printt("%d %d" % [entry.id, current - 1])
 		if entries[entry_id].visible and entries[entry_id].order_id > (current - 1):
