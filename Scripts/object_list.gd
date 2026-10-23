@@ -3,7 +3,6 @@ class_name ObjectList extends CanvasElement
 @export var selected_z_index: int = 2
 @export var default_z_index: int = 0
 @export var default_text_edit_theme: Theme
-@export var default_div_theme: Theme
 @onready var object_v_box: VBoxContainer = %ObjectVBox
 @onready var scroll_container: ScrollContainer = %ScrollContainer
 @onready var mouse_hover: Area2D = $MouseHover
@@ -35,12 +34,12 @@ var top_left_margin: Vector2 = Vector2.ZERO
 var total_horizontal_margin: float = 0.0
 var priority_enabled: bool = false
 var priority_tool_enabled: bool = true
-var show_title: bool = true
 var selected: bool = false
 var state: State
 var individual_style: PresetStyle
 var style_preset: PresetStyle
 var has_style_preset: bool = false
+var reshow: Array[int]
 
 enum State {
 	DEFAULT,
@@ -70,6 +69,15 @@ func _ready() -> void:
 	top_left_margin = Vector2(margin_container.get_theme_constant("margin_left"), margin_container.get_theme_constant("margin_top"))
 	total_horizontal_margin = margin_container.get_theme_constant("margin_left") + margin_container.get_theme_constant("margin_right")
 	_on_scroll_hover(false)
+
+
+func _process(_delta: float) -> void:
+	# Hack to get an entry reparented from another list to resize itself (engine bug with reparenting TextEdit?)
+	if reshow.size() > 0:
+		for entry_id in reshow:
+			if entries.has(entry_id):
+				entries[entry_id].visible = true
+		reshow.clear()
 
 
 func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
@@ -120,7 +128,7 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		data.reparent(object_v_box, false)
 		data.list_id = id
 		data.change_text_edit_theme(style_preset.text_edit_theme if has_style_preset else individual_style.text_edit_theme)
-		data.change_div_theme(style_preset.list_div_theme if has_style_preset else individual_style.list_div_theme)
+		data.set_div_color(style_preset.list_div_color if has_style_preset else individual_style.list_div_color)
 		connect_list_text_entry(data)
 		data.order_id = dragger.current
 		data.id = entry_id_counter
@@ -131,11 +139,15 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		change_state(State.DEFAULT)
 		dragger.end_drag()
 		select_request.emit(id)
+		# Hack to get an entry reparented from another list to resize itself (engine bug with reparenting TextEdit?)
+		# Will reappear in _process function
+		data.visible = false
+		reshow.append(data.id)
 	if data is TextElement:
 		var new_entry_id: int = add_text_entry(false, -1, dragger.current)
 		entries[new_entry_id].set_text(data.get_text())
 		entries[new_entry_id].change_text_edit_theme(style_preset.text_edit_theme if has_style_preset else individual_style.text_edit_theme)
-		entries[new_entry_id].change_div_theme(style_preset.list_div_theme if has_style_preset else individual_style.list_div_theme)
+		entries[new_entry_id].set_div_color(style_preset.list_div_color if has_style_preset else individual_style.list_div_color)
 		entry_priority_changed.emit(entries[new_entry_id], data.priority_id)
 		change_state(State.DEFAULT)
 		dragger.end_drag()
@@ -147,10 +159,12 @@ func _input(event: InputEvent) -> void:
 	if !selected:
 		return
 	if !is_editing_text():
-		if event.is_action_pressed("add_list_text_entry"):
+		if event.is_action_pressed("add_list_text_entry", false, true):
 			_on_add_text_entry_button_pressed()
-		if event.is_action_pressed("add_list_link_entry"):
+		if event.is_action_pressed("add_list_link_entry", false, true):
 			_on_add_link_entry_button_pressed()
+		if event.is_action_pressed("toggle_list_title", false, true):
+			toggle_title(!list_title.visible)
 		if list_title.visible and event.is_action_pressed("edit_list_title", false, true):
 			list_title.grab_focus()
 		if event.is_action_pressed("ui_copy"):
@@ -189,8 +203,9 @@ func set_new_order_array(arr: Array[int]) -> void:
 	entries_order = arr
 
 
-# The entries get read in order_id order from .json, so they will be initially sorted
-# NOTE Presumably move_child will be executed later at the same time, and not sequentially, respecting the given order
+# The entries get read in order_id order from .json, so they will be sorted initially
+# NOTE Either move_child is executed later at the same time, respecting the given indexes
+# or the index given to move_child doesn't immediately correspond to a position, not changing other indexes
 func sort_list_by_order_array() -> void:
 	for i in range(entries_order.size()):
 		var entry_id: int = entries_order[i]
@@ -276,9 +291,11 @@ func change_state(new_state: State) -> void:
 			toggle_all_entries_hover(false)
 
 
-func toggle_title(toggled_on: bool) -> void:
+func toggle_title(toggled_on: bool, from_button: bool = false) -> void:
 	list_title.visible = toggled_on
 	list_title_div.visible = toggled_on
+	if !from_button:
+		toggle_title_button.set_pressed_no_signal(toggled_on)
 
 
 func select() -> void:
@@ -382,7 +399,7 @@ func add_text_entry(is_user_input: bool, id_from_file: int = -1, order_from_file
 	var new_entry_order: int = 0
 	if id_from_file < 0 or entries.has(id_from_file):	# Generate new ID
 		new_entry_id = entry_id_counter
-		new_entry_order = entries.size()
+		new_entry_order = entries.size() if order_from_file < 0 else order_from_file
 		entry_id_counter += 1
 	else:
 		new_entry_id = id_from_file
@@ -396,7 +413,7 @@ func add_text_entry(is_user_input: bool, id_from_file: int = -1, order_from_file
 	new_list_text_entry.order_id = new_entry_order
 	new_list_text_entry.name = "ListTextEntry"
 	new_list_text_entry.change_text_edit_theme(style_preset.text_edit_theme if has_style_preset else individual_style.text_edit_theme)
-	new_list_text_entry.change_div_theme(style_preset.list_div_theme if has_style_preset else individual_style.list_div_theme)
+	new_list_text_entry.set_div_color(style_preset.list_div_color if has_style_preset else individual_style.list_div_color)
 	last_edited_entry_id = new_entry_id
 	entries[new_entry_id] = new_list_text_entry
 	entries_order.append(new_entry_id)
@@ -524,8 +541,7 @@ func rebuild_from_dict(dict: Dictionary, priority_colors: Dictionary[Enums.Prior
 	if dict.has("title"):
 		list_title.text = dict["title"]
 	if dict.has("show_title"):
-		_on_toggle_title_button_toggled(bool(dict["show_title"]))
-		toggle_title_button.set_pressed_no_signal(show_title)
+		toggle_title(bool(dict["show_title"]))
 	if dict.has("entries"):
 		rebuild_entries_from_dict(dict["entries"], priority_colors)
 
@@ -544,7 +560,7 @@ func to_json() -> Dictionary:
 	dict["size.x"] = size.x
 	dict["size.y"] = size.y
 	dict["title"] = list_title.text
-	dict["show_title"] = show_title
+	dict["show_title"] = list_title.visible
 	dict["has_style_preset"] = has_style_preset
 	dict["style_preset_id"] = style_preset_id
 	if !has_style_preset:
@@ -588,7 +604,6 @@ func init_individual_style() -> void:
 	individual_style.set_background_panel_style_box(background.get_theme_stylebox("panel", "Panel").duplicate(), true)
 	individual_style.set_text_edit_theme(default_text_edit_theme.duplicate(), false)
 	individual_style.set_title_text_edit_theme(default_text_edit_theme.duplicate(), false)
-	individual_style.set_list_div_theme(default_div_theme.duplicate(true), false)
 	individual_style.list_setting_changed.connect(_on_style_settings_changed)
 	individual_style.font_size_changed.connect(_on_style_font_size_changed)
 	individual_style.entry_separation = object_v_box.get_theme_constant("separation")
@@ -600,7 +615,7 @@ func _apply_style_preset(preset: PresetStyle) -> void:
 	list_title.theme = preset.title_text_edit_theme
 	for entry_id in entries:
 		entries[entry_id].change_text_edit_theme(preset.text_edit_theme)
-		entries[entry_id].change_div_theme(preset.list_div_theme)
+		entries[entry_id].set_div_color(preset.list_div_color)
 	refresh_entry_divs_visibility()
 
 
@@ -654,9 +669,6 @@ func toggle_side_buttons(toggled_on: bool) -> void:
 func toggle_all_entries_hover(toggled_on: bool) -> void:
 	for entry_id in entries:
 		entries[entry_id].can_hover = toggled_on
-		# FIXME this will stop dragging from list to canvas and from list to list
-		#if !toggled_on:	#  and !entries[entry_id].grabber_clicked
-			#entries[entry_id].reset_hover()
 
 
 func toggle_mouse_input(toggled_on: bool) -> void:
@@ -676,6 +688,13 @@ func _on_style_settings_changed(setting: PresetStyle.ListSettings, value) -> voi
 			object_v_box.add_theme_constant_override("separation", int(value))
 		PresetStyle.ListSettings.DIV_ENABLED:
 			refresh_entry_divs_visibility()
+		PresetStyle.ListSettings.DIV_COLOR:
+			change_all_div_colors(value as Color)
+
+
+func change_all_div_colors(c: Color) -> void:
+	for entry_id in entries:
+		entries[entry_id].set_div_color(c)
 
 
 func _on_style_font_size_changed() -> void:
@@ -814,8 +833,7 @@ func _on_add_link_entry_button_pressed() -> void:
 
 
 func _on_toggle_title_button_toggled(toggled_on: bool) -> void:
-	show_title = toggled_on
-	toggle_title(toggled_on)
+	toggle_title(toggled_on, true)
 
 
 func _on_erase_button_pressed() -> void:

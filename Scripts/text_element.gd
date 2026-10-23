@@ -2,7 +2,6 @@ class_name TextElement extends CanvasElement
 
 @export var line_wrap_limit: float = 4.0
 @export var completed_stylebox: StyleBoxFlat
-@export var empty_div_theme: Theme
 @export var text_edit_theme: Theme
 @export var text_edit_completed_theme: Theme
 @export var completed_z_index = 0
@@ -168,7 +167,6 @@ func init_individual_style() -> void:
 	individual_style.set_background_panel_style_box(background.get_theme_stylebox("panel").duplicate(), false)
 	individual_style.set_text_edit_theme(text_edit_theme.duplicate(), false)
 	individual_style.set_title_text_edit_theme(text_edit_theme.duplicate(), false)
-	individual_style.set_list_div_theme(empty_div_theme, false)
 
 
 func change_style_preset(preset: PresetStyle) -> void:
@@ -186,7 +184,6 @@ func copy_style_preset(preset: PresetStyle) -> void:
 	individual_style.set_background_panel_style_box(preset.background_panel_style_box.duplicate(), true)
 	individual_style.set_text_edit_theme(preset.text_edit_theme.duplicate(), true)
 	individual_style.set_title_text_edit_theme(preset.title_text_edit_theme.duplicate(), true)
-	individual_style.set_list_div_theme(empty_div_theme, true)
 	background.add_theme_stylebox_override("panel", individual_style.background_panel_style_box)
 	text_edit.theme = individual_style.text_edit_theme
 

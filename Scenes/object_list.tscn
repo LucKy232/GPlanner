@@ -4,7 +4,6 @@
 [ext_resource type="StyleBox" uid="uid://cdui0dgu3vdrr" path="res://Themes/element_background_style_box.tres" id="1_hw88c"]
 [ext_resource type="PackedScene" uid="uid://cytlmlx7kw2l2" path="res://Scenes/drag_and_resize_input.tscn" id="2_8suv5"]
 [ext_resource type="Theme" uid="uid://dao6v8vx8h5ip" path="res://Themes/text_edit_theme.tres" id="2_qbj2a"]
-[ext_resource type="Theme" uid="uid://oh7uiqgv8si2" path="res://Themes/div_theme.tres" id="3_e8exb"]
 [ext_resource type="PackedScene" uid="uid://brbbmqwm6hpj4" path="res://Scenes/div.tscn" id="3_qbj2a"]
 [ext_resource type="Theme" uid="uid://cc6sgahjvrord" path="res://Themes/Buttons/list_toggle_button.tres" id="4_4adj3"]
 [ext_resource type="Theme" uid="uid://u70boqrojq3j" path="res://Themes/placeholder_visual_panel.tres" id="5_01tnx"]
@@ -51,23 +50,22 @@ VScrollBar/styles/scroll = SubResource("StyleBoxFlat_tej6j")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_553ya"]
 resource_local_to_scene = true
-size = Vector2(180, 200)
+size = Vector2(250, 150)
 
 [node name="ObjectList" type="Control" unique_id=1704557420]
 light_mask = 8
 visibility_layer = 8
 z_index = 1
-custom_minimum_size = Vector2(120, 75)
+custom_minimum_size = Vector2(120, 38)
 layout_mode = 3
 anchors_preset = 0
-offset_right = 180.0
-offset_bottom = 200.0
+offset_right = 250.0
+offset_bottom = 150.0
 mouse_filter = 1
 mouse_default_cursor_shape = 2
 script = ExtResource("1_01tnx")
 default_z_index = 1
 default_text_edit_theme = ExtResource("2_qbj2a")
-default_div_theme = ExtResource("3_e8exb")
 
 [node name="DragAndResizeInput" parent="." unique_id=713311794 instance=ExtResource("2_8suv5")]
 layout_mode = 1
@@ -368,7 +366,7 @@ theme_override_constants/separation = 0
 [node name="MouseHover" type="Area2D" parent="." unique_id=1893935660]
 light_mask = 8
 visibility_layer = 8
-position = Vector2(90, 100)
+position = Vector2(125, 75)
 priority = 1
 
 [node name="MouseHoverShape" type="CollisionShape2D" parent="MouseHover" unique_id=673877043]

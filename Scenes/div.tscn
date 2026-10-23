@@ -3,6 +3,7 @@
 [ext_resource type="Theme" uid="uid://oh7uiqgv8si2" path="res://Themes/div_theme.tres" id="1_bg2d3"]
 
 [node name="div1" type="Panel" unique_id=2098245851]
+texture_filter = 2
 custom_minimum_size = Vector2(0, 3)
 offset_bottom = 3.0
 offset_transform_enabled = true

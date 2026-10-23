@@ -56,7 +56,7 @@ signal changed_position
 signal has_changed
 signal has_selected_control
 signal has_deselected_control
-signal status_message_requested	# NOTE only for list copied to clipboard atm
+signal status_message_requested		# NOTE only for list copied to clipboard atm
 
 
 func _init() -> void:
@@ -556,7 +556,8 @@ func select_element(elem_id: int) -> void:
 		push_error("elements Dictionary doesn't have ID %d" [elem_id])
 		return
 	selected_control = elements[elem_id]
-	object_container.move_child(selected_control, 0)
+	# Selected CanvasElement needs to receive mouse inputs first (last in tree)
+	object_container.move_child(selected_control, object_container.get_child_count() - 1)
 	selected_control.select()
 	selection_viewer.visible = true
 	selection_viewer.size = selected_control.size
@@ -567,7 +568,6 @@ func select_element(elem_id: int) -> void:
 
 func deselect_any() -> void:
 	if selected_control:
-		object_container.move_child(selected_control, object_container.get_child_count() - 1)
 		selected_control.deselect()
 	selected_control = null
 	selection_viewer.visible = false
@@ -983,6 +983,8 @@ func _on_control_input_ended(control: Control) -> void:
 		return
 	if control.has_method("end_input"):
 		control.end_input()
+	# Selected CanvasElement needs to receive mouse inputs first (last in tree)
+	object_container.move_child(control, object_container.get_child_count() - 1)
 	control = null
 	is_dragging = false
 	is_resizing = false
@@ -993,6 +995,13 @@ func _on_control_dragged(event_relative: Vector2, control: Control) -> void:
 		return
 	if tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS:
 		change_control_position(control, control.position, control.position + event_relative / scale)
+
+
+func _on_control_resized(event_relative: Vector2, control: Control) -> void:
+	if !control or !is_resizing:
+		return
+	if tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS:
+		change_control_size(control, control.size + event_relative / scale)
 
 
 # TODO selection_viewer size changes because moving was done automatically without selecting object
@@ -1018,13 +1027,6 @@ func change_control_position_by_id(elem_id: int, new_position: Vector2) -> void:
 	selection_viewer.position = new_position
 	update_connections(elem_id)
 	canvas_changed()
-
-
-func _on_control_resized(event_relative: Vector2, control: Control) -> void:
-	if !control or !is_resizing:
-		return
-	if tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS:
-		change_control_size(control, control.size + event_relative / scale)
 
 
 # TODO selection_viewer size changes because resizing was done automatically without selecting object
@@ -1192,6 +1194,7 @@ func _on_text_element_gui_input(event: InputEvent, elem_id: int) -> void:
 			if !is_dragging and !is_resizing:
 				is_dragging = true
 				is_panning = false
+				object_container.move_child(elements[elem_id], 0) # Needs to receive mouse input last (first in tree)
 				elements[elem_id].start_dragging()
 		if tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS:
 			select_element(elem_id)
@@ -1233,6 +1236,7 @@ func _on_object_list_mouse_input(event: InputEvent, list_id: int) -> void:
 			if !is_dragging and !is_resizing:
 				is_dragging = true
 				is_panning = false
+				object_container.move_child(elements[list_id], 0) # Needs to receive mouse input last (first in tree)
 				elements[list_id].start_dragging()
 	elif tool_id == Enums.Tool.REMOVE_ELEMENT and event.button_index == MOUSE_BUTTON_LEFT and event.is_released():
 		remove_element(list_id)
@@ -1362,7 +1366,6 @@ func _on_list_entry_added(list_id: int, entry_id: int, entry_dict: Dictionary) -
 	undo_redo.commit_action(false)
 
 
-# FIXME? first redo gives final order, not first action
 func _on_list_order_changed(list_id: int, old_order: Array[int], new_order: Array[int]) -> void:
 	if !elements.has(list_id):
 		push_error("List ID %d not found in elements Dictionary!" % [list_id])

@@ -43,6 +43,7 @@ func tween_modulate_toggle(toggled_on: bool) -> void:
 
 func set_accent_color(c: Color) -> void:
 	zoom_progress_bar.theme.get_stylebox("background", "ProgressBar").border_color = c
+	zoom_progress_bar.theme.get_stylebox("fill", "ProgressBar").bg_color = Color(c.r, c.g, c.b, 0.5)
 
 
 func _on_hide_timer_timeout() -> void:

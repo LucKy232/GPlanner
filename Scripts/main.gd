@@ -436,11 +436,12 @@ func new_file(add_canvas: bool, show_status: bool = true) -> int:
 	return new_canvas.id
 
 
+# DEBUG
 func _on_undo_redo_version_changed(id: int) -> void:
 	if !canvases.has(id):
 		return
 	var count: int = canvases[id].undo_redo.get_history_count()
-	print("%1d Actions" % [count])
+	#print("%1d Actions" % [count])
 	#for i in range(count):
 		#print("%d: %s" % [i, canvases[id].undo_redo.get_action_name(i)])
 
@@ -1199,7 +1200,7 @@ func _on_canvas_has_selected_control() -> void:
 		return
 	if (selected_control is CanvasElement) and canvases[cc].selected_preset_style == "individual":
 		style_settings.individual_preset = selected_control.individual_style
-		style_settings.toggle_list_settings(selected_control is ObjectList)
+	style_settings.toggle_list_settings(selected_control is ObjectList)
 	style_settings.select_by_style_preset_id(canvases[cc].selected_preset_style)
 	style_settings.toggle_individual_preset_inputs(true)
 

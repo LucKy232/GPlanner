@@ -74,7 +74,7 @@ func _ready() -> void:
 	customize_color_picker(font_color_picker_button)
 	customize_color_picker(font_outline_color_picker_button)
 	customize_color_picker(border_color_picker_button)
-	
+	scroll_container.get_v_scroll_bar().custom_minimum_size = Vector2(8.0, 0.0)
 	style_buttons.preset_style_button_pressed.connect(change_preset)
 	style_buttons.add_button("0", "No Preset")
 	reset_individual_preset()
@@ -135,9 +135,9 @@ func remove_preset(idx: int) -> void:
 	rewind_option_button(idx)
 	rewind_dict(idx+1)
 	change_preset(0)
-	if presets.size() > style_buttons.MAX_BUTTON_COUNT - 1:
-		style_buttons.add_button(str(style_buttons.MAX_BUTTON_COUNT - 1), presets[style_buttons.MAX_BUTTON_COUNT].name)
-		style_buttons.set_button_theme(style_buttons.MAX_BUTTON_COUNT - 1, presets[style_buttons.MAX_BUTTON_COUNT])
+	#if presets.size() > style_buttons.MAX_BUTTON_COUNT - 1:
+		#style_buttons.add_button(str(style_buttons.MAX_BUTTON_COUNT - 1), presets[style_buttons.MAX_BUTTON_COUNT].name)
+		#style_buttons.set_button_theme(style_buttons.MAX_BUTTON_COUNT - 1, presets[style_buttons.MAX_BUTTON_COUNT])
 	preset_removed.emit(removed_id)
 
 
@@ -154,7 +154,6 @@ func get_new_preset() -> PresetStyle:
 	new_preset.set_background_panel_style_box(default_background_style_box.duplicate(), false)
 	new_preset.set_text_edit_theme(default_text_edit_theme.duplicate(), false)
 	new_preset.set_title_text_edit_theme(default_text_edit_theme.duplicate(), false)
-	new_preset.set_list_div_theme(div_theme.duplicate(true), false)
 	return new_preset
 
 
@@ -241,15 +240,24 @@ func toggle_individual_preset_inputs(toggled_on: bool) -> void:
 
 func toggle_preset_inputs(toggled_on: bool) -> void:
 	background_color_picker_button.disabled = !toggled_on
+	border_size_spin_box.editable = toggled_on
 	border_color_picker_button.disabled = !toggled_on
 	border_blend_check_box.disabled = !toggled_on
-	font_color_picker_button.disabled = !toggled_on
-	font_outline_color_picker_button.disabled = !toggled_on
 	
-	border_size_spin_box.editable = toggled_on
 	font_size_spin_box.editable = toggled_on
+	font_color_picker_button.disabled = !toggled_on
 	font_outline_spin_box.editable = toggled_on
+	font_outline_color_picker_button.disabled = !toggled_on
 	line_spacing_spin_box.editable = toggled_on
+	
+	title_font_size_spin_box.editable = toggled_on
+	title_font_color_picker_button.disabled = !toggled_on
+	title_font_outline_spin_box.editable = toggled_on
+	title_outline_color_picker_button.disabled = !toggled_on
+	title_line_spacing_spin_box.editable = toggled_on
+	
+	entry_separation_spin_box.editable = toggled_on
+	entry_div_line_color_picker_button.disabled = !toggled_on
 
 
 func toggle_style_presets(toggled_on: bool) -> void:
@@ -262,6 +270,9 @@ func toggle_style_presets(toggled_on: bool) -> void:
 func set_accent_color(c: Color) -> void:
 	settings_panel.theme.get_stylebox("panel", "PanelContainer").border_color = c
 	div_theme.get_stylebox("panel", "Panel").color = Color(c.r, c.g, c.b, 0.7)
+	scroll_container.theme.get_stylebox("grabber", "VScrollBar").bg_color = c
+	scroll_container.theme.get_stylebox("grabber_highlight", "VScrollBar").bg_color = c.lightened(0.15)
+	scroll_container.theme.get_stylebox("grabber_pressed", "VScrollBar").bg_color = c.lightened(0.30)
 
 
 func get_color_picker_background_panel(button: ColorPickerButton) -> Panel:

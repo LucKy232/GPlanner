@@ -27,7 +27,6 @@ var list_div_color: Color = Color.DARK_GRAY
 var background_panel_style_box: StyleBoxFlat
 var text_edit_theme: Theme
 var title_text_edit_theme: Theme
-var list_div_theme: Theme
 
 signal font_size_changed
 signal list_setting_changed
@@ -42,6 +41,7 @@ enum Category {
 enum ListSettings {
 	ENTRY_SEPARATION,
 	DIV_ENABLED,
+	DIV_COLOR,
 }
 
 
@@ -75,85 +75,97 @@ func set_default_values(category: Category) -> void:
 			title_text_edit_theme.set_color("font_outline_color", "TextEdit", title_outline_color)
 			title_text_edit_theme.set_constant("line_spacing", "TextEdit", title_line_spacing)
 		Category.OBJECT_LIST_ENTRY:
-			if !list_div_theme:
-				return
 			list_setting_changed.emit(ListSettings.ENTRY_SEPARATION, entry_separation)
 			list_setting_changed.emit(ListSettings.DIV_ENABLED, list_div_enabled)
-			list_div_theme.get_stylebox("panel", "Panel").color = list_div_color
+			list_setting_changed.emit(ListSettings.DIV_COLOR, list_div_color)
 
 
 func set_font_size(size: int) -> void:
 	font_size = size
-	text_edit_theme.set_font_size("font_size", "TextEdit", size)
+	if text_edit_theme:	
+		text_edit_theme.set_font_size("font_size", "TextEdit", size)
 	font_size_changed.emit()
 
 
 func set_font_color(color: Color) -> void:
 	font_color = color
-	text_edit_theme.set_color("font_color", "TextEdit", color)
+	if text_edit_theme:
+		text_edit_theme.set_color("font_color", "TextEdit", color)
 
 
 func set_outline_size(size: int) -> void:
 	outline_size = size
-	text_edit_theme.set_constant("outline_size", "TextEdit", size)
+	if text_edit_theme:
+		text_edit_theme.set_constant("outline_size", "TextEdit", size)
 
 
 func set_outline_color(color: Color) -> void:
 	outline_color = color
-	text_edit_theme.set_color("font_outline_color", "TextEdit", color)
+	if text_edit_theme:
+		text_edit_theme.set_color("font_outline_color", "TextEdit", color)
 
 
 func set_line_spacing(value: int) -> void:
 	line_spacing = value
-	text_edit_theme.set_constant("line_spacing", "TextEdit", value)
+	if text_edit_theme:
+		text_edit_theme.set_constant("line_spacing", "TextEdit", value)
 
 
 func set_title_font_size(size: int) -> void:
 	title_font_size = size
-	title_text_edit_theme.set_font_size("font_size", "TextEdit", size)
+	if title_text_edit_theme:
+		title_text_edit_theme.set_font_size("font_size", "TextEdit", size)
 
 
 func set_title_font_color(color: Color) -> void:
 	title_font_color = color
-	title_text_edit_theme.set_color("font_color", "TextEdit", color)
+	if title_text_edit_theme:
+		title_text_edit_theme.set_color("font_color", "TextEdit", color)
 
 
 func set_title_outline_size(size: int) -> void:
 	title_outline_size = size
-	title_text_edit_theme.set_constant("outline_size", "TextEdit", size)
+	if title_text_edit_theme:
+		title_text_edit_theme.set_constant("outline_size", "TextEdit", size)
 
 
 func set_title_outline_color(color: Color) -> void:
 	title_outline_color = color
-	title_text_edit_theme.set_color("font_outline_color", "TextEdit", color)
+	if title_text_edit_theme:
+		title_text_edit_theme.set_color("font_outline_color", "TextEdit", color)
 
 
 func set_title_line_spacing(value: int) -> void:
 	title_line_spacing = value
-	title_text_edit_theme.set_constant("line_spacing", "TextEdit", value)
+	if title_text_edit_theme:
+		title_text_edit_theme.set_constant("line_spacing", "TextEdit", value)
 
 
 func set_background_color(color: Color) -> void:
 	background_color = color
-	background_panel_style_box.bg_color = color
+	if background_panel_style_box:
+		background_panel_style_box.bg_color = color
 
 
 func set_border_color(color: Color) -> void:
 	border_color = color
-	background_panel_style_box.border_color = color
+	if background_panel_style_box:
+		background_panel_style_box.border_color = color
 
 
 func set_border_size(size: int) -> void:
 	border_size = size
-	background_panel_style_box.border_width_top = size
-	background_panel_style_box.border_width_bottom = size
-	background_panel_style_box.border_width_left = size
-	background_panel_style_box.border_width_right = size
+	if background_panel_style_box:
+		background_panel_style_box.border_width_top = size
+		background_panel_style_box.border_width_bottom = size
+		background_panel_style_box.border_width_left = size
+		background_panel_style_box.border_width_right = size
 
 
 func set_border_blend(toggled_on: bool) -> void:
 	border_blend = toggled_on
-	background_panel_style_box.border_blend = toggled_on
+	if background_panel_style_box:
+		background_panel_style_box.border_blend = toggled_on
 
 
 func set_list_entry_separation(value: int) -> void:
@@ -168,7 +180,7 @@ func set_list_div_toggled(toggled_on: bool) -> void:
 
 func set_list_div_color(c: Color) -> void:
 	list_div_color = c
-	list_div_theme.get_stylebox("panel", "Panel").color = c
+	list_setting_changed.emit(ListSettings.DIV_COLOR, list_div_color)
 
 
 func set_background_panel_style_box(style_box_flat: StyleBoxFlat, use_theme_values: bool) -> void:
@@ -204,14 +216,6 @@ func set_title_text_edit_theme(theme: Theme, use_theme_values: bool) -> void:
 		title_line_spacing = theme.get_constant("line_spacing", "TextEdit")
 	else:
 		set_default_values(Category.TITLE_TEXT_EDIT)
-
-
-func set_list_div_theme(theme: Theme, use_theme_values: bool) -> void:
-	list_div_theme = theme
-	if use_theme_values:
-		list_div_color = theme.get_stylebox("panel", "Panel").color
-	else:
-		set_list_div_color(list_div_color)
 
 
 func rebuild_from_json_dict(dict: Dictionary) -> void:

@@ -7,7 +7,7 @@ class_name ListTextEntry extends Control
 @onready var text_edit: TextEdit = %TextEdit
 @onready var mouse_hover: Area2D = %MouseHover
 @onready var mouse_hover_shape: CollisionShape2D = %MouseHoverShape
-@onready var bottom_div: Panel = %BottomDiv
+@onready var bottom_div: DrawDiv = %BottomDiv
 
 var grabber_clicked: bool = false
 var initial_grabber_event: Vector2 = Vector2.ZERO
@@ -30,7 +30,6 @@ signal text_resized
 
 func _ready() -> void:
 	reset_item_sizes.call_deferred()
-	#reset_hover()
 
 
 func _get_drag_data(_at_position: Vector2) -> Variant:
@@ -53,7 +52,6 @@ func _input(event: InputEvent) -> void:
 func end_grab() -> void:
 	grabber_clicked = false
 	grabber_ended_move.emit(id)
-	#reset_hover()
 
 
 func change_priority_color(c: Color) -> void:
@@ -64,10 +62,6 @@ func change_priority_color(c: Color) -> void:
 func change_text_edit_theme(_theme: Theme) -> void:
 	text_edit.theme = _theme
 	reset_item_sizes.call_deferred()
-
-
-func change_div_theme(_theme: Theme) -> void:
-	bottom_div.theme = _theme
 
 
 func get_font_size() -> int:
@@ -99,6 +93,11 @@ func enable_priority_color() -> void:
 
 func toggle_div(toggle_on: bool) -> void:
 	bottom_div.visible = toggle_on
+
+
+func set_div_color(c: Color) -> void:
+	bottom_div.color = c
+	bottom_div.queue_redraw()
 
 
 func rebuild_from_dict(dict: Dictionary) -> void:
@@ -152,13 +151,6 @@ func to_json() -> Dictionary:
 		"id": id,
 	}
 	return dict
-
-
-func reset_hover() -> void:
-	#if grabber_clicked:
-		#return
-	priority_idicator.visible = true
-	grabber_control.visible = false
 
 
 func _on_hover(on: bool) -> void:

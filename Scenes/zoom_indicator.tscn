@@ -6,10 +6,9 @@
 [ext_resource type="Script" uid="uid://b0ioikc1dokvh" path="res://AddonsOwn/tween_show_hide.gd" id="4_ek6ul"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_4qtpc"]
+line_spacing = 0.0
 font = ExtResource("2_cnilx")
 font_size = 14
-outline_size = 3
-outline_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6l7je"]
 bg_color = Color(0.2484, 0.2484, 0.2484, 1)
@@ -18,34 +17,34 @@ border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
 border_color = Color(0.188235, 0.701961, 1, 1)
-border_blend = true
 corner_radius_top_left = 1
 corner_radius_top_right = 1
 corner_radius_bottom_right = 1
 corner_radius_bottom_left = 1
-corner_detail = 1
-expand_margin_left = 1.0
-expand_margin_top = 1.0
-expand_margin_right = 1.0
-expand_margin_bottom = 1.0
+anti_aliasing = false
+anti_aliasing_size = 1.5
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x6ack"]
 bg_color = Color(0.678431, 0.678431, 0.678431, 1)
-border_color = Color(0.188235, 0.701961, 1, 1)
-border_blend = true
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.19, 0.70300007, 1, 0)
 corner_radius_top_left = 1
 corner_radius_top_right = 1
 corner_radius_bottom_right = 1
 corner_radius_bottom_left = 1
-corner_detail = 1
+anti_aliasing = false
 
 [sub_resource type="Theme" id="Theme_jv6wh"]
 ProgressBar/styles/background = SubResource("StyleBoxFlat_6l7je")
 ProgressBar/styles/fill = SubResource("StyleBoxFlat_x6ack")
 
 [node name="ZoomIndicator" type="VBoxContainer" unique_id=934422770]
-offset_right = 45.0
-offset_bottom = 145.0
+custom_minimum_size = Vector2(40, 0)
+offset_right = 40.0
+offset_bottom = 106.0
 size_flags_horizontal = 8
 size_flags_vertical = 0
 mouse_filter = 2
@@ -54,19 +53,19 @@ script = ExtResource("1_4qtpc")
 
 [node name="ZoomLabel" type="Label" parent="." unique_id=2098361006]
 texture_filter = 2
-custom_minimum_size = Vector2(45, 0)
 layout_mode = 2
-text = "100%"
+text = "200%"
 label_settings = SubResource("LabelSettings_4qtpc")
 horizontal_alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=164018861]
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/separation = 8
 
 [node name="ZoomProgressBar" type="ProgressBar" parent="VBoxContainer" unique_id=466624422]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(8, 90)
+custom_minimum_size = Vector2(8, 50)
 layout_mode = 2
 size_flags_horizontal = 4
 mouse_filter = 2
@@ -80,14 +79,16 @@ show_percentage = false
 [node name="ZoomIcon" type="TextureRect" parent="VBoxContainer" unique_id=2129521675]
 unique_name_in_owner = true
 texture_filter = 2
-custom_minimum_size = Vector2(24, 24)
+custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
 size_flags_horizontal = 4
+mouse_filter = 2
 texture = ExtResource("2_atq65")
 expand_mode = 2
 
 [node name="TweenShowHide" type="Control" parent="." unique_id=2066902953 node_paths=PackedStringArray("target")]
 layout_mode = 2
+mouse_filter = 2
 script = ExtResource("4_ek6ul")
 target = NodePath("../VBoxContainer")
 animation_time = 0.5
@@ -97,7 +98,7 @@ simultaneous_move_and_hide = false
 metadata/_custom_type_script = "uid://b0ioikc1dokvh"
 
 [node name="HideTimer" type="Timer" parent="." unique_id=439367237]
-wait_time = 1.5999999999999999
+wait_time = 1.6
 one_shot = true
 
 [connection signal="timeout" from="HideTimer" to="." method="_on_hide_timer_timeout"]

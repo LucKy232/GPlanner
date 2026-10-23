@@ -15,6 +15,7 @@
 [ext_resource type="StyleBox" uid="uid://bmpbaolapvao" path="res://Themes/menu_spacing_style.tres" id="6_nvup7"]
 [ext_resource type="Theme" uid="uid://difn8r11pk3w" path="res://Themes/panel_theme.tres" id="8_btr2c"]
 [ext_resource type="Theme" uid="uid://bhx07jq36cjrb" path="res://Themes/Buttons/option_button_theme.tres" id="8_vcnja"]
+[ext_resource type="Script" uid="uid://v7pdngogxfln" path="res://Scripts/stepped_scroll_container.gd" id="9_xbo64"]
 [ext_resource type="Theme" uid="uid://baxthgpikfcos" path="res://Themes/Buttons/color_picker_button_theme.tres" id="12_r7vyq"]
 [ext_resource type="Theme" uid="uid://cjbq8yvomvgbp" path="res://Themes/spin_box_elem_settings_theme.tres" id="13_nvup7"]
 [ext_resource type="Theme" uid="uid://c2dbtkfh88hkp" path="res://Themes/Buttons/settings_category_toggle_button_theme.tres" id="15_rhtjl"]
@@ -22,23 +23,70 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6vqs3"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xbo64"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2hf5v"]
+content_margin_right = 24.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kgcqr"]
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.8, 0.8, 0.8, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xbo64"]
+bg_color = Color(0.79, 0.79, 0.79, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.8, 0.8, 0.8, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2hf5v"]
+bg_color = Color(0.9098039, 0.9098039, 0.9098039, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.8, 0.8, 0.8, 0)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bv2of"]
+
+[sub_resource type="Theme" id="Theme_xbo64"]
+ScrollContainer/constants/scrollbar_h_separation = 0
+ScrollContainer/constants/scrollbar_v_separation = 0
+ScrollContainer/styles/focus = SubResource("StyleBoxEmpty_xbo64")
+ScrollContainer/styles/panel = SubResource("StyleBoxEmpty_2hf5v")
+VScrollBar/styles/grabber = SubResource("StyleBoxFlat_kgcqr")
+VScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_xbo64")
+VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_2hf5v")
+VScrollBar/styles/scroll = SubResource("StyleBoxEmpty_bv2of")
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rhtjl"]
-content_margin_left = 15.0
+content_margin_left = 14.0
 content_margin_top = 6.0
-content_margin_right = 15.0
-content_margin_bottom = 10.0
+content_margin_right = 6.0
+content_margin_bottom = 12.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ngn7r"]
-content_margin_left = 15.0
+content_margin_left = 14.0
 content_margin_top = 6.0
-content_margin_right = 15.0
-content_margin_bottom = 10.0
+content_margin_right = 6.0
+content_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ek6ul"]
+bg_color = Color(0.09239706, 0.09239707, 0.092397, 1)
 
 [sub_resource type="Theme" id="Theme_6vqs3"]
+ScrollContainer/constants/scrollbar_h_separation = 15
+ScrollContainer/constants/scrollbar_v_separation = 0
 ScrollContainer/styles/focus = SubResource("StyleBoxEmpty_rhtjl")
 ScrollContainer/styles/panel = SubResource("StyleBoxEmpty_ngn7r")
-VScrollBar/styles/grabber = null
-VScrollBar/styles/scroll = null
+VScrollBar/styles/grabber = SubResource("StyleBoxFlat_kgcqr")
+VScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_xbo64")
+VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_2hf5v")
+VScrollBar/styles/scroll = SubResource("StyleBoxFlat_ek6ul")
 
 [sub_resource type="Theme" id="Theme_63ede"]
 
@@ -86,11 +134,20 @@ theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
 script = ExtResource("4_qg77d")
 
-[node name="StyleButtonGrid" type="GridContainer" parent="VBoxContainer/StyleButtons" unique_id=1159601047]
+[node name="StyleButtonsScroll" type="ScrollContainer" parent="VBoxContainer/StyleButtons" unique_id=1474221696]
+layout_mode = 2
+theme = SubResource("Theme_xbo64")
+scroll_vertical_custom_step = 36.0
+script = ExtResource("9_xbo64")
+v_step = 36.0
+v_scroll_size = 8.0
+
+[node name="StyleButtonGrid" type="GridContainer" parent="VBoxContainer/StyleButtons/StyleButtonsScroll" unique_id=1159601047]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
-columns = 8
+columns = 7
 
 [node name="SettingsPanel" type="PanelContainer" parent="VBoxContainer" unique_id=534980217]
 layout_mode = 2
@@ -103,6 +160,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme = SubResource("Theme_6vqs3")
 horizontal_scroll_mode = 4
+vertical_scroll_mode = 4
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer" unique_id=2034021529]
 unique_name_in_owner = true

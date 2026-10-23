@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://cukyivuw2svdj" path="res://Scripts/priority_idicator_dot.gd" id="2_30uiy"]
 [ext_resource type="Texture2D" uid="uid://bbpq8wbljm0dp" path="res://Icons/grabber.svg" id="3_1jr1i"]
 [ext_resource type="Theme" uid="uid://dao6v8vx8h5ip" path="res://Themes/text_edit_theme.tres" id="4_jvbgi"]
-[ext_resource type="PackedScene" uid="uid://brbbmqwm6hpj4" path="res://Scenes/div.tscn" id="5_7ednx"]
+[ext_resource type="Script" uid="uid://brc2gpgb31oop" path="res://Scripts/draw_div.gd" id="6_71ri1"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_553ya"]
 resource_local_to_scene = true
@@ -80,11 +80,14 @@ theme = ExtResource("4_jvbgi")
 wrap_mode = 1
 scroll_fit_content_height = true
 
-[node name="BottomDiv" parent="." unique_id=2098245851 instance=ExtResource("5_7ednx")]
+[node name="BottomDiv" type="Control" parent="." unique_id=318481425]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
-mouse_filter = 2
+script = ExtResource("6_71ri1")
+left_margin = 25.0
+right_margin = 25.0
+y_offset = -0.5
 
 [node name="MouseHover" type="Area2D" parent="." unique_id=600296509]
 unique_name_in_owner = true
