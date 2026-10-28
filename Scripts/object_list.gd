@@ -39,7 +39,7 @@ var state: State
 var individual_style: PresetStyle
 var style_preset: PresetStyle
 var has_style_preset: bool = false
-var reshow: Array[int]
+var reparent_reappear: Array[int]
 
 enum State {
 	DEFAULT,
@@ -73,11 +73,11 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	# Hack to get an entry reparented from another list to resize itself (engine bug with reparenting TextEdit?)
-	if reshow.size() > 0:
-		for entry_id in reshow:
+	if reparent_reappear.size() > 0:
+		for entry_id in reparent_reappear:
 			if entries.has(entry_id):
 				entries[entry_id].visible = true
-		reshow.clear()
+		reparent_reappear.clear()
 
 
 func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
@@ -142,7 +142,7 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		# Hack to get an entry reparented from another list to resize itself (engine bug with reparenting TextEdit?)
 		# Will reappear in _process function
 		data.visible = false
-		reshow.append(data.id)
+		reparent_reappear.append(data.id)
 	if data is TextElement:
 		var new_entry_id: int = add_text_entry(false, -1, dragger.current)
 		entries[new_entry_id].set_text(data.get_text())
@@ -780,11 +780,12 @@ func _on_list_text_entry_grabber_ended_move(entry_id: int) -> void:
 		push_error("Wrong drag ID")
 		return
 	var move_to: int = dragger.current
+	var drag_state: State = state
 	change_state(State.DEFAULT)
 	dragger.end_drag()
 	dragging.emit(false)
 	toggle_all_entries_hover(true)
-	if entries[entry_id].order_id != move_to:
+	if drag_state != State.DRAGGING_CHILD_OUTSIDE and entries[entry_id].order_id != move_to:
 		var old_order: Array[int] = entries_order.duplicate()
 		object_v_box.move_child(entries[entry_id], move_to)
 		sort_entries(entries[entry_id].order_id, move_to)

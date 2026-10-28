@@ -92,7 +92,7 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 
 func _drop_data(at_position: Vector2, data: Variant) -> void:
 	if data is ListTextEntry:
-		var new_elem_id: int = add_text_element(at_position)
+		var new_elem_id: int = add_text_element(at_position, -1, false)
 		var new_text_element: TextElement = elements[new_elem_id] as TextElement
 		var list_id = data.list_id
 		if elements.has(list_id) and elements[list_id] is ObjectList:
@@ -281,7 +281,7 @@ func add_object_list(at_position: Vector2, id_from_file: int = -1) -> int:
 	return new_list.id
 
 
-func add_text_element(at_position: Vector2, id_from_file: int = -1) -> int:
+func add_text_element(at_position: Vector2, id_from_file: int = -1, add_undo_redo: bool = true) -> int:
 	canvas_changed()
 	var new_element: TextElement = load(GlobalScenes.text_element_scene).instantiate()
 	var elem_id: int
@@ -316,12 +316,13 @@ func add_text_element(at_position: Vector2, id_from_file: int = -1) -> int:
 		select_element(elem_id)
 		new_element.enter_text_edit()
 		is_element_just_created = true
-		undo_redo.create_action("Add TextElement", UndoRedo.MERGE_DISABLE)
-		undo_redo.add_do_method(add_text_element.bind(at_position, new_element.id))
-		if has_preset:
-			undo_redo.add_do_method(change_element_preset_by_undo_redo.bind(new_element.id, style_presets[selected_preset_style]))
-		undo_redo.add_undo_method(remove_element_by_undo_add.bind(new_element.id))
-		undo_redo.commit_action(false)
+		if add_undo_redo:
+			undo_redo.create_action("Add TextElement", UndoRedo.MERGE_DISABLE)
+			undo_redo.add_do_method(add_text_element.bind(at_position, new_element.id))
+			if has_preset:
+				undo_redo.add_do_method(change_element_preset_by_undo_redo.bind(new_element.id, style_presets[selected_preset_style]))
+			undo_redo.add_undo_method(remove_element_by_undo_add.bind(new_element.id))
+			undo_redo.commit_action(false)
 	return new_element.id
 
 
@@ -384,6 +385,7 @@ func add_connection(id_from_file: int = -1, arrow_1_enabled: bool = false, arrow
 func connect_object_list_signals(list: ObjectList) -> void:
 	list.can_drop.connect(_on_object_list_can_drop)
 	list.filtered_gui_input.connect(_on_object_list_mouse_input)
+	list.resized.connect(_on_element_resized.bind(list.id))
 	list.list_changed.connect(_on_list_changed)
 	list.dragging.connect(_on_list_dragging_toggled)
 	list.remove_element_request.connect(_on_list_remove_element_request)
@@ -412,26 +414,28 @@ func connect_text_element_signals(text_element: TextElement) -> void:
 	text_element.drag_and_resize_input.input_ended.connect(_on_control_input_ended.bind(text_element))
 
 
-func remove_element(elem_id: int) -> void:
+func remove_element(elem_id: int, add_undo_redo: bool = true) -> void:
 	if !elements.has(elem_id):
 		push_error("Element ID %d doesn't exist!" % [elem_id])
 		return
 	var element_data: Dictionary = {elem_id: elements[elem_id].to_json()}
 	if lists.has(elem_id):
-		undo_redo.create_action("Deleted List", UndoRedo.MERGE_DISABLE)
-		undo_redo.add_undo_method(rebuild_lists.bind(element_data))
-		undo_redo.add_undo_method(rebuild_connections.bind(get_element_connection_data(elem_id)))
-		undo_redo.add_do_method(remove_element_by_undo_add.bind(elem_id))
-		undo_redo.add_do_method(remove_connections_from_element.bind(elem_id, false))
-		undo_redo.commit_action(false)
+		if add_undo_redo:
+			undo_redo.create_action("Deleted List", UndoRedo.MERGE_DISABLE)
+			undo_redo.add_undo_method(rebuild_lists.bind(element_data))
+			undo_redo.add_undo_method(rebuild_connections.bind(get_element_connection_data(elem_id)))
+			undo_redo.add_do_method(remove_element_by_undo_add.bind(elem_id))
+			undo_redo.add_do_method(remove_connections_from_element.bind(elem_id, false))
+			undo_redo.commit_action(false)
 		lists.erase(elem_id)
 	elif text_elements.has(elem_id):
-		undo_redo.create_action("Deleted Text Element", UndoRedo.MERGE_DISABLE)
-		undo_redo.add_undo_method(rebuild_elements.bind(element_data))
-		undo_redo.add_undo_method(rebuild_connections.bind(get_element_connection_data(elem_id)))
-		undo_redo.add_do_method(remove_element_by_undo_add.bind(elem_id))
-		undo_redo.add_do_method(remove_connections_from_element.bind(elem_id, false))
-		undo_redo.commit_action(false)
+		if add_undo_redo:
+			undo_redo.create_action("Deleted Text Element", UndoRedo.MERGE_DISABLE)
+			undo_redo.add_undo_method(rebuild_elements.bind(element_data))
+			undo_redo.add_undo_method(rebuild_connections.bind(get_element_connection_data(elem_id)))
+			undo_redo.add_do_method(remove_element_by_undo_add.bind(elem_id))
+			undo_redo.add_do_method(remove_connections_from_element.bind(elem_id, false))
+			undo_redo.commit_action(false)
 		text_elements.erase(elem_id)
 	canvas_changed()
 	deselect_any()
@@ -553,7 +557,7 @@ func select_element(elem_id: int) -> void:
 		return			# Already selected
 	deselect_any()		# Deselect previous element
 	if !elements.has(elem_id):
-		push_error("elements Dictionary doesn't have ID %d" [elem_id])
+		push_error("elements Dictionary doesn't have ID %d" % [elem_id])
 		return
 	selected_control = elements[elem_id]
 	# Selected CanvasElement needs to receive mouse inputs first (last in tree)
@@ -627,14 +631,14 @@ func change_selected_control_preset(preset: PresetStyle) -> void:
 
 func change_element_preset_by_undo_redo(elem_id: int, preset: PresetStyle) -> void:
 	if !elements.has(elem_id):
-		push_error("elements Dictionary doesn't have ID %d" [elem_id])
+		push_error("elements Dictionary doesn't have ID %d" % [elem_id])
 		return
 	elements[elem_id].change_style_preset(preset)
 
 
 func unassign_element_preset_by_undo_redo(elem_id: int) -> void:
 	if !elements.has(elem_id):
-		push_error("elements Dictionary doesn't have ID %d" [elem_id])
+		push_error("elements Dictionary doesn't have ID %d" % [elem_id])
 		return
 	elements[elem_id].unassign_style_preset()
 
@@ -978,32 +982,6 @@ func warp_mouse_to_other_size() -> void:
 		get_viewport().warp_mouse( Vector2(mouse_pos.x, 50.0) )
 
 
-func _on_control_input_ended(control: Control) -> void:
-	if !control:
-		return
-	if control.has_method("end_input"):
-		control.end_input()
-	# Selected CanvasElement needs to receive mouse inputs first (last in tree)
-	object_container.move_child(control, object_container.get_child_count() - 1)
-	control = null
-	is_dragging = false
-	is_resizing = false
-
-
-func _on_control_dragged(event_relative: Vector2, control: Control) -> void:
-	if !control or !is_dragging:
-		return
-	if tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS:
-		change_control_position(control, control.position, control.position + event_relative / scale)
-
-
-func _on_control_resized(event_relative: Vector2, control: Control) -> void:
-	if !control or !is_resizing:
-		return
-	if tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS:
-		change_control_size(control, control.size + event_relative / scale)
-
-
 # TODO selection_viewer size changes because moving was done automatically without selecting object
 # Decide how to handle selection with UndoRedo (or select here with UndoRedo function calls?)
 # Or remove selection_viewer position if not handling selection with UndoRedo
@@ -1021,7 +999,7 @@ func change_control_position(control: Control, old_position: Vector2, new_positi
 
 func change_control_position_by_id(elem_id: int, new_position: Vector2) -> void:
 	if !elements.has(elem_id):
-		push_error("elements Dictionary doesn't have ID %d" [elem_id])
+		push_error("elements Dictionary doesn't have ID %d" % [elem_id])
 		return
 	elements[elem_id].position = new_position
 	selection_viewer.position = new_position
@@ -1051,9 +1029,71 @@ func change_control_size(control: Control, new_size: Vector2, register_undo: boo
 
 func change_control_size_by_id(elem_id: int, new_size: Vector2) -> void:
 	if !elements.has(elem_id):
-		push_error("elements Dictionary doesn't have ID %d" [elem_id])
+		push_error("elements Dictionary doesn't have ID %d" % [elem_id])
 		return
 	change_control_size(elements[elem_id], new_size, false)
+
+
+func set_text_element_priority_by_id(elem_id: int, p: Enums.Priority) -> void:
+	if !elements.has(elem_id):
+		return
+	elements[elem_id].set_priority_id(p)
+	elements[elem_id].set_priority_color(priority_colors[p])
+
+
+func change_list_entry_priority_by_id(list_id: int, entry_id: int, priority: Enums.Priority) -> void:
+	if !elements.has(list_id) or !lists.has(list_id):
+		push_error("Entry list_id invalid, list not in elements Dictionary")
+		return
+	elements[list_id].set_entry_priority(entry_id, priority, priority_colors[priority])
+
+
+func remove_list_entry_by_id(list_id: int, entry_id: int) -> void:
+	if !elements.has(list_id) or !lists.has(list_id):
+		push_error("Entry list_id invalid, list not in elements Dictionary")
+		return
+	elements[list_id].remove_entry_by_id(entry_id)
+
+
+func rebuild_list_entries_by_undo(list_id: int, entry_dict: Dictionary) -> void:
+	if !elements.has(list_id) or !lists.has(list_id):
+		push_error("Entry list_id invalid, list not in elements Dictionary")
+		return
+	elements[list_id].rebuild_entries_from_dict(entry_dict, priority_colors)
+
+
+func change_list_order_by_id(list_id: int, new_order: Array[int]) -> void:
+	if !elements.has(list_id) or !lists.has(list_id):
+		push_error("Entry list_id invalid, list not in elements Dictionary")
+		return
+	elements[list_id].set_new_order_array(new_order)
+	elements[list_id].sort_list_by_order_array()
+
+
+func _on_control_input_ended(control: Control) -> void:
+	if !control:
+		return
+	if control.has_method("end_input"):
+		control.end_input()
+	# Selected CanvasElement needs to receive mouse inputs first (last in tree)
+	object_container.move_child(control, object_container.get_child_count() - 1)
+	control = null
+	is_dragging = false
+	is_resizing = false
+
+
+func _on_control_dragged(event_relative: Vector2, control: Control) -> void:
+	if !control or !is_dragging:
+		return
+	if tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS:
+		change_control_position(control, control.position, control.position + event_relative / scale)
+
+
+func _on_control_resized(event_relative: Vector2, control: Control) -> void:
+	if !control or !is_resizing:
+		return
+	if tool_id == Enums.Tool.SELECT or tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS:
+		change_control_size(control, control.size + event_relative / scale)
 
 
 func _on_background_gui_input(event: InputEvent) -> void:
@@ -1298,7 +1338,9 @@ func _on_list_select_requested(list_id: int) -> void:
 func _on_list_remove_element_request(elem_id: int) -> void:
 	if !elements.has(elem_id):
 		push_error("Wrong element id %d @ _on_list_remove_element_request" % [elem_id])
-	remove_element(elem_id)
+	if undo_redo.get_current_action_name() == ("Move CanvasElement|%d" % [elem_id]):
+		undo_redo.undo()
+	remove_element(elem_id, false)
 	is_dragging = false
 	is_resizing = false
 
@@ -1307,14 +1349,6 @@ func _on_list_remove_element_request(elem_id: int) -> void:
 func _on_element_resized(elem_id: int) -> void:
 	if selected_control and elements.has(elem_id) and selected_control == elements[elem_id]:
 		selection_viewer.size = elements[elem_id].size
-
-
-# TODO move function
-func set_text_element_priority_by_id(elem_id: int, p: Enums.Priority) -> void:
-	if !elements.has(elem_id):
-		return
-	elements[elem_id].set_priority_id(p)
-	elements[elem_id].set_priority_color(priority_colors[p])
 
 
 func _on_element_changed_priority(old_priority: Enums.Priority, elem_id: int) -> void:
@@ -1383,32 +1417,3 @@ func _on_connection_arrow_changed() -> void:
 func _on_viewport_size_changed() -> void:
 	position = pan_limits(position)
 	changed_position.emit()
-
-
-func change_list_entry_priority_by_id(list_id: int, entry_id: int, priority: Enums.Priority) -> void:
-	if !elements.has(list_id) or !lists.has(list_id):
-		push_error("Entry list_id invalid, list not in elements Dictionary")
-		return
-	elements[list_id].set_entry_priority(entry_id, priority, priority_colors[priority])
-
-
-func remove_list_entry_by_id(list_id: int, entry_id: int) -> void:
-	if !elements.has(list_id) or !lists.has(list_id):
-		push_error("Entry list_id invalid, list not in elements Dictionary")
-		return
-	elements[list_id].remove_entry_by_id(entry_id)
-
-
-func rebuild_list_entries_by_undo(list_id: int, entry_dict: Dictionary) -> void:
-	if !elements.has(list_id) or !lists.has(list_id):
-		push_error("Entry list_id invalid, list not in elements Dictionary")
-		return
-	elements[list_id].rebuild_entries_from_dict(entry_dict, priority_colors)
-
-
-func change_list_order_by_id(list_id: int, new_order: Array[int]) -> void:
-	if !elements.has(list_id) or !lists.has(list_id):
-		push_error("Entry list_id invalid, list not in elements Dictionary")
-		return
-	elements[list_id].set_new_order_array(new_order)
-	elements[list_id].sort_list_by_order_array()

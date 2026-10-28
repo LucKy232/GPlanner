@@ -63,6 +63,15 @@ var using_cursor_image: bool = false
 var is_at_startup: bool = true
 var last_window_mode: Window.Mode = Window.Mode.MODE_WINDOWED		## When going to borderless fullscreen, remember the last Window.Mode
 
+# DEBUG
+func _on_undo_redo_version_changed(id: int) -> void:
+	if !canvases.has(id):
+		return
+	var count: int = canvases[id].undo_redo.get_history_count()
+	print("%1d Actions | New action: %s" % [count, canvases[id].undo_redo.get_current_action_name()])
+	#for i in range(count):
+		#print("%d: %s" % [i, canvases[id].undo_redo.get_action_name(i)])
+
 
 func _ready() -> void:
 	#Performance.add_custom_monitor("Request Action Type", func(): return int(canvases[cc].get_requested_save_action()))
@@ -434,16 +443,6 @@ func new_file(add_canvas: bool, show_status: bool = true) -> int:
 	_on_canvas_changed_position()
 	_on_canvas_changed_zoom()
 	return new_canvas.id
-
-
-# DEBUG
-func _on_undo_redo_version_changed(id: int) -> void:
-	if !canvases.has(id):
-		return
-	var count: int = canvases[id].undo_redo.get_history_count()
-	#print("%1d Actions" % [count])
-	#for i in range(count):
-		#print("%d: %s" % [i, canvases[id].undo_redo.get_action_name(i)])
 
 
 func connect_planner_canvas_signals(new_canvas: PlannerCanvas) -> void:
