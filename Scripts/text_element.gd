@@ -31,6 +31,7 @@ var priority_tool_enabled: bool = true
 var manual_resize: bool = false
 var total_horizontal_margin: float
 var total_vertical_margin: float
+var cached_old_position: Vector2 = Vector2.ZERO		## On dragging into list, initial position disappears, saved here on drag start
 
 signal became_selected
 signal changed_priority

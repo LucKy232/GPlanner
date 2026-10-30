@@ -36,6 +36,7 @@ extends Control
 @export var priority_colors: Dictionary[Enums.Priority, Color]
 @export var priority_styleboxes: Array[StyleBoxFlat]
 @export_category("Settings")
+@export var max_undo_steps: int = 500
 @export var zoom_limits: Vector2 = Vector2(0.2, 2.0)
 @export_range(1.01, 1.2, 0.01) var zoom_speed: float = 1.02
 @export var cycle_zoom_levels: Array[float] = [0.2, 0.5, 1.0, 1.5, 2.0]
@@ -97,8 +98,8 @@ func _ready() -> void:
 	exit_tab_confirmation.add_cancel_button(" Cancel ")
 	# Custom mouse cursors, except drawing tools
 	if drag_cursor_icon:
-		Input.set_custom_mouse_cursor(drag_cursor_icon, Input.CURSOR_DRAG, drag_cursor_icon.get_size() * 0.5)
-		Input.set_custom_mouse_cursor(drag_cursor_icon, Input.CURSOR_FORBIDDEN, drag_cursor_icon.get_size() * 0.5)
+		Input.set_custom_mouse_cursor(drag_cursor_icon, Input.CURSOR_DRAG, drag_cursor_icon.get_size() * 0.4)
+		Input.set_custom_mouse_cursor(drag_cursor_icon, Input.CURSOR_FORBIDDEN, drag_cursor_icon.get_size() * 0.4)
 	if drop_cursor_icon:
 		Input.set_custom_mouse_cursor(drop_cursor_icon, Input.CURSOR_CAN_DROP)
 	# Before reading files, ask for read / write permissions
@@ -417,6 +418,7 @@ func new_file(add_canvas: bool, show_status: bool = true) -> int:
 		new_canvas.zoom_speed = zoom_speed
 		new_canvas.cycle_zoom_levels = cycle_zoom_levels
 		new_canvas.undo_redo = UndoRedo.new()
+		new_canvas.undo_redo.max_steps = max_undo_steps
 		# NOTE Signal for debug, remove
 		new_canvas.undo_redo.version_changed.connect(_on_undo_redo_version_changed.bind(new_canvas.id))
 		drawing_manager.add_canvas_drawing_group(new_canvas.id, new_canvas.undo_redo)

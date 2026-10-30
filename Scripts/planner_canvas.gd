@@ -94,7 +94,7 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 	if data is ListTextEntry:
 		var new_elem_id: int = add_text_element(at_position, -1, false)
 		var new_text_element: TextElement = elements[new_elem_id] as TextElement
-		var list_id = data.list_id
+		var list_id: int = data.list_id
 		if elements.has(list_id) and elements[list_id] is ObjectList:
 			if elements[list_id].has_style_preset:
 				new_text_element.change_style_preset(elements[list_id].style_preset)
@@ -105,9 +105,14 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 		new_text_element.set_priority_id(data.priority_id)
 		new_text_element.set_priority_color(priority_colors[data.priority_id])
 		select_element(new_elem_id)
-		data.remove_from_list.emit()
-		data.queue_free()
 		drop_visual.visible = false
+		undo_redo.create_action("List entry to canvas|%d" % [new_text_element.id], UndoRedo.MERGE_ALL)
+		undo_redo.add_do_method(rebuild_elements.bind({new_text_element.id : new_text_element.to_json()}))
+		undo_redo.add_do_method(remove_list_entry_by_id.bind(list_id, data.id))
+		undo_redo.add_undo_method(rebuild_list_entries_by_undo.bind(list_id, {data.order_id : data.to_json()}))
+		undo_redo.add_undo_method(remove_element_by_undo_add.bind(new_elem_id))
+		undo_redo.commit_action(false)
+		data.remove_from_list.emit(true)
 
 
 func new_canvas() -> void:
@@ -388,7 +393,6 @@ func connect_object_list_signals(list: ObjectList) -> void:
 	list.resized.connect(_on_element_resized.bind(list.id))
 	list.list_changed.connect(_on_list_changed)
 	list.dragging.connect(_on_list_dragging_toggled)
-	list.remove_element_request.connect(_on_list_remove_element_request)
 	list.text_edit_active.connect(_on_list_text_edit_active)
 	list.select_request.connect(_on_list_select_requested)
 	list.entry_priority_changed.connect(_on_list_entry_changed_priority)
@@ -399,6 +403,8 @@ func connect_object_list_signals(list: ObjectList) -> void:
 	list.entry_removed.connect(_on_list_entry_removed)
 	list.entry_added.connect(_on_list_entry_added)
 	list.order_changed.connect(_on_list_order_changed)
+	list.dropped_entry_from_other_list.connect(_on_list_dropped_entry_from_other_list)
+	list.dropped_element_from_canvas.connect(_on_list_dropped_element_from_canvas)
 
 
 # NOTE element IDs can't change after creation because they are bound to their signals
@@ -1235,6 +1241,7 @@ func _on_text_element_gui_input(event: InputEvent, elem_id: int) -> void:
 				is_dragging = true
 				is_panning = false
 				object_container.move_child(elements[elem_id], 0) # Needs to receive mouse input last (first in tree)
+				elements[elem_id].cached_old_position = elements[elem_id].position
 				elements[elem_id].start_dragging()
 		if tool_id == Enums.Tool.ELEMENT_STYLE_SETTINGS:
 			select_element(elem_id)
@@ -1335,15 +1342,6 @@ func _on_list_select_requested(list_id: int) -> void:
 		select_element(list_id)
 
 
-func _on_list_remove_element_request(elem_id: int) -> void:
-	if !elements.has(elem_id):
-		push_error("Wrong element id %d @ _on_list_remove_element_request" % [elem_id])
-	if undo_redo.get_current_action_name() == ("Move CanvasElement|%d" % [elem_id]):
-		undo_redo.undo()
-	remove_element(elem_id, false)
-	is_dragging = false
-	is_resizing = false
-
 
 # For anything that automatically resizes the CanvasElement
 func _on_element_resized(elem_id: int) -> void:
@@ -1362,7 +1360,7 @@ func _on_element_changed_priority(old_priority: Enums.Priority, elem_id: int) ->
 	undo_redo.commit_action(true)
 
 
-func _on_list_entry_changed_priority(entry: ListTextEntry, new_priority: Enums.Priority) -> void:
+func _on_list_entry_changed_priority(entry: ListTextEntry, new_priority: Enums.Priority, add_undo_redo: bool = true) -> void:
 	canvas_changed()
 	var old_priority: Enums.Priority = entry.priority_id
 	if old_priority == new_priority:
@@ -1370,10 +1368,13 @@ func _on_list_entry_changed_priority(entry: ListTextEntry, new_priority: Enums.P
 	if !elements.has(entry.list_id) or (elements[entry.list_id] is not ObjectList):
 		push_error("Entry list_id invalid, list not in elements Dictionary")
 		return
-	undo_redo.create_action("List Entry Priority", UndoRedo.MERGE_DISABLE)
-	undo_redo.add_do_method(change_list_entry_priority_by_id.bind(entry.list_id, entry.id, new_priority))
-	undo_redo.add_undo_method(change_list_entry_priority_by_id.bind(entry.list_id, entry.id, old_priority))
-	undo_redo.commit_action(true)
+	if add_undo_redo:
+		undo_redo.create_action("List Entry Priority", UndoRedo.MERGE_DISABLE)
+		undo_redo.add_do_method(change_list_entry_priority_by_id.bind(entry.list_id, entry.id, new_priority))
+		undo_redo.add_undo_method(change_list_entry_priority_by_id.bind(entry.list_id, entry.id, old_priority))
+		undo_redo.commit_action(true)
+	else:
+		change_list_entry_priority_by_id(entry.list_id, entry.id, new_priority)
 
 
 func _on_list_copied_to_clipboard() -> void:
@@ -1410,6 +1411,47 @@ func _on_list_order_changed(list_id: int, old_order: Array[int], new_order: Arra
 	undo_redo.commit_action(false)
 
 
+func _on_list_dropped_entry_from_other_list(old_list_id: int, new_list_id: int, old_entry: Dictionary, new_entry: Dictionary) -> void:
+	if !elements.has(old_list_id):
+		push_error("List ID %d not found in elements Dictionary!" % [old_list_id])
+		return
+	if !elements.has(new_list_id):
+		push_error("List ID %d not found in elements Dictionary!" % [old_list_id])
+		return
+	var old_entry_id: int = old_entry[old_entry.keys()[0]]["id"]
+	var new_entry_id: int = new_entry[new_entry.keys()[0]]["id"]
+	undo_redo.create_action("Drag between lists", UndoRedo.MERGE_DISABLE)
+	undo_redo.add_do_method(rebuild_list_entries_by_undo.bind(new_list_id, new_entry))
+	undo_redo.add_do_method(remove_list_entry_by_id.bind(old_list_id, old_entry_id))
+	undo_redo.add_undo_method(rebuild_list_entries_by_undo.bind(old_list_id, old_entry))
+	undo_redo.add_undo_method(remove_list_entry_by_id.bind(new_list_id, new_entry_id))
+	undo_redo.commit_action(false)
+
+
+func _on_list_dropped_element_from_canvas(list_id: int, new_entry_dict: Dictionary, old_element_dict: Dictionary) -> void:
+	if !elements.has(list_id):
+		push_error("List ID %d not found in elements Dictionary!" % [list_id])
+		return
+	var new_entry_id: int = new_entry_dict[new_entry_dict.keys()[0]]["id"]
+	var elem_id: int = int(old_element_dict.keys()[0])
+	if !elements.has(elem_id):
+		push_error("Wrong element id %d" % [elem_id])
+		return
+	if undo_redo.get_current_action_name() == ("Move CanvasElement|%d" % [elem_id]):
+		undo_redo.undo()
+	undo_redo.create_action("Dragged into list|%d" % [elem_id], UndoRedo.MERGE_ALL)
+	undo_redo.add_do_method(rebuild_list_entries_by_undo.bind(list_id, new_entry_dict))
+	undo_redo.add_do_method(remove_connections_from_element.bind(elem_id, false))
+	undo_redo.add_do_method(remove_element_by_undo_add.bind(elem_id))
+	undo_redo.add_undo_method(rebuild_elements.bind(old_element_dict))
+	undo_redo.add_undo_method(rebuild_connections.bind(get_element_connection_data(elem_id)))
+	undo_redo.add_undo_method(remove_list_entry_by_id.bind(list_id, new_entry_id))
+	undo_redo.commit_action(false)
+	remove_element(elem_id, false)
+	is_dragging = false
+	is_resizing = false
+
+ 
 func _on_connection_arrow_changed() -> void:
 	canvas_changed()
 

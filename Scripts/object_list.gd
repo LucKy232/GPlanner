@@ -59,7 +59,8 @@ signal select_request
 signal text_edit_active
 signal dragging
 signal copied_to_clipboard
-signal remove_element_request
+signal dropped_entry_from_other_list
+signal dropped_element_from_canvas
 
 
 func _ready() -> void:
@@ -124,7 +125,10 @@ func _can_drop_data(at_position: Vector2, data: Variant) -> bool:
 
 func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	if data is ListTextEntry:
-		data.remove_from_list.emit()
+		var old_list_id: int = data.list_id
+		var data_dict: Dictionary = data.to_json()
+		var old_entry_dict: Dictionary = {data.order_id : data_dict}
+		data.remove_from_list.emit(false)
 		data.reparent(object_v_box, false)
 		data.list_id = id
 		data.change_text_edit_theme(style_preset.text_edit_theme if has_style_preset else individual_style.text_edit_theme)
@@ -139,19 +143,25 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 		change_state(State.DEFAULT)
 		dragger.end_drag()
 		select_request.emit(id)
+		var new_entry_dict: Dictionary = {data.order_id : data.to_json()}
 		# Hack to get an entry reparented from another list to resize itself (engine bug with reparenting TextEdit?)
 		# Will reappear in _process function
 		data.visible = false
 		reparent_reappear.append(data.id)
+		dropped_entry_from_other_list.emit(old_list_id, id, old_entry_dict, new_entry_dict)
 	if data is TextElement:
-		var new_entry_id: int = add_text_entry(false, -1, dragger.current)
+		var new_entry_id: int = add_text_entry(false, -1, dragger.current)		# Also moves it to dragger.current order_id
 		entries[new_entry_id].set_text(data.get_text())
 		entries[new_entry_id].change_text_edit_theme(style_preset.text_edit_theme if has_style_preset else individual_style.text_edit_theme)
 		entries[new_entry_id].set_div_color(style_preset.list_div_color if has_style_preset else individual_style.list_div_color)
-		entry_priority_changed.emit(entries[new_entry_id], data.priority_id)
+		entry_priority_changed.emit(entries[new_entry_id], data.priority_id, false)
 		change_state(State.DEFAULT)
 		dragger.end_drag()
-		remove_element_request.emit(data.id)
+		var element_dict: Dictionary = {data.id : data.to_json()}
+		var new_entry_dict: Dictionary = {entries[new_entry_id].order_id : entries[new_entry_id].to_json()}
+		element_dict[data.id]["pos.x"] = data.cached_old_position.x
+		element_dict[data.id]["pos.y"] = data.cached_old_position.y
+		dropped_element_from_canvas.emit(id, new_entry_dict, element_dict)
 		select_request.emit(id)
 
 
@@ -734,8 +744,8 @@ func _on_mouse_hover_mouse_entered() -> void:
 	mouse_inside = true
 
 
-func _on_list_text_entry_remove_from_list(entry: ListTextEntry) -> void:
-	remove_text_entry(entry, false)
+func _on_list_text_entry_remove_from_list(delete_from_memory: bool, entry: ListTextEntry) -> void:
+	remove_text_entry(entry, delete_from_memory)
 
 
 func _on_resized() -> void:
