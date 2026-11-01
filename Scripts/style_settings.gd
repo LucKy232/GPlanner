@@ -337,6 +337,17 @@ func toggle_list_settings(toggled_on) -> void:
 	entry_div_line_h_box.visible = toggled_on
 
 
+func is_preset_selected(preset: PresetStyle) -> bool:
+	if preset_options.selected == 0:
+		if individual_preset == preset:
+			return true
+		return false
+	else:
+		if presets[preset_options.selected] == preset:
+			return true
+		return false
+
+
 func _on_add_preset_pressed() -> void:
 	name_insert.visible = true
 	name_insert.edit()
@@ -361,156 +372,224 @@ func _on_preset_options_item_selected(index: int) -> void:
 
 
 func _on_background_color_picker_button_color_changed(color: Color) -> void:
-	if preset_options.selected == 0:
-		individual_preset.set_background_color(color)
-		#style_buttons.change_button_background_color(0, color)
-	else:
-		presets[preset_options.selected].set_background_color(color)
+	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
+	var old_value: Color = preset.background_color
+	preset.set_background_color(color)
+	if preset_options.selected != 0:
 		style_buttons.change_button_background_color(preset_options.selected, color)
-	preset_color_changed.emit()	# For changing the line connection colors
-	preset_changed.emit()
+	preset_color_changed.emit(preset)		# For changing the line connection colors
+	preset_changed.emit(Enums.StyleSetting.BG_COLOR, preset, old_value, color)
 
 
 func _on_border_size_spin_box_value_changed(value: float) -> void:
-	if preset_options.selected == 0:
-		individual_preset.set_border_size(int(value))
-	else:
-		presets[preset_options.selected].set_border_size(int(value))
+	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
+	var old_value: int = preset.border_size
+	preset.set_border_size(int(value))
 	toggle_background_border_settings(false if int(value) == 0 else true)
-	preset_changed.emit()
+	preset_changed.emit(Enums.StyleSetting.BORDER_SIZE, preset, old_value, int(value))
 
 
 func _on_border_color_picker_button_color_changed(color: Color) -> void:
-	if preset_options.selected == 0:
-		individual_preset.set_border_color(color)
-		#style_buttons.change_button_border_color(0, color)
-	else:
-		presets[preset_options.selected].set_border_color(color)
+	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
+	var old_value: Color = preset.border_color
+	preset.set_border_color(color)
+	if preset_options.selected != 0:
 		style_buttons.change_button_border_color(preset_options.selected, color)
-	preset_changed.emit()
+	preset_changed.emit(Enums.StyleSetting.BORDER_COLOR, preset, old_value, color)
 
 
 func _on_border_blend_check_box_toggled(toggled_on: bool) -> void:
-	if preset_options.selected == 0:
-		individual_preset.set_border_blend(toggled_on)
-	else:
-		presets[preset_options.selected].set_border_blend(toggled_on)
+	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
+	var old_value: bool = preset.border_blend
+	preset.set_border_blend(toggled_on)
+	if preset_options.selected != 0:
 		style_buttons.change_border_blend(preset_options.selected, toggled_on)
-	preset_changed.emit()
+	preset_changed.emit(Enums.StyleSetting.BORDER_BLEND, preset, old_value, toggled_on)
 
 
 func _on_font_size_spin_box_value_changed(value: float) -> void:
-	if preset_options.selected == 0:
-		individual_preset.set_font_size(int(value))
-		#style_buttons.change_button_font_size(0, int(value))
-	else:
-		presets[preset_options.selected].set_font_size(int(value))
+	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
+	var old_value: int = preset.font_size
+	preset.set_font_size(int(value))
+	if preset_options.selected != 0:
 		style_buttons.change_button_font_size(preset_options.selected, int(value))
-	preset_changed.emit()
+	preset_changed.emit(Enums.StyleSetting.FONT_SIZE, preset, old_value, int(value))
 
 
 func _on_font_color_picker_button_color_changed(color: Color) -> void:
-	if preset_options.selected == 0:
-		individual_preset.set_font_color(color)
-		#style_buttons.change_button_font_color(0, color)
-	else:
-		presets[preset_options.selected].set_font_color(color)
+	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
+	var old_value: Color = preset.font_color
+	preset.set_font_color(color)
+	if preset_options.selected != 0:
 		style_buttons.change_button_font_color(preset_options.selected, color)
-	preset_changed.emit()
+	preset_changed.emit(Enums.StyleSetting.FONT_COLOR, preset, old_value, color)
 
 
 func _on_font_outline_spin_box_value_changed(value: float) -> void:
-	if preset_options.selected == 0:
-		individual_preset.set_outline_size(int(value))
-		#style_buttons.change_button_font_outline_size(0, int(value))
-	else:
-		presets[preset_options.selected].set_outline_size(int(value))
+	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
+	var old_value: int = preset.outline_size
+	preset.set_outline_size(int(value))
+	if preset_options.selected != 0:
 		style_buttons.change_button_font_outline_size(preset_options.selected, int(value))
 	toggle_font_outline_settings(false if int(value) == 0 else true)
-	preset_changed.emit()
+	preset_changed.emit(Enums.StyleSetting.OUTLINE_SIZE, preset, old_value, int(value))
 
 
 func _on_font_outline_color_picker_button_color_changed(color: Color) -> void:
-	if preset_options.selected == 0:
-		individual_preset.set_outline_color(color)
-		#style_buttons.change_button_font_outline_color(0, color)
-	else:
-		presets[preset_options.selected].set_outline_color(color)
+	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
+	var old_value: Color = preset.outline_color
+	preset.set_outline_color(color)
+	if preset_options.selected != 0:
 		style_buttons.change_button_font_outline_color(preset_options.selected, color)
-	preset_changed.emit()
+	preset_changed.emit(Enums.StyleSetting.OUTLINE_COLOR, preset, old_value, color)
 
 
 func _on_line_spacing_spin_box_value_changed(value: float) -> void:
-	if preset_options.selected == 0:
-		individual_preset.set_line_spacing(int(value))
-	else:
-		presets[preset_options.selected].set_line_spacing(int(value))
-	preset_changed.emit()
+	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
+	var old_value: int = preset.line_spacing
+	preset.set_line_spacing(int(value))
+	preset_changed.emit(Enums.StyleSetting.LINE_SPACING, preset, old_value, int(value))
 
 
 func _on_title_font_size_spin_box_value_changed(value: float) -> void:
-	if preset_options.selected == 0:
-		individual_preset.set_title_font_size(int(value))
-	else:
-		presets[preset_options.selected].set_title_font_size(int(value))
-	preset_changed.emit()
+	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
+	var old_value: int = preset.title_font_size
+	preset.set_title_font_size(int(value))
+	preset_changed.emit(Enums.StyleSetting.TITLE_FONT_SIZE, preset, old_value, int(value))
 
 
 func _on_title_font_color_picker_button_color_changed(color: Color) -> void:
-	if preset_options.selected == 0:
-		individual_preset.set_title_font_color(color)
-	else:
-		presets[preset_options.selected].set_title_font_color(color)
-	preset_changed.emit()
+	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
+	var old_value: Color = preset.title_font_color
+	preset.set_title_font_color(color)
+	preset_changed.emit(Enums.StyleSetting.TITLE_FONT_COLOR, preset, old_value, color)
 
 
 func _on_title_font_outline_spin_box_value_changed(value: float) -> void:
-	if preset_options.selected == 0:
-		individual_preset.set_title_outline_size(int(value))
-	else:
-		presets[preset_options.selected].set_title_outline_size(int(value))
+	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
+	var old_value: int = preset.title_outline_size
+	preset.set_title_outline_size(int(value))
 	toggle_title_font_outline_settings(false if int(value) == 0 else true)
-	preset_changed.emit()
+	preset_changed.emit(Enums.StyleSetting.TITLE_OUTLINE_SIZE, preset, old_value, int(value))
 
 
 func _on_title_outline_color_picker_button_color_changed(color: Color) -> void:
-	if preset_options.selected == 0:
-		individual_preset.set_title_outline_color(color)
-	else:
-		presets[preset_options.selected].set_title_outline_color(color)
-	preset_changed.emit()
+	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
+	var old_value: Color = preset.title_outline_color
+	preset.set_title_outline_color(color)
+	preset_changed.emit(Enums.StyleSetting.TITLE_OUTLINE_COLOR, preset, old_value, color)
 
 
 func _on_title_line_spacing_spin_box_value_changed(value: float) -> void:
-	if preset_options.selected == 0:
-		individual_preset.set_title_line_spacing(int(value))
-	else:
-		presets[preset_options.selected].set_title_line_spacing(int(value))
-	preset_changed.emit()
+	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
+	var old_value: int = preset.title_line_spacing
+	preset.set_title_line_spacing(int(value))
+	preset_changed.emit(Enums.StyleSetting.TITLE_LINE_SPACING, preset, old_value, value)
 
 
 func _on_entry_separation_spin_box_value_changed(value: float) -> void:
-	if preset_options.selected == 0:
-		individual_preset.set_list_entry_separation(int(value))
-	else:
-		presets[preset_options.selected].set_list_entry_separation(int(value))
-	preset_changed.emit()
+	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
+	var old_value: int = preset.entry_separation
+	preset.set_list_entry_separation(int(value))
+	preset_changed.emit(Enums.StyleSetting.ENTRY_SEPARATION, preset, old_value, value)
 
 
 func _on_entry_div_line_check_box_toggled(toggled_on: bool) -> void:
-	if preset_options.selected == 0:
-		individual_preset.set_list_div_toggled(toggled_on)
-	else:
-		presets[preset_options.selected].set_list_div_toggled(toggled_on)
-	preset_changed.emit()
+	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
+	var old_value: bool = preset.list_div_enabled
+	preset.set_list_div_toggled(toggled_on)
+	preset_changed.emit(Enums.StyleSetting.ENTRY_DIV_ENABLED, preset, old_value, toggled_on)
 
 
 func _on_entry_div_line_color_picker_button_color_changed(color: Color) -> void:
-	if preset_options.selected == 0:
-		individual_preset.set_list_div_color(color)
-	else:
-		presets[preset_options.selected].set_list_div_color(color)
-	preset_changed.emit()
+	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
+	var old_color: Color = preset.list_div_color
+	preset.set_list_div_color(color)
+	preset_changed.emit(Enums.StyleSetting.ENTRY_DIV_COLOR, preset, old_color, color)
+
+
+# Used with UndoRedo
+# TODO change style buttons
+func set_preset_single_setting(type: Enums.StyleSetting, preset: PresetStyle, value: Variant) -> void:
+	match type:
+		Enums.StyleSetting.BG_COLOR:
+			#style_buttons.change_button_background_color(preset_options.selected, color)
+			preset.set_background_color(value as Color)
+			if is_preset_selected(preset):
+				background_color_picker_button.color = value as Color
+		Enums.StyleSetting.BORDER_SIZE:
+			preset.set_border_size(int(value))
+			if is_preset_selected(preset):
+				border_size_spin_box.set_value_no_signal(int(value))
+				toggle_background_border_settings(false if int(value) == 0 else true)
+		Enums.StyleSetting.BORDER_COLOR:
+			#style_buttons.change_button_border_color(preset_options.selected, color)
+			preset.set_border_color(value as Color)
+			if is_preset_selected(preset):
+				border_color_picker_button.color = value as Color
+		Enums.StyleSetting.BORDER_BLEND:
+			#style_buttons.change_border_blend(preset_options.selected, toggled_on)
+			preset.set_border_blend(bool(value))
+			if is_preset_selected(preset):
+				border_blend_check_box.set_pressed_no_signal(bool(value))
+		Enums.StyleSetting.FONT_SIZE:
+			#style_buttons.change_button_font_size(preset_options.selected, int(value))
+			preset.set_font_size(int(value))
+			if is_preset_selected(preset):
+				font_size_spin_box.set_value_no_signal(int(value))
+		Enums.StyleSetting.FONT_COLOR:
+			#style_buttons.change_button_font_color(preset_options.selected, color)
+			preset.set_font_color(value as Color)
+			if is_preset_selected(preset):
+				font_color_picker_button.color = value as Color
+		Enums.StyleSetting.OUTLINE_SIZE:
+			#style_buttons.change_button_font_outline_size(preset_options.selected, int(value))
+			preset.set_outline_size(int(value))
+			if is_preset_selected(preset):
+				font_outline_spin_box.set_value_no_signal(int(value))
+				toggle_font_outline_settings(false if int(value) == 0 else true)
+		Enums.StyleSetting.OUTLINE_COLOR:
+			#style_buttons.change_button_font_outline_color(preset_options.selected, color)
+			preset.set_outline_color(value as Color)
+			if is_preset_selected(preset):
+				font_outline_color_picker_button.color = value as Color
+		Enums.StyleSetting.LINE_SPACING:
+			preset.set_line_spacing(int(value))
+			if is_preset_selected(preset):
+				line_spacing_spin_box.set_value_no_signal(int(value))
+		Enums.StyleSetting.TITLE_FONT_SIZE:
+			preset.set_title_font_size(int(value))
+			if is_preset_selected(preset):
+				title_font_size_spin_box.set_value_no_signal(int(value))
+		Enums.StyleSetting.TITLE_FONT_COLOR:
+			preset.set_title_font_color(value as Color)
+			if is_preset_selected(preset):
+				title_font_color_picker_button.color = value as Color
+		Enums.StyleSetting.TITLE_OUTLINE_SIZE:
+			preset.set_title_outline_size(int(value))
+			if is_preset_selected(preset):
+				title_font_outline_spin_box.set_value_no_signal(int(value))
+				toggle_title_font_outline_settings(false if int(value) == 0 else true)
+		Enums.StyleSetting.TITLE_OUTLINE_COLOR:
+			preset.set_title_outline_color(value as Color)
+			if is_preset_selected(preset):
+				title_outline_color_picker_button.color = value as Color
+		Enums.StyleSetting.TITLE_LINE_SPACING:
+			preset.set_title_line_spacing(value)
+			if is_preset_selected(preset):
+				title_line_spacing_spin_box.set_value_no_signal(int(value))
+		Enums.StyleSetting.ENTRY_SEPARATION:
+			preset.set_list_entry_separation(value)
+			if is_preset_selected(preset):
+				entry_separation_spin_box.set_value_no_signal(int(value))
+		Enums.StyleSetting.ENTRY_DIV_ENABLED:
+			preset.set_list_div_toggled(bool(value))
+			if is_preset_selected(preset):
+				entry_div_line_check_box.set_pressed_no_signal(bool(value))
+		Enums.StyleSetting.ENTRY_DIV_COLOR:
+			preset.set_list_div_color(value as Color)
+			if is_preset_selected(preset):
+				entry_div_line_color_picker_button.color = value as Color
 
 
 func _on_name_insert_editing_toggled(toggled_on: bool) -> void:

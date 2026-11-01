@@ -1150,24 +1150,27 @@ func _on_style_settings_preset_added() -> void:
 	canvases[cc].update_single_style_preset(style_preset)
 
 
-func _on_style_settings_preset_changed() -> void:
+func _on_style_settings_preset_changed(type: Enums.StyleSetting, preset: PresetStyle, old_value: Variant, new_value: Variant) -> void:
 	if !canvases.has(cc):
 		return
 	canvases[cc].canvas_changed()
+	canvases[cc].undo_redo.create_action("set %s %s" % [Enums.style_setting_names[type], preset.id], UndoRedo.MERGE_ENDS)
+	canvases[cc].undo_redo.add_do_method(style_settings.set_preset_single_setting.bind(type, preset, new_value))
+	canvases[cc].undo_redo.add_undo_method(style_settings.set_preset_single_setting.bind(type, preset, old_value))
+	canvases[cc].undo_redo.commit_action(false)
 
 
-func _on_style_settings_preset_color_changed() -> void:
+func _on_style_settings_preset_color_changed(preset: PresetStyle) -> void:
 	if !canvases.has(cc):
 		return
-	var style_preset: PresetStyle = style_settings.get_selected_preset()
 	var selected_control: Control = get_selected_control()
-	if style_preset.id == "individual":
+	if preset.id == "individual":
 		if selected_control and selected_control is CanvasElement:
-			canvases[cc].update_connection_color(selected_control.id, style_preset.background_color)
+			canvases[cc].update_connection_color(selected_control.id, preset.background_color)
 		else:
 			push_error("Null element %d in canvas %d at main.gd:func _on_style_settings_preset_color_changed" % [selected_control.id, cc])
 	else:
-		canvases[cc].update_connection_color_by_preset(style_preset.id)
+		canvases[cc].update_connection_color_by_preset(preset.id)
 
 
 func _on_style_settings_preset_removed(preset_id: String) -> void:

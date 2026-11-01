@@ -19,7 +19,7 @@ var title_font_color: Color = Color.WHITE
 var title_outline_color: Color = Color.BLACK
 var title_outline_size: int = 0
 var title_line_spacing: int = 0
-## OBJECT LIST ENTRY - Connect by signal to list since they don't control a single Theme?
+## OBJECT LIST ENTRY - Connected by signal to list since they don't control a single Theme
 var entry_separation: int = 4
 var list_div_enabled: bool = false
 var list_div_color: Color = Color.DARK_GRAY
