@@ -555,10 +555,11 @@ func load_file(path: String, app_startup: bool = false) -> void:
 		canvases[cc].file_name_short = path.get_file().get_slice(".", 0)	# For tab name or referring to the file in general
 		canvases[cc].rebuild_canvas_state(state)
 		if data.has("StylePresets"):
-			style_settings.erase_everything()
-			style_settings.rebuild_options_and_dictionary_from_json(data["StylePresets"])
-			canvases[cc].update_all_style_presets(style_settings.presets)
-		
+			canvases[cc].update_all_style_presets(style_settings.get_presets_dictionary_from_json(data["StylePresets"]))
+			if !app_startup:		# Not triggering this if not switching tab / canvas, which does happen at app start
+				style_settings.erase_everything()
+				style_settings.rebuild_options_and_dictionary_from_canvas(canvases[cc].style_presets)
+	
 	drawing_manager.clear_canvas_drawing_group(cc)
 	if data.has("Elements"):
 		canvases[cc].rebuild_elements(data["Elements"])

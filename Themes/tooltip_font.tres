@@ -1,4 +1,4 @@
-[gd_resource type="SystemFont" load_steps=2 format=3 uid="uid://celycldjtwytq"]
+[gd_resource type="SystemFont" format=3 uid="uid://celycldjtwytq"]
 
 [ext_resource type="FontFile" uid="uid://ho5qncg1srhi" path="res://Fonts/MontserratBold.otf" id="1_vwq0w"]
 

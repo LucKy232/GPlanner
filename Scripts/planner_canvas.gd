@@ -209,10 +209,9 @@ func reset_save_state(is_already_created: bool = false) -> void:
 		save_state.is_loaded = true
 
 
-func update_all_style_presets(dict: Dictionary[int, PresetStyle]) -> void:
+func update_all_style_presets(dict: Dictionary[String, PresetStyle]) -> void:
 	style_presets.clear()
-	for key in dict:
-		style_presets[dict[key].id] = dict[key]
+	style_presets = dict
 
 
 func update_single_style_preset(style_preset: PresetStyle) -> void:

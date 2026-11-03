@@ -2,6 +2,7 @@ extends MarginContainer
 class_name PresetStyleButtons
 
 @onready var style_button_grid: GridContainer = %StyleButtonGrid
+@export var limit_button_amount: bool = false
 @export var MAX_BUTTON_COUNT = 14		## Visible buttons
 
 var current_pressed: int = -1
@@ -38,11 +39,12 @@ func init_keybinds() -> void:
 
 
 func add_button(text: String, tooltip: String) -> void:
-	#if buttons.size() < MAX_BUTTON_COUNT:
+	if limit_button_amount and buttons.size() >= MAX_BUTTON_COUNT:
+		return
 	var id = buttons.size()
 	tooltips[id] = tooltip
 	buttons[id] = load(GlobalScenes.style_select_button_scene).instantiate()
-	buttons[id].theme = buttons[id].theme.duplicate(true)
+	buttons[id].theme = buttons[id].theme
 	buttons[id].pressed.connect(_on_button_pressed.bind(id))
 	if id <= 10:	# Add keybinds
 		var events: Array[InputEvent] = InputMap.action_get_events(keybinds[id])
@@ -107,7 +109,6 @@ func focus_button(idx: int) -> void:
 
 
 func set_button_theme(idx: int, preset: PresetStyle) -> void:
-	#if idx >= MAX_BUTTON_COUNT or !buttons.has(idx):
 	if !buttons.has(idx):
 		return
 	change_button_font_size(idx, preset.font_size)
@@ -115,57 +116,81 @@ func set_button_theme(idx: int, preset: PresetStyle) -> void:
 	change_button_font_color(idx, preset.font_color)
 	change_button_font_outline_color(idx, preset.outline_color)
 	change_button_border_color(idx, preset.border_color)
+	change_button_border_size(idx, preset.border_size)
 	change_button_background_color(idx, preset.background_color)
 
 
 func change_button_font_size(idx: int, s: int) -> void:
-	#if idx >= MAX_BUTTON_COUNT or !buttons.has(idx):
 	if !buttons.has(idx):
 		return
-	var fsize: int = clampi(int(s * 0.7), 6, 18)
+	var fsize: int = clampi(int(s * 0.70), 6, 24)
 	buttons[idx].theme.set_font_size("font_size", "Button", fsize)
 
 
 func change_button_font_outline_size(idx: int, s: int) -> void:
-	#if idx >= MAX_BUTTON_COUNT or !buttons.has(idx):
 	if !buttons.has(idx):
 		return
 	buttons[idx].theme.set_constant("outline_size", "Button", s)
 
 
 func change_button_font_color(idx: int, color: Color) -> void:
-	#if idx >= MAX_BUTTON_COUNT or !buttons.has(idx):
 	if !buttons.has(idx):
 		return
 	buttons[idx].theme.set_color("font_color", "Button", color)
+	buttons[idx].theme.set_color("font_focus_color", "Button", color)
+	buttons[idx].theme.set_color("font_hover_color", "Button", color)
+	buttons[idx].theme.set_color("font_pressed_color", "Button", color)
+	buttons[idx].theme.set_color("font_hover_pressed_color", "Button", color)
 
 
 func change_button_font_outline_color(idx: int, color: Color) -> void:
-	#if idx >= MAX_BUTTON_COUNT or !buttons.has(idx):
 	if !buttons.has(idx):
 		return
 	buttons[idx].theme.set_color("font_outline_color", "Button", color)
 
 
 func change_button_border_color(idx: int, color: Color) -> void:
-	#if idx >= MAX_BUTTON_COUNT or !buttons.has(idx):
 	if !buttons.has(idx):
 		return
 	buttons[idx].theme.get_stylebox("normal", "Button").border_color = Color(color.r, color.g, color.b, 1.0)
 
 
 func change_button_background_color(idx: int, color: Color) -> void:
-	#if idx >= MAX_BUTTON_COUNT or !buttons.has(idx):
 	if !buttons.has(idx):
 		return
 	buttons[idx].theme.get_stylebox("normal", "Button").bg_color = color
-	buttons[idx].theme.get_stylebox("pressed", "Button").bg_color = color * 1.2
-	buttons[idx].theme.get_stylebox("focus", "Button").bg_color = color * 1.2
-	buttons[idx].theme.get_stylebox("hover", "Button").bg_color = color * 0.9
+	buttons[idx].theme.get_stylebox("pressed", "Button").bg_color = color.lightened(0.2)
+	buttons[idx].theme.get_stylebox("focus", "Button").bg_color = color.lightened(0.2)
+	buttons[idx].theme.get_stylebox("hover", "Button").bg_color = color.darkened(0.1)
+
+
+func change_button_border_size(idx: int, border_size: int) -> void:
+	if !buttons.has(idx):
+		return
+	var new_size: int = 1 if border_size >= 1 else 0
+	new_size += 1 if border_size >= 3 else 0
+	new_size += 1 if border_size >= 5 else 0
+	new_size += 1 if border_size >= 10 else 0
+	new_size += 1 if border_size >= 15 else 0
+	buttons[idx].theme.get_stylebox("normal", "Button").border_width_left = new_size
+	buttons[idx].theme.get_stylebox("normal", "Button").border_width_top = new_size
+	buttons[idx].theme.get_stylebox("normal", "Button").border_width_right = new_size
+	buttons[idx].theme.get_stylebox("normal", "Button").border_width_bottom = new_size
+	buttons[idx].theme.get_stylebox("pressed", "Button").border_width_left = new_size
+	buttons[idx].theme.get_stylebox("pressed", "Button").border_width_top = new_size
+	buttons[idx].theme.get_stylebox("pressed", "Button").border_width_right = new_size
+	buttons[idx].theme.get_stylebox("pressed", "Button").border_width_bottom = new_size
+	buttons[idx].theme.get_stylebox("focus", "Button").border_width_left = new_size
+	buttons[idx].theme.get_stylebox("focus", "Button").border_width_top = new_size
+	buttons[idx].theme.get_stylebox("focus", "Button").border_width_right = new_size
+	buttons[idx].theme.get_stylebox("focus", "Button").border_width_bottom = new_size
+	buttons[idx].theme.get_stylebox("hover", "Button").border_width_left = new_size
+	buttons[idx].theme.get_stylebox("hover", "Button").border_width_top = new_size
+	buttons[idx].theme.get_stylebox("hover", "Button").border_width_right = new_size
+	buttons[idx].theme.get_stylebox("hover", "Button").border_width_bottom = new_size
 
 
 func change_border_blend(idx: int, toggled_on: bool) -> void:
-	#if idx >= MAX_BUTTON_COUNT or !buttons.has(idx):
 	if !buttons.has(idx):
 		return
 	buttons[idx].theme.get_stylebox("normal", "Button").border_blend = toggled_on

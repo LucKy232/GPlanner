@@ -135,9 +135,10 @@ func remove_preset(idx: int) -> void:
 	rewind_option_button(idx)
 	rewind_dict(idx+1)
 	change_preset(0)
-	#if presets.size() > style_buttons.MAX_BUTTON_COUNT - 1:
-		#style_buttons.add_button(str(style_buttons.MAX_BUTTON_COUNT - 1), presets[style_buttons.MAX_BUTTON_COUNT].name)
-		#style_buttons.set_button_theme(style_buttons.MAX_BUTTON_COUNT - 1, presets[style_buttons.MAX_BUTTON_COUNT])
+	# Add new button in place of deleted one if there's a space
+	if style_buttons.limit_button_amount and presets.size() >= style_buttons.MAX_BUTTON_COUNT - 1:
+		style_buttons.add_button(str(style_buttons.MAX_BUTTON_COUNT - 1), presets[style_buttons.MAX_BUTTON_COUNT - 1].name)
+		style_buttons.set_button_theme(style_buttons.MAX_BUTTON_COUNT - 1, presets[style_buttons.MAX_BUTTON_COUNT - 1])
 	preset_removed.emit(removed_id)
 
 
@@ -150,7 +151,7 @@ func change_preset(idx: int) -> void:
 
 
 func get_new_preset() -> PresetStyle:
-	var new_preset: PresetStyle = PresetStyle.new("%s %d" % [Time.get_datetime_string_from_system(), Time.get_ticks_msec()])
+	var new_preset: PresetStyle = PresetStyle.new("%s %d" % [Time.get_datetime_string_from_system(), Time.get_ticks_usec()])
 	new_preset.set_background_panel_style_box(default_background_style_box.duplicate(), false)
 	new_preset.set_text_edit_theme(default_text_edit_theme.duplicate(), false)
 	new_preset.set_title_text_edit_theme(default_text_edit_theme.duplicate(), false)
@@ -173,17 +174,17 @@ func reset_individual_preset() -> void:
 	individual_preset.text_edit_theme = default_text_edit_theme.duplicate()
 
 
-func rebuild_options_and_dictionary_from_json(dict: Dictionary) -> void:
+# Returns dictionary that will be assigned to PlannerCanvas
+func get_presets_dictionary_from_json(dict: Dictionary) -> Dictionary:
+	var preset_dict: Dictionary[String, PresetStyle] = {}
 	for key in dict:
-		var id: int = max_option_id
-		presets[id] = get_new_preset()
-		presets[id].rebuild_from_json_dict(dict[key])
-		preset_options.add_item("%s" % presets[id].name)
-		style_buttons.add_button(str(id), presets[id].name)
-		style_buttons.set_button_theme(max_option_id, presets[id])
-		max_option_id += 1
+		var new_preset: PresetStyle = get_new_preset()
+		new_preset.rebuild_from_json_dict(dict[key])
+		preset_dict[new_preset.id] = new_preset
+	return preset_dict
 
 
+# Takes PlannerCanvas style preset dictionary (built at load) and builds options & buttons
 func rebuild_options_and_dictionary_from_canvas(dict: Dictionary[String, PresetStyle]) -> void:
 	for key in dict:
 		preset_options.add_item("%s" % dict[key].name)
@@ -385,6 +386,8 @@ func _on_border_size_spin_box_value_changed(value: float) -> void:
 	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
 	var old_value: int = preset.border_size
 	preset.set_border_size(int(value))
+	if preset_options.selected != 0:
+		style_buttons.change_button_border_size(preset_options.selected, int(value))
 	toggle_background_border_settings(false if int(value) == 0 else true)
 	preset_changed.emit(Enums.StyleSetting.BORDER_SIZE, preset, old_value, int(value))
 
@@ -508,48 +511,56 @@ func _on_entry_div_line_color_picker_button_color_changed(color: Color) -> void:
 	preset_changed.emit(Enums.StyleSetting.ENTRY_DIV_COLOR, preset, old_color, color)
 
 
+func get_preset_selector_index(preset: PresetStyle) -> int:
+	for idx in presets:
+		if presets[idx] == preset:
+			return idx
+	return 0
+
+
 # Used with UndoRedo
 # TODO change style buttons
 func set_preset_single_setting(type: Enums.StyleSetting, preset: PresetStyle, value: Variant) -> void:
 	match type:
 		Enums.StyleSetting.BG_COLOR:
-			#style_buttons.change_button_background_color(preset_options.selected, color)
+			style_buttons.change_button_background_color(get_preset_selector_index(preset), value as Color)
 			preset.set_background_color(value as Color)
 			if is_preset_selected(preset):
 				background_color_picker_button.color = value as Color
 		Enums.StyleSetting.BORDER_SIZE:
+			style_buttons.change_button_border_size(get_preset_selector_index(preset), int(value))
 			preset.set_border_size(int(value))
 			if is_preset_selected(preset):
 				border_size_spin_box.set_value_no_signal(int(value))
 				toggle_background_border_settings(false if int(value) == 0 else true)
 		Enums.StyleSetting.BORDER_COLOR:
-			#style_buttons.change_button_border_color(preset_options.selected, color)
+			style_buttons.change_button_border_color(get_preset_selector_index(preset), value as Color)
 			preset.set_border_color(value as Color)
 			if is_preset_selected(preset):
 				border_color_picker_button.color = value as Color
 		Enums.StyleSetting.BORDER_BLEND:
-			#style_buttons.change_border_blend(preset_options.selected, toggled_on)
+			style_buttons.change_border_blend(get_preset_selector_index(preset), bool(value))
 			preset.set_border_blend(bool(value))
 			if is_preset_selected(preset):
 				border_blend_check_box.set_pressed_no_signal(bool(value))
 		Enums.StyleSetting.FONT_SIZE:
-			#style_buttons.change_button_font_size(preset_options.selected, int(value))
+			style_buttons.change_button_font_size(get_preset_selector_index(preset), int(value))
 			preset.set_font_size(int(value))
 			if is_preset_selected(preset):
 				font_size_spin_box.set_value_no_signal(int(value))
 		Enums.StyleSetting.FONT_COLOR:
-			#style_buttons.change_button_font_color(preset_options.selected, color)
+			style_buttons.change_button_font_color(get_preset_selector_index(preset), value as Color)
 			preset.set_font_color(value as Color)
 			if is_preset_selected(preset):
 				font_color_picker_button.color = value as Color
 		Enums.StyleSetting.OUTLINE_SIZE:
-			#style_buttons.change_button_font_outline_size(preset_options.selected, int(value))
+			style_buttons.change_button_font_outline_size(get_preset_selector_index(preset), int(value))
 			preset.set_outline_size(int(value))
 			if is_preset_selected(preset):
 				font_outline_spin_box.set_value_no_signal(int(value))
 				toggle_font_outline_settings(false if int(value) == 0 else true)
 		Enums.StyleSetting.OUTLINE_COLOR:
-			#style_buttons.change_button_font_outline_color(preset_options.selected, color)
+			style_buttons.change_button_font_outline_color(get_preset_selector_index(preset), value as Color)
 			preset.set_outline_color(value as Color)
 			if is_preset_selected(preset):
 				font_outline_color_picker_button.color = value as Color
