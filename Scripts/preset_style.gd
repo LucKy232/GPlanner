@@ -27,6 +27,7 @@ var list_div_color: Color = Color.DARK_GRAY
 var background_panel_style_box: StyleBoxFlat
 var text_edit_theme: Theme
 var title_text_edit_theme: Theme
+var element_id: int = -1		## In case it's an individual preset
 
 signal font_size_changed
 signal list_setting_changed

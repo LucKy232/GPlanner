@@ -57,6 +57,7 @@ signal has_changed
 signal has_selected_control
 signal has_deselected_control
 signal status_message_requested		# NOTE only for list copied to clipboard atm
+signal single_style_setting_change_requested
 
 
 func _init() -> void:
@@ -263,6 +264,7 @@ func add_object_list(at_position: Vector2, id_from_file: int = -1) -> int:
 	new_list.name = "ObjectList"
 	new_list.position = at_position
 	new_list.canvas_scale = scale.x
+	new_list.individual_style.element_id = list_id
 	new_list.set_priority_visible(settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITIES])
 	new_list.set_priority_tool_enabled(settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL])
 	connect_object_list_signals(new_list)
@@ -308,6 +310,7 @@ func add_text_element(at_position: Vector2, id_from_file: int = -1, add_undo_red
 	new_element.set_priority_visible(settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITIES])
 	new_element.set_priority_tool_enabled(settings.checkbox_data[Enums.Checkbox.SHOW_PRIORITY_TOOL])
 	new_element.z_index = 1
+	new_element.individual_style.element_id = elem_id
 	# If loading from file, skip default style change
 	if id_from_file < 0:
 		var has_preset: bool = false
@@ -632,6 +635,20 @@ func change_selected_control_preset(preset: PresetStyle) -> void:
 	canvas_changed()
 	selected_control.change_style_preset(preset)
 	update_connection_color(selected_control.id, preset.background_color)
+
+
+func add_undo_for_individual_preset(setting: Enums.StyleSetting, preset: PresetStyle, old_value: Variant, new_value: Variant) -> void:
+	undo_redo.create_action("set %s|%d" % [Enums.style_setting_names[setting], preset.element_id], UndoRedo.MERGE_ENDS)
+	undo_redo.add_do_method(request_individual_style_setting_change.bind(preset.element_id, setting, new_value))
+	undo_redo.add_undo_method(request_individual_style_setting_change.bind(preset.element_id, setting, old_value))
+	undo_redo.commit_action(false)
+
+
+func request_individual_style_setting_change(element_id: int, setting: Enums.StyleSetting, value: Variant) -> void:
+	if !elements.has(element_id):
+		push_error("elements Dictionary doesn't have ID %d" % [element_id])
+		return
+	single_style_setting_change_requested.emit(setting, value, elements[element_id].individual_style)
 
 
 func change_element_preset_by_undo_redo(elem_id: int, preset: PresetStyle) -> void:

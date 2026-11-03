@@ -273,6 +273,7 @@ func connect_signals() -> void:
 	style_settings.is_editing_text.connect(_on_style_settings_is_editing_text)
 	style_settings.preset_added.connect(_on_style_settings_preset_added)
 	style_settings.preset_changed.connect(_on_style_settings_preset_changed)
+	style_settings.individual_preset_changed.connect(_on_style_settings_individual_preset_changed)
 	style_settings.preset_color_changed.connect(_on_style_settings_preset_color_changed)
 	style_settings.preset_removed.connect(_on_style_settings_preset_removed)
 	style_settings.preset_selected.connect(_on_style_settings_preset_selected)
@@ -455,6 +456,7 @@ func connect_planner_canvas_signals(new_canvas: PlannerCanvas) -> void:
 	new_canvas.has_selected_control.connect(_on_canvas_has_selected_control)
 	new_canvas.has_deselected_control.connect(_on_canvas_has_deselected_control)
 	new_canvas.status_message_requested.connect(_on_canvas_status_message_requested)
+	new_canvas.single_style_setting_change_requested.connect(_on_canvas_single_style_setting_change_requested)
 
 
 # DrawingManager screenshots & saves the images & sends a signal when it's done
@@ -1151,13 +1153,24 @@ func _on_style_settings_preset_added() -> void:
 	canvases[cc].update_single_style_preset(style_preset)
 
 
-func _on_style_settings_preset_changed(type: Enums.StyleSetting, preset: PresetStyle, old_value: Variant, new_value: Variant) -> void:
+func _on_style_settings_individual_preset_changed(setting: Enums.StyleSetting, preset: PresetStyle, old_value: Variant, new_value: Variant) -> void:
 	if !canvases.has(cc):
 		return
 	canvases[cc].canvas_changed()
-	canvases[cc].undo_redo.create_action("set %s %s" % [Enums.style_setting_names[type], preset.id], UndoRedo.MERGE_ENDS)
-	canvases[cc].undo_redo.add_do_method(style_settings.set_preset_single_setting.bind(type, preset, new_value))
-	canvases[cc].undo_redo.add_undo_method(style_settings.set_preset_single_setting.bind(type, preset, old_value))
+	canvases[cc].add_undo_for_individual_preset(setting, preset, old_value, new_value)
+
+
+func _on_canvas_single_style_setting_change_requested(setting: Enums.StyleSetting, new_value: Variant, preset: PresetStyle) -> void:
+	style_settings.set_individual_preset_single_setting(setting, new_value, preset)
+
+
+func _on_style_settings_preset_changed(setting: Enums.StyleSetting, preset_selector_id: int, old_value: Variant, new_value: Variant) -> void:
+	if !canvases.has(cc):
+		return
+	canvases[cc].canvas_changed()
+	canvases[cc].undo_redo.create_action("set %s|%s" % [Enums.style_setting_names[setting], preset_selector_id], UndoRedo.MERGE_ENDS)
+	canvases[cc].undo_redo.add_do_method(style_settings.set_existing_preset_single_setting.bind(setting, new_value, preset_selector_id))
+	canvases[cc].undo_redo.add_undo_method(style_settings.set_existing_preset_single_setting.bind(setting, old_value, preset_selector_id))
 	canvases[cc].undo_redo.commit_action(false)
 
 

@@ -65,13 +65,13 @@ VScrollBar/styles/scroll = SubResource("StyleBoxEmpty_bv2of")
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rhtjl"]
 content_margin_left = 14.0
-content_margin_top = 6.0
+content_margin_top = 10.0
 content_margin_right = 6.0
 content_margin_bottom = 12.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ngn7r"]
 content_margin_left = 14.0
-content_margin_top = 6.0
+content_margin_top = 10.0
 content_margin_right = 6.0
 content_margin_bottom = 12.0
 
@@ -170,6 +170,7 @@ theme = SubResource("Theme_63ede")
 theme_override_constants/separation = 2
 
 [node name="ElementSettingsTitleLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=1662587949]
+visible = false
 layout_mode = 2
 theme = ExtResource("4_vcnja")
 theme_override_styles/normal = ExtResource("6_nvup7")
@@ -177,6 +178,7 @@ text = "Style Settings"
 horizontal_alignment = 1
 
 [node name="div1" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=2067608040 instance=ExtResource("2_qtb5q")]
+visible = false
 layout_mode = 2
 
 [node name="PresetHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=916788176]
@@ -598,7 +600,6 @@ theme_override_font_sizes/font_size = 14
 placeholder_text = "Name..."
 
 [connection signal="preset_style_button_pressed" from="VBoxContainer/StyleButtons" to="." method="_on_style_buttons_preset_style_button_pressed"]
-[connection signal="resized" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" to="." method="_on_v_box_container_resized"]
 [connection signal="item_selected" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox/PresetOptions" to="." method="_on_preset_options_item_selected"]
 [connection signal="pressed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox/AddPreset" to="." method="_on_add_preset_pressed"]
 [connection signal="pressed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox/RemovePreset" to="." method="_on_remove_preset_pressed"]
