@@ -61,10 +61,12 @@ var individual_preset: PresetStyle
 var max_option_id: int = 1
 
 signal preset_added
+signal preset_added_undo
 signal preset_changed
 signal individual_preset_changed
 signal preset_color_changed
 signal preset_removed
+signal preset_removed_undo
 signal preset_selected
 signal is_editing_text
 signal stopped_editing_text
@@ -115,7 +117,7 @@ func is_panel_visible() -> bool:
 	return settings_panel.visible
 
 
-func add_preset(p_name: String) -> void:
+func add_preset(p_name: String, is_user_input: bool = true) -> void:
 	var selection_id: int = preset_options.item_count
 	preset_options.add_item(p_name)
 	style_buttons.add_button(str(selection_id), p_name)
@@ -124,14 +126,17 @@ func add_preset(p_name: String) -> void:
 	change_preset(selection_id)
 	max_option_id += 1
 	style_buttons.set_button_theme(selection_id, presets[selection_id])
-	preset_added.emit()
+	preset_added.emit(presets[selection_id])
+	if is_user_input:
+		preset_added_undo.emit(presets[selection_id], selection_id)
 
 
-func remove_preset(idx: int) -> void:
+func remove_preset(idx: int, is_user_input: bool = true) -> void:
 	if !presets.has(idx):
 		return
 	style_buttons.remove_button(idx)
 	var removed_id: String = presets[idx].id
+	var preset_dict: Dictionary = {presets[idx].id : presets[idx].to_json()}
 	preset_options.remove_item(idx)
 	rewind_option_button(idx)
 	rewind_dict(idx+1)
@@ -141,6 +146,8 @@ func remove_preset(idx: int) -> void:
 		style_buttons.add_button(str(style_buttons.MAX_BUTTON_COUNT - 1), presets[style_buttons.MAX_BUTTON_COUNT - 1].name)
 		style_buttons.set_button_theme(style_buttons.MAX_BUTTON_COUNT - 1, presets[style_buttons.MAX_BUTTON_COUNT - 1])
 	preset_removed.emit(removed_id)
+	if is_user_input:
+		preset_removed_undo.emit(preset_dict, presets[idx].name, idx)
 
 
 func change_preset(idx: int) -> void:
@@ -440,7 +447,7 @@ func _on_title_outline_color_picker_button_color_changed(color: Color) -> void:
 
 
 func _on_title_line_spacing_spin_box_value_changed(value: float) -> void:
-	_on_current_preset_value_changed(Enums.StyleSetting.TITLE_OUTLINE_COLOR, value)
+	_on_current_preset_value_changed(Enums.StyleSetting.TITLE_LINE_SPACING, value)
 
 
 func _on_entry_separation_spin_box_value_changed(value: float) -> void:
@@ -585,6 +592,7 @@ func _set_preset_single_setting(setting: Enums.StyleSetting, value: Variant, pre
 	match setting:
 		Enums.StyleSetting.BG_COLOR:
 			preset.set_background_color(value as Color)
+			preset_color_changed.emit(preset)		# For changing the line connection colors
 			if is_preset_selected(preset):
 				background_color_picker_button.color = value as Color
 			if preset_selection_id > 0:

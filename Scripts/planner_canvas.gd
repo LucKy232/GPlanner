@@ -919,6 +919,9 @@ func toggle_connections(elem_id: int) -> void:
 
 
 func update_connection_color(elem_id: int, color: Color) -> void:
+	if !elements.has(elem_id):
+		push_error("Element id %d not in elements dictionary" % [elem_id])
+		return
 	for pair in elements_to_connection:
 		if pair.x == elem_id:
 			connections[elements_to_connection[pair]].update_p1_color(color)

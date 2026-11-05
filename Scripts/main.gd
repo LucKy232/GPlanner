@@ -272,10 +272,12 @@ func connect_signals() -> void:
 	
 	style_settings.is_editing_text.connect(_on_style_settings_is_editing_text)
 	style_settings.preset_added.connect(_on_style_settings_preset_added)
+	style_settings.preset_added_undo.connect(_on_style_settings_preset_added_undo)
 	style_settings.preset_changed.connect(_on_style_settings_preset_changed)
 	style_settings.individual_preset_changed.connect(_on_style_settings_individual_preset_changed)
 	style_settings.preset_color_changed.connect(_on_style_settings_preset_color_changed)
 	style_settings.preset_removed.connect(_on_style_settings_preset_removed)
+	style_settings.preset_removed_undo.connect(_on_style_settings_preset_removed_undo)
 	style_settings.preset_selected.connect(_on_style_settings_preset_selected)
 	style_settings.stopped_editing_text.connect(_on_style_settings_stopped_editing_text)
 
@@ -1146,11 +1148,17 @@ func _on_canvas_has_changed(id: int) -> void:
 		set_tab_name_and_title_from_canvas(id)
 
 
-func _on_style_settings_preset_added() -> void:
+func _on_style_settings_preset_added(preset: PresetStyle) -> void:
 	if !canvases.has(cc):
 		return
-	var style_preset: PresetStyle = style_settings.get_selected_preset()
-	canvases[cc].update_single_style_preset(style_preset)
+	canvases[cc].update_single_style_preset(preset)
+
+
+func _on_style_settings_preset_added_undo(preset: PresetStyle, selection_id: int) -> void:
+	canvases[cc].undo_redo.create_action("Added Style Preset", UndoRedo.MERGE_DISABLE)
+	canvases[cc].undo_redo.add_do_method(style_settings.add_preset.bind(preset.name, false))
+	canvases[cc].undo_redo.add_undo_method(style_settings.remove_preset.bind(selection_id, false))
+	canvases[cc].undo_redo.commit_action(false)
 
 
 func _on_style_settings_individual_preset_changed(setting: Enums.StyleSetting, preset: PresetStyle, old_value: Variant, new_value: Variant) -> void:
@@ -1177,12 +1185,8 @@ func _on_style_settings_preset_changed(setting: Enums.StyleSetting, preset_selec
 func _on_style_settings_preset_color_changed(preset: PresetStyle) -> void:
 	if !canvases.has(cc):
 		return
-	var selected_control: Control = get_selected_control()
 	if preset.id == "individual":
-		if selected_control and selected_control is CanvasElement:
-			canvases[cc].update_connection_color(selected_control.id, preset.background_color)
-		else:
-			push_error("Null element %d in canvas %d at main.gd:func _on_style_settings_preset_color_changed" % [selected_control.id, cc])
+		canvases[cc].update_connection_color(preset.element_id, preset.background_color)
 	else:
 		canvases[cc].update_connection_color_by_preset(preset.id)
 
@@ -1192,6 +1196,16 @@ func _on_style_settings_preset_removed(preset_id: String) -> void:
 		return
 	canvases[cc].canvas_changed()
 	canvases[cc].remove_style_preset(preset_id)
+
+
+func _on_style_settings_preset_removed_undo(preset_dict: Dictionary, preset_name: String, selection_id: int) -> void:
+	print(preset_dict)
+	canvases[cc].undo_redo.create_action("Removed Style Preset %s" % [preset_name], UndoRedo.MERGE_DISABLE)
+	canvases[cc].undo_redo.add_do_method(style_settings.remove_preset.bind(selection_id, false))
+	# TODO different rebuild method (assign only) in style_settings + update canvas style
+	# TODO build list of element_ids that have this style & reassign on undo
+	canvases[cc].undo_redo.add_undo_method(canvases[cc].update_single_style_preset.bind(style_settings.get_presets_dictionary_from_json.bind(preset_dict)))
+	canvases[cc].undo_redo.commit_action(false)
 
 
 func _on_style_settings_preset_selected() -> void:
