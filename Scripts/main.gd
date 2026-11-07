@@ -278,6 +278,7 @@ func connect_signals() -> void:
 	style_settings.preset_color_changed.connect(_on_style_settings_preset_color_changed)
 	style_settings.preset_removed.connect(_on_style_settings_preset_removed)
 	style_settings.preset_removed_undo.connect(_on_style_settings_preset_removed_undo)
+	style_settings.request_single_preset_update.connect(_on_style_settings_request_update_single_preset)
 	style_settings.preset_selected.connect(_on_style_settings_preset_selected)
 	style_settings.stopped_editing_text.connect(_on_style_settings_stopped_editing_text)
 
@@ -1198,14 +1199,22 @@ func _on_style_settings_preset_removed(preset_id: String) -> void:
 	canvases[cc].remove_style_preset(preset_id)
 
 
-func _on_style_settings_preset_removed_undo(preset_dict: Dictionary, preset_name: String, selection_id: int) -> void:
-	print(preset_dict)
-	canvases[cc].undo_redo.create_action("Removed Style Preset %s" % [preset_name], UndoRedo.MERGE_DISABLE)
-	canvases[cc].undo_redo.add_do_method(style_settings.remove_preset.bind(selection_id, false))
-	# TODO different rebuild method (assign only) in style_settings + update canvas style
-	# TODO build list of element_ids that have this style & reassign on undo
-	canvases[cc].undo_redo.add_undo_method(canvases[cc].update_single_style_preset.bind(style_settings.get_presets_dictionary_from_json.bind(preset_dict)))
+func _on_style_settings_preset_removed_undo(preset_dict: Dictionary, order_id: int) -> void:
+	if !canvases.has(cc):
+		return
+	var elements_assigned: PackedInt32Array = canvases[cc].get_elements_assigned_to_preset(preset_dict["id"]).duplicate()
+	canvases[cc].undo_redo.create_action("Removed Style Preset %s" % [preset_dict["name"]], UndoRedo.MERGE_DISABLE)
+	canvases[cc].undo_redo.add_do_method(style_settings.remove_preset.bind(order_id, false))
+	canvases[cc].undo_redo.add_undo_method(style_settings.register_single_preset_from_dict.bind(preset_dict, order_id, elements_assigned))
 	canvases[cc].undo_redo.commit_action(false)
+
+
+func _on_style_settings_request_update_single_preset(preset: PresetStyle, elements_assigned: Array[int]) -> void:
+	if !canvases.has(cc):
+		return
+	canvases[cc].update_single_style_preset(preset)
+	canvases[cc].bulk_assign_preset(preset, elements_assigned)
+	print(elements_assigned)
 
 
 func _on_style_settings_preset_selected() -> void:

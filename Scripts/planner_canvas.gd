@@ -17,6 +17,7 @@ var connections_p1: Dictionary[int, PackedInt32Array]	## CanvasElement ID key, A
 var connections_p2: Dictionary[int, PackedInt32Array]	## CanvasElement ID key, Array of Connection ID value
 var elements_to_connection: Dictionary[Vector2i, int]	## CanvasElement ID Vector2i(ID1, ID2) key, Connection ID value
 var style_presets: Dictionary[String, PresetStyle]	## PRESET ID key (not option_selector like in style_settings.gd)
+var preset_to_elements: Dictionary[PresetStyle, PackedInt32Array]
 var swatches: Array[Color]
 var drawing_manager: DrawingManager
 
@@ -99,6 +100,7 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 		if elements.has(list_id) and elements[list_id] is ObjectList:
 			if elements[list_id].has_style_preset:
 				new_text_element.change_style_preset(elements[list_id].style_preset)
+				preset_to_elements[elements[list_id].style_preset].append(new_text_element.id)
 			else:
 				new_text_element.copy_style_preset(elements[list_id].individual_style)
 		new_text_element.set_text(data.get_text())
@@ -213,9 +215,14 @@ func reset_save_state(is_already_created: bool = false) -> void:
 func update_all_style_presets(dict: Dictionary[String, PresetStyle]) -> void:
 	style_presets.clear()
 	style_presets = dict
+	for style_id in style_presets:
+		if !preset_to_elements.has(style_presets[style_id]):
+			preset_to_elements[style_presets[style_id]] = PackedInt32Array()
 
 
 func update_single_style_preset(style_preset: PresetStyle) -> void:
+	if !preset_to_elements.has(style_preset):
+		preset_to_elements[style_preset] = PackedInt32Array()
 	style_presets[style_preset.id] = style_preset
 
 
@@ -227,6 +234,8 @@ func update_connection_color_by_preset(preset_id: String) -> void:
 
 func remove_style_preset(style_id: String) -> void:
 	if style_presets.has(style_id):
+		if preset_to_elements.has(style_presets[style_id]):
+			preset_to_elements.erase(style_presets[style_id])
 		style_presets.erase(style_id)
 		for elem_id in elements:
 			if elements[elem_id].has_style_preset and elements[elem_id].style_preset.id == style_id:
@@ -273,6 +282,7 @@ func add_object_list(at_position: Vector2, id_from_file: int = -1) -> int:
 		var has_preset: bool = false
 		if style_presets.has(selected_preset_style):
 			new_list.change_style_preset(style_presets[selected_preset_style])
+			preset_to_elements[style_presets[selected_preset_style]].append(new_list.id)
 			has_preset = true
 		else:
 			new_list.unassign_style_preset()
@@ -316,6 +326,7 @@ func add_text_element(at_position: Vector2, id_from_file: int = -1, add_undo_red
 		var has_preset: bool = false
 		if style_presets.has(selected_preset_style):
 			new_element.change_style_preset(style_presets[selected_preset_style])
+			preset_to_elements[style_presets[selected_preset_style]].append(new_element.id)
 			has_preset = true
 		else:
 			new_element.unassign_style_preset()
@@ -633,7 +644,10 @@ func change_selected_control_preset(preset: PresetStyle) -> void:
 		undo_redo.add_undo_method(update_connection_color.bind(selected_control.id, selected_control.individual_style.background_color))
 	undo_redo.commit_action(false)
 	canvas_changed()
+	if selected_control.has_style_preset and preset_to_elements.has(selected_control.style_preset):
+		preset_to_elements[selected_control.style_preset].erase(selected_control.id)
 	selected_control.change_style_preset(preset)
+	preset_to_elements[preset].append(selected_control.id)
 	update_connection_color(selected_control.id, preset.background_color)
 
 
@@ -653,15 +667,32 @@ func request_individual_style_setting_change(element_id: int, setting: Enums.Sty
 
 func change_element_preset_by_undo_redo(elem_id: int, preset: PresetStyle) -> void:
 	if !elements.has(elem_id):
-		push_error("elements Dictionary doesn't have ID %d" % [elem_id])
+		push_error("elements dictionary doesn't have ID %d" % [elem_id])
 		return
+	if elements[elem_id].has_style_preset and preset_to_elements.has(elements[elem_id].style_preset):
+		preset_to_elements[elements[elem_id].style_preset].erase(elem_id)
 	elements[elem_id].change_style_preset(preset)
+	if preset_to_elements.has(preset):
+		preset_to_elements[preset].append(elem_id)
+
+
+func bulk_assign_preset(preset: PresetStyle, elements_assigned: PackedInt32Array) -> void:
+	for elem_id in elements_assigned:
+		if elements.has(elem_id):
+			if elements[elem_id].has_style_preset and preset_to_elements.has(elements[elem_id].style_preset):
+				preset_to_elements[elements[elem_id].style_preset].erase(elem_id)
+			elements[elem_id].change_style_preset(preset)
+		else:
+			push_error("elements dictionary doesn't have ID %d" % [elem_id])
+	preset_to_elements[preset] = elements_assigned
 
 
 func unassign_element_preset_by_undo_redo(elem_id: int) -> void:
 	if !elements.has(elem_id):
 		push_error("elements Dictionary doesn't have ID %d" % [elem_id])
 		return
+	if elements[elem_id].has_style_preset and elements[elem_id].style_preset:
+		preset_to_elements[elements[elem_id].style_preset].erase(elem_id)
 	elements[elem_id].unassign_style_preset()
 
 
@@ -669,6 +700,7 @@ func unassign_selected_control_preset() -> void:
 	if !selected_control or (selected_control is not CanvasElement) or !selected_control.has_style_preset:
 		return
 	var old_preset: PresetStyle = selected_control.style_preset
+	preset_to_elements[old_preset].erase(selected_control.id)
 	canvas_changed()
 	selected_control.unassign_style_preset()
 	update_connection_color(selected_control.id, selected_control.get_bg_color())
@@ -678,6 +710,13 @@ func unassign_selected_control_preset() -> void:
 	undo_redo.add_undo_method(change_element_preset_by_undo_redo.bind(selected_control.id, old_preset))
 	undo_redo.add_undo_method(update_connection_color.bind(selected_control.id, old_preset.background_color))
 	undo_redo.commit_action(false)
+
+
+func get_elements_assigned_to_preset(preset_id: String) -> PackedInt32Array:
+	if style_presets.has(preset_id):
+		if preset_to_elements.has(style_presets[preset_id]):
+			return preset_to_elements[style_presets[preset_id]]
+	return PackedInt32Array()
 
 
 func update_connections(elem_id: int) -> void:
@@ -804,6 +843,7 @@ func rebuild_elements(json_elems: Dictionary) -> void:
 				elements[elem_id].toggle_completed()
 			if has_style and style_presets.has(style_id):
 				elements[elem_id].change_style_preset(style_presets[style_id])
+				preset_to_elements[style_presets[style_id]].append(elem_id)
 			elif json_elems[i].has("individual_style") and !has_style:
 				elements[elem_id].individual_style.rebuild_from_json_dict(json_elems[i]["individual_style"])
 				elements[elem_id].unassign_style_preset()
@@ -820,6 +860,7 @@ func rebuild_lists(json_lists: Dictionary) -> void:
 			var style_id: String = str(json_lists[i]["style_preset_id"])
 			if has_style and style_presets.has(style_id):
 				elements[list_id].change_style_preset(style_presets[style_id])
+				preset_to_elements[style_presets[style_id]].append(list_id)
 			elif !has_style and json_lists[i].has("individual_style"):
 				elements[list_id].individual_style.rebuild_from_json_dict(json_lists[i]["individual_style"])
 				elements[list_id].unassign_style_preset()

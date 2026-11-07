@@ -55,10 +55,11 @@ class_name StyleSettings extends Control
 @onready var list_entry_category_button: Button = %ListEntryCategoryButton
 @onready var list_entry_category_div: Panel = %ListEntryCategoryDiv
 
-
-var presets: Dictionary[int, PresetStyle]	## KEY: preset_options selector ID (not preset ID like in planner_canvas.gd)
+## KEY: preset_options selector ID (not preset ID like in planner_canvas.gd)
+## Doesn't contain '0', keys should always be sorted, without gaps, representing preset_options selected ID (except for 0)
+var presets: Dictionary[int, PresetStyle]
+## Is the current (or last selected) CanvasElement's individual preset (if that CanvasElement is using the individual preset)
 var individual_preset: PresetStyle
-var max_option_id: int = 1
 
 signal preset_added
 signal preset_added_undo
@@ -67,6 +68,7 @@ signal individual_preset_changed
 signal preset_color_changed
 signal preset_removed
 signal preset_removed_undo
+signal request_single_preset_update
 signal preset_selected
 signal is_editing_text
 signal stopped_editing_text
@@ -79,7 +81,7 @@ func _ready() -> void:
 	customize_color_picker(border_color_picker_button)
 	scroll_container.get_v_scroll_bar().custom_minimum_size = Vector2(8.0, 0.0)
 	style_buttons.preset_style_button_pressed.connect(change_preset)
-	style_buttons.add_button("0", "No Preset")
+	style_buttons.add_button("0", "Individual")
 	reset_individual_preset()
 	if preset_options.selected == 0:
 		load_values_from_preset(individual_preset)
@@ -124,7 +126,6 @@ func add_preset(p_name: String, is_user_input: bool = true) -> void:
 	presets[selection_id] = get_new_preset()
 	presets[selection_id].name = p_name
 	change_preset(selection_id)
-	max_option_id += 1
 	style_buttons.set_button_theme(selection_id, presets[selection_id])
 	preset_added.emit(presets[selection_id])
 	if is_user_input:
@@ -133,10 +134,11 @@ func add_preset(p_name: String, is_user_input: bool = true) -> void:
 
 func remove_preset(idx: int, is_user_input: bool = true) -> void:
 	if !presets.has(idx):
+		printerr("Remove preset doesn't have %d" % [idx])
 		return
 	style_buttons.remove_button(idx)
 	var removed_id: String = presets[idx].id
-	var preset_dict: Dictionary = {presets[idx].id : presets[idx].to_json()}
+	var preset_dict: Dictionary = presets[idx].to_json()
 	preset_options.remove_item(idx)
 	rewind_option_button(idx)
 	rewind_dict(idx+1)
@@ -145,9 +147,9 @@ func remove_preset(idx: int, is_user_input: bool = true) -> void:
 	if style_buttons.limit_button_amount and presets.size() >= style_buttons.MAX_BUTTON_COUNT - 1:
 		style_buttons.add_button(str(style_buttons.MAX_BUTTON_COUNT - 1), presets[style_buttons.MAX_BUTTON_COUNT - 1].name)
 		style_buttons.set_button_theme(style_buttons.MAX_BUTTON_COUNT - 1, presets[style_buttons.MAX_BUTTON_COUNT - 1])
-	preset_removed.emit(removed_id)
 	if is_user_input:
-		preset_removed_undo.emit(preset_dict, presets[idx].name, idx)
+		preset_removed_undo.emit(preset_dict, idx)
+	preset_removed.emit(removed_id)
 
 
 func change_preset(idx: int) -> void:
@@ -169,7 +171,6 @@ func get_new_preset() -> PresetStyle:
 func erase_everything() -> void:
 	style_buttons.erase_everything()
 	presets.clear()
-	max_option_id = 1
 	reset_individual_preset()
 	while preset_options.item_count > 1:
 		preset_options.remove_item(1)
@@ -195,14 +196,32 @@ func get_presets_dictionary_from_json(dict: Dictionary) -> Dictionary:
 # Takes PlannerCanvas style preset dictionary (built at load) and builds options & buttons
 func rebuild_options_and_dictionary_from_canvas(dict: Dictionary[String, PresetStyle]) -> void:
 	for key in dict:
-		preset_options.add_item("%s" % dict[key].name)
-		style_buttons.add_button(str(max_option_id), dict[key].name)
-		style_buttons.set_button_theme(max_option_id, dict[key])
-		presets[max_option_id] = dict[key]
-		max_option_id += 1
+		rebuild_single_preset(dict[key], preset_options.item_count)
 
 
-# We need preset_options.selected to == preset_options.get_selected_id() == the same presets key as before
+func register_single_preset_from_dict(dict: Dictionary, order: int, elements_assigned: PackedInt32Array) -> void:
+	var new_preset: PresetStyle = get_new_preset()
+	new_preset.rebuild_from_json_dict(dict)
+	rebuild_single_preset(new_preset, order)
+	request_single_preset_update.emit(new_preset, elements_assigned)
+
+
+func rebuild_single_preset(preset: PresetStyle, order: int) -> void:
+	style_buttons.add_button(str(order), preset.name)
+	if order == preset_options.item_count:
+		presets[preset_options.item_count] = preset
+		preset_options.add_item("%s" % preset.name)
+	else:
+		insert_preset_into_dict(preset, order)
+		style_buttons.move_button(preset_options.item_count, order)
+		while preset_options.item_count > 1:
+			preset_options.remove_item(1)
+		for idx in range(1, presets.size() + 1):
+			preset_options.add_item("%s" % presets[idx].name, idx)
+	style_buttons.set_button_theme(order, preset)
+
+
+# Needs preset_options.selected to == preset_options.get_selected_id() == the same presets key as before
 func rewind_option_button(index: int) -> void:
 	while index < preset_options.item_count:
 		preset_options.set_item_id(index, index)
@@ -217,6 +236,23 @@ func rewind_dict(index: int) -> void:
 			presets[key - 1] = presets[key]
 			last_key = key
 	presets.erase(last_key)
+
+
+func insert_preset_into_dict(added_preset: PresetStyle, at_idx: int) -> void:
+	if !presets.has(at_idx):
+		push_error("Can't insert preset at index %d" % [at_idx])
+		return
+	var new_dict: Dictionary[int, PresetStyle]
+	for key in presets.keys():
+		if key == at_idx:
+			new_dict[key] = added_preset
+		elif key > at_idx:
+			new_dict[key] = presets[key - 1]
+		else:
+			new_dict[key] = presets[key]
+	var last: PresetStyle = presets[presets.keys().size()]	# Remember it starts at 1
+	new_dict[presets.keys().size() + 1] = last
+	presets = new_dict
 
 
 func get_selected_preset() -> PresetStyle:
@@ -465,7 +501,7 @@ func _on_entry_div_line_color_picker_button_color_changed(color: Color) -> void:
 func _on_name_insert_editing_toggled(toggled_on: bool) -> void:
 	if !toggled_on:
 		if name_insert.text == "":
-			add_preset("Preset %s" % max_option_id)
+			add_preset("Preset %s" % preset_options.item_count)
 		else:
 			add_preset(name_insert.text)
 		name_insert.text = ""
