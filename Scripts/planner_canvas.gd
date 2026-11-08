@@ -240,6 +240,7 @@ func remove_style_preset(style_id: String) -> void:
 		for elem_id in elements:
 			if elements[elem_id].has_style_preset and elements[elem_id].style_preset.id == style_id:
 				elements[elem_id].unassign_style_preset()
+				update_connection_color(elem_id, elements[elem_id].get_bg_color())
 
 
 func pan_limits(pos: Vector2) -> Vector2:
@@ -633,7 +634,7 @@ func change_selected_control_preset(preset: PresetStyle) -> void:
 	change_selected_preset_style_by_id(preset.id)
 	if !selected_control or (selected_control is not CanvasElement):
 		return
-	undo_redo.create_action("Change Style", UndoRedo.MERGE_DISABLE)
+	undo_redo.create_action("Change Style|%d" % [selected_control.id], UndoRedo.MERGE_ENDS)
 	undo_redo.add_do_method(change_element_preset_by_undo_redo.bind(selected_control.id, preset))
 	undo_redo.add_do_method(update_connection_color.bind(selected_control.id, preset.background_color))
 	if selected_control.has_style_preset:
@@ -652,7 +653,7 @@ func change_selected_control_preset(preset: PresetStyle) -> void:
 
 
 func add_undo_for_individual_preset(setting: Enums.StyleSetting, preset: PresetStyle, old_value: Variant, new_value: Variant) -> void:
-	undo_redo.create_action("set %s|%d" % [Enums.style_setting_names[setting], preset.element_id], UndoRedo.MERGE_ENDS)
+	undo_redo.create_action("Set %s|%d" % [Enums.style_setting_names[setting], preset.element_id], UndoRedo.MERGE_ENDS)
 	undo_redo.add_do_method(request_individual_style_setting_change.bind(preset.element_id, setting, new_value))
 	undo_redo.add_undo_method(request_individual_style_setting_change.bind(preset.element_id, setting, old_value))
 	undo_redo.commit_action(false)
@@ -682,6 +683,7 @@ func bulk_assign_preset(preset: PresetStyle, elements_assigned: PackedInt32Array
 			if elements[elem_id].has_style_preset and preset_to_elements.has(elements[elem_id].style_preset):
 				preset_to_elements[elements[elem_id].style_preset].erase(elem_id)
 			elements[elem_id].change_style_preset(preset)
+			update_connection_color(elem_id, preset.background_color)
 		else:
 			push_error("elements dictionary doesn't have ID %d" % [elem_id])
 	preset_to_elements[preset] = elements_assigned

@@ -7,6 +7,8 @@ class_name StyleSettings extends Control
 @export var color_picker_theme: Theme
 @export var color_picker_panel_theme: Theme
 @export var div_theme: Theme
+@onready var order_up_button: Button = %OrderUp
+@onready var order_down_button: Button = %OrderDown
 # Preset Settings
 @onready var preset_options: OptionButton = %PresetOptions
 @onready var background_color_picker_button: ColorPickerButton = %BackgroundColorPickerButton
@@ -407,6 +409,26 @@ func set_existing_preset_single_setting(setting: Enums.StyleSetting, value: Vari
 	_set_preset_single_setting(setting, value, preset, preset_selection_id)
 
 
+func toggle_order_buttons() -> void:
+	if preset_options.selected == 0:
+		order_down_button.disabled = true
+		order_up_button.disabled = true
+	elif preset_options.selected == 1:
+		order_down_button.disabled = false
+		order_up_button.disabled = true
+	else:
+		order_down_button.disabled = false
+		order_up_button.disabled = false
+
+
+func _on_order_up_pressed() -> void:
+	pass # Replace with function body.
+
+
+func _on_order_down_pressed() -> void:
+	pass # Replace with function body.
+
+
 func _on_add_preset_pressed() -> void:
 	name_insert.visible = true
 	name_insert.edit()
@@ -426,6 +448,7 @@ func _on_preset_options_item_selected(index: int) -> void:
 		load_values_from_preset(presets[index])
 		current_preset_label.text = ("Current Style: %s" % presets[index].name)
 		toggle_preset_inputs(true)
+	toggle_order_buttons()
 	preset_selected.emit()
 	style_buttons.focus_button(index)
 
