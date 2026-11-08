@@ -1214,7 +1214,6 @@ func _on_style_settings_request_update_single_preset(preset: PresetStyle, elemen
 		return
 	canvases[cc].update_single_style_preset(preset)
 	canvases[cc].bulk_assign_preset(preset, elements_assigned)
-	print(elements_assigned)
 
 
 func _on_style_settings_preset_selected() -> void:
