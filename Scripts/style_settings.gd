@@ -422,11 +422,13 @@ func toggle_order_buttons() -> void:
 
 
 func _on_order_up_pressed() -> void:
-	pass # Replace with function body.
+	if preset_options.selected == 0:
+		return
 
 
 func _on_order_down_pressed() -> void:
-	pass # Replace with function body.
+	if preset_options.selected < 2:
+		return
 
 
 func _on_add_preset_pressed() -> void:
