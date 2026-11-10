@@ -751,7 +751,10 @@ func all_lists_to_json() -> Dictionary:
 func all_presets_to_json() -> Dictionary:
 	var dict: Dictionary = {}
 	for key in style_presets:
-		dict[style_presets[key].order_id] = style_presets[key].to_json()
+		var order_id: int = style_presets[key].order_id
+		if order_id < 0 or dict.has(order_id):	# Assign random order_id if invalid
+			order_id = Time.get_ticks_usec() + randi()
+		dict[order_id] = style_presets[key].to_json()
 	return dict
 
 

@@ -21,6 +21,7 @@
 [ext_resource type="Texture2D" uid="uid://l41dolohkmha" path="res://Icons/arrow_down.svg" id="13_mddg7"]
 [ext_resource type="Theme" uid="uid://cjbq8yvomvgbp" path="res://Themes/spin_box_elem_settings_theme.tres" id="13_nvup7"]
 [ext_resource type="Theme" uid="uid://c2dbtkfh88hkp" path="res://Themes/Buttons/settings_category_toggle_button_theme.tres" id="15_rhtjl"]
+[ext_resource type="Texture2D" uid="uid://xv4rl5pxidm7" path="res://Icons/rename_button.svg" id="16_mddg7"]
 [ext_resource type="Theme" uid="uid://dwboubtw2bfss" path="res://Themes/Buttons/checkbox_theme.tres" id="18_ngn7r"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6vqs3"]
@@ -65,15 +66,17 @@ VScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_xbo64")
 VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_2hf5v")
 VScrollBar/styles/scroll = SubResource("StyleBoxEmpty_bv2of")
 
+[sub_resource type="Theme" id="Theme_553ya"]
+
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_rhtjl"]
-content_margin_left = 14.0
-content_margin_top = 10.0
+content_margin_left = 12.0
+content_margin_top = 6.0
 content_margin_right = 6.0
 content_margin_bottom = 12.0
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ngn7r"]
-content_margin_left = 14.0
-content_margin_top = 10.0
+content_margin_left = 12.0
+content_margin_top = 6.0
 content_margin_right = 6.0
 content_margin_bottom = 12.0
 
@@ -115,6 +118,7 @@ mouse_filter = 2
 layout_mode = 2
 
 [node name="CurrentPresetLabel" type="Label" parent="VBoxContainer/HBoxContainer" unique_id=946921422]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("4_vcnja")
@@ -127,6 +131,7 @@ custom_minimum_size = Vector2(45, 0)
 layout_mode = 2
 
 [node name="StyleButtons" type="MarginContainer" parent="VBoxContainer" unique_id=282340161]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 84)
 layout_mode = 2
 mouse_filter = 2
@@ -152,72 +157,53 @@ size_flags_vertical = 0
 columns = 7
 
 [node name="SettingsPanel" type="PanelContainer" parent="VBoxContainer" unique_id=534980217]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 1
 theme = ExtResource("8_btr2c")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/SettingsPanel" unique_id=433727858]
-unique_name_in_owner = true
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/SettingsPanel" unique_id=1974633511]
 layout_mode = 2
-theme = SubResource("Theme_6vqs3")
-horizontal_scroll_mode = 4
-vertical_scroll_mode = 4
+theme_override_constants/separation = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer" unique_id=2034021529]
-unique_name_in_owner = true
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer" unique_id=1246481381]
 layout_mode = 2
-size_flags_horizontal = 3
-theme = SubResource("Theme_63ede")
-theme_override_constants/separation = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 6
 
-[node name="ElementSettingsTitleLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=1662587949]
-visible = false
-layout_mode = 2
-theme = ExtResource("4_vcnja")
-theme_override_styles/normal = ExtResource("6_nvup7")
-text = "Style Settings"
-horizontal_alignment = 1
-
-[node name="div1" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=2067608040 instance=ExtResource("2_qtb5q")]
-visible = false
-layout_mode = 2
-
-[node name="PresetHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=916788176]
+[node name="PresetHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/MarginContainer" unique_id=916788176]
 layout_mode = 2
 size_flags_vertical = 0
-theme_override_constants/separation = 6
+theme = SubResource("Theme_553ya")
+theme_override_constants/separation = 4
 
-[node name="OrderPrevious" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox" unique_id=1636003454]
+[node name="OrderPrevious" type="Button" parent="VBoxContainer/SettingsPanel/VBoxContainer/MarginContainer/PresetHBox" unique_id=1636003454]
 unique_name_in_owner = true
 texture_filter = 2
-custom_minimum_size = Vector2(24, 32)
+custom_minimum_size = Vector2(20, 28)
 layout_mode = 2
-tooltip_text = "Order Up"
+tooltip_text = "Order Previous"
 icon = ExtResource("12_bv2of")
 expand_icon = true
 
-[node name="OrderNext" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox" unique_id=1280265674]
+[node name="OrderNext" type="Button" parent="VBoxContainer/SettingsPanel/VBoxContainer/MarginContainer/PresetHBox" unique_id=1280265674]
 unique_name_in_owner = true
 texture_filter = 2
-custom_minimum_size = Vector2(24, 32)
+custom_minimum_size = Vector2(20, 28)
 layout_mode = 2
-tooltip_text = "Order Down"
+tooltip_text = "Order Next"
 icon = ExtResource("13_mddg7")
 expand_icon = true
 
-[node name="Label" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox" unique_id=627002484]
-visible = false
-layout_mode = 2
-theme = ExtResource("4_vcnja")
-text = "Preset"
-label_settings = ExtResource("3_uc373")
-
-[node name="PresetOptions" type="OptionButton" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox" unique_id=841293952]
+[node name="PresetOptions" type="OptionButton" parent="VBoxContainer/SettingsPanel/VBoxContainer/MarginContainer/PresetHBox" unique_id=841293952]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 32)
+custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "Select Preset"
 mouse_default_cursor_shape = 2
 theme = ExtResource("8_vcnja")
 text_overrun_behavior = 1
@@ -228,47 +214,77 @@ item_count = 1
 popup/item_0/text = "Individual"
 popup/item_0/id = 0
 
-[node name="AddPreset" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox" unique_id=484451912]
-custom_minimum_size = Vector2(24, 32)
+[node name="RenamePreset" type="Button" parent="VBoxContainer/SettingsPanel/VBoxContainer/MarginContainer/PresetHBox" unique_id=1905086522]
+unique_name_in_owner = true
+texture_filter = 2
+custom_minimum_size = Vector2(20, 28)
 layout_mode = 2
+tooltip_text = "Rename Preset"
+mouse_default_cursor_shape = 2
+icon = ExtResource("16_mddg7")
+text_overrun_behavior = 1
+icon_alignment = 1
+expand_icon = true
+
+[node name="AddPreset" type="Button" parent="VBoxContainer/SettingsPanel/VBoxContainer/MarginContainer/PresetHBox" unique_id=484451912]
+texture_filter = 2
+custom_minimum_size = Vector2(20, 28)
+layout_mode = 2
+tooltip_text = "Add Preset"
 mouse_default_cursor_shape = 2
 icon = ExtResource("4_1og04")
 text_overrun_behavior = 1
 icon_alignment = 1
+expand_icon = true
 
-[node name="RemovePreset" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox" unique_id=123426904]
-custom_minimum_size = Vector2(24, 32)
+[node name="RemovePreset" type="Button" parent="VBoxContainer/SettingsPanel/VBoxContainer/MarginContainer/PresetHBox" unique_id=123426904]
+texture_filter = 2
+custom_minimum_size = Vector2(20, 28)
 layout_mode = 2
+tooltip_text = "Remove Preset"
 mouse_default_cursor_shape = 2
 icon = ExtResource("5_0h7gu")
 text_overrun_behavior = 1
 icon_alignment = 1
+expand_icon = true
 
-[node name="spacing" type="Control" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=2032523200]
-custom_minimum_size = Vector2(0, 6)
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer" unique_id=433727858]
+unique_name_in_owner = true
 layout_mode = 2
+size_flags_vertical = 3
+theme = SubResource("Theme_6vqs3")
+horizontal_scroll_mode = 4
+vertical_scroll_mode = 4
+scroll_hint_mode = 1
 
-[node name="BackgroundCategoryButton" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=760489696]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer" unique_id=2034021529]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme = SubResource("Theme_63ede")
+theme_override_constants/separation = 2
+
+[node name="BackgroundCategoryButton" type="Button" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=760489696]
 layout_mode = 2
 theme = ExtResource("15_rhtjl")
 toggle_mode = true
 button_pressed = true
 text = "Background"
 
-[node name="div2" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=1226294336 instance=ExtResource("2_qtb5q")]
+[node name="div2" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1226294336 instance=ExtResource("2_qtb5q")]
 layout_mode = 2
 
-[node name="BackgroundColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=935132236]
+[node name="BackgroundColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=935132236]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="BackgroundColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BackgroundColorHBox" unique_id=2071455275]
+[node name="BackgroundColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/BackgroundColorHBox" unique_id=2071455275]
 layout_mode = 2
 theme = ExtResource("4_vcnja")
 text = "Background Color"
 label_settings = ExtResource("3_uc373")
 
-[node name="BackgroundColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BackgroundColorHBox" unique_id=288348132]
+[node name="BackgroundColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/BackgroundColorHBox" unique_id=288348132]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
@@ -276,17 +292,17 @@ size_flags_horizontal = 10
 mouse_default_cursor_shape = 2
 theme = ExtResource("12_r7vyq")
 
-[node name="BorderSizeHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=546180535]
+[node name="BorderSizeHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=546180535]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="BorderSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderSizeHBox" unique_id=924010134]
+[node name="BorderSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/BorderSizeHBox" unique_id=924010134]
 layout_mode = 2
 theme = ExtResource("4_vcnja")
 text = "Border Size"
 label_settings = ExtResource("3_uc373")
 
-[node name="BorderSizeSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderSizeHBox" unique_id=988227872]
+[node name="BorderSizeSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/BorderSizeHBox" unique_id=988227872]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
@@ -298,17 +314,17 @@ rounded = true
 alignment = 2
 custom_arrow_step = 1.0
 
-[node name="BorderColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=146050177]
+[node name="BorderColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=146050177]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="BorderColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderColorHBox" unique_id=1583830612]
+[node name="BorderColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/BorderColorHBox" unique_id=1583830612]
 layout_mode = 2
 theme = ExtResource("4_vcnja")
 text = "Border Color"
 label_settings = ExtResource("3_uc373")
 
-[node name="BorderColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderColorHBox" unique_id=1777643174]
+[node name="BorderColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/BorderColorHBox" unique_id=1777643174]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
@@ -316,11 +332,11 @@ size_flags_horizontal = 10
 mouse_default_cursor_shape = 2
 theme = ExtResource("12_r7vyq")
 
-[node name="BorderBlendHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=945199100]
+[node name="BorderBlendHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=945199100]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="BorderBlendCheckBox" type="CheckBox" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderBlendHBox" unique_id=983274147]
+[node name="BorderBlendCheckBox" type="CheckBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/BorderBlendHBox" unique_id=983274147]
 unique_name_in_owner = true
 custom_maximum_size = Vector2(-1, 20)
 layout_mode = 2
@@ -328,7 +344,7 @@ size_flags_horizontal = 3
 theme = ExtResource("18_ngn7r")
 text = "Border Blend"
 
-[node name="FontCategoryButton" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=2111005931]
+[node name="FontCategoryButton" type="Button" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=2111005931]
 layout_mode = 2
 theme = ExtResource("15_rhtjl")
 theme_override_styles/normal = ExtResource("6_nvup7")
@@ -336,20 +352,20 @@ toggle_mode = true
 button_pressed = true
 text = "Text"
 
-[node name="div3" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=818131481 instance=ExtResource("2_qtb5q")]
+[node name="div3" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=818131481 instance=ExtResource("2_qtb5q")]
 layout_mode = 2
 
-[node name="FontSizeHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=111563572]
+[node name="FontSizeHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=111563572]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="FontSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontSizeHBox" unique_id=120439315]
+[node name="FontSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontSizeHBox" unique_id=120439315]
 layout_mode = 2
 theme = ExtResource("4_vcnja")
 text = "Font Size"
 label_settings = ExtResource("3_uc373")
 
-[node name="FontSizeSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontSizeHBox" unique_id=516852465]
+[node name="FontSizeSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontSizeHBox" unique_id=516852465]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
@@ -363,17 +379,17 @@ rounded = true
 alignment = 2
 custom_arrow_step = 1.0
 
-[node name="FontColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=1082843192]
+[node name="FontColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1082843192]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="FontColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontColorHBox" unique_id=1830396473]
+[node name="FontColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontColorHBox" unique_id=1830396473]
 layout_mode = 2
 theme = ExtResource("4_vcnja")
 text = "Font Color"
 label_settings = ExtResource("3_uc373")
 
-[node name="FontColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontColorHBox" unique_id=526004219]
+[node name="FontColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontColorHBox" unique_id=526004219]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
@@ -381,17 +397,17 @@ size_flags_horizontal = 10
 mouse_default_cursor_shape = 2
 theme = ExtResource("12_r7vyq")
 
-[node name="FontOutlineHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=610572079]
+[node name="FontOutlineHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=610572079]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="FontOutlineSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontOutlineHBox" unique_id=184376395]
+[node name="FontOutlineSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontOutlineHBox" unique_id=184376395]
 layout_mode = 2
 theme = ExtResource("4_vcnja")
 text = "Outline Size"
 label_settings = ExtResource("3_uc373")
 
-[node name="FontOutlineSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontOutlineHBox" unique_id=1138109619]
+[node name="FontOutlineSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontOutlineHBox" unique_id=1138109619]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
@@ -404,17 +420,17 @@ rounded = true
 alignment = 2
 custom_arrow_step = 1.0
 
-[node name="OutlineColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=782603242]
+[node name="OutlineColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=782603242]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="FontOutlineColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/OutlineColorHBox" unique_id=500644649]
+[node name="FontOutlineColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/OutlineColorHBox" unique_id=500644649]
 layout_mode = 2
 theme = ExtResource("4_vcnja")
 text = "Outline Color"
 label_settings = ExtResource("3_uc373")
 
-[node name="FontOutlineColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/OutlineColorHBox" unique_id=1603398918]
+[node name="FontOutlineColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/OutlineColorHBox" unique_id=1603398918]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
@@ -422,17 +438,17 @@ size_flags_horizontal = 10
 mouse_default_cursor_shape = 2
 theme = ExtResource("12_r7vyq")
 
-[node name="LineSpacingHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=489365079]
+[node name="LineSpacingHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=489365079]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="LineSpacingLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/LineSpacingHBox" unique_id=312942936]
+[node name="LineSpacingLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/LineSpacingHBox" unique_id=312942936]
 layout_mode = 2
 theme = ExtResource("4_vcnja")
 text = "Line Spacing"
 label_settings = ExtResource("3_uc373")
 
-[node name="LineSpacingSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/LineSpacingHBox" unique_id=667189847]
+[node name="LineSpacingSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/LineSpacingHBox" unique_id=667189847]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
@@ -443,7 +459,7 @@ min_value = -100.0
 rounded = true
 alignment = 2
 
-[node name="ListTitleCategoryButton" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=1553060378]
+[node name="ListTitleCategoryButton" type="Button" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1553060378]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("15_rhtjl")
@@ -452,19 +468,19 @@ toggle_mode = true
 button_pressed = true
 text = "List Title Text"
 
-[node name="ListTitleCategoryDiv" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=2098245851 instance=ExtResource("2_qtb5q")]
+[node name="ListTitleCategoryDiv" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=2098245851 instance=ExtResource("2_qtb5q")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="TitleFontSizeHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=176016455]
+[node name="TitleFontSizeHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=176016455]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="TitleFontSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/TitleFontSizeHBox" unique_id=258239123]
+[node name="TitleFontSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleFontSizeHBox" unique_id=258239123]
 layout_mode = 2
 text = "Font Size"
 
-[node name="TitleFontSizeSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/TitleFontSizeHBox" unique_id=697578847]
+[node name="TitleFontSizeSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleFontSizeHBox" unique_id=697578847]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
@@ -478,15 +494,15 @@ rounded = true
 alignment = 2
 custom_arrow_step = 1.0
 
-[node name="TitleFontColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=116249743]
+[node name="TitleFontColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=116249743]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="TitleFontColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/TitleFontColorHBox" unique_id=1097430927]
+[node name="TitleFontColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleFontColorHBox" unique_id=1097430927]
 layout_mode = 2
 text = "Font Color"
 
-[node name="TitleFontColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/TitleFontColorHBox" unique_id=340190526]
+[node name="TitleFontColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleFontColorHBox" unique_id=340190526]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
@@ -494,15 +510,15 @@ size_flags_horizontal = 10
 mouse_default_cursor_shape = 2
 theme = ExtResource("12_r7vyq")
 
-[node name="TitleFontOutlineHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=1907723182]
+[node name="TitleFontOutlineHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1907723182]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="TitleFontOutlineLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/TitleFontOutlineHBox" unique_id=1820171780]
+[node name="TitleFontOutlineLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleFontOutlineHBox" unique_id=1820171780]
 layout_mode = 2
 text = "Outline Size"
 
-[node name="TitleFontOutlineSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/TitleFontOutlineHBox" unique_id=851103501]
+[node name="TitleFontOutlineSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleFontOutlineHBox" unique_id=851103501]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
@@ -514,15 +530,15 @@ rounded = true
 alignment = 2
 custom_arrow_step = 1.0
 
-[node name="TitleOutlineColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=2108084409]
+[node name="TitleOutlineColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=2108084409]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="TitleOutlineColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/TitleOutlineColorHBox" unique_id=62878470]
+[node name="TitleOutlineColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleOutlineColorHBox" unique_id=62878470]
 layout_mode = 2
 text = "OutlineColor"
 
-[node name="TitleOutlineColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/TitleOutlineColorHBox" unique_id=618690399]
+[node name="TitleOutlineColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleOutlineColorHBox" unique_id=618690399]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
@@ -530,15 +546,15 @@ size_flags_horizontal = 10
 mouse_default_cursor_shape = 2
 theme = ExtResource("12_r7vyq")
 
-[node name="TitleLineSpacingHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=864960763]
+[node name="TitleLineSpacingHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=864960763]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="TitleLineSpacingLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/TitleLineSpacingHBox" unique_id=1177038979]
+[node name="TitleLineSpacingLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleLineSpacingHBox" unique_id=1177038979]
 layout_mode = 2
 text = "Line Spacing"
 
-[node name="TitleLineSpacingSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/TitleLineSpacingHBox" unique_id=1796244458]
+[node name="TitleLineSpacingSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleLineSpacingHBox" unique_id=1796244458]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
@@ -550,7 +566,7 @@ rounded = true
 alignment = 2
 custom_arrow_step = 1.0
 
-[node name="ListEntryCategoryButton" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=1400723168]
+[node name="ListEntryCategoryButton" type="Button" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1400723168]
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("15_rhtjl")
@@ -560,19 +576,19 @@ button_pressed = true
 text = "List Entry
 "
 
-[node name="ListEntryCategoryDiv" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=197392786 instance=ExtResource("2_qtb5q")]
+[node name="ListEntryCategoryDiv" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=197392786 instance=ExtResource("2_qtb5q")]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="EntrySeparationHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=1865419401]
+[node name="EntrySeparationHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1865419401]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="EntrySeparationLabel" type="Label" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/EntrySeparationHBox" unique_id=625516658]
+[node name="EntrySeparationLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/EntrySeparationHBox" unique_id=625516658]
 layout_mode = 2
 text = "Separation"
 
-[node name="EntrySeparationSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/EntrySeparationHBox" unique_id=1211726910]
+[node name="EntrySeparationSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/EntrySeparationHBox" unique_id=1211726910]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 10
@@ -585,18 +601,18 @@ rounded = true
 alignment = 2
 custom_arrow_step = 1.0
 
-[node name="EntryDivLineHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer" unique_id=334757300]
+[node name="EntryDivLineHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=334757300]
 unique_name_in_owner = true
 layout_mode = 2
 
-[node name="EntryDivLineCheckBox" type="CheckBox" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/EntryDivLineHBox" unique_id=1771906080]
+[node name="EntryDivLineCheckBox" type="CheckBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/EntryDivLineHBox" unique_id=1771906080]
 unique_name_in_owner = true
 custom_maximum_size = Vector2(-1, 20)
 layout_mode = 2
 theme = ExtResource("18_ngn7r")
 text = "Separator Line"
 
-[node name="EntryDivLineColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/EntryDivLineHBox" unique_id=546845359]
+[node name="EntryDivLineColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/EntryDivLineHBox" unique_id=546845359]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
@@ -607,44 +623,58 @@ theme = ExtResource("12_r7vyq")
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/SettingsPanel" unique_id=44170739]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/margin_top = 76
-theme_override_constants/margin_right = 20
+theme_override_constants/margin_top = 46
+theme_override_constants/margin_right = 6
 
 [node name="NameInsert" type="LineEdit" parent="VBoxContainer/SettingsPanel/MarginContainer" unique_id=1308498212]
 unique_name_in_owner = true
 visible = false
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 0
 theme = ExtResource("6_4tqpb")
 theme_override_font_sizes/font_size = 14
-placeholder_text = "Name..."
+placeholder_text = "Preset Name..."
+
+[node name="NameChange" type="LineEdit" parent="VBoxContainer/SettingsPanel/MarginContainer" unique_id=889346943]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(150, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme = ExtResource("6_4tqpb")
+theme_override_font_sizes/font_size = 14
+placeholder_text = "New Name..."
 
 [connection signal="preset_style_button_pressed" from="VBoxContainer/StyleButtons" to="." method="_on_style_buttons_preset_style_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox/OrderPrevious" to="." method="_on_order_previous_pressed"]
-[connection signal="pressed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox/OrderNext" to="." method="_on_order_next_pressed"]
-[connection signal="item_selected" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox/PresetOptions" to="." method="_on_preset_options_item_selected"]
-[connection signal="pressed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox/AddPreset" to="." method="_on_add_preset_pressed"]
-[connection signal="pressed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox/RemovePreset" to="." method="_on_remove_preset_pressed"]
-[connection signal="toggled" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BackgroundCategoryButton" to="." method="_on_background_category_button_toggled"]
-[connection signal="color_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BackgroundColorHBox/BackgroundColorPickerButton" to="." method="_on_background_color_picker_button_color_changed"]
-[connection signal="value_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderSizeHBox/BorderSizeSpinBox" to="." method="_on_border_size_spin_box_value_changed"]
-[connection signal="color_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderColorHBox/BorderColorPickerButton" to="." method="_on_border_color_picker_button_color_changed"]
-[connection signal="toggled" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/BorderBlendHBox/BorderBlendCheckBox" to="." method="_on_border_blend_check_box_toggled"]
-[connection signal="toggled" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontCategoryButton" to="." method="_on_font_category_button_toggled"]
-[connection signal="value_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontSizeHBox/FontSizeSpinBox" to="." method="_on_font_size_spin_box_value_changed"]
-[connection signal="color_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontColorHBox/FontColorPickerButton" to="." method="_on_font_color_picker_button_color_changed"]
-[connection signal="value_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/FontOutlineHBox/FontOutlineSpinBox" to="." method="_on_font_outline_spin_box_value_changed"]
-[connection signal="color_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/OutlineColorHBox/FontOutlineColorPickerButton" to="." method="_on_font_outline_color_picker_button_color_changed"]
-[connection signal="value_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/LineSpacingHBox/LineSpacingSpinBox" to="." method="_on_line_spacing_spin_box_value_changed"]
-[connection signal="toggled" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/ListTitleCategoryButton" to="." method="_on_list_title_category_button_toggled"]
-[connection signal="value_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/TitleFontSizeHBox/TitleFontSizeSpinBox" to="." method="_on_title_font_size_spin_box_value_changed"]
-[connection signal="color_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/TitleFontColorHBox/TitleFontColorPickerButton" to="." method="_on_title_font_color_picker_button_color_changed"]
-[connection signal="value_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/TitleFontOutlineHBox/TitleFontOutlineSpinBox" to="." method="_on_title_font_outline_spin_box_value_changed"]
-[connection signal="color_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/TitleOutlineColorHBox/TitleOutlineColorPickerButton" to="." method="_on_title_outline_color_picker_button_color_changed"]
-[connection signal="value_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/TitleLineSpacingHBox/TitleLineSpacingSpinBox" to="." method="_on_title_line_spacing_spin_box_value_changed"]
-[connection signal="toggled" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/ListEntryCategoryButton" to="." method="_on_list_entry_category_button_toggled"]
-[connection signal="value_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/EntrySeparationHBox/EntrySeparationSpinBox" to="." method="_on_entry_separation_spin_box_value_changed"]
-[connection signal="toggled" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/EntryDivLineHBox/EntryDivLineCheckBox" to="." method="_on_entry_div_line_check_box_toggled"]
-[connection signal="color_changed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/EntryDivLineHBox/EntryDivLineColorPickerButton" to="." method="_on_entry_div_line_color_picker_button_color_changed"]
+[connection signal="pressed" from="VBoxContainer/SettingsPanel/VBoxContainer/MarginContainer/PresetHBox/OrderPrevious" to="." method="_on_order_previous_pressed"]
+[connection signal="pressed" from="VBoxContainer/SettingsPanel/VBoxContainer/MarginContainer/PresetHBox/OrderNext" to="." method="_on_order_next_pressed"]
+[connection signal="item_selected" from="VBoxContainer/SettingsPanel/VBoxContainer/MarginContainer/PresetHBox/PresetOptions" to="." method="_on_preset_options_item_selected"]
+[connection signal="pressed" from="VBoxContainer/SettingsPanel/VBoxContainer/MarginContainer/PresetHBox/RenamePreset" to="." method="_on_rename_preset_pressed"]
+[connection signal="pressed" from="VBoxContainer/SettingsPanel/VBoxContainer/MarginContainer/PresetHBox/AddPreset" to="." method="_on_add_preset_pressed"]
+[connection signal="pressed" from="VBoxContainer/SettingsPanel/VBoxContainer/MarginContainer/PresetHBox/RemovePreset" to="." method="_on_remove_preset_pressed"]
+[connection signal="toggled" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/BackgroundCategoryButton" to="." method="_on_background_category_button_toggled"]
+[connection signal="color_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/BackgroundColorHBox/BackgroundColorPickerButton" to="." method="_on_background_color_picker_button_color_changed"]
+[connection signal="value_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/BorderSizeHBox/BorderSizeSpinBox" to="." method="_on_border_size_spin_box_value_changed"]
+[connection signal="color_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/BorderColorHBox/BorderColorPickerButton" to="." method="_on_border_color_picker_button_color_changed"]
+[connection signal="toggled" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/BorderBlendHBox/BorderBlendCheckBox" to="." method="_on_border_blend_check_box_toggled"]
+[connection signal="toggled" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontCategoryButton" to="." method="_on_font_category_button_toggled"]
+[connection signal="value_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontSizeHBox/FontSizeSpinBox" to="." method="_on_font_size_spin_box_value_changed"]
+[connection signal="color_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontColorHBox/FontColorPickerButton" to="." method="_on_font_color_picker_button_color_changed"]
+[connection signal="value_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontOutlineHBox/FontOutlineSpinBox" to="." method="_on_font_outline_spin_box_value_changed"]
+[connection signal="color_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/OutlineColorHBox/FontOutlineColorPickerButton" to="." method="_on_font_outline_color_picker_button_color_changed"]
+[connection signal="value_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/LineSpacingHBox/LineSpacingSpinBox" to="." method="_on_line_spacing_spin_box_value_changed"]
+[connection signal="toggled" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/ListTitleCategoryButton" to="." method="_on_list_title_category_button_toggled"]
+[connection signal="value_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleFontSizeHBox/TitleFontSizeSpinBox" to="." method="_on_title_font_size_spin_box_value_changed"]
+[connection signal="color_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleFontColorHBox/TitleFontColorPickerButton" to="." method="_on_title_font_color_picker_button_color_changed"]
+[connection signal="value_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleFontOutlineHBox/TitleFontOutlineSpinBox" to="." method="_on_title_font_outline_spin_box_value_changed"]
+[connection signal="color_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleOutlineColorHBox/TitleOutlineColorPickerButton" to="." method="_on_title_outline_color_picker_button_color_changed"]
+[connection signal="value_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleLineSpacingHBox/TitleLineSpacingSpinBox" to="." method="_on_title_line_spacing_spin_box_value_changed"]
+[connection signal="toggled" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/ListEntryCategoryButton" to="." method="_on_list_entry_category_button_toggled"]
+[connection signal="value_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/EntrySeparationHBox/EntrySeparationSpinBox" to="." method="_on_entry_separation_spin_box_value_changed"]
+[connection signal="toggled" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/EntryDivLineHBox/EntryDivLineCheckBox" to="." method="_on_entry_div_line_check_box_toggled"]
+[connection signal="color_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/EntryDivLineHBox/EntryDivLineColorPickerButton" to="." method="_on_entry_div_line_color_picker_button_color_changed"]
 [connection signal="editing_toggled" from="VBoxContainer/SettingsPanel/MarginContainer/NameInsert" to="." method="_on_name_insert_editing_toggled"]
+[connection signal="editing_toggled" from="VBoxContainer/SettingsPanel/MarginContainer/NameChange" to="." method="_on_name_change_editing_toggled"]

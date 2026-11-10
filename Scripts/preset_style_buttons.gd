@@ -42,16 +42,13 @@ func add_button(text: String, tooltip: String) -> void:
 	if limit_button_amount and buttons.size() >= MAX_BUTTON_COUNT:
 		return
 	var id = buttons.size()
-	tooltips[id] = tooltip
 	buttons[id] = load(GlobalScenes.style_select_button_scene).instantiate()
 	buttons[id].theme = buttons[id].theme
 	buttons[id].pressed.connect(_on_button_pressed.bind(id))
+	set_button_tooltip_text(id, tooltip)
 	if id <= 10:	# Add keybinds
-		var events: Array[InputEvent] = InputMap.action_get_events(keybinds[id])
 		buttons[id].shortcut = Shortcut.new()
 		buttons[id].shortcut.events = InputMap.action_get_events(keybinds[id])
-		tooltip += " (%s)" % [events[0].as_text().split(" ")[0]]
-	buttons[id].tooltip_text = ("%s" % tooltip)
 	buttons[id].text = text
 	style_button_grid.add_child(buttons[id])
 
@@ -123,12 +120,10 @@ func move_button(from_idx: int, to_idx: int) -> void:
 			swap_buttons(idx, idx+1)
 	# Assign, remake
 	buttons[to_idx] = button
-	tooltips[to_idx] = tooltip
+	set_button_tooltip_text(to_idx, tooltip)
 	if to_idx <= 10:
-		var events: Array[InputEvent] = InputMap.action_get_events(keybinds[to_idx])
 		buttons[to_idx].shortcut = Shortcut.new()
 		buttons[to_idx].shortcut.events = InputMap.action_get_events(keybinds[to_idx])
-		buttons[to_idx].tooltip_text = ("%s (%s)" % [tooltips[to_idx], events[0].as_text().split(" ")[0]])
 	button.pressed.disconnect(_on_button_pressed)
 	button.pressed.connect(_on_button_pressed.bind(to_idx))
 	style_button_grid.move_child(button, to_idx)
@@ -139,14 +134,22 @@ func swap_buttons(from_idx: int, to_idx: int) -> void:
 	buttons[to_idx].pressed.disconnect(_on_button_pressed)
 	buttons[to_idx].pressed.connect(_on_button_pressed.bind(to_idx))
 	buttons[to_idx].text = str(to_idx)
-	tooltips[to_idx] = tooltips[from_idx]
+	set_button_tooltip_text(to_idx, tooltips[from_idx])
 	if to_idx <= 10:
-		var events: Array[InputEvent] = InputMap.action_get_events(keybinds[to_idx])
 		buttons[to_idx].shortcut = Shortcut.new()
 		buttons[to_idx].shortcut.events = InputMap.action_get_events(keybinds[to_idx])
-		buttons[to_idx].tooltip_text = ("%s (%s)" % [tooltips[to_idx], events[0].as_text().split(" ")[0]])
+
+
+func set_button_tooltip_text(idx: int, new_text: String) -> void:
+	if !buttons.has(idx):
+		push_error("Button index %d doesn't exist" % [idx])
+		return
+	tooltips[idx] = new_text
+	if idx <= 10:
+		var events: Array[InputEvent] = InputMap.action_get_events(keybinds[idx])
+		buttons[idx].tooltip_text = ("%s (%s)" % [tooltips[idx], events[0].as_text().split(" ")[0]])
 	else:
-		buttons[to_idx].tooltip_text = tooltips[to_idx]
+		buttons[idx].tooltip_text = tooltips[idx]
 
 
 func change_button_font_size(idx: int, s: int) -> void:

@@ -9,6 +9,7 @@ class_name StyleSettings extends Control
 @export var div_theme: Theme
 @onready var order_previous_button: Button = %OrderPrevious
 @onready var order_next_button: Button = %OrderNext
+@onready var rename_preset_button: Button = %RenamePreset
 # Preset Settings
 @onready var preset_options: OptionButton = %PresetOptions
 @onready var background_color_picker_button: ColorPickerButton = %BackgroundColorPickerButton
@@ -30,11 +31,12 @@ class_name StyleSettings extends Control
 @onready var entry_div_line_color_picker_button: ColorPickerButton = %EntryDivLineColorPickerButton
 
 @onready var name_insert: LineEdit = %NameInsert
+@onready var name_change: LineEdit = %NameChange
 @onready var scroll_container: ScrollContainer = %ScrollContainer
 @onready var v_box_container: VBoxContainer = %VBoxContainer
-@onready var settings_panel: PanelContainer = $VBoxContainer/SettingsPanel
-@onready var style_buttons: PresetStyleButtons = $VBoxContainer/StyleButtons
-@onready var current_preset_label: Label = $VBoxContainer/HBoxContainer/CurrentPresetLabel
+@onready var settings_panel: PanelContainer = %SettingsPanel
+@onready var style_buttons: PresetStyleButtons = %StyleButtons
+@onready var current_preset_label: Label = %CurrentPresetLabel
 # For visibility toggle
 @onready var background_color_h_box: HBoxContainer = %BackgroundColorHBox
 @onready var border_size_h_box: HBoxContainer = %BorderSizeHBox
@@ -66,6 +68,7 @@ var individual_preset: PresetStyle
 signal preset_added
 signal preset_added_undo
 signal preset_changed
+signal preset_name_changed
 signal individual_preset_changed
 signal preset_color_changed
 signal preset_removed
@@ -73,9 +76,6 @@ signal preset_removed_undo
 signal request_single_preset_update
 signal preset_selected
 signal order_changed
-# TODO remove these 2
-signal is_editing_text
-signal stopped_editing_text
 
 
 func _ready() -> void:
@@ -215,6 +215,7 @@ func rebuild_single_preset(preset: PresetStyle, order: int) -> void:
 	style_buttons.add_button(str(order), preset.name)
 	if order == preset_options.item_count:
 		presets[preset_options.item_count] = preset
+		preset.order_id = preset_options.item_count
 		preset_options.add_item("%s" % preset.name)
 	else:
 		insert_preset_into_dict(preset, order)
@@ -295,6 +296,19 @@ func reorder_by_preset_order_dict(preset_order: Dictionary[int, String]) -> void
 	for idx in range(1, presets.size() + 1):
 		style_buttons.add_button(str(idx), presets[idx].name)
 		style_buttons.set_button_theme(idx, presets[idx])
+
+
+func rename_preset(idx: int, new_name: String, is_user_input: bool = true) -> void:
+	if idx < 1 or !presets.has(idx):
+		return
+	var old_name: String = presets[idx].name
+	presets[idx].name = new_name
+	preset_options.set_item_text(idx, new_name)
+	style_buttons.set_button_tooltip_text(idx, new_name)
+	if preset_options.selected == idx:
+		current_preset_label.text = ("Current Style: %s" % new_name)
+	if is_user_input:
+		preset_name_changed.emit(idx, old_name, new_name)
 
 
 func get_selected_preset() -> PresetStyle:
@@ -453,18 +467,21 @@ func toggle_modify_preset_buttons() -> void:
 	if preset_options.selected < 1:
 		order_next_button.disabled = true
 		order_previous_button.disabled = true
+		rename_preset_button.disabled = true
 	elif preset_options.selected < 2:
 		if presets.has(preset_options.selected + 1):
 			order_next_button.disabled = false
 		else:
 			order_next_button.disabled = true
 		order_previous_button.disabled = true
+		rename_preset_button.disabled = false
 	else:
 		if presets.has(preset_options.selected + 1):
 			order_next_button.disabled = false
 		else:
 			order_next_button.disabled = true
 		order_previous_button.disabled = false
+		rename_preset_button.disabled = false
 
 
 ## index decreases
@@ -504,7 +521,11 @@ func _on_order_next_pressed() -> void:
 func _on_add_preset_pressed() -> void:
 	name_insert.visible = true
 	name_insert.edit()
-	is_editing_text.emit()
+
+
+func _on_rename_preset_pressed() -> void:
+	name_change.visible = true
+	name_change.edit()
 
 
 func _on_remove_preset_pressed() -> void:
@@ -594,14 +615,22 @@ func _on_entry_div_line_color_picker_button_color_changed(color: Color) -> void:
 
 
 func _on_name_insert_editing_toggled(toggled_on: bool) -> void:
-	if !toggled_on:
-		if name_insert.text == "":
-			add_preset("Preset %s" % preset_options.item_count)
-		else:
-			add_preset(name_insert.text)
-		name_insert.text = ""
-		name_insert.visible = false
-		stopped_editing_text.emit()
+	if toggled_on:
+		return
+	if name_insert.text == "":
+		add_preset("Preset %s" % preset_options.item_count)
+	else:
+		add_preset(name_insert.text)
+	name_insert.text = ""
+	name_insert.visible = false
+
+
+func _on_name_change_editing_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		return
+	rename_preset(preset_options.selected, name_change.text)
+	name_change.text = ""
+	name_change.visible = false
 
 
 func _on_style_buttons_preset_style_button_pressed(idx: int) -> void:

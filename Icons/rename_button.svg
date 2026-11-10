@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="100.00001"
+   height="128"
+   viewBox="0 0 42.025144 53.79218"
+   version="1.1"
+   id="svg1"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <linearGradient
+       id="swatch124">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0;"
+         offset="0"
+         id="stop124" />
+    </linearGradient>
+    <linearGradient
+       id="swatch123">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0;"
+         offset="0"
+         id="stop123" />
+    </linearGradient>
+    <linearGradient
+       id="swatch121">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0;"
+         offset="0"
+         id="stop121" />
+    </linearGradient>
+    <linearGradient
+       id="swatch120">
+      <stop
+         style="stop-color:#da6666;stop-opacity:0;"
+         offset="0"
+         id="stop120" />
+    </linearGradient>
+    <linearGradient
+       id="swatch117">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop117" />
+    </linearGradient>
+    <linearGradient
+       id="swatch114">
+      <stop
+         style="stop-color:#129500;stop-opacity:1;"
+         offset="0"
+         id="stop114" />
+    </linearGradient>
+    <linearGradient
+       id="swatch106">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop106" />
+    </linearGradient>
+    <linearGradient
+       id="swatch105">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop105" />
+    </linearGradient>
+    <linearGradient
+       id="swatch99">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0;"
+         offset="0"
+         id="stop99" />
+    </linearGradient>
+    <linearGradient
+       id="swatch77">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0;"
+         offset="0"
+         id="stop77" />
+    </linearGradient>
+    <linearGradient
+       id="swatch75">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop75" />
+    </linearGradient>
+    <linearGradient
+       id="swatch74">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop74" />
+    </linearGradient>
+    <linearGradient
+       id="swatch73">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:1;"
+         offset="0"
+         id="stop73" />
+    </linearGradient>
+    <linearGradient
+       id="swatch15">
+      <stop
+         style="stop-color:#45b2fd;stop-opacity:1;"
+         offset="0"
+         id="stop15" />
+    </linearGradient>
+  </defs>
+  <g
+     id="layer1">
+    <path
+       d="M 25.790516,37.230502 H 9.0475333 L 5.9632997,45.76722 H 0.67604212 L 14.555093,7.599829 h 5.782938 L 34.162007,45.76722 H 28.874749 Z M 24.35855,33.154907 17.419024,13.768296 10.479499,33.154907 Z"
+       id="text1"
+       style="font-size:55.0756px;line-height:0.62;font-family:Poppins;-inkscape-font-specification:Poppins;fill:#ffffff;stroke-width:6.88446;stroke-linecap:square;stroke-miterlimit:2;stroke-dashoffset:19.5373"
+       transform="scale(0.97787929,1.0226211)"
+       aria-label="A" />
+    <path
+       style="fill:#ffffff;stroke:#ffffff;stroke-width:4.20251;stroke-linecap:square;stroke-miterlimit:2;stroke-dasharray:none;stroke-dashoffset:19.5373;stroke-opacity:1"
+       d="M 36.572076,4.5355554 V 50.440873"
+       id="path1" />
+    <path
+       style="fill:#ffffff;stroke:#ffffff;stroke-width:4.20251;stroke-linecap:square;stroke-miterlimit:2;stroke-dasharray:none;stroke-dashoffset:19.5373;stroke-opacity:1"
+       d="m 33.746186,2.9959531 5.463269,1.233e-4"
+       id="path4" />
+    <path
+       style="fill:#ffffff;stroke:#ffffff;stroke-width:4.20251;stroke-linecap:square;stroke-miterlimit:2;stroke-dasharray:none;stroke-dashoffset:19.5373;stroke-opacity:1"
+       d="M 33.620111,50.844696 H 39.08338"
+       id="path5" />
+  </g>
+</svg>

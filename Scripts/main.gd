@@ -47,8 +47,6 @@ extends Control
 
 var draw_tool_keybinds: Dictionary[int, String] = {}
 var tool_keybinds: Dictionary[int, String] = {}
-var is_editing_text: bool = false
-var is_editing_preset_name: bool = false
 var is_saving_images: bool = false
 var app_version: String = ""
 var canvases: Dictionary[int, PlannerCanvas]
@@ -163,13 +161,6 @@ func _process(_delta):
 	var input_enabled: bool = !disable_input()
 	if use_mouse_cursor_big_brush():
 		cursor_big_brush.position = get_local_mouse_position() - cursor_big_brush.size * 0.5
-	if selected_control_exists():		# If editing text, don't use shortcuts
-		if get_selected_control().is_editing_text():
-			is_editing_text = true
-		else:
-			is_editing_text = false
-	else:
-		is_editing_text = false
 	if Input.is_action_just_pressed("fullscreen_borderless") and !is_saving_images:
 		toggle_borderless_window()
 	if Input.is_action_just_pressed("exit_fullscreen_borderless") and get_window().mode == Window.MODE_FULLSCREEN and !is_saving_images:
@@ -273,6 +264,7 @@ func connect_signals() -> void:
 	style_settings.preset_added.connect(_on_style_settings_preset_added)
 	style_settings.preset_added_undo.connect(_on_style_settings_preset_added_undo)
 	style_settings.preset_changed.connect(_on_style_settings_preset_changed)
+	style_settings.preset_name_changed.connect(_on_style_settings_preset_name_changed)
 	style_settings.individual_preset_changed.connect(_on_style_settings_individual_preset_changed)
 	style_settings.preset_color_changed.connect(_on_style_settings_preset_color_changed)
 	style_settings.preset_removed.connect(_on_style_settings_preset_removed)
@@ -280,9 +272,6 @@ func connect_signals() -> void:
 	style_settings.request_single_preset_update.connect(_on_style_settings_request_update_single_preset)
 	style_settings.preset_selected.connect(_on_style_settings_preset_selected)
 	style_settings.order_changed.connect(_on_style_settings_order_changed)
-	# TODO remove these 2
-	style_settings.is_editing_text.connect(_on_style_settings_is_editing_text)
-	style_settings.stopped_editing_text.connect(_on_style_settings_stopped_editing_text)
 
 
 func create_tool_keybinds() -> void:
@@ -791,7 +780,9 @@ func tab_from_canvas_id(c_id: int) -> int:
 
 func disable_input() -> bool:
 	var popup_visible: bool = file_dialog_load.visible or file_dialog_save.visible or new_file_confirmation.visible or load_file_confirmation.visible or close_tab_confirmation.visible or exit_tab_confirmation.visible
-	return is_editing_text or is_editing_preset_name or is_saving_images or popup_visible
+	var gui_focus_owner = get_window().gui_get_focus_owner()
+	var text_edit_focused: bool = (gui_focus_owner is LineEdit) or (gui_focus_owner is TextEdit)
+	return text_edit_focused or is_saving_images or popup_visible
 
 
 # Cursor size limit 256x256, on web 128x128; Switching to a TextureRect based cursor beyond that
@@ -1179,9 +1170,19 @@ func _on_style_settings_preset_changed(setting: Enums.StyleSetting, preset_selec
 	if !canvases.has(cc):
 		return
 	canvases[cc].canvas_changed()
-	canvases[cc].undo_redo.create_action("set %s|%s" % [Enums.style_setting_names[setting], preset_selector_id], UndoRedo.MERGE_ENDS)
+	canvases[cc].undo_redo.create_action("Set %s|%s" % [Enums.style_setting_names[setting], preset_selector_id], UndoRedo.MERGE_ENDS)
 	canvases[cc].undo_redo.add_do_method(style_settings.set_existing_preset_single_setting.bind(setting, new_value, preset_selector_id))
 	canvases[cc].undo_redo.add_undo_method(style_settings.set_existing_preset_single_setting.bind(setting, old_value, preset_selector_id))
+	canvases[cc].undo_redo.commit_action(false)
+
+
+func _on_style_settings_preset_name_changed(idx: int, old_name: String, new_name: String) -> void:
+	if !canvases.has(cc):
+		return
+	canvases[cc].canvas_changed()
+	canvases[cc].undo_redo.create_action("Rename Style Preset|%d" % [idx], UndoRedo.MERGE_ALL)
+	canvases[cc].undo_redo.add_do_method(style_settings.rename_preset.bind(idx, new_name, false))
+	canvases[cc].undo_redo.add_undo_method(style_settings.rename_preset.bind(idx, old_name, false))
 	canvases[cc].undo_redo.commit_action(false)
 
 
@@ -1238,7 +1239,7 @@ func _on_style_settings_order_changed(old_order: Dictionary[int, String], new_or
 	if !canvases.has(cc):
 		return
 	canvases[cc].canvas_changed()
-	canvases[cc].undo_redo.create_action("Reordered Style Presets", UndoRedo.MERGE_ENDS)
+	canvases[cc].undo_redo.create_action("Reorder Style Presets", UndoRedo.MERGE_ENDS)
 	canvases[cc].undo_redo.add_do_method(style_settings.reorder_by_preset_order_dict.bind(new_order))
 	canvases[cc].undo_redo.add_undo_method(style_settings.reorder_by_preset_order_dict.bind(old_order))
 	canvases[cc].undo_redo.commit_action(false)
@@ -1263,14 +1264,6 @@ func _on_canvas_has_deselected_control() -> void:
 
 func _on_canvas_status_message_requested(message: String, color: Color) -> void:
 	status_bar.update_status(message, color)
-
-
-func _on_style_settings_is_editing_text() -> void:
-	is_editing_preset_name = true
-
-
-func _on_style_settings_stopped_editing_text() -> void:
-	is_editing_preset_name = false
 
 
 func _on_resized() -> void:
