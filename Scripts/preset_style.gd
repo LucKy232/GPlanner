@@ -1,6 +1,7 @@
 class_name PresetStyle
 
 var id: String = "unassigned_id"
+var order_id: int = -1
 var name: String = ""
 ## BACKGROUND
 var background_color: Color = Color("#549296")

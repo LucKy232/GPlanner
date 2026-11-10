@@ -270,7 +270,6 @@ func connect_signals() -> void:
 	drawing_tool_bar.swatch_added.connect(_on_drawing_tool_bar_swatch_added)
 	drawing_tool_bar.swatch_removed.connect(_on_drawing_tooL_bar_swatch_removed)
 	
-	style_settings.is_editing_text.connect(_on_style_settings_is_editing_text)
 	style_settings.preset_added.connect(_on_style_settings_preset_added)
 	style_settings.preset_added_undo.connect(_on_style_settings_preset_added_undo)
 	style_settings.preset_changed.connect(_on_style_settings_preset_changed)
@@ -280,6 +279,9 @@ func connect_signals() -> void:
 	style_settings.preset_removed_undo.connect(_on_style_settings_preset_removed_undo)
 	style_settings.request_single_preset_update.connect(_on_style_settings_request_update_single_preset)
 	style_settings.preset_selected.connect(_on_style_settings_preset_selected)
+	style_settings.order_changed.connect(_on_style_settings_order_changed)
+	# TODO remove these 2
+	style_settings.is_editing_text.connect(_on_style_settings_is_editing_text)
 	style_settings.stopped_editing_text.connect(_on_style_settings_stopped_editing_text)
 
 
@@ -1230,6 +1232,16 @@ func _on_style_settings_preset_selected() -> void:
 			style_settings.individual_preset = selected_control.individual_style
 		else:
 			style_settings.toggle_individual_preset_inputs(false)
+
+
+func _on_style_settings_order_changed(old_order: Dictionary[int, String], new_order: Dictionary[int, String]) -> void:
+	if !canvases.has(cc):
+		return
+	canvases[cc].canvas_changed()
+	canvases[cc].undo_redo.create_action("Reordered Style Presets", UndoRedo.MERGE_ENDS)
+	canvases[cc].undo_redo.add_do_method(style_settings.reorder_by_preset_order_dict.bind(new_order))
+	canvases[cc].undo_redo.add_undo_method(style_settings.reorder_by_preset_order_dict.bind(old_order))
+	canvases[cc].undo_redo.commit_action(false)
 
 
 func _on_canvas_has_selected_control() -> void:

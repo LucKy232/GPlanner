@@ -7,8 +7,8 @@ class_name StyleSettings extends Control
 @export var color_picker_theme: Theme
 @export var color_picker_panel_theme: Theme
 @export var div_theme: Theme
-@onready var order_up_button: Button = %OrderUp
-@onready var order_down_button: Button = %OrderDown
+@onready var order_previous_button: Button = %OrderPrevious
+@onready var order_next_button: Button = %OrderNext
 # Preset Settings
 @onready var preset_options: OptionButton = %PresetOptions
 @onready var background_color_picker_button: ColorPickerButton = %BackgroundColorPickerButton
@@ -72,6 +72,8 @@ signal preset_removed
 signal preset_removed_undo
 signal request_single_preset_update
 signal preset_selected
+signal order_changed
+# TODO remove these 2
 signal is_editing_text
 signal stopped_editing_text
 
@@ -127,6 +129,7 @@ func add_preset(p_name: String, is_user_input: bool = true) -> void:
 	style_buttons.add_button(str(selection_id), p_name)
 	presets[selection_id] = get_new_preset()
 	presets[selection_id].name = p_name
+	presets[selection_id].order_id = selection_id
 	change_preset(selection_id)
 	style_buttons.set_button_theme(selection_id, presets[selection_id])
 	preset_added.emit(presets[selection_id])
@@ -255,6 +258,43 @@ func insert_preset_into_dict(added_preset: PresetStyle, at_idx: int) -> void:
 	var last: PresetStyle = presets[presets.keys().size()]	# Remember it starts at 1
 	new_dict[presets.keys().size() + 1] = last
 	presets = new_dict
+
+
+func get_preset_order_dict() -> Dictionary[int, String]:
+	var dict: Dictionary[int, String]
+	for i in presets:
+		dict[i] = presets[i].id
+	return dict
+
+
+func get_preset_id_dict() -> Dictionary[String, PresetStyle]:
+	var dict: Dictionary[String, PresetStyle]
+	for i in presets:
+		dict[presets[i].id] = presets[i]
+	return dict
+
+
+func reorder_by_preset_order_dict(preset_order: Dictionary[int, String]) -> void:
+	# 1. new presets dict
+	var current_presets: Dictionary[String, PresetStyle] = get_preset_id_dict()
+	var new_presets: Dictionary[int, PresetStyle]
+	for order_id in preset_order:
+		if current_presets.has(preset_order[order_id]):
+			new_presets[order_id] = current_presets[preset_order[order_id]]
+			new_presets[order_id].order_id = order_id
+		else:
+			push_error("PresetStyle ID %s not found in current presets" % [order_id])
+	presets = new_presets
+	# 2. remake preset_order OptionButton items
+	while preset_options.item_count > 1:
+		preset_options.remove_item(1)
+	for idx in range(1, presets.size() + 1):
+		preset_options.add_item("%s" % presets[idx].name, idx)
+	# 3. reorder / remake StyleButtons
+	style_buttons.erase_everything()
+	for idx in range(1, presets.size() + 1):
+		style_buttons.add_button(str(idx), presets[idx].name)
+		style_buttons.set_button_theme(idx, presets[idx])
 
 
 func get_selected_preset() -> PresetStyle:
@@ -409,26 +449,56 @@ func set_existing_preset_single_setting(setting: Enums.StyleSetting, value: Vari
 	_set_preset_single_setting(setting, value, preset, preset_selection_id)
 
 
-func toggle_order_buttons() -> void:
-	if preset_options.selected == 0:
-		order_down_button.disabled = true
-		order_up_button.disabled = true
-	elif preset_options.selected == 1:
-		order_down_button.disabled = false
-		order_up_button.disabled = true
+func toggle_modify_preset_buttons() -> void:
+	if preset_options.selected < 1:
+		order_next_button.disabled = true
+		order_previous_button.disabled = true
+	elif preset_options.selected < 2:
+		if presets.has(preset_options.selected + 1):
+			order_next_button.disabled = false
+		else:
+			order_next_button.disabled = true
+		order_previous_button.disabled = true
 	else:
-		order_down_button.disabled = false
-		order_up_button.disabled = false
+		if presets.has(preset_options.selected + 1):
+			order_next_button.disabled = false
+		else:
+			order_next_button.disabled = true
+		order_previous_button.disabled = false
 
 
-func _on_order_up_pressed() -> void:
-	if preset_options.selected == 0:
+## index decreases
+func _on_order_previous_pressed() -> void:
+	var selected_idx: int = preset_options.selected
+	if selected_idx < 2:
 		return
+	var old_order: Dictionary[int, String] = get_preset_order_dict()
+	var new_order: Dictionary[int, String] = old_order.duplicate()
+	var current_id: String = new_order[selected_idx]
+	var previous_id: String = new_order[selected_idx - 1]
+	new_order[selected_idx] = previous_id
+	new_order[selected_idx - 1] = current_id
+	reorder_by_preset_order_dict(new_order)
+	preset_options.select(selected_idx - 1)
+	_on_preset_options_item_selected(selected_idx - 1)
+	order_changed.emit(old_order, new_order)
 
 
-func _on_order_down_pressed() -> void:
-	if preset_options.selected < 2:
+## index increases
+func _on_order_next_pressed() -> void:
+	var selected_idx: int = preset_options.selected
+	if selected_idx < 1 or !presets.has(selected_idx + 1):
 		return
+	var old_order: Dictionary[int, String] = get_preset_order_dict()
+	var new_order: Dictionary[int, String] = old_order.duplicate()
+	var current_id: String = new_order[selected_idx]
+	var next_id: String = new_order[selected_idx + 1]
+	new_order[selected_idx] = next_id
+	new_order[selected_idx + 1] = current_id
+	reorder_by_preset_order_dict(new_order)
+	preset_options.select(selected_idx + 1)
+	_on_preset_options_item_selected(selected_idx + 1)
+	order_changed.emit(old_order, new_order)
 
 
 func _on_add_preset_pressed() -> void:
@@ -450,7 +520,7 @@ func _on_preset_options_item_selected(index: int) -> void:
 		load_values_from_preset(presets[index])
 		current_preset_label.text = ("Current Style: %s" % presets[index].name)
 		toggle_preset_inputs(true)
-	toggle_order_buttons()
+	toggle_modify_preset_buttons()
 	preset_selected.emit()
 	style_buttons.focus_button(index)
 

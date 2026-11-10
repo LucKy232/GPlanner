@@ -69,6 +69,7 @@ func _ready() -> void:
 	scroll_container.get_v_scroll_bar().scrolling.connect(_on_scroll)
 	top_left_margin = Vector2(margin_container.get_theme_constant("margin_left"), margin_container.get_theme_constant("margin_top"))
 	total_horizontal_margin = margin_container.get_theme_constant("margin_left") + margin_container.get_theme_constant("margin_right")
+	list_title.text_changed.connect(_on_list_title_text_changed)
 	_on_scroll_hover(false)
 
 
@@ -755,6 +756,10 @@ func _on_resized() -> void:
 	mouse_hover_shape.shape.size = size
 	mouse_hover.position = size * 0.5
 	line_up_side_buttons.call_deferred()
+
+
+func _on_list_title_text_changed() -> void:
+	list_changed.emit()
 
 
 func _on_list_text_entry_text_changed() -> void:

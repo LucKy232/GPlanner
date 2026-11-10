@@ -188,7 +188,7 @@ layout_mode = 2
 size_flags_vertical = 0
 theme_override_constants/separation = 6
 
-[node name="OrderUp" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox" unique_id=1636003454]
+[node name="OrderPrevious" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox" unique_id=1636003454]
 unique_name_in_owner = true
 texture_filter = 2
 custom_minimum_size = Vector2(24, 32)
@@ -197,7 +197,7 @@ tooltip_text = "Order Up"
 icon = ExtResource("12_bv2of")
 expand_icon = true
 
-[node name="OrderDown" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox" unique_id=1280265674]
+[node name="OrderNext" type="Button" parent="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox" unique_id=1280265674]
 unique_name_in_owner = true
 texture_filter = 2
 custom_minimum_size = Vector2(24, 32)
@@ -621,8 +621,8 @@ theme_override_font_sizes/font_size = 14
 placeholder_text = "Name..."
 
 [connection signal="preset_style_button_pressed" from="VBoxContainer/StyleButtons" to="." method="_on_style_buttons_preset_style_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox/OrderUp" to="." method="_on_order_up_pressed"]
-[connection signal="pressed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox/OrderDown" to="." method="_on_order_down_pressed"]
+[connection signal="pressed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox/OrderPrevious" to="." method="_on_order_previous_pressed"]
+[connection signal="pressed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox/OrderNext" to="." method="_on_order_next_pressed"]
 [connection signal="item_selected" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox/PresetOptions" to="." method="_on_preset_options_item_selected"]
 [connection signal="pressed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox/AddPreset" to="." method="_on_add_preset_pressed"]
 [connection signal="pressed" from="VBoxContainer/SettingsPanel/ScrollContainer/VBoxContainer/PresetHBox/RemovePreset" to="." method="_on_remove_preset_pressed"]

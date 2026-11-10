@@ -750,10 +750,8 @@ func all_lists_to_json() -> Dictionary:
 
 func all_presets_to_json() -> Dictionary:
 	var dict: Dictionary = {}
-	var entry_id: int = 1	# Put the style presets in order, same way they get read in style_settings.gd
 	for key in style_presets:
-		dict[entry_id] = style_presets[key].to_json()
-		entry_id += 1
+		dict[style_presets[key].order_id] = style_presets[key].to_json()
 	return dict
 
 
