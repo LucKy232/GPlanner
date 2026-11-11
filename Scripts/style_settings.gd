@@ -42,6 +42,8 @@ class_name StyleSettings extends Control
 @onready var border_size_h_box: HBoxContainer = %BorderSizeHBox
 @onready var border_color_h_box: HBoxContainer = %BorderColorHBox
 @onready var border_blend_h_box: HBoxContainer = %BorderBlendHBox
+@onready var font_h_box: HBoxContainer = %FontHBox
+@onready var font_option_button: OptionButton = %FontOptionButton
 @onready var font_size_h_box: HBoxContainer = %FontSizeHBox
 @onready var font_color_h_box: HBoxContainer = %FontColorHBox
 @onready var line_spacing_h_box: HBoxContainer = %LineSpacingHBox
@@ -78,6 +80,21 @@ signal preset_selected
 signal order_changed
 
 
+func _process(_delta: float) -> void:
+	if Input.is_action_just_pressed("test_mult"):
+		if preset_options.selected == 0 and individual_preset:
+			var new_font: SystemFont = SystemFont.new()
+			new_font.font_names = [font_option_button.get_item_text(font_option_button.selected)]
+			individual_preset.text_edit_theme.set_font("font", "TextEdit", new_font)
+			individual_preset.title_text_edit_theme.set_font("font", "TextEdit", new_font)
+		elif presets.has(preset_options.selected):
+			var preset: PresetStyle = presets[preset_options.selected]
+			var new_font: SystemFont = SystemFont.new()
+			new_font.font_names = [font_option_button.get_item_text(font_option_button.selected)]
+			preset.text_edit_theme.set_font("font", "TextEdit", new_font)
+			preset.title_text_edit_theme.set_font("font", "TextEdit", new_font)
+
+
 func _ready() -> void:
 	customize_color_picker(background_color_picker_button)
 	customize_color_picker(font_color_picker_button)
@@ -87,8 +104,15 @@ func _ready() -> void:
 	style_buttons.preset_style_button_pressed.connect(change_preset)
 	style_buttons.add_button("0", "Individual")
 	reset_individual_preset()
+	populate_system_fonts()
 	if preset_options.selected == 0:
 		load_values_from_preset(individual_preset)
+
+
+func populate_system_fonts() -> void:
+	var font_names: PackedStringArray = OS.get_system_fonts()
+	for font_name in font_names:
+		font_option_button.add_item(font_name)
 
 
 # Only use set_no_signal functions (user didn't change the values)
@@ -562,6 +586,10 @@ func _on_border_blend_check_box_toggled(toggled_on: bool) -> void:
 	_on_current_preset_value_changed(Enums.StyleSetting.BORDER_BLEND, toggled_on)
 
 
+func _on_font_option_button_item_selected(index: int) -> void:
+	_on_current_preset_value_changed(Enums.StyleSetting.FONT_NAME, font_option_button.get_item_text(index))
+
+
 func _on_font_size_spin_box_value_changed(value: float) -> void:
 	_on_current_preset_value_changed(Enums.StyleSetting.FONT_SIZE, value)
 
@@ -644,6 +672,7 @@ func _on_background_category_button_toggled(toggled_on: bool) -> void:
 
 
 func _on_font_category_button_toggled(toggled_on: bool) -> void:
+	font_h_box.visible = toggled_on
 	font_size_h_box.visible = toggled_on
 	font_color_h_box.visible = toggled_on
 	line_spacing_h_box.visible = toggled_on
@@ -692,6 +721,10 @@ func _on_current_preset_value_changed(setting: Enums.StyleSetting, value: Varian
 			preset.set_border_blend(bool(value))
 			if !is_individual_preset:
 				style_buttons.change_border_blend(preset_options.selected, bool(value))
+		Enums.StyleSetting.FONT_NAME:
+			old_value = preset.font_name
+			preset.set_font_name(str(value))
+			preset.set_title_font_name(str(value))
 		Enums.StyleSetting.FONT_SIZE:
 			old_value = preset.font_size
 			preset.set_font_size(int(value))
@@ -776,6 +809,10 @@ func _set_preset_single_setting(setting: Enums.StyleSetting, value: Variant, pre
 				border_blend_check_box.set_pressed_no_signal(bool(value))
 			if preset_selection_id > 0:
 				style_buttons.change_border_blend(preset_selection_id, bool(value))
+		Enums.StyleSetting.FONT_NAME:
+			preset.set_font_name(str(value))
+			preset.set_title_font_name(str(value))
+			# TODO show value picked in font_option_button (keep index?) font_option_button.get_selectable_item()
 		Enums.StyleSetting.FONT_SIZE:
 			preset.set_font_size(int(value))
 			if is_preset_selected(preset):

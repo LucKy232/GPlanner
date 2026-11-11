@@ -781,7 +781,7 @@ func tab_from_canvas_id(c_id: int) -> int:
 func disable_input() -> bool:
 	var popup_visible: bool = file_dialog_load.visible or file_dialog_save.visible or new_file_confirmation.visible or load_file_confirmation.visible or close_tab_confirmation.visible or exit_tab_confirmation.visible
 	var gui_focus_owner = get_window().gui_get_focus_owner()
-	var text_edit_focused: bool = (gui_focus_owner is LineEdit) or (gui_focus_owner is TextEdit)
+	var text_edit_focused: bool = (gui_focus_owner is LineEdit) or (gui_focus_owner is TextEdit) or (gui_focus_owner is OptionButton)
 	return text_edit_focused or is_saving_images or popup_visible
 
 

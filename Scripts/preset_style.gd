@@ -9,6 +9,7 @@ var border_color: Color = Color.BLACK
 var border_size: int = 0
 var border_blend: bool = false
 ## TEXT EDIT
+var font_name: String = "Ubuntu Mono"
 var font_size: int = 16
 var font_color: Color = Color.WHITE
 var outline_color: Color = Color.BLACK
@@ -63,6 +64,10 @@ func set_default_values(category: Category) -> void:
 		Category.TEXT_EDIT:
 			if !text_edit_theme:
 				return
+			if font_name != "":
+				var new_font: SystemFont = SystemFont.new()
+				new_font.font_names = [font_name]
+				text_edit_theme.set_font("font", "TextEdit", new_font)
 			text_edit_theme.set_font_size("font_size", "TextEdit", font_size)
 			text_edit_theme.set_constant("outline_size", "TextEdit", outline_size)
 			text_edit_theme.set_color("font_color", "TextEdit", font_color)
@@ -71,6 +76,10 @@ func set_default_values(category: Category) -> void:
 		Category.TITLE_TEXT_EDIT:
 			if !title_text_edit_theme:
 				return
+			if font_name != "":
+				var new_font: SystemFont = SystemFont.new()
+				new_font.font_names = [font_name]
+				title_text_edit_theme.set_font("font", "TextEdit", new_font)
 			title_text_edit_theme.set_font_size("font_size", "TextEdit", title_font_size)
 			title_text_edit_theme.set_constant("outline_size", "TextEdit", title_outline_size)
 			title_text_edit_theme.set_color("font_color", "TextEdit", title_font_color)
@@ -80,6 +89,13 @@ func set_default_values(category: Category) -> void:
 			list_setting_changed.emit(ListSettings.ENTRY_SEPARATION, entry_separation)
 			list_setting_changed.emit(ListSettings.DIV_ENABLED, list_div_enabled)
 			list_setting_changed.emit(ListSettings.DIV_COLOR, list_div_color)
+
+
+func set_font_name(_font_name: String) -> void:
+	font_name = _font_name
+	var new_font: SystemFont = SystemFont.new()
+	new_font.font_names = [font_name]
+	text_edit_theme.set_font("font", "TextEdit", new_font)
 
 
 func set_font_size(size: int) -> void:
@@ -111,6 +127,13 @@ func set_line_spacing(value: int) -> void:
 	line_spacing = value
 	if text_edit_theme:
 		text_edit_theme.set_constant("line_spacing", "TextEdit", value)
+
+
+func set_title_font_name(_font_name: String) -> void:
+	font_name = _font_name
+	var new_font: SystemFont = SystemFont.new()
+	new_font.font_names = [font_name]
+	title_text_edit_theme.set_font("font", "TextEdit", new_font)
 
 
 func set_title_font_size(size: int) -> void:
