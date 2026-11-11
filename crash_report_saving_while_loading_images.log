@@ -1,0 +1,541 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 4.6 (Core Profile) Mesa 26.0.8-1ubuntu0.3 - Compatibility - Using Device: Intel - Mesa Intel(R) HD Graphics 620 (KBL GT2)
+
+Auto UI Scale: 133%
+0 Actions | New action: 
+0 Actions | New act0 Actions | New action: 
+0 Actions | New action: 
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: Move Clipboard Image|ClipboardImage64
+Undo: Move Clipboard Image|ClipboardImage64
+1 Actions | New action: 
+3 clipboard image load tasks still remaining!
+44 image load tasks still remaining!
+0 Actions | New action: 
+Saved /home/lucian/Desktop/GPlannerNotes/old_design.json
+0 Actions | New action: 
+Saved /home/lucian/Desktop/GPlannerNotes/old_design.json
+0 Actions | New action: 
+0 Actions | New action: 
+0 Actions | New action: 
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Attempted to erase an invalid (previously freed?) object instance into a 'TypedDictionary.Key'.
+   at: _internal_validate_object (./core/variant/container_type_validate.h:97)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: Condition "!_p->typed_key.validate(key, "erase")" is true. Returning: false
+   at: erase (core/variant/dictionary.cpp:250)
+   GDScript backtrace (most recent call first):
+       [0] check_clipboard_image_load_tasks_completed (res://Scripts/canvas_drawing_group.gd:123)
+       [1] _process (res://Scripts/canvas_drawing_group.gd:67)
+ERROR: /root: The caller thread can't call the function `propagate_notification()` on this node. Use `call_deferred()` or `call_deferred_thread_group()` instead.
+   at: propagate_notification (scene/main/node.cpp:2578)
+   GDScript backtrace (most recent call first):
+       [0] load_image_from_data (res://Scripts/clipboard_image.gd:63)
+
+================================================================
+handle_crash: Program crashed with signal 11
+Engine version: Godot Engine v4.7.2.stable.custom_build
+Dumping the backtrace. Please include this when reporting the bug to the project developer.
+Load address: 7fa2bee00000
+
+[1] 7fa2bee45cb0 (main+45cb0) - /usr/lib/x86_64-linux-gnu/libc.so.6(+0x45cb0) [0x7fa2bee45cb0]
+[2] 5e9e44d6e961 (GPlanner v0.6.0pr3.5debug.x86_64+1115961) - /home/lucian/Desktop/GPlanner v0.6.0pr3.5debug.x86_64(+0x1115961) [0x5e9e44d6e961]
+[3] 5e9e440e2283 (GPlanner v0.6.0pr3.5debug.x86_64+489283) - /home/lucian/Desktop/GPlanner v0.6.0pr3.5debug.x86_64(+0x489283) [0x5e9e440e2283]
+[4] 5e9e44043bc0 (GPlanner v0.6.0pr3.5debug.x86_64+3eabc0) - /home/lucian/Desktop/GPlanner v0.6.0pr3.5debug.x86_64(+0x3eabc0) [0x5e9e44043bc0]
+[5] 5e9e44ecf5ce (GPlanner v0.6.0pr3.5debug.x86_64+12765ce) - /home/lucian/Desktop/GPlanner v0.6.0pr3.5debug.x86_64(+0x12765ce) [0x5e9e44ecf5ce]
+[6] 5e9e44d4a0e9 (GPlanner v0.6.0pr3.5debug.x86_64+10f10e9) - /home/lucian/Desktop/GPlanner v0.6.0pr3.5debug.x86_64(+0x10f10e9) [0x5e9e44d4a0e9]
+[7] 5e9e44461320 (GPlanner v0.6.0pr3.5debug.x86_64+808320) - /home/lucian/Desktop/GPlanner v0.6.0pr3.5debug.x86_64(+0x808320) [0x5e9e44461320]
+[8] 5e9e44eeb588 (GPlanner v0.6.0pr3.5debug.x86_64+1292588) - /home/lucian/Desktop/GPlanner v0.6.0pr3.5debug.x86_64(+0x1292588) [0x5e9e44eeb588]
+[9] 5e9e44eeb7d0 (GPlanner v0.6.0pr3.5debug.x86_64+12927d0) - /home/lucian/Desktop/GPlanner v0.6.0pr3.5debug.x86_64(+0x12927d0) [0x5e9e44eeb7d0]
+[10] 5e9e44c26898 (GPlanner v0.6.0pr3.5debug.x86_64+fcd898) - /home/lucian/Desktop/GPlanner v0.6.0pr3.5debug.x86_64(+0xfcd898) [0x5e9e44c26898]
+[11] 5e9e45241364 (GPlanner v0.6.0pr3.5debug.x86_64+15e8364) - /home/lucian/Desktop/GPlanner v0.6.0pr3.5debug.x86_64(+0x15e8364) [0x5e9e45241364]
+[12] 7fa2beea3dfa (main+a3dfa) - /usr/lib/x86_64-linux-gnu/libc.so.6(+0xa3dfa) [0x7fa2beea3dfa]
+[13] 7fa2bef375cc (main+1375cc) - /usr/lib/x86_64-linux-gnu/libc.so.6(+0x1375cc) [0x7fa2bef375cc]
+-- END OF C++ BACKTRACE --
+================================================================
+GDScript backtrace (most recent call first):
+    [0] load_image_from_data (res://Scripts/clipboard_image.gd:63)
+-- END OF GDSCRIPT BACKTRACE --
+================================================================

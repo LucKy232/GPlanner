@@ -355,6 +355,31 @@ text = "Text"
 [node name="div3" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=818131481 instance=ExtResource("2_qtb5q")]
 layout_mode = 2
 
+[node name="FontHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1210215939]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_constants/separation = 25
+
+[node name="FontLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontHBox" unique_id=58543781]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.7
+theme = ExtResource("4_vcnja")
+text = "Font"
+label_settings = ExtResource("3_uc373")
+
+[node name="FontOptionButton" type="OptionButton" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontHBox" unique_id=1040394478]
+unique_name_in_owner = true
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_font_sizes/font_size = 14
+alignment = 2
+text_overrun_behavior = 1
+fit_to_longest_item = false
+search_bar_enabled = true
+
 [node name="FontSizeHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=111563572]
 unique_name_in_owner = true
 layout_mode = 2
@@ -661,6 +686,7 @@ placeholder_text = "New Name..."
 [connection signal="color_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/BorderColorHBox/BorderColorPickerButton" to="." method="_on_border_color_picker_button_color_changed"]
 [connection signal="toggled" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/BorderBlendHBox/BorderBlendCheckBox" to="." method="_on_border_blend_check_box_toggled"]
 [connection signal="toggled" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontCategoryButton" to="." method="_on_font_category_button_toggled"]
+[connection signal="item_selected" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontHBox/FontOptionButton" to="." method="_on_font_option_button_item_selected"]
 [connection signal="value_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontSizeHBox/FontSizeSpinBox" to="." method="_on_font_size_spin_box_value_changed"]
 [connection signal="color_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontColorHBox/FontColorPickerButton" to="." method="_on_font_color_picker_button_color_changed"]
 [connection signal="value_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontOutlineHBox/FontOutlineSpinBox" to="." method="_on_font_outline_spin_box_value_changed"]
