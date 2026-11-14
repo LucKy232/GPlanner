@@ -64,6 +64,7 @@ class_name StyleSettings extends Control
 ## KEY: preset_options selector ID (not preset ID like in planner_canvas.gd)
 ## Doesn't contain '0', keys should always be sorted, without gaps, representing preset_options selected ID (except for 0)
 var presets: Dictionary[int, PresetStyle]
+var fonts: Dictionary[String, int]		## Takes font name as KEY and gives index in font_option_button as VALUE
 ## Is the current (or last selected) CanvasElement's individual preset (if that CanvasElement is using the individual preset)
 var individual_preset: PresetStyle
 
@@ -111,7 +112,10 @@ func _ready() -> void:
 
 func populate_system_fonts() -> void:
 	var font_names: PackedStringArray = OS.get_system_fonts()
+	fonts["Default"] = 0
+	font_option_button.add_item("Default")
 	for font_name in font_names:
+		fonts[font_name] = font_option_button.item_count
 		font_option_button.add_item(font_name)
 
 
@@ -121,6 +125,8 @@ func load_values_from_preset(preset: PresetStyle) -> void:
 	border_size_spin_box.set_value_no_signal(preset.border_size)
 	border_color_picker_button.color = preset.border_color
 	border_blend_check_box.set_pressed_no_signal(preset.border_blend)
+	if fonts.has(preset.font_name):
+		font_option_button.select(fonts[preset.font_name])
 	font_size_spin_box.set_value_no_signal(preset.font_size)
 	font_color_picker_button.color = preset.font_color
 	font_outline_spin_box.set_value_no_signal(preset.outline_size)
@@ -810,9 +816,11 @@ func _set_preset_single_setting(setting: Enums.StyleSetting, value: Variant, pre
 			if preset_selection_id > 0:
 				style_buttons.change_border_blend(preset_selection_id, bool(value))
 		Enums.StyleSetting.FONT_NAME:
-			preset.set_font_name(str(value))
-			preset.set_title_font_name(str(value))
-			# TODO show value picked in font_option_button (keep index?) font_option_button.get_selectable_item()
+			var str_value: String = str(value)
+			preset.set_font_name(str_value)
+			preset.set_title_font_name(str_value)
+			if fonts.has(str_value):
+				font_option_button.select(fonts[str_value])
 		Enums.StyleSetting.FONT_SIZE:
 			preset.set_font_size(int(value))
 			if is_preset_selected(preset):

@@ -576,6 +576,9 @@ func select_element(elem_id: int) -> void:
 	if selected_control and selected_control is CanvasElement and elem_id == selected_control.id:
 		return			# Already selected
 	deselect_any()		# Deselect previous element
+	var gui_focus_owner: Control = get_window().gui_get_focus_owner()
+	if gui_focus_owner:	# Release focus, to not block input if editing Text / OptionButton
+		gui_focus_owner.release_focus()
 	if !elements.has(elem_id):
 		push_error("elements Dictionary doesn't have ID %d" % [elem_id])
 		return
@@ -1168,7 +1171,6 @@ func _on_control_resized(event_relative: Vector2, control: Control) -> void:
 func _on_background_gui_input(event: InputEvent) -> void:
 	if is_dragging or is_resizing:
 		return
-	
 	if drawing_manager.is_taking_screenshots:
 		return
 	if event is InputEventMouseMotion and event.pressure > 0.0:
@@ -1180,6 +1182,10 @@ func _on_background_gui_input(event: InputEvent) -> void:
 			is_element_just_created = false
 		else:
 			deselect_any()
+		# Release focus, to not block input if editing Text / OptionButton
+		var gui_focus_owner: Control = get_window().gui_get_focus_owner()
+		if gui_focus_owner:
+			gui_focus_owner.release_focus()
 	
 	# Begin mouse pan
 	if event.is_action("pan") and event.is_pressed() and !is_drawing and !is_panning:
