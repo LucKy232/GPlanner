@@ -216,7 +216,6 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_vertical = 4
 theme = ExtResource("3_47qi8")
-text = "Text"
 placeholder_text = "..."
 wrap_mode = 1
 scroll_fit_content_height = true

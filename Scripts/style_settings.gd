@@ -1,7 +1,5 @@
 class_name StyleSettings extends Control
 
-@export_range(150.0, 800.0, 5.0) var MAX_HEIGHT_SETTINGS: float = 335.0
-@export_range(150.0, 1000.0, 5.0) var MAX_HEIGHT_ALL: float = 490.0
 @export var default_background_style_box: StyleBoxFlat
 @export var default_text_edit_theme: Theme
 @export var color_picker_theme: Theme

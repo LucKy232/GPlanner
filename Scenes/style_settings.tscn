@@ -99,7 +99,7 @@ VScrollBar/styles/scroll = SubResource("StyleBoxFlat_ek6ul")
 z_index = 5
 custom_minimum_size = Vector2(300, 450)
 offset_right = 300.0
-offset_bottom = 450.0
+offset_bottom = 883.0
 size_flags_vertical = 3
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_6vqs3")
@@ -387,7 +387,7 @@ layout_mode = 2
 [node name="FontSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontSizeHBox" unique_id=120439315]
 layout_mode = 2
 theme = ExtResource("4_vcnja")
-text = "Font Size"
+text = "Size"
 label_settings = ExtResource("3_uc373")
 
 [node name="FontSizeSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontSizeHBox" unique_id=516852465]
@@ -404,6 +404,31 @@ rounded = true
 alignment = 2
 custom_arrow_step = 1.0
 
+[node name="FontWeightHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=663167922]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="FontWeightLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontWeightHBox" unique_id=1224554241]
+layout_mode = 2
+theme = ExtResource("4_vcnja")
+text = "Weight"
+label_settings = ExtResource("3_uc373")
+
+[node name="FontWeightSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontWeightHBox" unique_id=1175601748]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 4
+mouse_default_cursor_shape = 2
+theme = ExtResource("13_nvup7")
+min_value = 100.0
+max_value = 999.0
+step = 50.0
+value = 100.0
+rounded = true
+alignment = 2
+custom_arrow_step = 1.0
+
 [node name="FontColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1082843192]
 unique_name_in_owner = true
 layout_mode = 2
@@ -411,7 +436,7 @@ layout_mode = 2
 [node name="FontColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontColorHBox" unique_id=1830396473]
 layout_mode = 2
 theme = ExtResource("4_vcnja")
-text = "Font Color"
+text = "Color"
 label_settings = ExtResource("3_uc373")
 
 [node name="FontColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontColorHBox" unique_id=526004219]
@@ -483,6 +508,41 @@ theme = ExtResource("13_nvup7")
 min_value = -100.0
 rounded = true
 alignment = 2
+
+[node name="FontMSDFHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=2048497222]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="FontMSDFCheckBox" type="CheckBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontMSDFHBox" unique_id=1788146065]
+unique_name_in_owner = true
+custom_maximum_size = Vector2(-1, 20)
+layout_mode = 2
+size_flags_horizontal = 2
+theme = ExtResource("18_ngn7r")
+text = "MSDF Rendering"
+
+[node name="FontMSDFSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontMSDFHBox" unique_id=293421857]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(48, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+mouse_default_cursor_shape = 2
+theme = ExtResource("13_nvup7")
+min_value = -100.0
+rounded = true
+alignment = 2
+
+[node name="FontItalictHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1799340138]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="FontItalicCheckBox" type="CheckBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontItalictHBox" unique_id=334473690]
+unique_name_in_owner = true
+custom_maximum_size = Vector2(-1, 20)
+layout_mode = 2
+size_flags_horizontal = 2
+theme = ExtResource("18_ngn7r")
+text = "Italic"
 
 [node name="ListTitleCategoryButton" type="Button" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1553060378]
 unique_name_in_owner = true
@@ -688,6 +748,7 @@ placeholder_text = "New Name..."
 [connection signal="toggled" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontCategoryButton" to="." method="_on_font_category_button_toggled"]
 [connection signal="item_selected" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontHBox/FontOptionButton" to="." method="_on_font_option_button_item_selected"]
 [connection signal="value_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontSizeHBox/FontSizeSpinBox" to="." method="_on_font_size_spin_box_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontWeightHBox/FontWeightSpinBox" to="." method="_on_font_size_spin_box_value_changed"]
 [connection signal="color_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontColorHBox/FontColorPickerButton" to="." method="_on_font_color_picker_button_color_changed"]
 [connection signal="value_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontOutlineHBox/FontOutlineSpinBox" to="." method="_on_font_outline_spin_box_value_changed"]
 [connection signal="color_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/OutlineColorHBox/FontOutlineColorPickerButton" to="." method="_on_font_outline_color_picker_button_color_changed"]
