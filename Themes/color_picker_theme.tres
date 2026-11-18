@@ -1,9 +1,9 @@
-[gd_resource type="Theme" load_steps=2 format=3 uid="uid://d02qopbtpa4om"]
+[gd_resource type="Theme" format=3 uid="uid://d02qopbtpa4om"]
 
 [ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_wdn3c"]
 
 [resource]
-Button/colors/font_color = Color(0.875, 0.875, 0.875, 1)
+Button/colors/font_color = Color(0.8745098, 0.8745098, 0.8745098, 1)
 Button/colors/font_outline_color = Color(0, 0, 0, 1)
 Button/constants/align_to_largest_stylebox = 0
 Button/constants/h_separation = 2

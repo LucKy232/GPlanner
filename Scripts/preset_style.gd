@@ -1,4 +1,4 @@
-class_name PresetStyle
+class_name PresetStyle extends RefCounted
 
 var id: String = "unassigned_id"
 var order_id: int = -1
@@ -10,13 +10,14 @@ var border_color: Color = Color.BLACK
 var border_size: int = 0
 var border_blend: bool = false
 ## TEXT EDIT
-var font_name: String = "Default"
+var font_preset: PresetFont
 var font_size: int = 16
 var font_color: Color = Color.WHITE
 var outline_color: Color = Color.BLACK
 var outline_size: int = 0
 var line_spacing: int = 0
 ## TITLE TEXT EDIT
+var title_font_preset: PresetFont
 var title_font_size: int = 24
 var title_font_color: Color = Color.WHITE
 var title_outline_color: Color = Color.BLACK
@@ -54,9 +55,9 @@ func _init(string_id: String) -> void:
 
 
 func set_default_values(category: Category) -> void:
-	var new_font: SystemFont = SystemFont.new()
-	if font_name != "" and font_name != "Default":
-		new_font.font_names = [font_name]
+	#var new_font: SystemFont = SystemFont.new()
+	#if font_name != "" and font_name != "Default":
+		#new_font.font_names = [font_name]
 	match category:
 		Category.BACKGROUND:
 			if !background_panel_style_box:
@@ -68,8 +69,8 @@ func set_default_values(category: Category) -> void:
 		Category.TEXT_EDIT:
 			if !text_edit_theme:
 				return
-			if font_name != "" and font_name != "Default":
-				text_edit_theme.set_font("font", "TextEdit", new_font)
+			#if font_name != "" and font_name != "Default":
+				#text_edit_theme.set_font("font", "TextEdit", new_font)
 			text_edit_theme.set_font_size("font_size", "TextEdit", font_size)
 			text_edit_theme.set_constant("outline_size", "TextEdit", outline_size)
 			text_edit_theme.set_color("font_color", "TextEdit", font_color)
@@ -78,8 +79,8 @@ func set_default_values(category: Category) -> void:
 		Category.TITLE_TEXT_EDIT:
 			if !title_text_edit_theme:
 				return
-			if font_name != "" and font_name != "Default":
-				title_text_edit_theme.set_font("font", "TextEdit", new_font)
+			#if font_name != "" and font_name != "Default":
+				#title_text_edit_theme.set_font("font", "TextEdit", new_font)
 			title_text_edit_theme.set_font_size("font_size", "TextEdit", title_font_size)
 			title_text_edit_theme.set_constant("outline_size", "TextEdit", title_outline_size)
 			title_text_edit_theme.set_color("font_color", "TextEdit", title_font_color)
@@ -92,10 +93,11 @@ func set_default_values(category: Category) -> void:
 
 
 func set_font_name(_font_name: String) -> void:
-	font_name = _font_name
-	var new_font: SystemFont = SystemFont.new()
-	new_font.font_names = [font_name]
-	text_edit_theme.set_font("font", "TextEdit", new_font)
+	pass
+	#font_name = _font_name
+	#var new_font: SystemFont = SystemFont.new()
+	#new_font.font_names = [font_name]
+	#text_edit_theme.set_font("font", "TextEdit", new_font)
 
 
 func set_font_size(size: int) -> void:
@@ -130,12 +132,14 @@ func set_line_spacing(value: int) -> void:
 
 
 func set_title_font_name(_font_name: String) -> void:
-	font_name = _font_name
+	if !title_text_edit_theme:
+		return
+	#font_name = _font_name
 	#var new_font: SystemFont = SystemFont.new()
 	#new_font.font_names = [font_name]
 	# Use other theme's SystemFont
 	var font: SystemFont = text_edit_theme.get_font("font", "TextEdit")
-	font.font_names = [font_name]
+	#font.font_names = [font_name]
 	title_text_edit_theme.set_font("font", "TextEdit", font)
 
 
@@ -225,7 +229,7 @@ func set_background_panel_style_box(style_box_flat: StyleBoxFlat, use_theme_valu
 func set_text_edit_theme(theme: Theme, use_theme_values: bool) -> void:
 	text_edit_theme = theme
 	if use_theme_values:
-		font_name = theme.get_font("font", "TextEdit").get_font_name()
+		#font_name = theme.get_font("font", "TextEdit").get_font_name()
 		font_size = theme.get_font_size("font_size", "TextEdit")
 		outline_size = theme.get_constant("outline_size", "TextEdit")
 		font_color = theme.get_color("font_color", "TextEdit")
@@ -334,7 +338,7 @@ func to_json() -> Dictionary:
 		"border_color.b": border_color.b,
 		"border_color.a": border_color.a,
 		"border_blend": border_blend,
-		"font_name": font_name,
+		#"font_name": font_name,
 		"font_size": font_size,
 		"outline_size": outline_size,
 		"font_color.r": font_color.r,

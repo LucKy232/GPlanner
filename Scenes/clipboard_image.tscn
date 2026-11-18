@@ -4,7 +4,6 @@
 [ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="2_elnlm"]
 [ext_resource type="Texture2D" uid="uid://end3da7uy1ct" path="res://Icons/close_button.svg" id="2_jn52f"]
 [ext_resource type="Texture2D" uid="uid://bjdohnbteubps" path="res://Icons/drawing_front.svg" id="3_ax8r8"]
-[ext_resource type="SystemFont" uid="uid://celycldjtwytq" path="res://Themes/tooltip_font.tres" id="3_fa2i1"]
 [ext_resource type="Texture2D" uid="uid://daldghxv524n3" path="res://Icons/image_front.svg" id="5_fa2i1"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ax8r8"]
@@ -92,7 +91,7 @@ Button/styles/hover_pressed = SubResource("StyleBoxFlat_p0vr5")
 Button/styles/normal = SubResource("StyleBoxFlat_qr5b2")
 Button/styles/pressed = SubResource("StyleBoxFlat_5be5y")
 TooltipLabel/font_sizes/font_size = 16
-TooltipLabel/fonts/font = ExtResource("3_fa2i1")
+TooltipLabel/fonts/font = ExtResource("2_elnlm")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0ec2q"]
 

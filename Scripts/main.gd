@@ -96,8 +96,8 @@ func _ready() -> void:
 	exit_tab_confirmation.add_cancel_button(" Cancel ")
 	# Custom mouse cursors, except drawing tools
 	if drag_cursor_icon:
-		Input.set_custom_mouse_cursor(drag_cursor_icon, Input.CURSOR_DRAG, drag_cursor_icon.get_size() * 0.4)
-		Input.set_custom_mouse_cursor(drag_cursor_icon, Input.CURSOR_FORBIDDEN, drag_cursor_icon.get_size() * 0.4)
+		Input.set_custom_mouse_cursor(drag_cursor_icon, Input.CURSOR_DRAG, drag_cursor_icon.get_size() * 0.5)
+		Input.set_custom_mouse_cursor(drag_cursor_icon, Input.CURSOR_FORBIDDEN, drag_cursor_icon.get_size() * 0.5)
 	if drop_cursor_icon:
 		Input.set_custom_mouse_cursor(drop_cursor_icon, Input.CURSOR_CAN_DROP)
 	# Before reading files, ask for read / write permissions
@@ -264,6 +264,7 @@ func connect_signals() -> void:
 	style_settings.preset_added.connect(_on_style_settings_preset_added)
 	style_settings.preset_added_undo.connect(_on_style_settings_preset_added_undo)
 	style_settings.preset_changed.connect(_on_style_settings_preset_changed)
+	style_settings.preset_font_changed.connect(_on_style_settings_preset_font_changed)
 	style_settings.preset_name_changed.connect(_on_style_settings_preset_name_changed)
 	style_settings.individual_preset_changed.connect(_on_style_settings_individual_preset_changed)
 	style_settings.preset_color_changed.connect(_on_style_settings_preset_color_changed)
@@ -1175,6 +1176,16 @@ func _on_style_settings_preset_changed(setting: Enums.StyleSetting, preset_selec
 	canvases[cc].undo_redo.create_action("Set %s|%s" % [Enums.style_setting_names[setting], preset_selector_id], UndoRedo.MERGE_ENDS)
 	canvases[cc].undo_redo.add_do_method(style_settings.set_existing_preset_single_setting.bind(setting, new_value, preset_selector_id))
 	canvases[cc].undo_redo.add_undo_method(style_settings.set_existing_preset_single_setting.bind(setting, old_value, preset_selector_id))
+	canvases[cc].undo_redo.commit_action(false)
+
+
+func _on_style_settings_preset_font_changed(setting: Enums.StyleSetting, preset_font_order_id: int, old_value: Variant, new_value: Variant) -> void:
+	if !canvases.has(cc):
+		return
+	canvases[cc].canvas_changed()
+	canvases[cc].undo_redo.create_action("Set %s|%s" % [Enums.style_setting_names[setting], preset_font_order_id], UndoRedo.MERGE_ENDS)
+	canvases[cc].undo_redo.add_do_method(style_settings.set_preset_font_single_setting.bind(setting, new_value, preset_font_order_id))
+	canvases[cc].undo_redo.add_undo_method(style_settings.set_preset_font_single_setting.bind(setting, old_value, preset_font_order_id))
 	canvases[cc].undo_redo.commit_action(false)
 
 

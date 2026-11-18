@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://cwbooma1lih12"]
 
 [ext_resource type="Script" uid="uid://jbprsvf8b31y" path="res://Scripts/style_settings.gd" id="1_5y8lb"]
+[ext_resource type="SystemFont" uid="uid://dhj4uuya6elb5" path="res://Themes/element_font.tres" id="2_assiw"]
 [ext_resource type="StyleBox" uid="uid://cdui0dgu3vdrr" path="res://Themes/element_background_style_box.tres" id="2_llryx"]
 [ext_resource type="PackedScene" uid="uid://brbbmqwm6hpj4" path="res://Scenes/div.tscn" id="2_qtb5q"]
+[ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="3_ic67r"]
 [ext_resource type="Theme" uid="uid://dao6v8vx8h5ip" path="res://Themes/text_edit_theme.tres" id="3_qg77d"]
 [ext_resource type="LabelSettings" uid="uid://bdej1kps06ib8" path="res://Themes/element_settings_label_settings.tres" id="3_uc373"]
 [ext_resource type="Texture2D" uid="uid://bomg2pg3t5h4u" path="res://Icons/plus_small.svg" id="4_1og04"]
@@ -22,9 +24,12 @@
 [ext_resource type="Theme" uid="uid://cjbq8yvomvgbp" path="res://Themes/spin_box_elem_settings_theme.tres" id="13_nvup7"]
 [ext_resource type="Theme" uid="uid://c2dbtkfh88hkp" path="res://Themes/Buttons/settings_category_toggle_button_theme.tres" id="15_rhtjl"]
 [ext_resource type="Texture2D" uid="uid://xv4rl5pxidm7" path="res://Icons/rename_button.svg" id="16_mddg7"]
+[ext_resource type="Theme" uid="uid://ciym00oppex0k" path="res://Themes/button_theme_minimal.tres" id="18_ic67r"]
 [ext_resource type="Theme" uid="uid://dwboubtw2bfss" path="res://Themes/Buttons/checkbox_theme.tres" id="18_ngn7r"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6vqs3"]
+
+[sub_resource type="Theme" id="Theme_63ede"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xbo64"]
 
@@ -93,31 +98,207 @@ VScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_xbo64")
 VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_2hf5v")
 VScrollBar/styles/scroll = SubResource("StyleBoxFlat_ek6ul")
 
-[sub_resource type="Theme" id="Theme_63ede"]
-
 [node name="ElementSettings" type="PanelContainer" unique_id=589894355]
 z_index = 5
 custom_minimum_size = Vector2(300, 450)
 offset_right = 300.0
-offset_bottom = 883.0
+offset_bottom = 666.0
 size_flags_vertical = 3
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_6vqs3")
 script = ExtResource("1_5y8lb")
+default_font_name = "Montserrat Bold"
+default_font = ExtResource("2_assiw")
+ui_font = ExtResource("3_ic67r")
 default_background_style_box = ExtResource("2_llryx")
 default_text_edit_theme = ExtResource("3_qg77d")
 color_picker_theme = ExtResource("4_r7vyq")
 color_picker_panel_theme = ExtResource("8_btr2c")
 div_theme = ExtResource("6_btr2c")
 
+[node name="FontSettingsControl" type="Control" parent="." unique_id=1356376964]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+mouse_filter = 2
+
+[node name="FontSettingsPanel" type="PanelContainer" parent="FontSettingsControl" unique_id=1354831762]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = -252.0
+offset_top = 112.0
+offset_right = -2.0
+offset_bottom = 228.0
+size_flags_vertical = 3
+mouse_filter = 1
+theme = ExtResource("8_btr2c")
+
+[node name="FontSettingsMargin" type="MarginContainer" parent="FontSettingsControl/FontSettingsPanel" unique_id=1001876473]
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 6
+
+[node name="FontSettingsVBox" type="VBoxContainer" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin" unique_id=1697557098]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = SubResource("Theme_63ede")
+
+[node name="FontPresetHBox" type="HBoxContainer" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox" unique_id=398645105]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="FontPresetSelect" type="OptionButton" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontPresetHBox" unique_id=525165706]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 28)
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "Select Font Preset"
+mouse_default_cursor_shape = 2
+theme = ExtResource("8_vcnja")
+text_overrun_behavior = 1
+selected = 0
+fit_to_longest_item = false
+allow_reselect = true
+item_count = 2
+popup/item_0/text = "Default"
+popup/item_0/id = 0
+popup/item_1/text = "UI"
+popup/item_1/id = 1
+
+[node name="AddFontPreset" type="Button" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontPresetHBox" unique_id=930517484]
+unique_name_in_owner = true
+texture_filter = 2
+custom_minimum_size = Vector2(20, 28)
+layout_mode = 2
+tooltip_text = "Add Font Preset"
+mouse_default_cursor_shape = 2
+icon = ExtResource("4_1og04")
+text_overrun_behavior = 1
+icon_alignment = 1
+expand_icon = true
+
+[node name="RemoveFontPreset" type="Button" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontPresetHBox" unique_id=63953072]
+unique_name_in_owner = true
+texture_filter = 2
+custom_minimum_size = Vector2(20, 28)
+layout_mode = 2
+tooltip_text = "Remove Preset"
+mouse_default_cursor_shape = 2
+icon = ExtResource("5_0h7gu")
+text_overrun_behavior = 1
+icon_alignment = 1
+expand_icon = true
+
+[node name="SameFontPresetCheckBox" type="Label" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox" unique_id=457230421]
+custom_maximum_size = Vector2(-1, 24)
+layout_mode = 2
+theme = ExtResource("4_vcnja")
+theme_override_font_sizes/font_size = 13
+text = "(Same as Entry Text)"
+horizontal_alignment = 1
+
+[node name="FontNameHBox" type="HBoxContainer" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox" unique_id=1210215939]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="FontOptionButton" type="OptionButton" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontNameHBox" unique_id=1040394478]
+unique_name_in_owner = true
+clip_contents = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+tooltip_text = "Select System Font"
+theme = ExtResource("8_vcnja")
+theme_override_font_sizes/font_size = 16
+alignment = 2
+text_overrun_behavior = 1
+fit_to_longest_item = false
+search_bar_enabled = true
+
+[node name="FontWeightHBox" type="HBoxContainer" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox" unique_id=663167922]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="FontWeightLabel" type="Label" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontWeightHBox" unique_id=1224554241]
+layout_mode = 2
+theme = ExtResource("4_vcnja")
+text = "Weight"
+label_settings = ExtResource("3_uc373")
+
+[node name="FontWeightSpinBox" type="SpinBox" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontWeightHBox" unique_id=1175601748]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(54, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 4
+mouse_default_cursor_shape = 2
+theme = ExtResource("13_nvup7")
+min_value = 100.0
+max_value = 999.0
+step = 50.0
+value = 400.0
+rounded = true
+alignment = 2
+custom_arrow_step = 1.0
+
+[node name="FontMSDFHBox" type="HBoxContainer" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox" unique_id=2048497222]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="FontMSDFCheckBox" type="CheckBox" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontMSDFHBox" unique_id=1788146065]
+unique_name_in_owner = true
+custom_maximum_size = Vector2(-1, 20)
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("18_ngn7r")
+button_pressed = true
+text = "MSDF Rendering"
+
+[node name="FontMSDFSpinBox" type="SpinBox" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontMSDFHBox" unique_id=293421857]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(54, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+mouse_default_cursor_shape = 2
+theme = ExtResource("13_nvup7")
+min_value = 8.0
+max_value = 256.0
+page = 1.0
+value = 48.0
+rounded = true
+alignment = 2
+
+[node name="FontItalictHBox" type="HBoxContainer" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox" unique_id=1799340138]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="FontItalicCheckBox" type="CheckBox" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontItalictHBox" unique_id=334473690]
+unique_name_in_owner = true
+custom_maximum_size = Vector2(-1, 20)
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("18_ngn7r")
+text = "Italic"
+
+[node name="FontSettingsCloseButton" type="Button" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox" unique_id=445636264]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_horizontal = 8
+tooltip_text = "Close This Menu"
+theme = ExtResource("18_ic67r")
+text = "Close"
+
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=334371073]
 layout_mode = 2
 mouse_filter = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=198621327]
+[node name="TopHBox" type="HBoxContainer" parent="VBoxContainer" unique_id=198621327]
 layout_mode = 2
 
-[node name="CurrentPresetLabel" type="Label" parent="VBoxContainer/HBoxContainer" unique_id=946921422]
+[node name="CurrentPresetLabel" type="Label" parent="VBoxContainer/TopHBox" unique_id=946921422]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -126,7 +307,7 @@ text = "Current Style: "
 clip_text = true
 text_overrun_behavior = 3
 
-[node name="MarginBlockerControl" type="Control" parent="VBoxContainer/HBoxContainer" unique_id=1488723566]
+[node name="MarginBlockerControl" type="Control" parent="VBoxContainer/TopHBox" unique_id=1488723566]
 custom_minimum_size = Vector2(45, 0)
 layout_mode = 2
 
@@ -186,6 +367,7 @@ texture_filter = 2
 custom_minimum_size = Vector2(20, 28)
 layout_mode = 2
 tooltip_text = "Order Previous"
+theme = ExtResource("18_ic67r")
 icon = ExtResource("12_bv2of")
 expand_icon = true
 
@@ -195,6 +377,7 @@ texture_filter = 2
 custom_minimum_size = Vector2(20, 28)
 layout_mode = 2
 tooltip_text = "Order Next"
+theme = ExtResource("18_ic67r")
 icon = ExtResource("13_mddg7")
 expand_icon = true
 
@@ -205,7 +388,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 tooltip_text = "Select Preset"
 mouse_default_cursor_shape = 2
-theme = ExtResource("8_vcnja")
+theme = ExtResource("18_ic67r")
 text_overrun_behavior = 1
 selected = 0
 fit_to_longest_item = false
@@ -221,6 +404,7 @@ custom_minimum_size = Vector2(20, 28)
 layout_mode = 2
 tooltip_text = "Rename Preset"
 mouse_default_cursor_shape = 2
+theme = ExtResource("18_ic67r")
 icon = ExtResource("16_mddg7")
 text_overrun_behavior = 1
 icon_alignment = 1
@@ -232,6 +416,7 @@ custom_minimum_size = Vector2(20, 28)
 layout_mode = 2
 tooltip_text = "Add Preset"
 mouse_default_cursor_shape = 2
+theme = ExtResource("18_ic67r")
 icon = ExtResource("4_1og04")
 text_overrun_behavior = 1
 icon_alignment = 1
@@ -243,6 +428,7 @@ custom_minimum_size = Vector2(20, 28)
 layout_mode = 2
 tooltip_text = "Remove Preset"
 mouse_default_cursor_shape = 2
+theme = ExtResource("18_ic67r")
 icon = ExtResource("5_0h7gu")
 text_overrun_behavior = 1
 icon_alignment = 1
@@ -271,7 +457,7 @@ toggle_mode = true
 button_pressed = true
 text = "Background"
 
-[node name="div2" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1226294336 instance=ExtResource("2_qtb5q")]
+[node name="BackgroundCategoryDiv" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1226294336 instance=ExtResource("2_qtb5q")]
 layout_mode = 2
 
 [node name="BackgroundColorHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=935132236]
@@ -352,33 +538,15 @@ toggle_mode = true
 button_pressed = true
 text = "Text"
 
-[node name="div3" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=818131481 instance=ExtResource("2_qtb5q")]
+[node name="FontCategoryDiv" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=818131481 instance=ExtResource("2_qtb5q")]
 layout_mode = 2
 
-[node name="FontHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1210215939]
+[node name="EditFontPresetButton" type="Button" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=563445694]
 unique_name_in_owner = true
+custom_maximum_size = Vector2(-1, 20)
 layout_mode = 2
-theme_override_constants/separation = 25
-
-[node name="FontLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontHBox" unique_id=58543781]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_stretch_ratio = 0.7
-theme = ExtResource("4_vcnja")
-text = "Font"
-label_settings = ExtResource("3_uc373")
-
-[node name="FontOptionButton" type="OptionButton" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontHBox" unique_id=1040394478]
-unique_name_in_owner = true
-clip_contents = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-theme_override_font_sizes/font_size = 14
-alignment = 2
-text_overrun_behavior = 1
-fit_to_longest_item = false
-search_bar_enabled = true
+theme = ExtResource("18_ic67r")
+text = "Edit Font Preset"
 
 [node name="FontSizeHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=111563572]
 unique_name_in_owner = true
@@ -400,31 +568,6 @@ theme = ExtResource("13_nvup7")
 min_value = 1.0
 max_value = 255.0
 value = 1.0
-rounded = true
-alignment = 2
-custom_arrow_step = 1.0
-
-[node name="FontWeightHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=663167922]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="FontWeightLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontWeightHBox" unique_id=1224554241]
-layout_mode = 2
-theme = ExtResource("4_vcnja")
-text = "Weight"
-label_settings = ExtResource("3_uc373")
-
-[node name="FontWeightSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontWeightHBox" unique_id=1175601748]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 10
-size_flags_vertical = 4
-mouse_default_cursor_shape = 2
-theme = ExtResource("13_nvup7")
-min_value = 100.0
-max_value = 999.0
-step = 50.0
-value = 100.0
 rounded = true
 alignment = 2
 custom_arrow_step = 1.0
@@ -509,41 +652,6 @@ min_value = -100.0
 rounded = true
 alignment = 2
 
-[node name="FontMSDFHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=2048497222]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="FontMSDFCheckBox" type="CheckBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontMSDFHBox" unique_id=1788146065]
-unique_name_in_owner = true
-custom_maximum_size = Vector2(-1, 20)
-layout_mode = 2
-size_flags_horizontal = 2
-theme = ExtResource("18_ngn7r")
-text = "MSDF Rendering"
-
-[node name="FontMSDFSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontMSDFHBox" unique_id=293421857]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(48, 0)
-layout_mode = 2
-size_flags_horizontal = 10
-mouse_default_cursor_shape = 2
-theme = ExtResource("13_nvup7")
-min_value = -100.0
-rounded = true
-alignment = 2
-
-[node name="FontItalictHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1799340138]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="FontItalicCheckBox" type="CheckBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontItalictHBox" unique_id=334473690]
-unique_name_in_owner = true
-custom_maximum_size = Vector2(-1, 20)
-layout_mode = 2
-size_flags_horizontal = 2
-theme = ExtResource("18_ngn7r")
-text = "Italic"
-
 [node name="ListTitleCategoryButton" type="Button" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=1553060378]
 unique_name_in_owner = true
 layout_mode = 2
@@ -557,12 +665,20 @@ text = "List Title Text"
 unique_name_in_owner = true
 layout_mode = 2
 
+[node name="EditTitleFontPresetButton" type="Button" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=590886188]
+unique_name_in_owner = true
+custom_maximum_size = Vector2(-1, 20)
+layout_mode = 2
+theme = ExtResource("18_ic67r")
+text = "Edit Font Preset"
+
 [node name="TitleFontSizeHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=176016455]
 unique_name_in_owner = true
 layout_mode = 2
 
 [node name="TitleFontSizeLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleFontSizeHBox" unique_id=258239123]
 layout_mode = 2
+theme = ExtResource("4_vcnja")
 text = "Font Size"
 
 [node name="TitleFontSizeSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleFontSizeHBox" unique_id=697578847]
@@ -585,6 +701,7 @@ layout_mode = 2
 
 [node name="TitleFontColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleFontColorHBox" unique_id=1097430927]
 layout_mode = 2
+theme = ExtResource("4_vcnja")
 text = "Font Color"
 
 [node name="TitleFontColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleFontColorHBox" unique_id=340190526]
@@ -601,6 +718,7 @@ layout_mode = 2
 
 [node name="TitleFontOutlineLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleFontOutlineHBox" unique_id=1820171780]
 layout_mode = 2
+theme = ExtResource("4_vcnja")
 text = "Outline Size"
 
 [node name="TitleFontOutlineSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleFontOutlineHBox" unique_id=851103501]
@@ -621,6 +739,7 @@ layout_mode = 2
 
 [node name="TitleOutlineColorLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleOutlineColorHBox" unique_id=62878470]
 layout_mode = 2
+theme = ExtResource("4_vcnja")
 text = "OutlineColor"
 
 [node name="TitleOutlineColorPickerButton" type="ColorPickerButton" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleOutlineColorHBox" unique_id=618690399]
@@ -637,6 +756,7 @@ layout_mode = 2
 
 [node name="TitleLineSpacingLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleLineSpacingHBox" unique_id=1177038979]
 layout_mode = 2
+theme = ExtResource("4_vcnja")
 text = "Line Spacing"
 
 [node name="TitleLineSpacingSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleLineSpacingHBox" unique_id=1796244458]
@@ -671,6 +791,7 @@ layout_mode = 2
 
 [node name="EntrySeparationLabel" type="Label" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/EntrySeparationHBox" unique_id=625516658]
 layout_mode = 2
+theme = ExtResource("4_vcnja")
 text = "Separation"
 
 [node name="EntrySeparationSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/EntrySeparationHBox" unique_id=1211726910]
@@ -733,6 +854,15 @@ theme = ExtResource("6_4tqpb")
 theme_override_font_sizes/font_size = 14
 placeholder_text = "New Name..."
 
+[connection signal="item_selected" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontPresetHBox/FontPresetSelect" to="." method="_on_font_preset_select_item_selected"]
+[connection signal="pressed" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontPresetHBox/AddFontPreset" to="." method="_on_add_font_preset_pressed"]
+[connection signal="pressed" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontPresetHBox/RemoveFontPreset" to="." method="_on_remove_font_preset_pressed"]
+[connection signal="item_selected" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontNameHBox/FontOptionButton" to="." method="_on_font_option_button_item_selected"]
+[connection signal="value_changed" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontWeightHBox/FontWeightSpinBox" to="." method="_on_font_weight_spin_box_value_changed"]
+[connection signal="toggled" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontMSDFHBox/FontMSDFCheckBox" to="." method="_on_font_msdf_check_box_toggled"]
+[connection signal="value_changed" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontMSDFHBox/FontMSDFSpinBox" to="." method="_on_font_msdf_spin_box_value_changed"]
+[connection signal="toggled" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontItalictHBox/FontItalicCheckBox" to="." method="_on_font_italic_check_box_toggled"]
+[connection signal="pressed" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontSettingsCloseButton" to="." method="_on_font_settings_close_button_pressed"]
 [connection signal="preset_style_button_pressed" from="VBoxContainer/StyleButtons" to="." method="_on_style_buttons_preset_style_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/SettingsPanel/VBoxContainer/MarginContainer/PresetHBox/OrderPrevious" to="." method="_on_order_previous_pressed"]
 [connection signal="pressed" from="VBoxContainer/SettingsPanel/VBoxContainer/MarginContainer/PresetHBox/OrderNext" to="." method="_on_order_next_pressed"]
@@ -746,14 +876,14 @@ placeholder_text = "New Name..."
 [connection signal="color_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/BorderColorHBox/BorderColorPickerButton" to="." method="_on_border_color_picker_button_color_changed"]
 [connection signal="toggled" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/BorderBlendHBox/BorderBlendCheckBox" to="." method="_on_border_blend_check_box_toggled"]
 [connection signal="toggled" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontCategoryButton" to="." method="_on_font_category_button_toggled"]
-[connection signal="item_selected" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontHBox/FontOptionButton" to="." method="_on_font_option_button_item_selected"]
+[connection signal="pressed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/EditFontPresetButton" to="." method="_on_edit_font_preset_button_pressed"]
 [connection signal="value_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontSizeHBox/FontSizeSpinBox" to="." method="_on_font_size_spin_box_value_changed"]
-[connection signal="value_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontWeightHBox/FontWeightSpinBox" to="." method="_on_font_size_spin_box_value_changed"]
 [connection signal="color_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontColorHBox/FontColorPickerButton" to="." method="_on_font_color_picker_button_color_changed"]
 [connection signal="value_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontOutlineHBox/FontOutlineSpinBox" to="." method="_on_font_outline_spin_box_value_changed"]
 [connection signal="color_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/OutlineColorHBox/FontOutlineColorPickerButton" to="." method="_on_font_outline_color_picker_button_color_changed"]
 [connection signal="value_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/LineSpacingHBox/LineSpacingSpinBox" to="." method="_on_line_spacing_spin_box_value_changed"]
 [connection signal="toggled" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/ListTitleCategoryButton" to="." method="_on_list_title_category_button_toggled"]
+[connection signal="pressed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/EditTitleFontPresetButton" to="." method="_on_edit_title_font_preset_button_pressed"]
 [connection signal="value_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleFontSizeHBox/TitleFontSizeSpinBox" to="." method="_on_title_font_size_spin_box_value_changed"]
 [connection signal="color_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleFontColorHBox/TitleFontColorPickerButton" to="." method="_on_title_font_color_picker_button_color_changed"]
 [connection signal="value_changed" from="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleFontOutlineHBox/TitleFontOutlineSpinBox" to="." method="_on_title_font_outline_spin_box_value_changed"]

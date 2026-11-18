@@ -2,7 +2,6 @@
 
 [ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_oxmtg"]
 [ext_resource type="StyleBox" uid="uid://v0oe6am8pk4o" path="res://Themes/panel_style_box_flat.tres" id="2_ewvkp"]
-[ext_resource type="SystemFont" uid="uid://celycldjtwytq" path="res://Themes/tooltip_font.tres" id="2_sphjs"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oxmtg"]
 content_margin_top = 4.0
@@ -72,4 +71,4 @@ Button/styles/hover_pressed = SubResource("StyleBoxFlat_p5kd2")
 Button/styles/normal = ExtResource("2_ewvkp")
 Button/styles/pressed = SubResource("StyleBoxFlat_sphjs")
 TooltipLabel/font_sizes/font_size = 16
-TooltipLabel/fonts/font = ExtResource("2_sphjs")
+TooltipLabel/fonts/font = ExtResource("1_oxmtg")

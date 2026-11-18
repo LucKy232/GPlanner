@@ -1,6 +1,6 @@
 [gd_resource type="Theme" format=3 uid="uid://baxthgpikfcos"]
 
-[ext_resource type="SystemFont" uid="uid://celycldjtwytq" path="res://Themes/tooltip_font.tres" id="1_nd36o"]
+[ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_wl680"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l2mxm"]
 bg_color = Color(0.143918, 0.143918, 0.143918, 1)
@@ -43,10 +43,11 @@ corner_radius_bottom_right = 1
 corner_radius_bottom_left = 1
 
 [resource]
+ColorPickerButton/fonts/font = ExtResource("1_wl680")
 ColorPickerButton/styles/disabled = SubResource("StyleBoxFlat_l2mxm")
 ColorPickerButton/styles/focus = SubResource("StyleBoxFlat_6c0qi")
 ColorPickerButton/styles/hover = SubResource("StyleBoxFlat_6c0qi")
 ColorPickerButton/styles/normal = SubResource("StyleBoxFlat_fywfu")
 ColorPickerButton/styles/pressed = SubResource("StyleBoxFlat_p1xrh")
 TooltipLabel/font_sizes/font_size = 16
-TooltipLabel/fonts/font = ExtResource("1_nd36o")
+TooltipLabel/fonts/font = ExtResource("1_wl680")

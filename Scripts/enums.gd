@@ -67,7 +67,6 @@ enum StyleSetting {
 	BORDER_SIZE,
 	BORDER_COLOR,
 	BORDER_BLEND,
-	FONT_NAME,
 	FONT_SIZE,
 	FONT_COLOR,
 	OUTLINE_SIZE,
@@ -81,6 +80,11 @@ enum StyleSetting {
 	ENTRY_SEPARATION,
 	ENTRY_DIV_ENABLED,
 	ENTRY_DIV_COLOR,
+	FONT_NAME,
+	FONT_WEIGHT,
+	FONT_MSDF_ENABLED,
+	FONT_MSDF_SIZE,
+	FONT_ITALIC,
 }
 
 const style_setting_names: Dictionary[StyleSetting, String] = {
@@ -88,7 +92,6 @@ const style_setting_names: Dictionary[StyleSetting, String] = {
 	StyleSetting.BORDER_SIZE: "Border Size",
 	StyleSetting.BORDER_COLOR: "Border Color",
 	StyleSetting.BORDER_BLEND: "Border Blend",
-	StyleSetting.FONT_NAME: "Font",
 	StyleSetting.FONT_SIZE: "Font Size",
 	StyleSetting.FONT_COLOR: "Font Color",
 	StyleSetting.OUTLINE_SIZE: "Outline Size",
@@ -102,4 +105,9 @@ const style_setting_names: Dictionary[StyleSetting, String] = {
 	StyleSetting.ENTRY_SEPARATION: "List Entry Separation",
 	StyleSetting.ENTRY_DIV_ENABLED: "List Separator Toggle",
 	StyleSetting.ENTRY_DIV_COLOR: "List Separator Color",
+	StyleSetting.FONT_NAME: "Font",
+	StyleSetting.FONT_WEIGHT: "Font Weight",
+	StyleSetting.FONT_MSDF_ENABLED: "Font MSDF Toggled",
+	StyleSetting.FONT_MSDF_SIZE: "Font MSDF Size",
+	StyleSetting.FONT_ITALIC: "Font Italic",
 }
