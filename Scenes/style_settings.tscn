@@ -185,7 +185,7 @@ unique_name_in_owner = true
 texture_filter = 2
 custom_minimum_size = Vector2(20, 28)
 layout_mode = 2
-tooltip_text = "Remove Preset"
+tooltip_text = "Remove Font Preset"
 mouse_default_cursor_shape = 2
 icon = ExtResource("5_0h7gu")
 text_overrun_behavior = 1
@@ -234,6 +234,7 @@ custom_minimum_size = Vector2(54, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 4
+tooltip_text = "Font Weight"
 mouse_default_cursor_shape = 2
 theme = ExtResource("13_nvup7")
 min_value = 100.0
@@ -253,6 +254,7 @@ unique_name_in_owner = true
 custom_maximum_size = Vector2(-1, 20)
 layout_mode = 2
 size_flags_horizontal = 3
+tooltip_text = "Uses math to render the font. Can look better at different zoom levels. Can have a performance impact or visual errors."
 theme = ExtResource("18_ngn7r")
 button_pressed = true
 text = "MSDF Rendering"
@@ -262,6 +264,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(54, 0)
 layout_mode = 2
 size_flags_horizontal = 10
+tooltip_text = "MSDF size. Higher number is more accurate and less performant."
 mouse_default_cursor_shape = 2
 theme = ExtResource("13_nvup7")
 min_value = 8.0
@@ -271,11 +274,7 @@ value = 48.0
 rounded = true
 alignment = 2
 
-[node name="FontItalictHBox" type="HBoxContainer" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox" unique_id=1799340138]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="FontItalicCheckBox" type="CheckBox" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontItalictHBox" unique_id=334473690]
+[node name="FontItalicCheckBox" type="CheckBox" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox" unique_id=334473690]
 unique_name_in_owner = true
 custom_maximum_size = Vector2(-1, 20)
 layout_mode = 2
@@ -861,7 +860,7 @@ placeholder_text = "New Name..."
 [connection signal="value_changed" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontWeightHBox/FontWeightSpinBox" to="." method="_on_font_weight_spin_box_value_changed"]
 [connection signal="toggled" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontMSDFHBox/FontMSDFCheckBox" to="." method="_on_font_msdf_check_box_toggled"]
 [connection signal="value_changed" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontMSDFHBox/FontMSDFSpinBox" to="." method="_on_font_msdf_spin_box_value_changed"]
-[connection signal="toggled" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontItalictHBox/FontItalicCheckBox" to="." method="_on_font_italic_check_box_toggled"]
+[connection signal="toggled" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontItalicCheckBox" to="." method="_on_font_italic_check_box_toggled"]
 [connection signal="pressed" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontSettingsCloseButton" to="." method="_on_font_settings_close_button_pressed"]
 [connection signal="preset_style_button_pressed" from="VBoxContainer/StyleButtons" to="." method="_on_style_buttons_preset_style_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/SettingsPanel/VBoxContainer/MarginContainer/PresetHBox/OrderPrevious" to="." method="_on_order_previous_pressed"]

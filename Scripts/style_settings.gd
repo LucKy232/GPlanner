@@ -89,21 +89,6 @@ signal preset_selected
 signal order_changed
 
 
-func _process(_delta: float) -> void:
-	if Input.is_action_just_pressed("test_mult"):
-		if preset_options.selected == 0 and individual_preset:
-			var new_font: SystemFont = SystemFont.new()
-			new_font.font_names = [font_option_button.get_item_text(font_option_button.selected)]
-			individual_preset.text_edit_theme.set_font("font", "TextEdit", new_font)
-			individual_preset.title_text_edit_theme.set_font("font", "TextEdit", new_font)
-		elif presets.has(preset_options.selected):
-			var preset: PresetStyle = presets[preset_options.selected]
-			var new_font: SystemFont = SystemFont.new()
-			new_font.font_names = [font_option_button.get_item_text(font_option_button.selected)]
-			preset.text_edit_theme.set_font("font", "TextEdit", new_font)
-			preset.title_text_edit_theme.set_font("font", "TextEdit", new_font)
-
-
 func _ready() -> void:
 	customize_color_picker(background_color_picker_button)
 	customize_color_picker(font_color_picker_button)

@@ -6,4 +6,3 @@
 fallbacks = Array[Font]([ExtResource("1_ww0da")])
 font_weight = 550
 multichannel_signed_distance_field = true
-msdf_size = 96
