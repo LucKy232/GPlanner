@@ -732,6 +732,18 @@ func _on_list_entry_category_button_toggled(toggled_on: bool) -> void:
 	entry_div_line_h_box.visible = toggled_on
 
 
+func _on_font_settings_close_button_pressed() -> void:
+	font_settings_panel.visible = false
+
+
+func _on_edit_font_preset_button_pressed() -> void:
+	font_settings_panel.visible = true
+
+
+func _on_edit_title_font_preset_button_pressed() -> void:
+	font_settings_panel.visible = true
+
+
 # Called when any Control related to a StyleSetting & PresetFont changes value
 func _on_current_preset_font_value_changed(setting: Enums.StyleSetting, value: Variant) -> void:
 	if !fonts.has(font_preset_select.selected):
@@ -966,23 +978,3 @@ func _set_preset_single_setting(setting: Enums.StyleSetting, value: Variant, pre
 		#preset_options.select(i)
 		#print("Selected: %d Selected ID: %d Dictionary has ID as key: %s Preset ID: %d" % [preset_options.selected, preset_options.get_selected_id(), presets.has(i), presets[i].id if presets.has(i) else "No ID"])
 		#i += 1
-
-
-func _on_add_font_preset_pressed() -> void:
-	pass # Replace with function body.
-
-
-func _on_remove_font_preset_pressed() -> void:
-	pass # Replace with function body.
-
-
-func _on_font_settings_close_button_pressed() -> void:
-	font_settings_panel.visible = false
-
-
-func _on_edit_font_preset_button_pressed() -> void:
-	font_settings_panel.visible = true
-
-
-func _on_edit_title_font_preset_button_pressed() -> void:
-	font_settings_panel.visible = true

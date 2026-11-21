@@ -145,12 +145,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme = SubResource("Theme_63ede")
 
-[node name="FontPresetHBox" type="HBoxContainer" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox" unique_id=398645105]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_vertical = 0
-
-[node name="FontPresetSelect" type="OptionButton" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontPresetHBox" unique_id=525165706]
+[node name="FontPresetSelect" type="OptionButton" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox" unique_id=525165706]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 28)
 layout_mode = 2
@@ -162,49 +157,17 @@ text_overrun_behavior = 1
 selected = 0
 fit_to_longest_item = false
 allow_reselect = true
-item_count = 2
+item_count = 4
 popup/item_0/text = "Default"
 popup/item_0/id = 0
 popup/item_1/text = "UI"
 popup/item_1/id = 1
+popup/item_2/text = "Custom Font 1"
+popup/item_2/id = 2
+popup/item_3/text = "Custom Font 2"
+popup/item_3/id = 3
 
-[node name="AddFontPreset" type="Button" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontPresetHBox" unique_id=930517484]
-unique_name_in_owner = true
-texture_filter = 2
-custom_minimum_size = Vector2(20, 28)
-layout_mode = 2
-tooltip_text = "Add Font Preset"
-mouse_default_cursor_shape = 2
-icon = ExtResource("4_1og04")
-text_overrun_behavior = 1
-icon_alignment = 1
-expand_icon = true
-
-[node name="RemoveFontPreset" type="Button" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontPresetHBox" unique_id=63953072]
-unique_name_in_owner = true
-texture_filter = 2
-custom_minimum_size = Vector2(20, 28)
-layout_mode = 2
-tooltip_text = "Remove Font Preset"
-mouse_default_cursor_shape = 2
-icon = ExtResource("5_0h7gu")
-text_overrun_behavior = 1
-icon_alignment = 1
-expand_icon = true
-
-[node name="SameFontPresetCheckBox" type="Label" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox" unique_id=457230421]
-custom_maximum_size = Vector2(-1, 24)
-layout_mode = 2
-theme = ExtResource("4_vcnja")
-theme_override_font_sizes/font_size = 13
-text = "(Same as Entry Text)"
-horizontal_alignment = 1
-
-[node name="FontNameHBox" type="HBoxContainer" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox" unique_id=1210215939]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="FontOptionButton" type="OptionButton" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontNameHBox" unique_id=1040394478]
+[node name="FontOptionButton" type="OptionButton" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox" unique_id=1040394478]
 unique_name_in_owner = true
 clip_contents = true
 layout_mode = 2
@@ -853,10 +816,8 @@ theme = ExtResource("6_4tqpb")
 theme_override_font_sizes/font_size = 14
 placeholder_text = "New Name..."
 
-[connection signal="item_selected" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontPresetHBox/FontPresetSelect" to="." method="_on_font_preset_select_item_selected"]
-[connection signal="pressed" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontPresetHBox/AddFontPreset" to="." method="_on_add_font_preset_pressed"]
-[connection signal="pressed" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontPresetHBox/RemoveFontPreset" to="." method="_on_remove_font_preset_pressed"]
-[connection signal="item_selected" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontNameHBox/FontOptionButton" to="." method="_on_font_option_button_item_selected"]
+[connection signal="item_selected" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontPresetSelect" to="." method="_on_font_preset_select_item_selected"]
+[connection signal="item_selected" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontOptionButton" to="." method="_on_font_option_button_item_selected"]
 [connection signal="value_changed" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontWeightHBox/FontWeightSpinBox" to="." method="_on_font_weight_spin_box_value_changed"]
 [connection signal="toggled" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontMSDFHBox/FontMSDFCheckBox" to="." method="_on_font_msdf_check_box_toggled"]
 [connection signal="value_changed" from="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontMSDFHBox/FontMSDFSpinBox" to="." method="_on_font_msdf_spin_box_value_changed"]

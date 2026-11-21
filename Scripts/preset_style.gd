@@ -32,6 +32,11 @@ var background_panel_style_box: StyleBoxFlat
 var text_edit_theme: Theme
 var title_text_edit_theme: Theme
 var element_id: int = -1		## For individual preset UndoRedo style change
+var font_slot_1: PresetFont
+var font_slot_2: PresetFont
+var edit_title_font_independently: bool = false
+var text_theme_font_slot: Enums.PresetStyleFontSlot = Enums.PresetStyleFontSlot.DEFAULT
+var title_theme_font_slot: Enums.PresetStyleFontSlot = Enums.PresetStyleFontSlot.DEFAULT
 
 signal font_size_changed
 signal list_setting_changed
@@ -55,9 +60,6 @@ func _init(string_id: String) -> void:
 
 
 func set_default_values(category: Category) -> void:
-	#var new_font: SystemFont = SystemFont.new()
-	#if font_name != "" and font_name != "Default":
-		#new_font.font_names = [font_name]
 	match category:
 		Category.BACKGROUND:
 			if !background_panel_style_box:
@@ -69,8 +71,6 @@ func set_default_values(category: Category) -> void:
 		Category.TEXT_EDIT:
 			if !text_edit_theme:
 				return
-			#if font_name != "" and font_name != "Default":
-				#text_edit_theme.set_font("font", "TextEdit", new_font)
 			text_edit_theme.set_font_size("font_size", "TextEdit", font_size)
 			text_edit_theme.set_constant("outline_size", "TextEdit", outline_size)
 			text_edit_theme.set_color("font_color", "TextEdit", font_color)
@@ -79,8 +79,6 @@ func set_default_values(category: Category) -> void:
 		Category.TITLE_TEXT_EDIT:
 			if !title_text_edit_theme:
 				return
-			#if font_name != "" and font_name != "Default":
-				#title_text_edit_theme.set_font("font", "TextEdit", new_font)
 			title_text_edit_theme.set_font_size("font_size", "TextEdit", title_font_size)
 			title_text_edit_theme.set_constant("outline_size", "TextEdit", title_outline_size)
 			title_text_edit_theme.set_color("font_color", "TextEdit", title_font_color)
@@ -92,12 +90,19 @@ func set_default_values(category: Category) -> void:
 			list_setting_changed.emit(ListSettings.DIV_COLOR, list_div_color)
 
 
-func set_font_name(_font_name: String) -> void:
-	pass
-	#font_name = _font_name
-	#var new_font: SystemFont = SystemFont.new()
-	#new_font.font_names = [font_name]
-	#text_edit_theme.set_font("font", "TextEdit", new_font)
+func set_font(preset_font: PresetFont, slot: Enums.PresetStyleFontSlot) -> void:
+	if !text_edit_theme:
+		return
+	text_edit_theme.set_font("font", "TextEdit", preset_font.system_font)
+	text_theme_font_slot = slot
+	if title_text_edit_theme and !edit_title_font_independently:
+		title_text_edit_theme.set_font("font", "TextEdit", preset_font.system_font)
+		title_theme_font_slot = slot
+	match slot:
+		Enums.PresetStyleFontSlot.SLOT1:
+			font_slot_1 = preset_font
+		Enums.PresetStyleFontSlot.SLOT2:
+			font_slot_2 = preset_font
 
 
 func set_font_size(size: int) -> void:
@@ -131,16 +136,17 @@ func set_line_spacing(value: int) -> void:
 		text_edit_theme.set_constant("line_spacing", "TextEdit", value)
 
 
-func set_title_font_name(_font_name: String) -> void:
-	if !title_text_edit_theme:
+func set_title_font(preset_font: PresetFont, slot: Enums.PresetStyleFontSlot) -> void:
+	if !text_edit_theme:
 		return
-	#font_name = _font_name
-	#var new_font: SystemFont = SystemFont.new()
-	#new_font.font_names = [font_name]
-	# Use other theme's SystemFont
-	var font: SystemFont = text_edit_theme.get_font("font", "TextEdit")
-	#font.font_names = [font_name]
-	title_text_edit_theme.set_font("font", "TextEdit", font)
+	title_text_edit_theme.set_font("font", "TextEdit", preset_font.system_font)
+	title_theme_font_slot = slot
+	edit_title_font_independently = true
+	match slot:
+		Enums.PresetStyleFontSlot.SLOT1:
+			font_slot_1 = preset_font
+		Enums.PresetStyleFontSlot.SLOT2:
+			font_slot_2 = preset_font
 
 
 func set_title_font_size(size: int) -> void:
@@ -285,9 +291,6 @@ func rebuild_from_json_dict(dict: Dictionary) -> void:
 	set_border_color(bc)
 	if dict.has("border_blend"):
 		set_border_blend(bool(dict["border_blend"]))
-	if dict.has("font_name"):
-		set_font_name(str(dict["font_name"]))
-		set_title_font_name(str(dict["font_name"]))
 	set_font_size(int(dict["font_size"]))
 	set_font_color(fc)
 	set_outline_size(int(dict["outline_size"]))
@@ -338,7 +341,6 @@ func to_json() -> Dictionary:
 		"border_color.b": border_color.b,
 		"border_color.a": border_color.a,
 		"border_blend": border_blend,
-		#"font_name": font_name,
 		"font_size": font_size,
 		"outline_size": outline_size,
 		"font_color.r": font_color.r,

@@ -87,6 +87,12 @@ enum StyleSetting {
 	FONT_ITALIC,
 }
 
+enum PresetStyleFontSlot {
+	DEFAULT,
+	SLOT1,
+	SLOT2,
+}
+
 const style_setting_names: Dictionary[StyleSetting, String] = {
 	StyleSetting.BG_COLOR: "Background Color",
 	StyleSetting.BORDER_SIZE: "Border Size",
