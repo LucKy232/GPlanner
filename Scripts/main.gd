@@ -27,6 +27,8 @@ extends Control
 @export var auto_ui_scale: bool = true
 @export var ui_scale: float = 1.0
 @export_category("Themes")
+@export var default_font: SystemFont
+@export var ui_font: SystemFont
 @export_color_no_alpha var accent_color_planning
 @export_color_no_alpha var accent_color_drawing
 @export var drag_cursor_icon: CompressedTexture2D
@@ -35,6 +37,8 @@ extends Control
 @export var popup_dialog_theme: Theme
 @export var priority_colors: Dictionary[Enums.Priority, Color]
 @export var priority_styleboxes: Array[StyleBoxFlat]
+@export var text_edit_theme: Theme
+@export var text_edit_element_theme: Theme
 @export_category("Settings")
 @export var max_undo_steps: int = 500
 @export var zoom_limits: Vector2 = Vector2(0.2, 2.0)
@@ -85,6 +89,7 @@ func _ready() -> void:
 	create_tool_keybinds()
 	create_drawing_tool_keybinds()
 	update_zoom_limits(zoom_limits)
+	init_style_settings()
 	connect_signals()
 	new_file_confirmation.add_button("     No     ", true, "no_save")
 	new_file_confirmation.add_cancel_button(" Cancel ")
@@ -155,6 +160,19 @@ func scale_ui(factor: float) -> void:
 	load_file_confirmation.size *= (factor / old_factor)
 	close_tab_confirmation.size *= (factor / old_factor)
 	exit_tab_confirmation.size *= (factor / old_factor)
+
+
+# Need to create new SystemFonts with settings from the default ones to avoid errors when setting font_names
+func init_style_settings() -> void:
+	style_settings.set_default_font(default_font)
+	style_settings.set_ui_font(ui_font)
+	var ui_system_font: SystemFont = style_settings.get_ui_system_font()
+	theme.default_font = ui_system_font
+	var text_edit_font: SystemFont = style_settings.get_default_system_font()
+	text_edit_theme.default_font = text_edit_font
+	text_edit_element_theme.default_font = text_edit_font
+	text_edit_theme.set_font("font", "TextEdit", text_edit_font)
+	text_edit_element_theme.set_font("font", "TextEdit", text_edit_font)
 
 
 func _process(_delta):

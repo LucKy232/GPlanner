@@ -1,0 +1,7 @@
+[gd_resource type="Theme" format=3 uid="uid://wy7rn1htyv6b"]
+
+[resource]
+TabBar/font_sizes/font_size = 16
+TabBar/fonts/font = null
+TooltipLabel/font_sizes/font_size = 16
+TooltipLabel/fonts/font = null

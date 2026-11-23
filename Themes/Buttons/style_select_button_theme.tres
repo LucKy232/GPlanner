@@ -1,0 +1,75 @@
+[gd_resource type="Theme" format=3 uid="uid://by0thcjy2mrv6"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sg6nn"]
+resource_local_to_scene = true
+bg_color = Color(0.27, 0.27, 0.27, 0.705882)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_okek2"]
+resource_local_to_scene = true
+bg_color = Color(0.27, 0.27, 0.27, 0.705882)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.188235, 0.188235, 1)
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ovk8g"]
+resource_local_to_scene = true
+bg_color = Color(0.27, 0.27, 0.27, 0.705882)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.188235, 0.188235, 1)
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
+corner_detail = 1
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d0t5f"]
+resource_local_to_scene = true
+bg_color = Color(0.5, 0.5, 0.5, 0.705882)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
+corner_detail = 1
+
+[resource]
+resource_local_to_scene = true
+Button/colors/font_color = Color(0.875, 0.875, 0.875, 1)
+Button/colors/font_focus_color = Color(0.95, 0.95, 0.95, 1)
+Button/colors/font_hover_color = Color(0.95, 0.95, 0.95, 1)
+Button/colors/font_hover_pressed_color = Color(1, 1, 1, 1)
+Button/colors/font_outline_color = Color(0, 0, 0, 1)
+Button/colors/font_pressed_color = Color(1, 1, 1, 1)
+Button/constants/outline_size = 3
+Button/font_sizes/font_size = 16
+Button/fonts/font = null
+Button/styles/focus = SubResource("StyleBoxFlat_sg6nn")
+Button/styles/hover = SubResource("StyleBoxFlat_okek2")
+Button/styles/normal = SubResource("StyleBoxFlat_ovk8g")
+Button/styles/pressed = SubResource("StyleBoxFlat_d0t5f")
+TooltipLabel/font_sizes/font_size = 16
+TooltipLabel/fonts/font = null

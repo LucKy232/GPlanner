@@ -1,7 +1,5 @@
 [gd_resource type="Theme" format=3 uid="uid://cjbq8yvomvgbp"]
 
-[ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_bkcpx"]
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3pw00"]
 content_margin_left = 5.0
 content_margin_top = 4.0
@@ -125,7 +123,6 @@ corner_detail = 2
 LineEdit/constants/caret_width = 1
 LineEdit/constants/minimum_character_width = 2
 LineEdit/font_sizes/font_size = 14
-LineEdit/fonts/font = ExtResource("1_bkcpx")
 LineEdit/styles/focus = SubResource("StyleBoxFlat_3pw00")
 LineEdit/styles/normal = SubResource("StyleBoxFlat_btr2c")
 LineEdit/styles/read_only = SubResource("StyleBoxEmpty_15jqi")
@@ -137,4 +134,3 @@ SpinBox/styles/field_and_buttons_separator = SubResource("StyleBoxEmpty_khfey")
 SpinBox/styles/up_background = SubResource("StyleBoxFlat_a0ehm")
 SpinBox/styles/up_background_hovered = SubResource("StyleBoxFlat_6vqs3")
 SpinBox/styles/up_background_pressed = SubResource("StyleBoxFlat_63ede")
-TooltipLabel/fonts/font = ExtResource("1_bkcpx")

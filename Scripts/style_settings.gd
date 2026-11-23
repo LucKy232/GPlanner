@@ -1,8 +1,6 @@
 class_name StyleSettings extends Control
 
 @export var default_font_name: String = ""
-@export var default_font: SystemFont
-@export var ui_font: SystemFont
 @export var default_background_style_box: StyleBoxFlat
 @export var default_text_edit_theme: Theme
 @export var color_picker_theme: Theme
@@ -35,6 +33,9 @@ class_name StyleSettings extends Control
 @onready var font_msdf_check_box: CheckBox = %FontMSDFCheckBox
 @onready var font_msdf_spin_box: SpinBox = %FontMSDFSpinBox
 @onready var font_italic_check_box: CheckBox = %FontItalicCheckBox
+@onready var which_font_indicator: Label = %WhichFontIndicator
+@onready var edit_font_preset_button: Button = %EditFontPresetButton
+@onready var edit_title_font_preset_button: Button = %EditTitleFontPresetButton
 
 @onready var name_insert: LineEdit = %NameInsert
 @onready var name_change: LineEdit = %NameChange
@@ -74,11 +75,20 @@ var font_name_dict: Dictionary[String, int]		## Takes font name as KEY and gives
 var fonts: Dictionary[int, PresetFont]
 ## Is the current (or last selected) CanvasElement's individual preset (if that CanvasElement is using the individual preset)
 var individual_preset: PresetStyle
+var editing_font: FontEditMode = FontEditMode.DISABLED
+var default_font: SystemFont
+
+enum FontEditMode {
+	DISABLED,
+	TEXT,
+	TITLE,
+}
+
 
 signal preset_added
 signal preset_added_undo
 signal preset_changed
-signal preset_font_changed		# TODO connect
+signal preset_font_changed
 signal preset_name_changed
 signal individual_preset_changed
 signal preset_color_changed
@@ -111,22 +121,58 @@ func populate_system_fonts() -> void:
 	for font_name in font_names:
 		font_name_dict[font_name] = font_option_button.item_count
 		font_option_button.add_item(font_name)
+
+
+# Need to create new SystemFont to avoid errors when setting font_names
+func set_default_font(default_system_font: SystemFont) -> void:
 	var default_preset_font: PresetFont = PresetFont.new()
+	default_font = SystemFont.new()
+	default_font.font_names = default_system_font.font_names
+	default_font.font_italic = default_system_font.font_italic
+	default_font.font_weight = default_system_font.font_weight
+	default_font.multichannel_signed_distance_field = default_system_font.multichannel_signed_distance_field
+	default_font.msdf_size = default_system_font.msdf_size
+	default_font.msdf_pixel_range = default_system_font.msdf_pixel_range
 	default_preset_font.new_from_system_font(0, "Default", default_font)
 	fonts[0] = default_preset_font
+
+
+# Need to create new SystemFont to avoid errors when setting font_names
+func set_ui_font(ui_system_font: SystemFont) -> void:
 	var ui_preset_font: PresetFont = PresetFont.new()
-	ui_preset_font.new_from_system_font(1, "UI", ui_font)
+	var duplicate_font: SystemFont = SystemFont.new()
+	duplicate_font.font_names = ui_system_font.font_names
+	duplicate_font.font_italic = ui_system_font.font_italic
+	duplicate_font.font_weight = ui_system_font.font_weight
+	duplicate_font.multichannel_signed_distance_field = ui_system_font.multichannel_signed_distance_field
+	duplicate_font.msdf_size = ui_system_font.msdf_size
+	duplicate_font.msdf_pixel_range = ui_system_font.msdf_pixel_range
+	ui_preset_font.new_from_system_font(1, "UI", duplicate_font)
 	fonts[1] = ui_preset_font
+
+
+func get_default_system_font() -> SystemFont:
+	if fonts.has(0):
+		return fonts[0].system_font
+	else:
+		return SystemFont.new()
+
+
+func get_ui_system_font() -> SystemFont:
+	if fonts.has(1):
+		return fonts[1].system_font
+	else:
+		return SystemFont.new()
 
 
 # Only use set_no_signal functions (user didn't change the values)
 func load_values_from_preset(preset: PresetStyle) -> void:
+	if !default_font:	# Not ready
+		return
 	background_color_picker_button.color = preset.background_color
 	border_size_spin_box.set_value_no_signal(preset.border_size)
 	border_color_picker_button.color = preset.border_color
 	border_blend_check_box.set_pressed_no_signal(preset.border_blend)
-	#if font_name_dict.has(preset.font_name):
-		#font_option_button.select(font_name_dict[preset.font_name])
 	font_size_spin_box.set_value_no_signal(preset.font_size)
 	font_color_picker_button.color = preset.font_color
 	font_outline_spin_box.set_value_no_signal(preset.outline_size)
@@ -143,6 +189,29 @@ func load_values_from_preset(preset: PresetStyle) -> void:
 	toggle_background_border_settings(false if preset.border_size == 0 else true)
 	toggle_font_outline_settings(false if preset.outline_size == 0 else true)
 	toggle_title_font_outline_settings(false if preset.title_outline_size == 0 else true)
+	if !preset.font_slot_1:
+		fonts[2] = PresetFont.new().new_from_system_font(2, "Custom Font 1", default_font.duplicate())
+	else:
+		fonts[2] = preset.font_slot_1
+	if !preset.font_slot_2:
+		fonts[3] = PresetFont.new().new_from_system_font(3, "Custom Font 2", default_font.duplicate())
+	else:
+		fonts[3] = preset.font_slot_2
+
+
+func load_values_from_font_preset(font: PresetFont) -> void:
+	var current_font_name: String = font.get_first_font_name()
+	if !font_name_dict.has(current_font_name):
+		font_option_button.select(0)
+		toggle_font_preset_settings(false)
+	else:
+		var idx: int = font_name_dict[current_font_name]
+		font_option_button.select(idx)
+		toggle_font_preset_settings(idx > 0)
+	font_weight_spin_box.set_value_no_signal(font.get_font_weight())
+	font_msdf_check_box.set_pressed_no_signal(font.get_msdf_enabled())
+	font_msdf_spin_box.set_value_no_signal(font.get_msdf_size())
+	font_italic_check_box.set_pressed_no_signal(font.get_italic())
 
 
 func toggle_visible(toggled_on: bool):
@@ -200,6 +269,7 @@ func get_new_preset() -> PresetStyle:
 	new_preset.set_background_panel_style_box(default_background_style_box.duplicate(), false)
 	new_preset.set_text_edit_theme(default_text_edit_theme.duplicate(), false)
 	new_preset.set_title_text_edit_theme(default_text_edit_theme.duplicate(), false)
+	new_preset.set_font(fonts[0], Enums.PresetStyleFontSlot.DEFAULT)
 	return new_preset
 
 
@@ -375,12 +445,14 @@ func toggle_preset_inputs(toggled_on: bool) -> void:
 	border_color_picker_button.disabled = !toggled_on
 	border_blend_check_box.disabled = !toggled_on
 	
+	edit_font_preset_button.disabled = !toggled_on
 	font_size_spin_box.editable = toggled_on
 	font_color_picker_button.disabled = !toggled_on
 	font_outline_spin_box.editable = toggled_on
 	font_outline_color_picker_button.disabled = !toggled_on
 	line_spacing_spin_box.editable = toggled_on
 	
+	edit_title_font_preset_button.disabled = !toggled_on
 	title_font_size_spin_box.editable = toggled_on
 	title_font_color_picker_button.disabled = !toggled_on
 	title_font_outline_spin_box.editable = toggled_on
@@ -389,6 +461,8 @@ func toggle_preset_inputs(toggled_on: bool) -> void:
 	
 	entry_separation_spin_box.editable = toggled_on
 	entry_div_line_color_picker_button.disabled = !toggled_on
+	if !toggled_on:
+		font_settings_panel.visible = false
 
 
 func toggle_style_presets(toggled_on: bool) -> void:
@@ -466,6 +540,13 @@ func toggle_list_settings(toggled_on) -> void:
 	list_entry_category_div.visible = toggled_on
 	entry_separation_h_box.visible = toggled_on
 	entry_div_line_h_box.visible = toggled_on
+
+
+func toggle_font_preset_settings(toggled_on: bool) -> void:
+	font_weight_spin_box.editable = toggled_on
+	font_msdf_check_box.disabled = !toggled_on
+	font_msdf_spin_box.editable = toggled_on
+	font_italic_check_box.disabled = !toggled_on
 
 
 func is_preset_selected(preset: PresetStyle) -> bool:
@@ -652,10 +733,6 @@ func _on_entry_div_line_color_picker_button_color_changed(color: Color) -> void:
 	_on_current_preset_value_changed(Enums.StyleSetting.ENTRY_DIV_COLOR, color)
 
 
-func _on_font_option_button_item_selected(index: int) -> void:
-	_on_current_preset_font_value_changed(Enums.StyleSetting.FONT_NAME, font_option_button.get_item_text(index))
-
-
 func _on_font_weight_spin_box_value_changed(value: float) -> void:
 	_on_current_preset_font_value_changed(Enums.StyleSetting.FONT_WEIGHT, value)
 
@@ -670,16 +747,6 @@ func _on_font_msdf_spin_box_value_changed(value: float) -> void:
 
 func _on_font_italic_check_box_toggled(toggled_on: bool) -> void:
 	_on_current_preset_font_value_changed(Enums.StyleSetting.FONT_ITALIC, toggled_on)
-
-
-func _on_font_preset_select_item_selected(index: int) -> void:
-	if !fonts.has(index):
-		return
-	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
-	#if is_editing_font:
-		#preset.set_font(fonts[index])
-	#if is_editing_title_font:
-		#presets.set_title_font(fonts[index])
 
 
 func _on_name_insert_editing_toggled(toggled_on: bool) -> void:
@@ -732,16 +799,50 @@ func _on_list_entry_category_button_toggled(toggled_on: bool) -> void:
 	entry_div_line_h_box.visible = toggled_on
 
 
+func _on_font_preset_select_item_selected(index: int) -> void:
+	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
+	if !preset or !fonts.has(index):
+		return
+	match editing_font:
+		FontEditMode.TEXT:
+			preset.set_font(fonts[index], index as Enums.PresetStyleFontSlot)
+		FontEditMode.TITLE:
+			preset.set_title_font(fonts[index], index as Enums.PresetStyleFontSlot)
+	load_values_from_font_preset(fonts[index])
+
+
+func _on_font_option_button_item_selected(index: int) -> void:
+	_on_current_preset_font_value_changed(Enums.StyleSetting.FONT_NAME, font_option_button.get_item_text(index))
+	toggle_font_preset_settings(index > 0)
+
+
 func _on_font_settings_close_button_pressed() -> void:
 	font_settings_panel.visible = false
+	editing_font = FontEditMode.DISABLED
 
 
 func _on_edit_font_preset_button_pressed() -> void:
+	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
+	if !preset:
+		return
 	font_settings_panel.visible = true
+	editing_font = FontEditMode.TEXT
+	font_preset_select.select(preset.text_theme_font_slot)
+	if fonts.has(int(preset.text_theme_font_slot)):
+		load_values_from_font_preset(fonts[int(preset.text_theme_font_slot)])
+	which_font_indicator.text = ("Select text%s font preset%s" % [("" if preset.edit_title_font_independently else " + title"), ("" if preset.edit_title_font_independently else "s")])
 
 
 func _on_edit_title_font_preset_button_pressed() -> void:
+	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
+	if !preset:
+		return
 	font_settings_panel.visible = true
+	editing_font = FontEditMode.TITLE
+	font_preset_select.select(preset.title_theme_font_slot)
+	if fonts.has(int(preset.title_theme_font_slot)):
+		load_values_from_font_preset(fonts[int(preset.title_theme_font_slot)])
+	which_font_indicator.text = "Select title font preset"
 
 
 # Called when any Control related to a StyleSetting & PresetFont changes value
@@ -754,6 +855,7 @@ func _on_current_preset_font_value_changed(setting: Enums.StyleSetting, value: V
 		Enums.StyleSetting.FONT_NAME:
 			old_value = selected_preset_font.get_first_font_name()
 			selected_preset_font.set_font_name(str(value))
+			print(selected_preset_font.system_font)
 		Enums.StyleSetting.FONT_WEIGHT:
 			old_value = selected_preset_font.get_font_weight()
 			selected_preset_font.set_font_weight(int(value))
@@ -770,15 +872,18 @@ func _on_current_preset_font_value_changed(setting: Enums.StyleSetting, value: V
 	preset_font_changed.emit(setting, font_preset_select.selected, old_value, value)
 
 
-# Called when UndoRedo changes preset value
+# Called when UndoRedo changes PresetFont value
 func _set_preset_font_single_setting(setting: Enums.StyleSetting, value: Variant, font: PresetFont) -> void:
 	match setting:
 		Enums.StyleSetting.FONT_NAME:
 			font.set_font_name(str(value))
 			if font_name_dict.has(str(value)):
-				font_option_button.select(font_name_dict[str(value)])
+				var idx: int = font_name_dict[str(value)]
+				font_option_button.select(idx)
+				toggle_font_preset_settings(idx > 0)
 			else:
 				font_option_button.select(0)
+				toggle_font_preset_settings(false)
 		Enums.StyleSetting.FONT_WEIGHT:
 			font.set_font_weight(int(value))
 			font_weight_spin_box.set_value_no_signal(int(value))

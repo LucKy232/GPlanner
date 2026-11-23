@@ -1,80 +1,6 @@
 [gd_scene format=3 uid="uid://dvorb6p8oev77"]
 
-[ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_okek2"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sg6nn"]
-resource_local_to_scene = true
-bg_color = Color(0.27, 0.27, 0.27, 0.705882)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 1
-corner_radius_top_right = 1
-corner_radius_bottom_right = 1
-corner_radius_bottom_left = 1
-corner_detail = 1
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_okek2"]
-resource_local_to_scene = true
-bg_color = Color(0.27, 0.27, 0.27, 0.705882)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(1, 0.188235, 0.188235, 1)
-corner_radius_top_left = 1
-corner_radius_top_right = 1
-corner_radius_bottom_right = 1
-corner_radius_bottom_left = 1
-corner_detail = 1
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ovk8g"]
-resource_local_to_scene = true
-bg_color = Color(0.27, 0.27, 0.27, 0.705882)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(1, 0.188235, 0.188235, 1)
-corner_radius_top_left = 1
-corner_radius_top_right = 1
-corner_radius_bottom_right = 1
-corner_radius_bottom_left = 1
-corner_detail = 1
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d0t5f"]
-resource_local_to_scene = true
-bg_color = Color(0.5, 0.5, 0.5, 0.705882)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(1, 1, 1, 1)
-corner_radius_top_left = 1
-corner_radius_top_right = 1
-corner_radius_bottom_right = 1
-corner_radius_bottom_left = 1
-corner_detail = 1
-
-[sub_resource type="Theme" id="Theme_sg6nn"]
-resource_local_to_scene = true
-Button/colors/font_color = Color(0.875, 0.875, 0.875, 1)
-Button/colors/font_focus_color = Color(0.95, 0.95, 0.95, 1)
-Button/colors/font_hover_color = Color(0.95, 0.95, 0.95, 1)
-Button/colors/font_hover_pressed_color = Color(1, 1, 1, 1)
-Button/colors/font_outline_color = Color(0, 0, 0, 1)
-Button/colors/font_pressed_color = Color(1, 1, 1, 1)
-Button/constants/outline_size = 3
-Button/font_sizes/font_size = 16
-Button/fonts/font = ExtResource("1_okek2")
-Button/styles/focus = SubResource("StyleBoxFlat_sg6nn")
-Button/styles/hover = SubResource("StyleBoxFlat_okek2")
-Button/styles/normal = SubResource("StyleBoxFlat_ovk8g")
-Button/styles/pressed = SubResource("StyleBoxFlat_d0t5f")
-TooltipLabel/font_sizes/font_size = 16
-TooltipLabel/fonts/font = ExtResource("1_okek2")
+[ext_resource type="Theme" uid="uid://by0thcjy2mrv6" path="res://Themes/Buttons/style_select_button_theme.tres" id="1_okek2"]
 
 [node name="StyleSelectButton" type="Button" unique_id=1857953535]
 custom_minimum_size = Vector2(32, 32)
@@ -86,6 +12,6 @@ offset_bottom = -616.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_default_cursor_shape = 2
-theme = SubResource("Theme_sg6nn")
+theme = ExtResource("1_okek2")
 toggle_mode = true
 shortcut_in_tooltip = false

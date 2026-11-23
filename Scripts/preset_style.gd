@@ -137,7 +137,7 @@ func set_line_spacing(value: int) -> void:
 
 
 func set_title_font(preset_font: PresetFont, slot: Enums.PresetStyleFontSlot) -> void:
-	if !text_edit_theme:
+	if !title_text_edit_theme:
 		return
 	title_text_edit_theme.set_font("font", "TextEdit", preset_font.system_font)
 	title_theme_font_slot = slot
@@ -235,7 +235,6 @@ func set_background_panel_style_box(style_box_flat: StyleBoxFlat, use_theme_valu
 func set_text_edit_theme(theme: Theme, use_theme_values: bool) -> void:
 	text_edit_theme = theme
 	if use_theme_values:
-		#font_name = theme.get_font("font", "TextEdit").get_font_name()
 		font_size = theme.get_font_size("font_size", "TextEdit")
 		outline_size = theme.get_constant("outline_size", "TextEdit")
 		font_color = theme.get_color("font_color", "TextEdit")
@@ -248,7 +247,6 @@ func set_text_edit_theme(theme: Theme, use_theme_values: bool) -> void:
 func set_title_text_edit_theme(theme: Theme, use_theme_values: bool) -> void:
 	title_text_edit_theme = theme
 	if use_theme_values:
-		#font_name = theme.get_font("font", "TextEdit").get_font_name()
 		title_font_size = theme.get_font_size("font_size", "TextEdit")
 		title_outline_size = theme.get_constant("outline_size", "TextEdit")
 		title_font_color = theme.get_color("font_color", "TextEdit")

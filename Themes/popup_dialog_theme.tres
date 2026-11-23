@@ -1,7 +1,5 @@
 [gd_resource type="Theme" format=3 uid="uid://nujp3orsr2ol"]
 
-[ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_dird1"]
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l5lmn"]
 bg_color = Color(0.273142, 0.273142, 0.273142, 1)
 border_width_left = 2
@@ -67,27 +65,18 @@ corner_detail = 1
 
 [resource]
 AcceptDialog/font_sizes/title_font_size = 16
-AcceptDialog/fonts/title_font = ExtResource("1_dird1")
 AcceptDialog/styles/embedded_border = SubResource("StyleBoxFlat_l5lmn")
 AcceptDialog/styles/embedded_unfocused_border = SubResource("StyleBoxFlat_hrmln")
 AcceptDialog/styles/panel = SubResource("StyleBoxFlat_p2u2m")
 Button/font_sizes/font_size = 16
-Button/fonts/font = ExtResource("1_dird1")
 HBoxContainer/constants/separation = 4
 Label/constants/outline_size = 3
 Label/font_sizes/font_size = 16
-Label/fonts/font = ExtResource("1_dird1")
 LineEdit/font_sizes/font_size = 16
-LineEdit/fonts/font = ExtResource("1_dird1")
 OptionButton/font_sizes/font_size = 16
-OptionButton/fonts/font = ExtResource("1_dird1")
 PopupMenu/font_sizes/font_size = 16
 PopupMenu/font_sizes/title_font_size = 16
-PopupMenu/fonts/font = ExtResource("1_dird1")
-PopupMenu/fonts/font_separator = ExtResource("1_dird1")
-PopupMenu/fonts/title_font = ExtResource("1_dird1")
 TooltipLabel/font_sizes/font_size = 16
-TooltipLabel/fonts/font = ExtResource("1_dird1")
 Tree/colors/custom_button_font_highlight = Color(0.95, 0.95, 0.95, 1)
 Tree/colors/drop_position_color = Color(1, 1, 1, 1)
 Tree/colors/font_color = Color(0.887993, 0.887993, 0.887993, 1)
@@ -99,8 +88,6 @@ Tree/constants/draw_relationship_lines = 0
 Tree/constants/h_separation = 4
 Tree/font_sizes/font_size = 16
 Tree/font_sizes/title_button_font_size = 16
-Tree/fonts/font = ExtResource("1_dird1")
-Tree/fonts/title_button_font = ExtResource("1_dird1")
 Window/colors/title_color = Color(1, 1, 1, 1)
 Window/colors/title_outline_modulate = Color(0, 0, 0, 1)
 Window/constants/close_h_offset = 21
@@ -109,6 +96,5 @@ Window/constants/resize_margin = 3
 Window/constants/title_height = 25
 Window/constants/title_outline_size = 3
 Window/font_sizes/title_font_size = 16
-Window/fonts/title_font = ExtResource("1_dird1")
 Window/styles/embedded_border = SubResource("StyleBoxFlat_sy4x5")
 Window/styles/embedded_unfocused_border = SubResource("StyleBoxFlat_pjncq")

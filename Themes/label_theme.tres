@@ -1,13 +1,10 @@
 [gd_resource type="Theme" format=3 uid="uid://bfxmorphywksx"]
 
-[ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_yx32m"]
-
 [resource]
 Label/colors/font_color = Color(1, 1, 1, 1)
 Label/colors/font_outline_color = Color(0, 0, 0, 1)
 Label/colors/font_shadow_color = Color(0, 0, 0, 0)
 Label/constants/outline_size = 2
 Label/font_sizes/font_size = 16
-Label/fonts/font = ExtResource("1_yx32m")
 TooltipLabel/font_sizes/font_size = 16
-TooltipLabel/fonts/font = ExtResource("1_yx32m")
+TooltipLabel/fonts/font = null

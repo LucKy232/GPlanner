@@ -17,6 +17,7 @@ content_margin_top = 2.0
 bg_color = Color(1, 1, 1, 0)
 
 [resource]
+default_font = ExtResource("1_dguab")
 LineEdit/colors/caret_color = Color(0.954911, 0.954911, 0.954911, 0.862745)
 LineEdit/colors/font_color = Color(1, 1, 1, 1)
 LineEdit/colors/font_outline_color = Color(0, 0, 0, 1)

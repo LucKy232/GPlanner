@@ -1,0 +1,35 @@
+[gd_resource type="Theme" format=3 uid="uid://t77tpgad7j24"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5oxhp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jv6wh"]
+content_margin_bottom = 2.0
+bg_color = Color(0, 0, 0, 0.705882)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.19, 0.703, 1, 1)
+border_blend = true
+corner_radius_top_left = 1
+corner_radius_top_right = 1
+corner_radius_bottom_right = 1
+corner_radius_bottom_left = 1
+corner_detail = 1
+
+[resource]
+ItemList/colors/font_color = Color(0.65098, 0.65098, 0.65098, 0)
+ItemList/colors/font_hovered_color = Color(0.94902, 0.94902, 0.94902, 0)
+ItemList/colors/font_hovered_selected_color = Color(1, 1, 1, 0)
+ItemList/colors/font_outline_color = Color(0, 0, 0, 0)
+ItemList/colors/font_selected_color = Color(1, 1, 1, 0)
+ItemList/constants/h_separation = 4
+ItemList/constants/icon_margin = 1
+ItemList/constants/line_separation = -4
+ItemList/constants/outline_size = 0
+ItemList/constants/v_separation = 3
+ItemList/font_sizes/font_size = 1
+ItemList/fonts/font = null
+ItemList/styles/focus = SubResource("StyleBoxEmpty_5oxhp")
+ItemList/styles/panel = SubResource("StyleBoxFlat_jv6wh")
+TooltipLabel/font_sizes/font_size = 16

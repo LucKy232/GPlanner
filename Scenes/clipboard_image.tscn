@@ -1,97 +1,10 @@
 [gd_scene format=3 uid="uid://cph01rtbsrwne"]
 
 [ext_resource type="Script" uid="uid://3skn0lwmxpk8" path="res://Scripts/clipboard_image.gd" id="1_ntkdd"]
-[ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="2_elnlm"]
 [ext_resource type="Texture2D" uid="uid://end3da7uy1ct" path="res://Icons/close_button.svg" id="2_jn52f"]
 [ext_resource type="Texture2D" uid="uid://bjdohnbteubps" path="res://Icons/drawing_front.svg" id="3_ax8r8"]
+[ext_resource type="Theme" uid="uid://btwlderbyy4qw" path="res://Themes/Buttons/clipboard_image_button_theme.tres" id="4_fa2i1"]
 [ext_resource type="Texture2D" uid="uid://daldghxv524n3" path="res://Icons/image_front.svg" id="5_fa2i1"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ax8r8"]
-content_margin_top = 4.0
-bg_color = Color(0, 0, 0, 0.705882)
-draw_center = false
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 1, 1, 1)
-border_blend = true
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-corner_detail = 2
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u26wf"]
-content_margin_top = 4.0
-bg_color = Color(1, 1, 1, 0.7058824)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.188235, 0.701961, 1, 1)
-border_blend = true
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-corner_detail = 2
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p0vr5"]
-content_margin_top = 4.0
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 1, 1, 1)
-border_blend = true
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-corner_detail = 2
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qr5b2"]
-bg_color = Color(0, 0, 0, 0.7058824)
-draw_center = false
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 1, 1, 1)
-border_blend = true
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-corner_detail = 2
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5be5y"]
-content_margin_top = 4.0
-bg_color = Color(0.6, 0.6, 0.6, 0.7058824)
-draw_center = false
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 1, 1, 1)
-border_blend = true
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-corner_detail = 2
-
-[sub_resource type="Theme" id="Theme_8g6fy"]
-Button/colors/font_color = Color(1, 1, 1, 1)
-Button/fonts/font = ExtResource("2_elnlm")
-Button/styles/focus = SubResource("StyleBoxFlat_ax8r8")
-Button/styles/hover = SubResource("StyleBoxFlat_u26wf")
-Button/styles/hover_pressed = SubResource("StyleBoxFlat_p0vr5")
-Button/styles/normal = SubResource("StyleBoxFlat_qr5b2")
-Button/styles/pressed = SubResource("StyleBoxFlat_5be5y")
-TooltipLabel/font_sizes/font_size = 16
-TooltipLabel/fonts/font = ExtResource("2_elnlm")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0ec2q"]
 
@@ -144,7 +57,7 @@ layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 tooltip_text = "Delete image"
-theme = SubResource("Theme_8g6fy")
+theme = ExtResource("4_fa2i1")
 icon = ExtResource("2_jn52f")
 
 [node name="OrderButton" type="Button" parent="MarginContainer/HBoxContainer" unique_id=1798761089]
@@ -155,7 +68,7 @@ custom_minimum_size = Vector2(32, 32)
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
-theme = SubResource("Theme_8g6fy")
+theme = ExtResource("4_fa2i1")
 toggle_mode = true
 button_pressed = true
 icon = ExtResource("5_fa2i1")

@@ -2,13 +2,8 @@
 
 [ext_resource type="Script" uid="uid://dvj6pcwq77lqk" path="res://Scripts/zoom_indicator.gd" id="1_4qtpc"]
 [ext_resource type="Texture2D" uid="uid://demenk3lgkymx" path="res://Icons/magnifying_glass.svg" id="2_atq65"]
-[ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="2_cnilx"]
+[ext_resource type="LabelSettings" uid="uid://2fvbj7oblha1" path="res://Themes/no_outline_label_settings.tres" id="2_kgcqr"]
 [ext_resource type="Script" uid="uid://b0ioikc1dokvh" path="res://AddonsOwn/tween_show_hide.gd" id="4_ek6ul"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_4qtpc"]
-line_spacing = 0.0
-font = ExtResource("2_cnilx")
-font_size = 14
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6l7je"]
 bg_color = Color(0.2484, 0.2484, 0.2484, 1)
@@ -55,7 +50,7 @@ script = ExtResource("1_4qtpc")
 texture_filter = 2
 layout_mode = 2
 text = "200%"
-label_settings = SubResource("LabelSettings_4qtpc")
+label_settings = ExtResource("2_kgcqr")
 horizontal_alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=164018861]

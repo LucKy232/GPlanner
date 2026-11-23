@@ -1,10 +1,8 @@
 [gd_scene format=3 uid="uid://cwbooma1lih12"]
 
 [ext_resource type="Script" uid="uid://jbprsvf8b31y" path="res://Scripts/style_settings.gd" id="1_5y8lb"]
-[ext_resource type="SystemFont" uid="uid://dhj4uuya6elb5" path="res://Themes/element_font.tres" id="2_assiw"]
 [ext_resource type="StyleBox" uid="uid://cdui0dgu3vdrr" path="res://Themes/element_background_style_box.tres" id="2_llryx"]
 [ext_resource type="PackedScene" uid="uid://brbbmqwm6hpj4" path="res://Scenes/div.tscn" id="2_qtb5q"]
-[ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="3_ic67r"]
 [ext_resource type="Theme" uid="uid://dao6v8vx8h5ip" path="res://Themes/text_edit_theme.tres" id="3_qg77d"]
 [ext_resource type="LabelSettings" uid="uid://bdej1kps06ib8" path="res://Themes/element_settings_label_settings.tres" id="3_uc373"]
 [ext_resource type="Texture2D" uid="uid://bomg2pg3t5h4u" path="res://Icons/plus_small.svg" id="4_1og04"]
@@ -98,18 +96,16 @@ VScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_xbo64")
 VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_2hf5v")
 VScrollBar/styles/scroll = SubResource("StyleBoxFlat_ek6ul")
 
-[node name="ElementSettings" type="PanelContainer" unique_id=589894355]
+[node name="StyleSettings" type="PanelContainer" unique_id=589894355]
 z_index = 5
 custom_minimum_size = Vector2(300, 450)
 offset_right = 300.0
-offset_bottom = 666.0
+offset_bottom = 687.0
 size_flags_vertical = 3
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxEmpty_6vqs3")
 script = ExtResource("1_5y8lb")
 default_font_name = "Montserrat Bold"
-default_font = ExtResource("2_assiw")
-ui_font = ExtResource("3_ic67r")
 default_background_style_box = ExtResource("2_llryx")
 default_text_edit_theme = ExtResource("3_qg77d")
 color_picker_theme = ExtResource("4_r7vyq")
@@ -128,7 +124,7 @@ layout_mode = 0
 offset_left = -252.0
 offset_top = 112.0
 offset_right = -2.0
-offset_bottom = 228.0
+offset_bottom = 310.0
 size_flags_vertical = 3
 mouse_filter = 1
 theme = ExtResource("8_btr2c")
@@ -144,6 +140,14 @@ theme_override_constants/margin_bottom = 6
 layout_mode = 2
 size_flags_horizontal = 3
 theme = SubResource("Theme_63ede")
+
+[node name="WhichFontIndicator" type="Label" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox" unique_id=135645857]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 20)
+layout_mode = 2
+theme = ExtResource("4_vcnja")
+horizontal_alignment = 1
+autowrap_mode = 2
 
 [node name="FontPresetSelect" type="OptionButton" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox" unique_id=525165706]
 unique_name_in_owner = true
@@ -179,6 +183,7 @@ theme_override_font_sizes/font_size = 16
 alignment = 2
 text_overrun_behavior = 1
 fit_to_longest_item = false
+allow_reselect = true
 search_bar_enabled = true
 
 [node name="FontWeightHBox" type="HBoxContainer" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox" unique_id=663167922]
@@ -206,7 +211,8 @@ step = 50.0
 value = 400.0
 rounded = true
 alignment = 2
-custom_arrow_step = 1.0
+custom_arrow_step = 50.0
+custom_arrow_round = true
 
 [node name="FontMSDFHBox" type="HBoxContainer" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox" unique_id=2048497222]
 unique_name_in_owner = true
@@ -227,7 +233,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(54, 0)
 layout_mode = 2
 size_flags_horizontal = 10
-tooltip_text = "MSDF size. Higher number is more accurate and less performant."
+tooltip_text = "MSDF size: Higher number is more accurate and less performant."
 mouse_default_cursor_shape = 2
 theme = ExtResource("13_nvup7")
 min_value = 8.0
@@ -508,7 +514,7 @@ unique_name_in_owner = true
 custom_maximum_size = Vector2(-1, 20)
 layout_mode = 2
 theme = ExtResource("18_ic67r")
-text = "Edit Font Preset"
+text = "Edit Text Font"
 
 [node name="FontSizeHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=111563572]
 unique_name_in_owner = true
@@ -632,7 +638,7 @@ unique_name_in_owner = true
 custom_maximum_size = Vector2(-1, 20)
 layout_mode = 2
 theme = ExtResource("18_ic67r")
-text = "Edit Font Preset"
+text = "Edit Title Font"
 
 [node name="TitleFontSizeHBox" type="HBoxContainer" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer" unique_id=176016455]
 unique_name_in_owner = true

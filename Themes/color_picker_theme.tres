@@ -1,7 +1,5 @@
 [gd_resource type="Theme" format=3 uid="uid://d02qopbtpa4om"]
 
-[ext_resource type="SystemFont" uid="uid://cwnk6cgp4s4cs" path="res://Themes/ui_font.tres" id="1_wdn3c"]
-
 [resource]
 Button/colors/font_color = Color(0.8745098, 0.8745098, 0.8745098, 1)
 Button/colors/font_outline_color = Color(0, 0, 0, 1)
@@ -11,7 +9,7 @@ Button/constants/icon_max_width = 0
 Button/constants/line_spacing = 0
 Button/constants/outline_size = 0
 Button/font_sizes/font_size = 16
-Button/fonts/font = ExtResource("1_wdn3c")
+Button/fonts/font = null
 Button/styles/disabled = null
 Button/styles/focus = null
 Button/styles/hover = null
@@ -40,7 +38,6 @@ Label/constants/shadow_offset_x = 1
 Label/constants/shadow_offset_y = 1
 Label/constants/shadow_outline_size = 1
 Label/font_sizes/font_size = 16
-Label/fonts/font = ExtResource("1_wdn3c")
 Label/styles/normal = null
 LineEdit/colors/caret_color = Color(0.95, 0.95, 0.95, 1)
 LineEdit/colors/font_color = Color(0.875, 0.875, 0.875, 1)
@@ -49,7 +46,6 @@ LineEdit/constants/caret_width = 2
 LineEdit/constants/minimum_character_width = 2
 LineEdit/constants/outline_size = 0
 LineEdit/font_sizes/font_size = 14
-LineEdit/fonts/font = ExtResource("1_wdn3c")
 LineEdit/styles/focus = null
 LineEdit/styles/normal = null
 LineEdit/styles/read_only = null
@@ -65,7 +61,6 @@ MenuButton/constants/icon_max_width = 0
 MenuButton/constants/line_spacing = 0
 MenuButton/constants/outline_size = 0
 MenuButton/font_sizes/font_size = 14
-MenuButton/fonts/font = ExtResource("1_wdn3c")
 MenuButton/styles/disabled = null
 MenuButton/styles/focus = null
 MenuButton/styles/hover = null
@@ -89,9 +84,6 @@ PopupMenu/constants/v_separation = 4
 PopupMenu/font_sizes/font_separator_size = 14
 PopupMenu/font_sizes/font_size = 14
 PopupMenu/font_sizes/title_font_size = 14
-PopupMenu/fonts/font = ExtResource("1_wdn3c")
-PopupMenu/fonts/font_separator = ExtResource("1_wdn3c")
-PopupMenu/fonts/title_font = ExtResource("1_wdn3c")
 PopupMenu/styles/hover = null
 PopupMenu/styles/panel = null
 SpinBox/constants/buttons_vertical_separation = 0
@@ -112,6 +104,5 @@ TooltipLabel/constants/paragraph_spacing = 0
 TooltipLabel/constants/shadow_offset_x = 1
 TooltipLabel/constants/shadow_offset_y = 1
 TooltipLabel/font_sizes/font_size = 16
-TooltipLabel/fonts/font = ExtResource("1_wdn3c")
 TooltipLabel/styles/normal = null
 VBoxContainer/constants/separation = 2

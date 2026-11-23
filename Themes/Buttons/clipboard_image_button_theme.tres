@@ -1,0 +1,88 @@
+[gd_resource type="Theme" format=3 uid="uid://btwlderbyy4qw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ax8r8"]
+content_margin_top = 4.0
+bg_color = Color(0, 0, 0, 0.705882)
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+corner_detail = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u26wf"]
+content_margin_top = 4.0
+bg_color = Color(1, 1, 1, 0.7058824)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.188235, 0.701961, 1, 1)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+corner_detail = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p0vr5"]
+content_margin_top = 4.0
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+corner_detail = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qr5b2"]
+bg_color = Color(0, 0, 0, 0.7058824)
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+corner_detail = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5be5y"]
+content_margin_top = 4.0
+bg_color = Color(0.6, 0.6, 0.6, 0.7058824)
+draw_center = false
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 1, 1, 1)
+border_blend = true
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+corner_detail = 2
+
+[resource]
+Button/colors/font_color = Color(1, 1, 1, 1)
+Button/fonts/font = null
+Button/styles/focus = SubResource("StyleBoxFlat_ax8r8")
+Button/styles/hover = SubResource("StyleBoxFlat_u26wf")
+Button/styles/hover_pressed = SubResource("StyleBoxFlat_p0vr5")
+Button/styles/normal = SubResource("StyleBoxFlat_qr5b2")
+Button/styles/pressed = SubResource("StyleBoxFlat_5be5y")
+TooltipLabel/font_sizes/font_size = 16
+TooltipLabel/fonts/font = null

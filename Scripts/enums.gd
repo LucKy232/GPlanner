@@ -89,6 +89,7 @@ enum StyleSetting {
 
 enum PresetStyleFontSlot {
 	DEFAULT,
+	UI,
 	SLOT1,
 	SLOT2,
 }

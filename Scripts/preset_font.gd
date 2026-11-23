@@ -5,17 +5,19 @@ var order_id: int = -1
 var system_font: SystemFont
 
 
-func new_empty(_order_id: int, _string_id: String, default_font_name: String) -> void:
+func new_empty(_order_id: int, _string_id: String, default_font_name: String) -> PresetFont:
 	id = _string_id
 	order_id = _order_id
 	system_font = SystemFont.new()
 	system_font.font_names = [default_font_name]
+	return self
 
 
-func new_from_system_font(_order_id: int, _string_id: String, font: SystemFont) -> void:
+func new_from_system_font(_order_id: int, _string_id: String, font: SystemFont) -> PresetFont:
 	id = _string_id
 	order_id = _order_id
 	system_font = font
+	return self
 
 
 func get_first_font_name() -> String:
