@@ -323,10 +323,36 @@ func rebuild_from_json_dict(dict: Dictionary) -> void:
 							dict["list_div_color.b"],
 							dict["list_div_color.a"])
 		set_list_div_color(ldc)
+	if dict.has("font_slot_1"):
+		font_slot_1 = PresetFont.new().rebuild_from_json(2, dict["font_slot_1"])
+	if dict.has("font_slot_2"):
+		font_slot_2 = PresetFont.new().rebuild_from_json(3, dict["font_slot_2"])
+	if dict.has("edit_title_font_independently"):
+		edit_title_font_independently = bool(dict["edit_title_font_independently"])
+	if dict.has("text_theme_font_slot"):
+		text_theme_font_slot = dict["text_theme_font_slot"] as Enums.PresetStyleFontSlot
+		# If assigned to Defautl or UI, PlannerCanvas will request the font change
+		match text_theme_font_slot:
+			Enums.PresetStyleFontSlot.SLOT1:
+				if font_slot_1:
+					set_font(font_slot_1, Enums.PresetStyleFontSlot.SLOT1)
+			Enums.PresetStyleFontSlot.SLOT2:
+				if font_slot_2:
+					set_font(font_slot_2, Enums.PresetStyleFontSlot.SLOT2)
+	if dict.has("title_theme_font_slot"):
+		title_theme_font_slot = dict["title_theme_font_slot"] as Enums.PresetStyleFontSlot
+		# If assigned to Defautl or UI, PlannerCanvas will request the font change
+		match title_theme_font_slot:
+			Enums.PresetStyleFontSlot.SLOT1:
+				if font_slot_1:
+					set_title_font(font_slot_1, Enums.PresetStyleFontSlot.SLOT1)
+			Enums.PresetStyleFontSlot.SLOT2:
+				if font_slot_2:
+					set_title_font(font_slot_2, Enums.PresetStyleFontSlot.SLOT2)
 
 
 func to_json() -> Dictionary:
-	return {
+	var dict: Dictionary = {
 		"id": id,
 		"name": name,
 		"background_color.r": background_color.r,
@@ -367,4 +393,12 @@ func to_json() -> Dictionary:
 		"list_div_color.g": list_div_color.g,
 		"list_div_color.b": list_div_color.b,
 		"list_div_color.a": list_div_color.a,
+		"edit_title_font_independently": edit_title_font_independently,
+		"text_theme_font_slot": text_theme_font_slot,
+		"title_theme_font_slot": title_theme_font_slot,
 	}
+	if font_slot_1 and (text_theme_font_slot == Enums.PresetStyleFontSlot.SLOT1 or title_theme_font_slot == Enums.PresetStyleFontSlot.SLOT1):
+		dict["font_slot_1"] = font_slot_1.to_json()
+	if font_slot_2 and (text_theme_font_slot == Enums.PresetStyleFontSlot.SLOT2 or title_theme_font_slot == Enums.PresetStyleFontSlot.SLOT2):
+		dict["font_slot_2"] = font_slot_2.to_json()
+	return dict

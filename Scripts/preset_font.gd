@@ -27,7 +27,7 @@ func get_first_font_name() -> String:
 
 
 func set_font_name(name: String) -> void:
-	system_font.font_names = [name]
+	system_font.set_deferred("font_names", [name])
 
 
 func get_font_weight() -> int:
@@ -62,9 +62,22 @@ func set_msdf_enabled(toggled_on: bool) -> void:
 	system_font.multichannel_signed_distance_field = toggled_on
 
 
-func rebuild_from_json(_order_id: int, dict: Dictionary) -> void:
+func set_values_from_dict(_order_id: int, dict: Dictionary) -> void:
+	if !system_font:
+		push_error("Needs an existing SystemFont - shared resource")
+		return
+	order_id = _order_id
+	set_all_values_from_dict(dict)
+
+
+func rebuild_from_json(_order_id: int, dict: Dictionary) -> PresetFont:
 	system_font = SystemFont.new()
 	order_id = _order_id
+	set_all_values_from_dict(dict)
+	return self
+
+
+func set_all_values_from_dict(dict: Dictionary) -> void:
 	id = str(get_value_from_dict(dict, "id", ""))
 	system_font.font_names = [get_value_from_dict(dict, "font_name", "")]
 	system_font.font_weight = int(get_value_from_dict(dict, "weight", system_font.font_weight))

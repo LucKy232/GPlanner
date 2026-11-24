@@ -14,6 +14,11 @@ func _ready() -> void:
 	show_zoom()
 
 
+func set_zoom_limits(limits: Vector2) -> void:
+	zoom_progress_bar.min_value = limits.x
+	zoom_progress_bar.max_value = limits.y
+
+
 func update_zoom(zoom_val: float) -> void:
 	show_zoom()
 	zoom_progress_bar.value = zoom_val

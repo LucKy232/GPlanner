@@ -1,6 +1,7 @@
 class_name PlannerCanvas extends Control
 ## Manages a single file / tab
 
+@export var MOUSE_WARP_MARGIN: float = 40.0
 @onready var connection_container: Control = %ConnectionContainer
 @onready var object_container: Control = %ObjectContainer
 @onready var selection_viewer: Panel = %SelectionViewer
@@ -59,6 +60,7 @@ signal has_selected_control
 signal has_deselected_control
 signal status_message_requested		# NOTE only for list copied to clipboard atm
 signal single_style_setting_change_requested
+signal request_style_font_change
 
 
 func _init() -> void:
@@ -218,12 +220,14 @@ func update_all_style_presets(dict: Dictionary[String, PresetStyle]) -> void:
 	for style_id in style_presets:
 		if !preset_to_elements.has(style_presets[style_id]):
 			preset_to_elements[style_presets[style_id]] = PackedInt32Array()
+		request_change_style_font(style_presets[style_id])
 
 
 func update_single_style_preset(style_preset: PresetStyle) -> void:
 	if !preset_to_elements.has(style_preset):
 		preset_to_elements[style_preset] = PackedInt32Array()
 	style_presets[style_preset.id] = style_preset
+	request_change_style_font(style_preset)
 
 
 func update_connection_color_by_preset(preset_id: String) -> void:
@@ -852,6 +856,7 @@ func rebuild_elements(json_elems: Dictionary) -> void:
 				preset_to_elements[style_presets[style_id]].append(elem_id)
 			elif json_elems[i].has("individual_style") and !has_style:
 				elements[elem_id].individual_style.rebuild_from_json_dict(json_elems[i]["individual_style"])
+				request_change_style_font(elements[elem_id].individual_style)
 				elements[elem_id].unassign_style_preset()
 	is_user_input = true
 
@@ -869,6 +874,7 @@ func rebuild_lists(json_lists: Dictionary) -> void:
 				preset_to_elements[style_presets[style_id]].append(list_id)
 			elif !has_style and json_lists[i].has("individual_style"):
 				elements[list_id].individual_style.rebuild_from_json_dict(json_lists[i]["individual_style"])
+				request_change_style_font(elements[list_id].individual_style)
 				elements[list_id].unassign_style_preset()
 	is_user_input = true
 
@@ -892,6 +898,15 @@ func rebuild_connections(json_conns: Dictionary) -> void:
 func rebuild_swatches(dict: Dictionary) -> void:
 	for c in dict:
 		swatches.append(Color(float(dict[c]["r"]), float(dict[c]["g"]), float(dict[c]["b"])))
+
+
+func request_change_style_font(preset: PresetStyle) -> void:
+	match preset.text_theme_font_slot:
+		Enums.PresetStyleFontSlot.DEFAULT, Enums.PresetStyleFontSlot.UI:
+			request_style_font_change.emit(preset, preset.text_theme_font_slot, false)
+	match preset.title_theme_font_slot:
+		Enums.PresetStyleFontSlot.DEFAULT, Enums.PresetStyleFontSlot.UI:
+			request_style_font_change.emit(preset, preset.title_theme_font_slot, true)
 
 
 func add_swatch(color: Color) -> void:
@@ -1041,17 +1056,17 @@ func toggle_element_mouse_inputs(toggled_on: bool) -> void:
 		elements[list_id].toggle_mouse_input(toggled_on)
 
 
-func warp_mouse_to_other_size() -> void:
+func warp_mouse_to_other_side() -> void:
 	var mouse_pos: Vector2 = get_viewport().get_mouse_position()
 	var window_size: Vector2 = get_viewport_rect().size
-	if mouse_pos.x < 50.0:
-		get_viewport().warp_mouse( Vector2(window_size.x - 50.0, mouse_pos.y) )
-	elif mouse_pos.x > (window_size.x - 50.0):
-		get_viewport().warp_mouse( Vector2(50.0, mouse_pos.y) )
-	if mouse_pos.y < 50.0:
-		get_viewport().warp_mouse( Vector2(mouse_pos.x, window_size.y - 50.0) )
-	elif mouse_pos.y > (window_size.y - 50.0):
-		get_viewport().warp_mouse( Vector2(mouse_pos.x, 50.0) )
+	if mouse_pos.x < MOUSE_WARP_MARGIN:
+		get_viewport().warp_mouse( Vector2(window_size.x - MOUSE_WARP_MARGIN, mouse_pos.y) )
+	elif mouse_pos.x > (window_size.x - MOUSE_WARP_MARGIN):
+		get_viewport().warp_mouse( Vector2(MOUSE_WARP_MARGIN, mouse_pos.y) )
+	if mouse_pos.y < MOUSE_WARP_MARGIN:
+		get_viewport().warp_mouse( Vector2(mouse_pos.x, window_size.y - MOUSE_WARP_MARGIN) )
+	elif mouse_pos.y > (window_size.y - MOUSE_WARP_MARGIN):
+		get_viewport().warp_mouse( Vector2(mouse_pos.x, MOUSE_WARP_MARGIN) )
 
 
 # TODO selection_viewer size changes because moving was done automatically without selecting object
@@ -1206,7 +1221,7 @@ func _on_background_gui_input(event: InputEvent) -> void:
 		# Attempts to not include warp_mouse input events by excluding very large movements
 		var viewport_size: Vector2 = get_viewport_rect().size
 		if abs(event.screen_relative.x) < viewport_size.x * 0.5 and abs(event.screen_relative.y) < viewport_size.y * 0.5:
-			warp_mouse_to_other_size()
+			warp_mouse_to_other_side()
 			position = pan_limits(position + event.relative * scale)
 			changed_position.emit()
 	

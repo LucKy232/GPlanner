@@ -77,20 +77,17 @@ func _on_undo_redo_version_changed(id: int) -> void:
 
 
 func _ready() -> void:
-	#Performance.add_custom_monitor("Request Action Type", func(): return int(canvases[cc].get_requested_save_action()))
-	#GlobalScenes.test_scene_paths()
 	get_tree().set_auto_accept_quit(false)		# Don't automatically quit
-	var window_size: Vector2 = get_viewport_rect().size
-	pan_indicator_camera.set_world_2d(get_world_2d())
-	pan_indicator_camera.set_window_size(window_size)
 	app_version = ProjectSettings.get_setting("application/config/version")
 	for i in priority_styleboxes.size():
 		priority_styleboxes[i].bg_color = priority_colors[i]
 	create_tool_keybinds()
 	create_drawing_tool_keybinds()
-	update_zoom_limits(zoom_limits)
+	zoom_indicator.set_zoom_limits(zoom_limits)
+	init_pan_indicator_camera()
 	init_style_settings()
 	connect_signals()
+	# File close confirmation popups don't have these buttons by default / can't add in the editor
 	new_file_confirmation.add_button("     No     ", true, "no_save")
 	new_file_confirmation.add_cancel_button(" Cancel ")
 	load_file_confirmation.add_button("     No     ", true, "no_save")
@@ -160,6 +157,12 @@ func scale_ui(factor: float) -> void:
 	load_file_confirmation.size *= (factor / old_factor)
 	close_tab_confirmation.size *= (factor / old_factor)
 	exit_tab_confirmation.size *= (factor / old_factor)
+
+
+func init_pan_indicator_camera() -> void:
+	var window_size: Vector2 = get_viewport_rect().size
+	pan_indicator_camera.set_world_2d(get_world_2d())
+	pan_indicator_camera.set_window_size(window_size)
 
 
 # Need to create new SystemFonts with settings from the default ones to avoid errors when setting font_names
@@ -329,11 +332,6 @@ func set_toggle_mode_button_tooltip(tooltip: String) -> void:
 	toggle_mode_button.shortcut.events = InputMap.action_get_events("switch_app_mode")
 
 
-func update_zoom_limits(limits: Vector2) -> void:
-	zoom_indicator.zoom_progress_bar.min_value = limits.x
-	zoom_indicator.zoom_progress_bar.max_value = limits.y
-
-
 func toggle_borderless_window() -> void:
 	if get_window().mode == Window.Mode.MODE_WINDOWED or get_window().mode == Window.Mode.MODE_MAXIMIZED:
 		last_window_mode = get_window().mode
@@ -470,6 +468,7 @@ func connect_planner_canvas_signals(new_canvas: PlannerCanvas) -> void:
 	new_canvas.has_deselected_control.connect(_on_canvas_has_deselected_control)
 	new_canvas.status_message_requested.connect(_on_canvas_status_message_requested)
 	new_canvas.single_style_setting_change_requested.connect(_on_canvas_single_style_setting_change_requested)
+	new_canvas.request_style_font_change.connect(_on_canvas_requested_style_font_change)
 
 
 # DrawingManager screenshots & saves the images & sends a signal when it's done
@@ -517,6 +516,7 @@ func save_file(path: String) -> void:
 		return
 	
 	save_data = {
+		"AppVersion": app_version,
 		"State": canvases[cc].canvas_state_to_json(),
 		"StylePresets": canvases[cc].all_presets_to_json(),
 		"Elements": canvases[cc].all_elements_to_Json(),
@@ -606,7 +606,7 @@ func load_file(path: String, app_startup: bool = false) -> void:
 	_on_canvas_changed_zoom()
 
 
-# NOTE Also saves window state, will eventually save more global settings (independent of files) and get renamed
+# NOTE Also saves window state + Default & UI fonts, will eventually save more global settings (independent of files) and get renamed
 func save_opened_file_paths_and_quit(path: String) -> void:
 	var file = FileAccess.open("user://" + path, FileAccess.WRITE)
 	var save_data: Dictionary
@@ -623,6 +623,8 @@ func save_opened_file_paths_and_quit(path: String) -> void:
 	# Tabs will be in the range [0 ~ tabs-1] and so will canvas IDs corresponding 1:1 with tabs (until a tab gets closed, but tab_to_canvas dictionary will be accurate)
 	save_data["CurrentID"] = find_valid_tab()
 	save_data["WindowState"] = get_window_state_json()
+	save_data["DefaultFont"] = style_settings.get_default_font_to_json()
+	save_data["UIFont"] = style_settings.get_ui_font_to_json()
 	
 	file.store_string(JSON.stringify(save_data, "\t"))
 	file.close()
@@ -659,6 +661,10 @@ func load_opened_file_paths(path: String) -> int:
 			var current = int(data["CurrentID"])
 			if data.has("WindowState"):
 				restore_window_state(data["WindowState"])
+			if data.has("DefaultFont"):
+				style_settings.set_default_font_settings_from_dict(data["DefaultFont"])
+			if data.has("UIFont"):
+				style_settings.set_ui_font_settings_from_dict(data["UIFont"])
 			for f in files:
 				if files[f] != "":
 					var tab_name: String = files[f].get_file().get_slice(".", 0)	# For tab name or referring to the file in general
@@ -1185,6 +1191,21 @@ func _on_style_settings_individual_preset_changed(setting: Enums.StyleSetting, p
 
 func _on_canvas_single_style_setting_change_requested(setting: Enums.StyleSetting, new_value: Variant, preset: PresetStyle) -> void:
 	style_settings.set_individual_preset_single_setting(setting, new_value, preset)
+
+
+func _on_canvas_requested_style_font_change(preset: PresetStyle, slot: Enums.PresetStyleFontSlot, is_title_theme: bool) -> void:
+	if is_title_theme:
+		match slot:
+			Enums.PresetStyleFontSlot.DEFAULT:
+				preset.set_title_font(style_settings.fonts[0], Enums.PresetStyleFontSlot.DEFAULT)
+			Enums.PresetStyleFontSlot.UI:
+				preset.set_title_font(style_settings.fonts[1], Enums.PresetStyleFontSlot.UI)
+	else:
+		match slot:
+			Enums.PresetStyleFontSlot.DEFAULT:
+				preset.set_font(style_settings.fonts[0], Enums.PresetStyleFontSlot.DEFAULT)
+			Enums.PresetStyleFontSlot.UI:
+				preset.set_font(style_settings.fonts[1], Enums.PresetStyleFontSlot.UI)
 
 
 func _on_style_settings_preset_changed(setting: Enums.StyleSetting, preset_selector_id: int, old_value: Variant, new_value: Variant) -> void:

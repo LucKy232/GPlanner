@@ -186,6 +186,13 @@ fit_to_longest_item = false
 allow_reselect = true
 search_bar_enabled = true
 
+[node name="FontNameExists" type="Label" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox" unique_id=1532692124]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+autowrap_mode = 2
+
 [node name="FontWeightHBox" type="HBoxContainer" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox" unique_id=663167922]
 unique_name_in_owner = true
 layout_mode = 2
@@ -198,7 +205,7 @@ label_settings = ExtResource("3_uc373")
 
 [node name="FontWeightSpinBox" type="SpinBox" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontWeightHBox" unique_id=1175601748]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(54, 0)
+custom_minimum_size = Vector2(47, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 4
@@ -230,7 +237,7 @@ text = "MSDF Rendering"
 
 [node name="FontMSDFSpinBox" type="SpinBox" parent="FontSettingsControl/FontSettingsPanel/FontSettingsMargin/FontSettingsVBox/FontMSDFHBox" unique_id=293421857]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(54, 0)
+custom_minimum_size = Vector2(47, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 tooltip_text = "MSDF size: Higher number is more accurate and less performant."
@@ -458,6 +465,7 @@ label_settings = ExtResource("3_uc373")
 
 [node name="BorderSizeSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/BorderSizeHBox" unique_id=988227872]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(47, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 mouse_default_cursor_shape = 2
@@ -528,6 +536,7 @@ label_settings = ExtResource("3_uc373")
 
 [node name="FontSizeSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontSizeHBox" unique_id=516852465]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(47, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 4
@@ -570,6 +579,7 @@ label_settings = ExtResource("3_uc373")
 
 [node name="FontOutlineSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/FontOutlineHBox" unique_id=1138109619]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(47, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 4
@@ -611,7 +621,7 @@ label_settings = ExtResource("3_uc373")
 
 [node name="LineSpacingSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/LineSpacingHBox" unique_id=667189847]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(48, 0)
+custom_minimum_size = Vector2(47, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 mouse_default_cursor_shape = 2
@@ -651,6 +661,7 @@ text = "Font Size"
 
 [node name="TitleFontSizeSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleFontSizeHBox" unique_id=697578847]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(47, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 4
@@ -691,6 +702,7 @@ text = "Outline Size"
 
 [node name="TitleFontOutlineSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleFontOutlineHBox" unique_id=851103501]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(47, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 4
@@ -729,6 +741,7 @@ text = "Line Spacing"
 
 [node name="TitleLineSpacingSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/TitleLineSpacingHBox" unique_id=1796244458]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(47, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 4
@@ -764,6 +777,7 @@ text = "Separation"
 
 [node name="EntrySeparationSpinBox" type="SpinBox" parent="VBoxContainer/SettingsPanel/VBoxContainer/ScrollContainer/VBoxContainer/EntrySeparationHBox" unique_id=1211726910]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(47, 0)
 layout_mode = 2
 size_flags_horizontal = 10
 size_flags_vertical = 4
