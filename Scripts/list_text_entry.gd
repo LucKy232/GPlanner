@@ -14,6 +14,7 @@ var initial_grabber_event: Vector2 = Vector2.ZERO
 var can_hover: bool = true
 var priority_id: Enums.Priority = Enums.Priority.NONE
 var priority_color: Color = Color.WHITE
+var old_text: String = ""
 var list_id: int = -1		## updated when this is created, used when dropped on canvas to access list style, if list_id ever changes at runtime, this will break
 var order_id: int = -1
 var id: int = -1
@@ -101,7 +102,7 @@ func set_div_color(c: Color) -> void:
 
 
 func rebuild_from_dict(dict: Dictionary) -> void:
-	text_edit.text = dict["text"]
+	set_text(dict["text"])
 
 
 func reset_item_sizes() -> void:
@@ -126,6 +127,7 @@ func change_grabber_size(text_size: float) -> void:
 
 func set_text(text: String) -> void:
 	text_edit.text = text
+	old_text = text
 
 
 func get_text() -> String:
@@ -168,10 +170,6 @@ func _on_grabber_margin_gui_input(event: InputEvent) -> void:
 		grabber_clicked = true
 
 
-func _on_text_edit_lines_edited_from(_from_line: int, _to_line: int) -> void:
-	text_changed.emit()
-
-
 func _on_mouse_hover_mouse_entered() -> void:
 	_on_hover(true)
 
@@ -202,3 +200,8 @@ func _on_text_edit_focus_exited() -> void:
 func _on_text_edit_gui_input(event: InputEvent) -> void:
 	if event.is_action_pressed("exit_text_edit", false, true):
 		exit_text_edit()
+
+
+func _on_text_edit_text_changed() -> void:
+	text_changed.emit(id, old_text, get_text())
+	old_text = get_text()

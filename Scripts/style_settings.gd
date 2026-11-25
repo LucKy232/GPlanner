@@ -76,14 +76,8 @@ var font_name_dict: Dictionary[String, int]		## Takes font name as KEY and gives
 var fonts: Dictionary[int, PresetFont]
 ## Is the current (or last selected) CanvasElement's individual preset (if that CanvasElement is using the individual preset)
 var individual_preset: PresetStyle
-var editing_font: FontEditMode = FontEditMode.DISABLED
+var editing_font: Enums.FontEditMode = Enums.FontEditMode.DISABLED
 var default_font: SystemFont
-
-enum FontEditMode {
-	DISABLED,
-	TEXT,
-	TITLE,
-}
 
 
 signal preset_added
@@ -98,6 +92,8 @@ signal preset_removed_undo
 signal request_single_preset_update
 signal preset_selected
 signal order_changed
+signal preset_font_selected
+signal individual_preset_font_selected
 
 
 func _ready() -> void:
@@ -236,19 +232,19 @@ func load_values_from_font_preset(font: PresetFont) -> void:
 func update_font_settings_panel_from_preset(preset: PresetStyle) -> void:
 	var preset_font: PresetFont
 	match editing_font:
-		FontEditMode.TEXT:
+		Enums.FontEditMode.TEXT, Enums.FontEditMode.ALL:
 			if fonts.has(int(preset.text_theme_font_slot)):
 				preset_font = fonts[int(preset.text_theme_font_slot)]
 				font_preset_select.select(int(preset.text_theme_font_slot))
 				which_font_indicator.text = ("Select text%s font preset%s" % [("" if preset.edit_title_font_independently else " + title"), ("" if preset.edit_title_font_independently else "s")])
 				check_font_name_exists(preset_font.get_first_font_name())
-		FontEditMode.TITLE:
+		Enums.FontEditMode.TITLE:
 			if fonts.has(int(preset.title_theme_font_slot)):
 				preset_font = fonts[int(preset.title_theme_font_slot)]
 				font_preset_select.select(int(preset.title_theme_font_slot))
 				which_font_indicator.text = "Select title font preset"
 				check_font_name_exists(preset_font.get_first_font_name())
-		FontEditMode.DISABLED:
+		Enums.FontEditMode.DISABLED:
 			return
 	if preset_font:
 		load_values_from_font_preset(preset_font)
@@ -318,7 +314,7 @@ func get_new_preset() -> PresetStyle:
 	new_preset.set_background_panel_style_box(default_background_style_box.duplicate(), false)
 	new_preset.set_text_edit_theme(default_text_edit_theme.duplicate(), false)
 	new_preset.set_title_text_edit_theme(default_text_edit_theme.duplicate(), false)
-	new_preset.set_font(fonts[0], Enums.PresetStyleFontSlot.DEFAULT)
+	new_preset.set_both_fonts(fonts[0], Enums.PresetStyleFontSlot.DEFAULT)
 	return new_preset
 
 
@@ -579,6 +575,7 @@ func toggle_list_settings(toggled_on) -> void:
 	list_title_category_button.set_pressed_no_signal(toggled_on)
 	list_title_category_button.visible = toggled_on
 	list_title_category_div.visible = toggled_on
+	edit_title_font_preset_button.visible = toggled_on
 	title_font_size_h_box.visible = toggled_on
 	title_font_color_h_box.visible = toggled_on
 	title_font_outline_h_box.visible = toggled_on
@@ -629,6 +626,40 @@ func set_preset_font_single_setting(setting: Enums.StyleSetting, value: Variant,
 		return
 	var preset: PresetFont = fonts[preset_font_order_id]
 	_set_preset_font_single_setting(setting, value, preset)
+
+
+func change_font_used_by_preset_id(preset_selection_id: int, which_font: Enums.FontEditMode, slot: Enums.PresetStyleFontSlot) -> void:
+	if !presets.has(preset_selection_id):
+		return
+	var preset: PresetStyle = presets[preset_selection_id]
+	change_font_used_by_preset(preset, which_font, slot)
+
+
+func change_font_used_by_preset(preset: PresetStyle, which_font: Enums.FontEditMode, slot: Enums.PresetStyleFontSlot) -> void:
+	var function: Callable
+	match which_font:
+		Enums.FontEditMode.DISABLED:
+			return
+		Enums.FontEditMode.TEXT:
+			function = preset.set_font
+		Enums.FontEditMode.TITLE:
+			function = preset.set_title_font
+		Enums.FontEditMode.ALL:
+			function = preset.set_both_fonts
+	match slot:
+		Enums.PresetStyleFontSlot.DEFAULT:
+			function.call(fonts[0], Enums.PresetStyleFontSlot.DEFAULT)
+		Enums.PresetStyleFontSlot.UI:
+			function.call(fonts[1], Enums.PresetStyleFontSlot.UI)
+		Enums.PresetStyleFontSlot.SLOT1:
+			if preset.font_slot_1:
+				function.call(preset.font_slot_1, Enums.PresetStyleFontSlot.SLOT1)
+		Enums.PresetStyleFontSlot.SLOT2:
+			if preset.font_slot_2:
+				function.call(preset.font_slot_2, Enums.PresetStyleFontSlot.SLOT2)
+	if is_preset_selected(preset) and (editing_font == which_font or editing_font == Enums.FontEditMode.ALL):
+		font_preset_select.select(slot as int)
+		load_values_from_font_preset(fonts[slot as int])
 
 
 func toggle_modify_preset_buttons() -> void:
@@ -851,15 +882,24 @@ func _on_list_entry_category_button_toggled(toggled_on: bool) -> void:
 
 
 func _on_font_preset_select_item_selected(index: int) -> void:
-	var preset: PresetStyle = individual_preset if preset_options.selected == 0 else presets[preset_options.selected]
+	var is_individual_preset: bool = (preset_options.selected == 0)
+	var preset: PresetStyle = individual_preset if is_individual_preset else presets[preset_options.selected]
+	var old_slots: Array[Enums.PresetStyleFontSlot] = [preset.text_theme_font_slot, preset.title_theme_font_slot]
+	var new_slot: Enums.PresetStyleFontSlot = index as Enums.PresetStyleFontSlot
 	if !preset or !fonts.has(index):
 		return
 	match editing_font:
-		FontEditMode.TEXT:
-			preset.set_font(fonts[index], index as Enums.PresetStyleFontSlot)
-		FontEditMode.TITLE:
-			preset.set_title_font(fonts[index], index as Enums.PresetStyleFontSlot)
+		Enums.FontEditMode.TEXT:
+			preset.set_font(fonts[index], new_slot)
+		Enums.FontEditMode.TITLE:
+			preset.set_title_font(fonts[index], new_slot)
+		Enums.FontEditMode.ALL:
+			preset.set_both_fonts(fonts[index], new_slot)
 	load_values_from_font_preset(fonts[index])
+	if is_individual_preset:
+		individual_preset_font_selected.emit(preset, editing_font, old_slots, new_slot)
+	else:
+		preset_font_selected.emit(preset_options.selected, editing_font, old_slots, new_slot)
 
 
 func _on_font_option_button_item_selected(index: int) -> void:
@@ -871,7 +911,7 @@ func _on_font_option_button_item_selected(index: int) -> void:
 
 func _on_font_settings_close_button_pressed() -> void:
 	font_settings_panel.visible = false
-	editing_font = FontEditMode.DISABLED
+	editing_font = Enums.FontEditMode.DISABLED
 
 
 func _on_edit_font_preset_button_pressed() -> void:
@@ -879,7 +919,7 @@ func _on_edit_font_preset_button_pressed() -> void:
 	if !preset:
 		return
 	font_settings_panel.visible = true
-	editing_font = FontEditMode.TEXT
+	editing_font = Enums.FontEditMode.TEXT if preset.edit_title_font_independently else Enums.FontEditMode.ALL
 	font_preset_select.select(preset.text_theme_font_slot)
 	if fonts.has(int(preset.text_theme_font_slot)):
 		load_values_from_font_preset(fonts[int(preset.text_theme_font_slot)])
@@ -891,7 +931,7 @@ func _on_edit_title_font_preset_button_pressed() -> void:
 	if !preset:
 		return
 	font_settings_panel.visible = true
-	editing_font = FontEditMode.TITLE
+	editing_font = Enums.FontEditMode.TITLE
 	font_preset_select.select(preset.title_theme_font_slot)
 	if fonts.has(int(preset.title_theme_font_slot)):
 		load_values_from_font_preset(fonts[int(preset.title_theme_font_slot)])

@@ -232,5 +232,4 @@ func change_border_blend(idx: int, toggled_on: bool) -> void:
 
 
 func _on_button_pressed(idx: int) -> void:
-	print("Pressed %d" % [idx])
 	preset_style_button_pressed.emit(idx)

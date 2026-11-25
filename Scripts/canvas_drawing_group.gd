@@ -138,7 +138,23 @@ func init(manager_size: Vector2, undo_redo_from_canvas: UndoRedo) -> void:
 	#mask_eraser_material.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
 	size = manager_size
 	undo_redo = undo_redo_from_canvas
+	undo_redo.version_changed.connect(_on_undo_redo_version_changed)
 	current_stroke = add_temp_drawing_action()
+
+
+func _on_undo_redo_version_changed() -> void:
+	if undo_redo.get_history_count() == 0:
+		free_unsaved_clipboard_images()
+
+
+func free_unsaved_clipboard_images() -> void:
+	var to_delete: Array[ClipboardImage]
+	for img in clipboard_images:
+		if !img.visible and !img.save:
+			to_delete.append(img)
+	for img in to_delete:
+		clipboard_images.erase(img)
+		img.queue_free()
 
 
 func has_changes() -> bool:

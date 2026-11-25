@@ -61,6 +61,7 @@ signal has_deselected_control
 signal status_message_requested		# NOTE only for list copied to clipboard atm
 signal single_style_setting_change_requested
 signal request_style_font_change
+signal individual_style_font_change_requested
 
 
 func _init() -> void:
@@ -368,6 +369,7 @@ func add_connection(id_from_file: int = -1, arrow_1_enabled: bool = false, arrow
 			if id_from_file >= connection_id_counter:
 				connection_id_counter = id_from_file + 1
 		connections[conn_id] = new_connection
+		connections[conn_id].id = conn_id
 		new_connection.elem_id1 = connection_candidate_1
 		new_connection.elem_id2 = connection_candidate_2
 		if !connections_p1.has(connection_candidate_1):
@@ -384,11 +386,9 @@ func add_connection(id_from_file: int = -1, arrow_1_enabled: bool = false, arrow
 		new_connection.update_p1_color(elements[connection_candidate_1].get_bg_color())
 		new_connection.update_p2_color(elements[connection_candidate_2].get_bg_color())
 		if arrow_1_enabled:
-			new_connection._on_arrow_1_toggled(arrow_1_enabled)
-			new_connection.arrow_1.set_pressed_no_signal(arrow_1_enabled)
+			new_connection.toggle_arrow_1(arrow_1_enabled)
 		if arrow_2_enabled:
-			new_connection._on_arrow_2_toggled(arrow_2_enabled)
-			new_connection.arrow_2.set_pressed_no_signal(arrow_2_enabled)
+			new_connection.toggle_arrow_2(arrow_2_enabled)
 		new_connection.update_positions()
 		new_connection.arrow_changed.connect(_on_connection_arrow_changed)
 		if id_from_file < 0:
@@ -414,6 +414,8 @@ func connect_object_list_signals(list: ObjectList) -> void:
 	list.text_edit_active.connect(_on_list_text_edit_active)
 	list.select_request.connect(_on_list_select_requested)
 	list.entry_priority_changed.connect(_on_list_entry_changed_priority)
+	list.entry_text_changed.connect(_on_list_entry_text_changed)
+	list.title_text_changed.connect(_on_list_title_text_changed)
 	list.copied_to_clipboard.connect(_on_list_copied_to_clipboard)
 	list.drag_and_resize_input.drag_requested.connect(_on_control_dragged.bind(list))
 	list.drag_and_resize_input.resize_requested.connect(_on_control_resized.bind(list))
@@ -581,7 +583,7 @@ func select_element(elem_id: int) -> void:
 		return			# Already selected
 	deselect_any()		# Deselect previous element
 	var gui_focus_owner: Control = get_window().gui_get_focus_owner()
-	if gui_focus_owner:	# Release focus, to not block input if editing Text / OptionButton
+	if gui_focus_owner and gui_focus_owner is not TextEdit:	# Release focus, to not block input if editing Text / OptionButton
 		gui_focus_owner.release_focus()
 	if !elements.has(elem_id):
 		push_error("elements Dictionary doesn't have ID %d" % [elem_id])
@@ -666,11 +668,28 @@ func add_undo_for_individual_preset(setting: Enums.StyleSetting, preset: PresetS
 	undo_redo.commit_action(false)
 
 
+func add_undo_for_individual_preset_changed_font(preset: PresetStyle, which_font: Enums.FontEditMode, old_slots: Array[Enums.PresetStyleFontSlot], new_slot: Enums.PresetStyleFontSlot) -> void:
+	undo_redo.create_action("Change font used|%d" % [preset.element_id], UndoRedo.MERGE_ENDS)
+	undo_redo.add_do_method(request_individual_style_font_change.bind(preset.element_id, which_font, new_slot))
+	if which_font == Enums.FontEditMode.TEXT or which_font == Enums.FontEditMode.ALL:
+		undo_redo.add_undo_method(request_individual_style_font_change.bind(preset.element_id, Enums.FontEditMode.TEXT, old_slots[0]))
+	if which_font == Enums.FontEditMode.TITLE or which_font == Enums.FontEditMode.ALL:
+		undo_redo.add_undo_method(request_individual_style_font_change.bind(preset.element_id, Enums.FontEditMode.TITLE, old_slots[1]))
+	undo_redo.commit_action(false)
+
+
 func request_individual_style_setting_change(element_id: int, setting: Enums.StyleSetting, value: Variant) -> void:
 	if !elements.has(element_id):
 		push_error("elements Dictionary doesn't have ID %d" % [element_id])
 		return
 	single_style_setting_change_requested.emit(setting, value, elements[element_id].individual_style)
+
+
+func request_individual_style_font_change(element_id: int, which_font: Enums.FontEditMode, new_slot: Enums.PresetStyleFontSlot) -> void:
+	if !elements.has(element_id):
+		push_error("elements Dictionary doesn't have ID %d" % [element_id])
+		return
+	individual_style_font_change_requested.emit(elements[element_id].individual_style, which_font, new_slot)
 
 
 func change_element_preset_by_undo_redo(elem_id: int, preset: PresetStyle) -> void:
@@ -1121,11 +1140,29 @@ func change_control_size_by_id(elem_id: int, new_size: Vector2) -> void:
 	change_control_size(elements[elem_id], new_size, false)
 
 
+func set_text_element_text_by_id(elem_id: int, text: String) -> void:
+	if !elements.has(elem_id):
+		return
+	elements[elem_id].set_text(text)
+
+
 func set_text_element_priority_by_id(elem_id: int, p: Enums.Priority) -> void:
 	if !elements.has(elem_id):
 		return
 	elements[elem_id].set_priority_id(p)
 	elements[elem_id].set_priority_color(priority_colors[p])
+
+
+func set_list_entry_text_by_id(list_id: int, entry_id: int, new_text: String) -> void:
+	if !elements.has(list_id):
+		pass
+	elements[list_id].set_entry_text(entry_id, new_text)
+
+
+func set_list_title_text_by_id(list_id: int, new_text: String) -> void:
+	if !elements.has(list_id):
+		pass
+	elements[list_id].set_title_text(new_text)
 
 
 func change_list_entry_priority_by_id(list_id: int, entry_id: int, priority: Enums.Priority) -> void:
@@ -1155,6 +1192,15 @@ func change_list_order_by_id(list_id: int, new_order: Array[int]) -> void:
 		return
 	elements[list_id].set_new_order_array(new_order)
 	elements[list_id].sort_list_by_order_array()
+
+
+func toggle_connection_arrow(conn_id: int, arrow_id: int, toggled_on: bool) -> void:
+	if !connections.has(conn_id):
+		return
+	if arrow_id == 0:
+		connections[conn_id].toggle_arrow_1(toggled_on)
+	elif arrow_id == 1:
+		connections[conn_id].toggle_arrow_2(toggled_on)
 
 
 func _on_control_input_ended(control: Control) -> void:
@@ -1199,7 +1245,7 @@ func _on_background_gui_input(event: InputEvent) -> void:
 			deselect_any()
 		# Release focus, to not block input if editing Text / OptionButton
 		var gui_focus_owner: Control = get_window().gui_get_focus_owner()
-		if gui_focus_owner:
+		if gui_focus_owner and gui_focus_owner is not TextEdit:
 			gui_focus_owner.release_focus()
 	
 	# Begin mouse pan
@@ -1402,8 +1448,34 @@ func _on_element_text_box_active(elem_id: int) -> void:
 		remove_connections_from_element(elem_id)
 
 
-func _on_text_element_text_changed() -> void:
+func _on_text_element_text_changed(elem_id: int, old_text: String, new_text: String) -> void:
+	if !elements.has(elem_id):
+		return
 	canvas_changed()
+	undo_redo.create_action("Text changed|%d" % [elem_id], UndoRedo.MERGE_ENDS)
+	undo_redo.add_do_method(set_text_element_text_by_id.bind(elem_id, new_text))
+	undo_redo.add_undo_method(set_text_element_text_by_id.bind(elem_id, old_text))
+	undo_redo.commit_action(false)
+
+
+func _on_list_entry_text_changed(list_id: int, entry_id: int, old_text: String, new_text: String) -> void:
+	if !elements.has(list_id):
+		return
+	canvas_changed()
+	undo_redo.create_action("Text changed|%d %d" % [list_id, entry_id], UndoRedo.MERGE_ENDS)
+	undo_redo.add_do_method(set_list_entry_text_by_id.bind(list_id, entry_id, new_text))
+	undo_redo.add_undo_method(set_list_entry_text_by_id.bind(list_id, entry_id, old_text))
+	undo_redo.commit_action(false)
+
+
+func _on_list_title_text_changed(list_id: int, old_text: String, new_text: String) -> void:
+	if !elements.has(list_id):
+		return
+	canvas_changed()
+	undo_redo.create_action("Text changed|%d" % [list_id], UndoRedo.MERGE_ENDS)
+	undo_redo.add_do_method(set_list_title_text_by_id.bind(list_id, new_text))
+	undo_redo.add_undo_method(set_list_title_text_by_id.bind(list_id, old_text))
+	undo_redo.commit_action(false)
 
 
 func _on_list_changed() -> void:
@@ -1485,11 +1557,12 @@ func _on_list_entry_added(list_id: int, entry_id: int, entry_dict: Dictionary) -
 	undo_redo.commit_action(false)
 
 
-func _on_list_order_changed(list_id: int, old_order: Array[int], new_order: Array[int]) -> void:
+func _on_list_order_changed(list_id: int, old_order: Array[int], new_order: Array[int], merge_ends: bool = false) -> void:
 	if !elements.has(list_id):
 		push_error("List ID %d not found in elements Dictionary!" % [list_id])
 		return
-	undo_redo.create_action("Reorder List", UndoRedo.MERGE_DISABLE)
+	canvas_changed()
+	undo_redo.create_action("Reorder List|%d" % [list_id], UndoRedo.MERGE_ENDS if merge_ends else UndoRedo.MERGE_DISABLE)
 	undo_redo.add_do_method(change_list_order_by_id.bind(list_id, new_order))
 	undo_redo.add_undo_method(change_list_order_by_id.bind(list_id, old_order))
 	undo_redo.commit_action(false)
@@ -1535,9 +1608,13 @@ func _on_list_dropped_element_from_canvas(list_id: int, new_entry_dict: Dictiona
 	is_dragging = false
 	is_resizing = false
 
- 
-func _on_connection_arrow_changed() -> void:
+
+func _on_connection_arrow_changed(conn_id: int, arrow_id: int, toggled_on: bool) -> void:
 	canvas_changed()
+	undo_redo.create_action("Toggle arrow|%d%d" % [conn_id, arrow_id], UndoRedo.MERGE_ENDS)
+	undo_redo.add_do_method(toggle_connection_arrow.bind(conn_id, arrow_id, toggled_on))
+	undo_redo.add_undo_method(toggle_connection_arrow.bind(conn_id, arrow_id, !toggled_on))
+	undo_redo.commit_action(false)
 
 
 func _on_viewport_size_changed() -> void:

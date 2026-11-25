@@ -388,6 +388,7 @@ debug_color = Color(0, 0.5950001, 0.7, 0)
 [connection signal="pressed" from="PriorityButtonsMargin/PriorityButtonsTween/PriorityButtonsHBox/PriorityNone" to="." method="_on_priority_none_pressed"]
 [connection signal="focus_entered" from="ListMarginContainer/VBoxContainer/ListTitle" to="." method="_on_list_name_focus_entered"]
 [connection signal="gui_input" from="ListMarginContainer/VBoxContainer/ListTitle" to="." method="_on_list_title_gui_input"]
+[connection signal="text_changed" from="ListMarginContainer/VBoxContainer/ListTitle" to="." method="_on_list_title_text_changed"]
 [connection signal="mouse_entered" from="ListMarginContainer/VBoxContainer/ScrollContainer" to="." method="_on_scroll_mouse_entered"]
 [connection signal="mouse_exited" from="ListMarginContainer/VBoxContainer/ScrollContainer" to="." method="_on_scroll_mouse_exited"]
 [connection signal="mouse_entered" from="MouseHover" to="." method="_on_mouse_hover_mouse_entered"]

@@ -294,6 +294,8 @@ func connect_signals() -> void:
 	style_settings.request_single_preset_update.connect(_on_style_settings_request_update_single_preset)
 	style_settings.preset_selected.connect(_on_style_settings_preset_selected)
 	style_settings.order_changed.connect(_on_style_settings_order_changed)
+	style_settings.preset_font_selected.connect(_on_style_settings_preset_font_selected)
+	style_settings.individual_preset_font_selected.connect(_on_style_settings_individual_preset_font_selected)
 
 
 func create_tool_keybinds() -> void:
@@ -469,6 +471,7 @@ func connect_planner_canvas_signals(new_canvas: PlannerCanvas) -> void:
 	new_canvas.status_message_requested.connect(_on_canvas_status_message_requested)
 	new_canvas.single_style_setting_change_requested.connect(_on_canvas_single_style_setting_change_requested)
 	new_canvas.request_style_font_change.connect(_on_canvas_requested_style_font_change)
+	new_canvas.individual_style_font_change_requested.connect(_on_canvas_individual_style_font_change_requested)
 
 
 # DrawingManager screenshots & saves the images & sends a signal when it's done
@@ -1193,13 +1196,17 @@ func _on_canvas_single_style_setting_change_requested(setting: Enums.StyleSettin
 	style_settings.set_individual_preset_single_setting(setting, new_value, preset)
 
 
+func _on_canvas_individual_style_font_change_requested(preset: PresetStyle, which_font: Enums.FontEditMode, new_slot: Enums.PresetStyleFontSlot) -> void:
+	style_settings.change_font_used_by_preset(preset, which_font, new_slot)
+
+
 func _on_canvas_requested_style_font_change(preset: PresetStyle, slot: Enums.PresetStyleFontSlot, is_title_theme: bool) -> void:
 	if is_title_theme:
 		match slot:
 			Enums.PresetStyleFontSlot.DEFAULT:
-				preset.set_title_font(style_settings.fonts[0], Enums.PresetStyleFontSlot.DEFAULT)
+				preset.set_title_font(style_settings.fonts[0], Enums.PresetStyleFontSlot.DEFAULT, false)
 			Enums.PresetStyleFontSlot.UI:
-				preset.set_title_font(style_settings.fonts[1], Enums.PresetStyleFontSlot.UI)
+				preset.set_title_font(style_settings.fonts[1], Enums.PresetStyleFontSlot.UI, false)
 	else:
 		match slot:
 			Enums.PresetStyleFontSlot.DEFAULT:
@@ -1295,6 +1302,26 @@ func _on_style_settings_order_changed(old_order: Dictionary[int, String], new_or
 	canvases[cc].undo_redo.add_do_method(style_settings.reorder_by_preset_order_dict.bind(new_order))
 	canvases[cc].undo_redo.add_undo_method(style_settings.reorder_by_preset_order_dict.bind(old_order))
 	canvases[cc].undo_redo.commit_action(false)
+
+
+func _on_style_settings_preset_font_selected(preset_selector_id: int, which_font: Enums.FontEditMode, old_slots: Array[Enums.PresetStyleFontSlot], new_slot: Enums.PresetStyleFontSlot) -> void:
+	if !canvases.has(cc):
+		return
+	canvases[cc].canvas_changed()
+	canvases[cc].undo_redo.create_action("Change font used|%d" % [preset_selector_id], UndoRedo.MERGE_ENDS)
+	canvases[cc].undo_redo.add_do_method(style_settings.change_font_used_by_preset_id.bind(preset_selector_id, which_font, new_slot))
+	if which_font == Enums.FontEditMode.TEXT or which_font == Enums.FontEditMode.ALL:
+		canvases[cc].undo_redo.add_undo_method(style_settings.change_font_used_by_preset_id.bind(preset_selector_id, Enums.FontEditMode.TEXT, old_slots[0]))
+	if which_font == Enums.FontEditMode.TITLE or which_font == Enums.FontEditMode.ALL:
+		canvases[cc].undo_redo.add_undo_method(style_settings.change_font_used_by_preset_id.bind(preset_selector_id, Enums.FontEditMode.TITLE, old_slots[1]))
+	canvases[cc].undo_redo.commit_action(false)
+
+
+func _on_style_settings_individual_preset_font_selected(preset: PresetStyle, which_font: Enums.FontEditMode, old_slots: Array[Enums.PresetStyleFontSlot], new_slot: Enums.PresetStyleFontSlot) -> void:
+	if !canvases.has(cc):
+		return
+	canvases[cc].canvas_changed()
+	canvases[cc].add_undo_for_individual_preset_changed_font(preset, which_font, old_slots, new_slot)
 
 
 func _on_canvas_has_selected_control() -> void:

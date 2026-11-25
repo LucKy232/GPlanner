@@ -3,6 +3,7 @@ class_name Connection extends Line2D
 @onready var arrow_1: ConnectionArrow = $Arrow1
 @onready var arrow_2: ConnectionArrow = $Arrow2
 
+var id: int = -1
 var elem_id1: int = -1
 var elem_id2: int = -1
 var has_p1: bool = false
@@ -202,13 +203,25 @@ func to_json() -> Dictionary:
 	return entry
 
 
+func toggle_arrow_1(toggled_on: bool) -> void:
+	arrow_1.enabled = toggled_on
+	arrow_1.set_pressed_no_signal(toggled_on)
+	arrow_1.queue_redraw()
+
+
+func toggle_arrow_2(toggled_on: bool) -> void:
+	arrow_2.enabled = toggled_on
+	arrow_2.set_pressed_no_signal(toggled_on)
+	arrow_2.queue_redraw()
+
+
 func _on_arrow_1_toggled(toggled_on: bool) -> void:
 	arrow_1.enabled = toggled_on
 	arrow_1.queue_redraw()
-	arrow_changed.emit()
+	arrow_changed.emit(id, 0, toggled_on)
 
 
 func _on_arrow_2_toggled(toggled_on: bool) -> void:
 	arrow_2.enabled = toggled_on
 	arrow_2.queue_redraw()
-	arrow_changed.emit()
+	arrow_changed.emit(id, 1, toggled_on)

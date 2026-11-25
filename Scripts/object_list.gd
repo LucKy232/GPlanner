@@ -40,6 +40,7 @@ var individual_style: PresetStyle
 var style_preset: PresetStyle
 var has_style_preset: bool = false
 var reparent_reappear: Array[int]
+var old_title_text: String = ""
 
 enum State {
 	DEFAULT,
@@ -52,6 +53,8 @@ signal entry_added
 signal entry_removed
 signal order_changed
 signal entry_priority_changed
+signal entry_text_changed
+signal title_text_changed
 signal list_changed
 signal filtered_gui_input
 signal can_drop
@@ -69,7 +72,6 @@ func _ready() -> void:
 	scroll_container.get_v_scroll_bar().scrolling.connect(_on_scroll)
 	top_left_margin = Vector2(margin_container.get_theme_constant("margin_left"), margin_container.get_theme_constant("margin_top"))
 	total_horizontal_margin = margin_container.get_theme_constant("margin_left") + margin_container.get_theme_constant("margin_right")
-	list_title.text_changed.connect(_on_list_title_text_changed)
 	_on_scroll_hover(false)
 
 
@@ -260,6 +262,7 @@ func move_entry_up_or_down(up: bool) -> void:
 	var last_edited: ListTextEntry = get_last_edited_entry()
 	if !last_edited:
 		return
+	var old_order: Array[int] = entries_order.duplicate()
 	var move: int = 1 if up else -1
 	object_v_box.move_child(last_edited, last_edited_order_id + move)
 	sort_entries(last_edited_order_id, last_edited_order_id + move)
@@ -268,7 +271,8 @@ func move_entry_up_or_down(up: bool) -> void:
 	ensure_entry_visible.call_deferred()
 	line_up_side_buttons.call_deferred()
 	refresh_entry_divs_visibility()
-	list_changed.emit()
+	var new_order: Array[int] = entries_order.duplicate()
+	order_changed.emit(id, old_order, new_order, true)
 
 
 func copy_list_text_to_clipboard() -> void:
@@ -307,6 +311,15 @@ func toggle_title(toggled_on: bool, from_button: bool = false) -> void:
 	list_title_div.visible = toggled_on
 	if !from_button:
 		toggle_title_button.set_pressed_no_signal(toggled_on)
+
+
+func set_title_text(text: String) -> void:
+	list_title.text = text
+	old_title_text = text
+
+
+func get_title_text() -> String:
+	return list_title.text
 
 
 func select() -> void:
@@ -551,6 +564,7 @@ func rebuild_from_dict(dict: Dictionary, priority_colors: Dictionary[Enums.Prior
 	position = Vector2(dict["pos.x"], dict["pos.y"])
 	if dict.has("title"):
 		list_title.text = dict["title"]
+		old_title_text = list_title.text
 	if dict.has("show_title"):
 		toggle_title(bool(dict["show_title"]))
 	if dict.has("entries"):
@@ -607,6 +621,12 @@ func set_entry_priority(entry_id: int, priority: Enums.Priority, color: Color) -
 		return
 	entries[entry_id].set_priority(priority)
 	entries[entry_id].set_priority_color(color)
+
+
+func set_entry_text(entry_id: int, text: String) -> void:
+	if !entries.has(entry_id):
+		return
+	entries[entry_id].set_text(text)
 
 
 #region PresetStyles
@@ -759,12 +779,12 @@ func _on_resized() -> void:
 
 
 func _on_list_title_text_changed() -> void:
-	list_changed.emit()
+	title_text_changed.emit(id, old_title_text, get_title_text())
 
 
-func _on_list_text_entry_text_changed() -> void:
+func _on_list_text_entry_text_changed(entry_id: int, old_text: String, new_text: String) -> void:
 	ensure_entry_visible()
-	list_changed.emit()
+	entry_text_changed.emit(id, entry_id, old_text, new_text)
 
 
 func _on_list_text_entry_grabber_started_move(entry_id: int, event_pos: Vector2) -> void:
@@ -804,13 +824,12 @@ func _on_list_text_entry_grabber_ended_move(entry_id: int) -> void:
 		var old_order: Array[int] = entries_order.duplicate()
 		object_v_box.move_child(entries[entry_id], move_to)
 		sort_entries(entries[entry_id].order_id, move_to)
-		var new_order: Array[int] = entries_order.duplicate()
 		last_edited_entry_id = entry_id
 		last_edited_order_id = entries[entry_id].order_id
 		line_up_side_buttons.call_deferred()
 		refresh_entry_divs_visibility()
-		list_changed.emit()
-		order_changed.emit(id, old_order, new_order)
+		var new_order: Array[int] = entries_order.duplicate()
+		order_changed.emit(id, old_order, new_order, false)
 
 
 # On TextEdit focus entered and exited

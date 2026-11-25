@@ -233,6 +233,6 @@ one_shot = true
 [connection signal="pressed" from="PanelContainer/PriorityButtonsTween/PriorityButtons/PriorityNone" to="." method="_on_priority_none_pressed"]
 [connection signal="focus_entered" from="PanelContainer/Background/TextMarginContainer/InputBlocker/TextEdit" to="." method="_on_text_edit_focus_entered"]
 [connection signal="gui_input" from="PanelContainer/Background/TextMarginContainer/InputBlocker/TextEdit" to="." method="_on_text_edit_gui_input"]
-[connection signal="lines_edited_from" from="PanelContainer/Background/TextMarginContainer/InputBlocker/TextEdit" to="." method="_on_text_edit_lines_edited_from"]
 [connection signal="resized" from="PanelContainer/Background/TextMarginContainer/InputBlocker/TextEdit" to="." method="_on_text_edit_resized"]
+[connection signal="text_changed" from="PanelContainer/Background/TextMarginContainer/InputBlocker/TextEdit" to="." method="_on_text_edit_text_changed"]
 [connection signal="timeout" from="ResizeTimer" to="." method="_on_resize_timer_timeout"]

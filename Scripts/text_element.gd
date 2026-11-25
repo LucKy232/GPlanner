@@ -32,6 +32,7 @@ var manual_resize: bool = false
 var total_horizontal_margin: float
 var total_vertical_margin: float
 var cached_old_position: Vector2 = Vector2.ZERO		## On dragging into list, initial position disappears, saved here on drag start
+var old_text: String = ""
 
 signal became_selected
 signal changed_priority
@@ -112,6 +113,7 @@ func get_text() -> String:
 
 func set_text(text: String) -> void:
 	text_edit.text = text
+	old_text = text
 
 
 func change_size(new_size: Vector2) -> void:
@@ -262,7 +264,7 @@ func _on_text_edit_resized() -> void:
 
 
 func _on_text_edit_lines_edited_from(_from_line: int, _to_line: int) -> void:
-	text_changed.emit()
+	text_changed.emit(text_edit)
 
 
 func _on_text_edit_gui_input(event: InputEvent) -> void:
@@ -272,3 +274,8 @@ func _on_text_edit_gui_input(event: InputEvent) -> void:
 
 func _on_text_edit_focus_entered() -> void:
 	became_selected.emit()
+
+
+func _on_text_edit_text_changed() -> void:
+	text_changed.emit(id, old_text, get_text())
+	old_text = get_text()

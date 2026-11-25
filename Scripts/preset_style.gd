@@ -90,19 +90,20 @@ func set_default_values(category: Category) -> void:
 			list_setting_changed.emit(ListSettings.DIV_COLOR, list_div_color)
 
 
-func set_font(preset_font: PresetFont, slot: Enums.PresetStyleFontSlot) -> void:
-	if !text_edit_theme:
-		return
-	text_edit_theme.set_font("font", "TextEdit", preset_font.system_font)
-	text_theme_font_slot = slot
-	if title_text_edit_theme and !edit_title_font_independently:
-		title_text_edit_theme.set_font("font", "TextEdit", preset_font.system_font)
-		title_theme_font_slot = slot
+func place_font_in_slot(preset_font: PresetFont, slot: Enums.PresetStyleFontSlot) -> void:
 	match slot:
 		Enums.PresetStyleFontSlot.SLOT1:
 			font_slot_1 = preset_font
 		Enums.PresetStyleFontSlot.SLOT2:
 			font_slot_2 = preset_font
+
+
+func set_font(preset_font: PresetFont, slot: Enums.PresetStyleFontSlot) -> void:
+	if !text_edit_theme:
+		return
+	text_edit_theme.set_font("font", "TextEdit", preset_font.system_font)
+	text_theme_font_slot = slot
+	place_font_in_slot(preset_font, slot)
 
 
 func set_font_size(size: int) -> void:
@@ -136,17 +137,25 @@ func set_line_spacing(value: int) -> void:
 		text_edit_theme.set_constant("line_spacing", "TextEdit", value)
 
 
-func set_title_font(preset_font: PresetFont, slot: Enums.PresetStyleFontSlot) -> void:
+func set_title_font(preset_font: PresetFont, slot: Enums.PresetStyleFontSlot, is_user_action: bool = true) -> void:
 	if !title_text_edit_theme:
 		return
 	title_text_edit_theme.set_font("font", "TextEdit", preset_font.system_font)
 	title_theme_font_slot = slot
-	edit_title_font_independently = true
-	match slot:
-		Enums.PresetStyleFontSlot.SLOT1:
-			font_slot_1 = preset_font
-		Enums.PresetStyleFontSlot.SLOT2:
-			font_slot_2 = preset_font
+	if is_user_action:
+		edit_title_font_independently = true
+	place_font_in_slot(preset_font, slot)
+
+
+func set_both_fonts(preset_font: PresetFont, slot: Enums.PresetStyleFontSlot) -> void:
+	if !text_edit_theme or !title_text_edit_theme:
+		return
+	text_edit_theme.set_font("font", "TextEdit", preset_font.system_font)
+	title_text_edit_theme.set_font("font", "TextEdit", preset_font.system_font)
+	text_theme_font_slot = slot
+	title_theme_font_slot = slot
+	edit_title_font_independently = false
+	place_font_in_slot(preset_font, slot)
 
 
 func set_title_font_size(size: int) -> void:
@@ -327,8 +336,6 @@ func rebuild_from_json_dict(dict: Dictionary) -> void:
 		font_slot_1 = PresetFont.new().rebuild_from_json(2, dict["font_slot_1"])
 	if dict.has("font_slot_2"):
 		font_slot_2 = PresetFont.new().rebuild_from_json(3, dict["font_slot_2"])
-	if dict.has("edit_title_font_independently"):
-		edit_title_font_independently = bool(dict["edit_title_font_independently"])
 	if dict.has("text_theme_font_slot"):
 		text_theme_font_slot = dict["text_theme_font_slot"] as Enums.PresetStyleFontSlot
 		# If assigned to Defautl or UI, PlannerCanvas will request the font change
@@ -345,10 +352,12 @@ func rebuild_from_json_dict(dict: Dictionary) -> void:
 		match title_theme_font_slot:
 			Enums.PresetStyleFontSlot.SLOT1:
 				if font_slot_1:
-					set_title_font(font_slot_1, Enums.PresetStyleFontSlot.SLOT1)
+					set_title_font(font_slot_1, Enums.PresetStyleFontSlot.SLOT1, false)
 			Enums.PresetStyleFontSlot.SLOT2:
 				if font_slot_2:
-					set_title_font(font_slot_2, Enums.PresetStyleFontSlot.SLOT2)
+					set_title_font(font_slot_2, Enums.PresetStyleFontSlot.SLOT2, false)
+	if dict.has("edit_title_font_independently"):
+		edit_title_font_independently = bool(dict["edit_title_font_independently"])
 
 
 func to_json() -> Dictionary:

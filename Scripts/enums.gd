@@ -94,6 +94,13 @@ enum PresetStyleFontSlot {
 	SLOT2,
 }
 
+enum FontEditMode {
+	DISABLED,
+	TEXT,
+	TITLE,
+	ALL,
+}
+
 const style_setting_names: Dictionary[StyleSetting, String] = {
 	StyleSetting.BG_COLOR: "Background Color",
 	StyleSetting.BORDER_SIZE: "Border Size",
