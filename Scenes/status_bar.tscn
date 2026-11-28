@@ -1,40 +1,110 @@
 [gd_scene format=3 uid="uid://c2apku3xuhhyp"]
 
-[ext_resource type="Theme" uid="uid://bfxmorphywksx" path="res://Themes/label_theme.tres" id="1_gphnv"]
-[ext_resource type="LabelSettings" uid="uid://ccff3ay0edn1k" path="res://Themes/status_bar_label_settings.tres" id="1_j0gso"]
 [ext_resource type="Script" uid="uid://d21dllhkeycf3" path="res://Scripts/status_bar.gd" id="1_mux0b"]
-[ext_resource type="StyleBox" uid="uid://cx7th7v7qd68v" path="res://Themes/status_bar_stylebox.tres" id="2_eoleg"]
-[ext_resource type="Script" uid="uid://b0ioikc1dokvh" path="res://AddonsOwn/tween_show_hide.gd" id="5_eoleg"]
+[ext_resource type="PackedScene" uid="uid://ds6j5o4gis7a" path="res://Scenes/status_label.tscn" id="2_j0gso"]
 
-[node name="StatusLabel" type="Label" unique_id=398541406]
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -131.0
-offset_bottom = 23.0
-grow_horizontal = 0
-size_flags_horizontal = 8
-size_flags_vertical = 8
-theme = ExtResource("1_gphnv")
-theme_override_styles/normal = ExtResource("2_eoleg")
-text = "Text Goes Here..."
-label_settings = ExtResource("1_j0gso")
-script = ExtResource("1_mux0b")
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l3an1"]
+resource_local_to_scene = true
+content_margin_left = 10.0
+content_margin_top = 5.0
+content_margin_right = 10.0
+content_margin_bottom = 5.0
+bg_color = Color(0.6, 0.6, 0.6, 0.45098)
+border_color = Color(0.8, 0.8, 0.8, 0)
 
-[node name="TweenShowHide" type="Control" parent="." unique_id=372142274 node_paths=PackedStringArray("target")]
-anchors_preset = 0
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eoleg"]
+resource_local_to_scene = true
+content_margin_left = 10.0
+content_margin_top = 5.0
+content_margin_right = 10.0
+content_margin_bottom = 5.0
+bg_color = Color(0.6, 0.6, 0.6, 0.45098)
+border_color = Color(0.8, 0.8, 0.8, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_gphnv"]
+resource_local_to_scene = true
+content_margin_left = 10.0
+content_margin_top = 5.0
+content_margin_right = 10.0
+content_margin_bottom = 5.0
+bg_color = Color(0.6, 0.6, 0.6, 0.45098)
+border_color = Color(0.8, 0.8, 0.8, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ygqug"]
+resource_local_to_scene = true
+content_margin_left = 10.0
+content_margin_top = 5.0
+content_margin_right = 10.0
+content_margin_bottom = 5.0
+bg_color = Color(0.6, 0.6, 0.6, 0.45098)
+border_color = Color(0.8, 0.8, 0.8, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j0gso"]
+resource_local_to_scene = true
+content_margin_left = 10.0
+content_margin_top = 5.0
+content_margin_right = 10.0
+content_margin_bottom = 5.0
+bg_color = Color(0.6, 0.6, 0.6, 0.45098)
+border_color = Color(0.8, 0.8, 0.8, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hf37t"]
+resource_local_to_scene = true
+content_margin_left = 10.0
+content_margin_top = 5.0
+content_margin_right = 10.0
+content_margin_bottom = 5.0
+bg_color = Color(0.6, 0.6, 0.6, 0.45098)
+border_color = Color(0.8, 0.8, 0.8, 0)
+
+[node name="StatusBar" type="VBoxContainer" unique_id=37245303 node_paths=PackedStringArray("status_labels")]
 offset_right = 40.0
 offset_bottom = 40.0
-script = ExtResource("5_eoleg")
-target = NodePath("..")
-animation_time = 0.5
-immediate_show = true
-transition_type = 7
-move_target = false
-metadata/_custom_type_script = "uid://b0ioikc1dokvh"
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, -31)
+mouse_filter = 2
+theme_override_constants/separation = 0
+script = ExtResource("1_mux0b")
+status_labels = {
+0: NodePath("StatusLabel0"),
+1: NodePath("StatusLabel1"),
+2: NodePath("StatusLabel2"),
+3: NodePath("StatusLabel3"),
+4: NodePath("StatusLabel4")
+}
 
-[node name="HideTimer" type="Timer" parent="." unique_id=1229607322]
-wait_time = 5.0
-one_shot = true
+[node name="StatusLabel0" parent="." unique_id=1342271662 instance=ExtResource("2_j0gso")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_l3an1")
 
-[connection signal="timeout" from="HideTimer" to="." method="_on_timer_timeout"]
+[node name="StatusLabel1" parent="." unique_id=1052051885 instance=ExtResource("2_j0gso")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_eoleg")
+
+[node name="StatusLabel2" parent="." unique_id=1234092903 instance=ExtResource("2_j0gso")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_gphnv")
+
+[node name="StatusLabel3" parent="." unique_id=1773425307 instance=ExtResource("2_j0gso")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_ygqug")
+
+[node name="StatusLabel4" parent="." unique_id=740937456 instance=ExtResource("2_j0gso")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_j0gso")
+
+[node name="StatusLabelFile" parent="." unique_id=531635048 instance=ExtResource("2_j0gso")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_hf37t")

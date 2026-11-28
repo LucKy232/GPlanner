@@ -97,7 +97,7 @@ func get_value_from_dict(dict: Dictionary, value_string_name: String, default_va
 func to_json() -> Dictionary:
 	var dict: Dictionary
 	dict["id"] = id
-	dict["font_name"] = system_font.font_names[0]
+	dict["font_name"] = system_font.font_names[0] if system_font.font_names.size() > 0 else ""
 	dict["weight"] = system_font.font_weight
 	dict["msdf_enabled"] = system_font.multichannel_signed_distance_field
 	dict["msdf_size"] = system_font.msdf_size

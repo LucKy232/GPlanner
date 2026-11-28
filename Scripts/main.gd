@@ -193,15 +193,16 @@ func _process(_delta):
 			get_selected_control().enter_text_edit()
 	if Input.is_action_pressed("ui_undo", true) and input_enabled and (input_repeat_timer.is_stopped() or first_input_repeat):
 		if canvases.has(cc) and canvases[cc].undo_redo.has_undo():
-			print("Undo: ", canvases[cc].undo_redo.get_current_action_name())
+			status_bar.add_status_message("Undo: %s" % [canvases[cc].undo_redo.get_current_action_name().split("|")[0]])
 			canvases[cc].undo_redo.undo()
 			input_repeat_timer.start(0.5 if first_input_repeat else 0.1)
 			first_input_repeat = false
 			canvases[cc].canvas_changed()	# TODO drawings changed if undo type
 	if Input.is_action_pressed("ui_redo", true) and input_enabled and (input_repeat_timer.is_stopped() or first_input_repeat):
 		if canvases.has(cc) and canvases[cc].undo_redo.has_redo():
+			var last_action_id: int = canvases[cc].undo_redo.get_current_action() + 1
+			status_bar.add_status_message("Redo: %s" % canvases[cc].undo_redo.get_action_name(last_action_id).split("|")[0])
 			canvases[cc].undo_redo.redo()
-			print("Redo: ", canvases[cc].undo_redo.get_current_action_name())
 			input_repeat_timer.start(0.5 if first_input_repeat else 0.1)
 			first_input_repeat = false
 			canvases[cc].canvas_changed()	# TODO drawings changed if redo type
@@ -451,7 +452,7 @@ func new_file(add_canvas: bool, show_status: bool = true) -> int:
 	if show_status:
 		#DisplayServer.window_set_title("GPlanner %s: New File" % [app_version])
 		get_tree().root.title = ("GPlanner %s: New File" % [app_version])
-		status_bar.update_status("New File")
+		status_bar.update_status_file("New File")
 	tool_box.select(Enums.Tool.SELECT)
 	if canvases[new_canvas.id].save_state.is_created:
 		settings_drawer.update_data(canvases[new_canvas.id].settings)
@@ -515,7 +516,7 @@ func save_file(path: String) -> void:
 	if file == null:
 		var error = error_string(FileAccess.get_open_error())
 		printerr("FileAcces error: %s", error)
-		status_bar.update_status("Error %s when saving file to path: %s" % [error, path], GlobalColors.ui_red)
+		status_bar.update_status_file("Error %s when saving file to path: %s" % [error, path], GlobalColors.ui_red)
 		return
 	
 	save_data = {
@@ -532,7 +533,7 @@ func save_file(path: String) -> void:
 	
 	var success: bool = file.store_string(JSON.stringify(save_data, "\t"))
 	if success:
-		status_bar.update_status("File saved to path: %s" % path, GlobalColors.ui_green)
+		status_bar.update_status_file("File saved to path: %s" % path, GlobalColors.ui_green)
 		get_tree().root.title = ("GPlanner %s: %s" % [app_version, path])
 		# If drawing in the time between saving the images and saving the file
 		if !drawing_manager.canvas_drawing_group_has_changes(cc):
@@ -541,7 +542,7 @@ func save_file(path: String) -> void:
 		set_tab_name_and_title_from_canvas(cc)
 		print("Saved %s" % path)
 	else:
-		status_bar.update_status("Error when saving file to path: %s" % path, GlobalColors.ui_red)
+		status_bar.update_status_file("Error when saving file to path: %s" % path, GlobalColors.ui_red)
 	file.close()
 
 
@@ -563,7 +564,7 @@ func load_file(path: String, app_startup: bool = false) -> void:
 	var data = JSON.parse_string(content)
 	
 	if data == null:
-		status_bar.update_status("Can't load file / Can't parse JSON string: %s" % path, GlobalColors.ui_red)
+		status_bar.update_status_file("Can't load file / Can't parse JSON string: %s" % path, GlobalColors.ui_red)
 		printerr("Can't parse JSON string @ main.gd:load_file()")
 		return
 	
@@ -597,7 +598,7 @@ func load_file(path: String, app_startup: bool = false) -> void:
 		else:
 			drawing_tool_bar.add_color_picker_swatches_from_array(canvases[cc].swatches)
 	
-	status_bar.update_status("File loaded: %s" % path, GlobalColors.ui_green)
+	status_bar.update_status_file("File loaded: %s" % path, GlobalColors.ui_green)
 	canvases[cc].canvas_changed(true)
 	canvases[cc].save_state.is_created = true
 	canvases[cc].save_state.is_loaded = true
@@ -653,7 +654,7 @@ func load_opened_file_paths(path: String) -> int:
 		file.close()
 		var data = JSON.parse_string(content)
 		if data == null:
-			status_bar.update_status("Can't load file / Can't parse JSON string: %s" % path, GlobalColors.ui_red)
+			status_bar.update_status_file("Can't load file / Can't parse JSON string: %s" % path, GlobalColors.ui_red)
 			printerr("Can't parse JSON string @ main.gd:load_file()")
 			return 0
 		else:
@@ -1342,7 +1343,7 @@ func _on_canvas_has_deselected_control() -> void:
 
 
 func _on_canvas_status_message_requested(message: String, color: Color) -> void:
-	status_bar.update_status(message, color)
+	status_bar.update_status_file(message, color)
 
 
 func _on_resized() -> void:
@@ -1370,16 +1371,16 @@ func _on_drawing_manager_finished_saving(save_canvas: int) -> void:
 
 
 func _on_drawing_manager_status_message(message: String) -> void:
-	status_bar.update_status(message, GlobalColors.ui_yellow)
+	status_bar.update_status_file(message, GlobalColors.ui_yellow)
 
 
 func _on_drawing_manager_forced_save_started() -> void:
-	status_bar.update_status("Need to capture images to reduce VRAM usage", GlobalColors.ui_red)
+	status_bar.update_status_file("Need to capture images to reduce VRAM usage", GlobalColors.ui_red)
 	prepare_to_save_images_lock_UI()
 
 
 func _on_drawing_manager_forced_save_ended() -> void:
-	status_bar.update_status("Done capturing images to reduce VRAM usage", GlobalColors.ui_green)
+	status_bar.update_status_file("Done capturing images to reduce VRAM usage", GlobalColors.ui_green)
 	finish_saving_images_unlock_UI()
 
 
